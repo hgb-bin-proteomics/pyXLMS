@@ -1,5 +1,26 @@
 ![workflow_state](https://github.com/michabirklbauer/python_template/workflows/example/badge.svg)
 
+# pyXLMS
+
+Supported search engines:
+- MS Annika
+- xiSearch / xiFDR
+- MaxLynx
+- ?
+
+General interface with csv input
+
+Packages to include:
+- Export to xiNET
+- Export to xiVIEW
+- Export to xiFDR
+- Export to pyXlinkViewer
+- Export to XMAS
+- Export to Spectral Library
+- MS Annika FDR
+- MS Annika Combine Results
+- CSM Annotation
+
 # Template Repository for Python Scripts
 
 A template repository for linting, testing, GUI building and dockerizing python scripts.
