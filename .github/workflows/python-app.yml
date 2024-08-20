@@ -2,7 +2,7 @@
 # Reference workflow provided by (c) GitHub
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: example
+name: pyXLMS
 
 on:
   push:
@@ -24,10 +24,6 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Copy scripts and data to "/tests"
-      run: |
-        cp main.py tests
-        cp data/example_data.csv .
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
