@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyXLMS"
+version = "0.0.1"
+authors = [
+  { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
+]
+maintainers = [
+  { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+description = "A python package to process protein cross-linking data."
+keywords = ["crosslink", "crosslinker", "crosslinking", "mass spectrometry", "proteomics"]
+requires-python = ">=3.7"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "pandas"
+]
+
+[project.optional-dependencies]
+gui = [
+  "streamlit"
+]
+
+[project.urls]
+Homepage = "https://github.com/hgb-bin-proteomics/pyXLMS"
+Documentation = "https://hgb-bin-proteomics.github.io/pyXLMS"
+Issues = "https://github.com/hgb-bin-proteomics/pyXLMS/issues"
