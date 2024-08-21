@@ -6,7 +6,7 @@
 # micha.birklbauer@gmail.com
 
 def test1():
-    from pyXLMS import parser
+    from pyXLMS import data
     crosslink = parser.create_crosslink("PEPTIDE", 1, "EDITPEP", 2)
     assert crosslink["alpha_peptide"] == "EDITPEP"
     assert crosslink["alpha_crosslink_position"] == 2
@@ -14,7 +14,7 @@ def test1():
     assert crosslink["beta_crosslink_position"] == 1
 
 def test2():
-    from pyXLMS import parser
+    from pyXLMS import data
     crosslink = parser.create_crosslink("PEPTIDE", 2, "PEPTIDE", 1)
     assert crosslink["alpha_peptide"] == "PEPTIDE"
     assert crosslink["alpha_crosslink_position"] == 1
