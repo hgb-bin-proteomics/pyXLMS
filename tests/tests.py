@@ -76,28 +76,28 @@ def test7():
 
 def test8():
     from pyXLMS import data
-    with pytest.raise(TypeError, match = f"xl_position_peptide_a must be {int}!"):
+    with pytest.raises(TypeError, match = f"xl_position_peptide_a must be {int}!"):
         crosslink = data.create_crosslink("PEPTIDE", "3", ["PROTEIN"], [3],
                                           "PEPTIDE", 1, ["PROTEIN"], [1],
                                           170.3)
 
 def test9():
     from pyXLMS import data
-    with pytest.raise(TypeError, match = f"List values of xl_position_proteins_a must be {int}"):
+    with pytest.raises(TypeError, match = f"List values of xl_position_proteins_a must be {int}"):
         crosslink = data.create_crosslink("PEPTIDE", 3, ["PROTEIN"], ["3"],
                                           "PEPTIDE", 1, ["PROTEIN"], [1],
                                           170.3)
 
 def test10():
     from pyXLMS import data
-    with pytest.raise(ValueError, match = "Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!"):
+    with pytest.raises(ValueError, match = "Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!"):
         crosslink = data.create_crosslink("PEPTIDE", 3, ["PROTEIN"], [3, 4],
                                           "PEPTIDE", 1, ["PROTEIN"], [1],
                                           170.3)
 
 def test11():
     from pyXLMS import data
-    with pytest.raise(ValueError, match = "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"):
+    with pytest.raises(ValueError, match = "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"):
         crosslink = data.create_crosslink("PEPTIDE", 3, ["PROTEIN"], [3],
                                           "PEPTIDE", 1, ["PROTEIN"], [1, 2],
                                           170.3)
