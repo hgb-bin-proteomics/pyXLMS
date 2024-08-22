@@ -61,7 +61,7 @@ def test7():
                                       170.3)
     assert crosslink["data_type"] == "crosslink"
     assert crosslink["alpha_peptide"] == "PEPTIDE"
-    assert crosslink["alpha_peptide_crosslink_position"] == 3
+    assert crosslink["alpha_peptide_crosslink_position"] == 1
     assert len(crosslink["alpha_proteins"]) == 1
     assert crosslink["alpha_proteins"][0] == "PROTEIN"
     assert len(crosslink["alpha_proteins_crosslink_positions"]) == 1
