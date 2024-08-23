@@ -27,7 +27,7 @@ jobs:
         python -m pip install pytest
     - name: Install pyXLMS
       run: |
-        python -m pip install -i https://test.pypi.org/simple/ pyXLMS
+        python -m pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pyXLMS
     - name: Test with pytest
       run: |
         pytest tests/tests.py
