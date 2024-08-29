@@ -155,7 +155,7 @@ def test5():
 
 def test6():
     from pyXLMS import data
-    with pytest.raises(TypeError, match = f"xl_position_peptide_a must be {int}!"):
+    with pytest.raises(TypeError, match = f"xl_position_peptide_b must be {int}!"):
         csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
                               "EDITPEP", {2: ("Ox", 16.0)}, "3", ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
                               170.3, "RUN_1", 1, 3, 23.4, -50.0)
