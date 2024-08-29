@@ -37,8 +37,8 @@ def test5():
 def test6():
     from pyXLMS import data
     x = {"a": 1, "b": 2, "c": 3}
-    with pytest.raises(TypeError, match = f"Dict values of x must be {int}!"):
-        i = data.check_input(x, "x", dict, int)
+    with pytest.raises(TypeError, match = f"Dict values of x must be {str}!"):
+        i = data.check_input(x, "x", dict, str)
 
 def test7():
     from pyXLMS import data
