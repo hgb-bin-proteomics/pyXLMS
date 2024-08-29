@@ -62,9 +62,9 @@ def create_crosslink(peptide_a: str,
         The unmodified amino acid sequence of the first peptide.
     xl_position_peptide_a : int
         The position of the crosslinker in the sequence of the first peptide (1-based).
-    proteins_a: list of str
+    proteins_a : list of str
         The accessions of proteins that the first peptide is associated with.
-    xl_position_proteins_a: list of int
+    xl_position_proteins_a : list of int
         Positions of the crosslink in the proteins of the first peptide (1-based).
     decoy_a : bool
         Whether the alpha peptide is from the decoy database or not.
@@ -72,9 +72,9 @@ def create_crosslink(peptide_a: str,
         The unmodified amino acid sequence of the second peptide.
     xl_position_peptide_b : int
         The position of the crosslinker in the sequence of the second peptide (1-based).
-    proteins_b: list of str
+    proteins_b : list of str
         The accessions of proteins that the second peptide is associated with.
-    xl_position_proteins_b: list of int
+    xl_position_proteins_b : list of int
         Positions of the crosslink in the proteins of the second peptide (1-based).
     decoy_b : bool
         Whether the beta peptide is from the decoy database or not.
