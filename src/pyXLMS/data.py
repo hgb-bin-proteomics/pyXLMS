@@ -47,10 +47,12 @@ def create_crosslink(peptide_a: str,
                      xl_position_peptide_a: int,
                      proteins_a: List[str],
                      xl_position_proteins_a: List[int],
+                     decoy_a: bool,
                      peptide_b: str,
                      xl_position_peptide_b: int,
                      proteins_b: List[str],
                      xl_position_proteins_b: List[int],
+                     decoy_b: bool,
                      score: float) -> Dict[str, Any]:
     """Returns a crosslink dictionary.
 
@@ -64,6 +66,8 @@ def create_crosslink(peptide_a: str,
         The accessions of proteins that the first peptide is associated with.
     xl_position_proteins_a: list of int
         Positions of the crosslink in the proteins of the first peptide (1-based).
+    decoy_a : bool
+        Whether the alpha peptide is from the decoy database or not.
     peptide_b : str
         The unmodified amino acid sequence of the second peptide.
     xl_position_peptide_b : int
@@ -72,6 +76,8 @@ def create_crosslink(peptide_a: str,
         The accessions of proteins that the second peptide is associated with.
     xl_position_proteins_b: list of int
         Positions of the crosslink in the proteins of the second peptide (1-based).
+    decoy_b : bool
+        Whether the beta peptide is from the decoy database or not.
     score: float
         Score of the crosslink.
 
@@ -79,8 +85,8 @@ def create_crosslink(peptide_a: str,
     -------
     dict
         The dictionary representing the crosslink with keys data_type, alpha_peptide, alpha_peptide_crosslink_position,
-        alpha_proteins, alpha_proteins_crosslink_positions, beta_peptide, beta_peptide_crosslink_position, beta_proteins,
-        beta_proteins_crosslink_positions, and score.
+        alpha_proteins, alpha_proteins_crosslink_positions, alpha_decoy, beta_peptide, beta_peptide_crosslink_position,
+        beta_proteins, beta_proteins_crosslink_positions, beta_decoy, and score.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
     """
     ## input checks
@@ -92,6 +98,8 @@ def create_crosslink(peptide_a: str,
     check_input(proteins_b, "proteins_b", list, str)
     check_input(xl_position_proteins_a, "xl_position_proteins_a", list, int)
     check_input(xl_position_proteins_b, "xl_position_proteins_b", list, int)
+    check_input(decoy_a, "decoy_a", bool)
+    check_input(decoy_b, "decoy_b", bool)
     check_input(score, "score", float)
     if len(proteins_a) != len(xl_position_proteins_a):
         raise ValueError("Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!")
@@ -103,14 +111,16 @@ def create_crosslink(peptide_a: str,
                         "peptide": peptide_a,
                         "xl_position_peptide": xl_position_peptide_a,
                         "proteins": proteins_a,
-                        "xl_position_proteins": xl_position_proteins_a
+                        "xl_position_proteins": xl_position_proteins_a,
+                        "decoy": decoy_a
                     },
                  f"{peptide_b.strip()}{xl_position_peptide_b}":
                     {
                         "peptide": peptide_b,
                         "xl_position_peptide": xl_position_peptide_b,
                         "proteins": proteins_b,
-                        "xl_position_proteins": xl_position_proteins_b
+                        "xl_position_proteins": xl_position_proteins_b,
+                        "decoy": decoy_b
                     }
                 }
     keys = sorted(list(crosslink.keys()))
@@ -119,8 +129,10 @@ def create_crosslink(peptide_a: str,
             "alpha_peptide_crosslink_position": crosslink[keys[0]]["xl_position_peptide"],
             "alpha_proteins": [protein.strip() for protein in crosslink[keys[0]]["proteins"]],
             "alpha_proteins_crosslink_positions": crosslink[keys[0]]["xl_position_proteins"],
+            "alpha_decoy": crosslink[keys[0]]["decoy"],
             "beta_peptide": crosslink[keys[1]]["peptide"].strip(),
             "beta_peptide_crosslink_position": crosslink[keys[1]]["xl_position_peptide"],
             "beta_proteins": [protein.strip() for protein in crosslink[keys[1]]["proteins"]],
             "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
+            "beta_decoy": crosslink[keys[1]]["decoy"],
             "score": score}
