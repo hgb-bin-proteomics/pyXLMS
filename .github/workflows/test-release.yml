@@ -30,4 +30,4 @@ jobs:
         python -m pip install pyXLMS
     - name: Test with pytest
       run: |
-        pytest tests/tests.py
+        pytest tests/
