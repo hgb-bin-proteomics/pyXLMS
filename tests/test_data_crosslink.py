@@ -31,10 +31,16 @@ def test4():
 def test5():
     from pyXLMS import data
     x = [1, 2, 3]
-    with pytest.raises(TypeError, match = f"List values of x must be {str}"):
+    with pytest.raises(TypeError, match = f"List values of x must be {str}!"):
         i = data.check_input(x, "x", list, str)
 
 def test6():
+    from pyXLMS import data
+    x = {"a": 1, "b": 2, "c": 3}
+    with pytest.raises(TypeError, match = f"Dict values of x must be {str}!"):
+        i = data.check_input(x, "x", dict, str)
+
+def test7():
     from pyXLMS import data
     crosslink = data.create_crosslink("PEPTIDE", 1, ["PROTEIN"], [1], False,
                                       "EDITPEP", 3, ["NIETORP", "PROTEIN"], [5, 2], False,
@@ -56,7 +62,52 @@ def test6():
     assert crosslink["beta_decoy"] == False
     assert crosslink["score"] >= 170.25 and crosslink["score"] <= 170.35
 
-def test7():
+def test8():
+    from pyXLMS import data
+    crosslink = data.create_crosslink("EDITPEP", 3, ["NIETORP", "PROTEIN"], [5, 2], False,
+                                      "PEPTIDE", 1, ["PROTEIN"], [1], False,
+                                      170.3)
+    assert crosslink["data_type"] == "crosslink"
+    assert crosslink["alpha_peptide"] == "EDITPEP"
+    assert crosslink["alpha_peptide_crosslink_position"] == 3
+    assert len(crosslink["alpha_proteins"]) == 2
+    assert crosslink["alpha_proteins"][0] == "NIETORP"
+    assert len(crosslink["alpha_proteins_crosslink_positions"]) == 2
+    assert crosslink["alpha_proteins_crosslink_positions"][0] == 5
+    assert crosslink["alpha_decoy"] == False
+    assert crosslink["beta_peptide"] == "PEPTIDE"
+    assert crosslink["beta_peptide_crosslink_position"] == 1
+    assert len(crosslink["beta_proteins"]) == 1
+    assert crosslink["beta_proteins"][0] == "PROTEIN"
+    assert len(crosslink["beta_proteins_crosslink_positions"]) == 1
+    assert crosslink["beta_proteins_crosslink_positions"][0] == 1
+    assert crosslink["beta_decoy"] == False
+    assert crosslink["score"] >= 170.25 and crosslink["score"] <= 170.35
+
+def test9():
+    from pyXLMS import data
+    crosslink = data.create_crosslink("EDITPEP    ", 3, ["    NIETORP", "PROTEIN  "], [5, 2], False,
+                                      "     PEPTIDE", 1, [" PROTEIN "], [1], False,
+                                      170.3)
+    assert crosslink["data_type"] == "crosslink"
+    assert crosslink["alpha_peptide"] == "EDITPEP"
+    assert crosslink["alpha_peptide_crosslink_position"] == 3
+    assert len(crosslink["alpha_proteins"]) == 2
+    assert crosslink["alpha_proteins"][0] == "NIETORP"
+    assert crosslink["alpha_proteins"][1] == "PROTEIN"
+    assert len(crosslink["alpha_proteins_crosslink_positions"]) == 2
+    assert crosslink["alpha_proteins_crosslink_positions"][0] == 5
+    assert crosslink["alpha_decoy"] == False
+    assert crosslink["beta_peptide"] == "PEPTIDE"
+    assert crosslink["beta_peptide_crosslink_position"] == 1
+    assert len(crosslink["beta_proteins"]) == 1
+    assert crosslink["beta_proteins"][0] == "PROTEIN"
+    assert len(crosslink["beta_proteins_crosslink_positions"]) == 1
+    assert crosslink["beta_proteins_crosslink_positions"][0] == 1
+    assert crosslink["beta_decoy"] == False
+    assert crosslink["score"] >= 170.25 and crosslink["score"] <= 170.35
+
+def test10():
     from pyXLMS import data
     crosslink = data.create_crosslink("PEPTIDE", 3, ["PROTEIN"], [3], True,
                                       "PEPTIDE", 1, ["PROTEIN"], [1], False,
@@ -78,28 +129,28 @@ def test7():
     assert crosslink["beta_decoy"] == True
     assert crosslink["score"] >= 170.25 and crosslink["score"] <= 170.35
 
-def test8():
+def test11():
     from pyXLMS import data
     with pytest.raises(TypeError, match = f"xl_position_peptide_a must be {int}!"):
         crosslink = data.create_crosslink("PEPTIDE", "3", ["PROTEIN"], [3], False,
                                           "PEPTIDE", 1, ["PROTEIN"], [1], False,
                                           170.3)
 
-def test9():
+def test12():
     from pyXLMS import data
-    with pytest.raises(TypeError, match = f"List values of xl_position_proteins_a must be {int}"):
+    with pytest.raises(TypeError, match = f"List values of xl_position_proteins_a must be {int}!"):
         crosslink = data.create_crosslink("PEPTIDE", 3, ["PROTEIN"], ["3"], False,
                                           "PEPTIDE", 1, ["PROTEIN"], [1], True,
                                           170.3)
 
-def test10():
+def test13():
     from pyXLMS import data
     with pytest.raises(ValueError, match = "Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!"):
         crosslink = data.create_crosslink("PEPTIDE", 3, ["PROTEIN"], [3, 4], True,
                                           "PEPTIDE", 1, ["PROTEIN"], [1], False,
                                           170.3)
 
-def test11():
+def test14():
     from pyXLMS import data
     with pytest.raises(ValueError, match = "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"):
         crosslink = data.create_crosslink("PEPTIDE", 3, ["PROTEIN"], [3], True,

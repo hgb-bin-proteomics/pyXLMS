@@ -41,7 +41,11 @@ def check_input(parameter: Any,
     if type(parameter) == list and supported_subclass is not None:
         for value in parameter:
             if type(value) != supported_subclass:
-                raise TypeError(f"List values of {parameter_name} must be {supported_subclass}")
+                raise TypeError(f"List values of {parameter_name} must be {supported_subclass}!")
+    if type(parameter) == dict and supported_subclass is not None:
+        for key in parameter:
+            if type(parameter[key]) != supported_subclass:
+                raise TypeError(f"Dict values of {parameter_name} must be {supported_subclass}!")
     return True
 
 def create_crosslink(peptide_a: str,
