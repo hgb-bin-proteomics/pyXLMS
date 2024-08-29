@@ -31,7 +31,7 @@ def test4():
 def test5():
     from pyXLMS import data
     x = [1, 2, 3]
-    with pytest.raises(TypeError, match = f"List values of x must be {str}"):
+    with pytest.raises(TypeError, match = f"List values of x must be {str}!"):
         i = data.check_input(x, "x", list, str)
 
 def test6():
@@ -132,7 +132,7 @@ def test10():
 
 def test11():
     from pyXLMS import data
-    with pytest.raises(TypeError, match = f"List values of xl_position_proteins_a must be {int}"):
+    with pytest.raises(TypeError, match = f"List values of xl_position_proteins_a must be {int}!"):
         crosslink = data.create_crosslink("PEPTIDE", 3, ["PROTEIN"], ["3"], False,
                                           "PEPTIDE", 1, ["PROTEIN"], [1], True,
                                           170.3)
