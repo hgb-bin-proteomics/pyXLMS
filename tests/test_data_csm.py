@@ -33,7 +33,7 @@ def test1():
     assert len(csm["beta_modifications"]) == 1
     assert 1 in csm["beta_modifications"]
     assert csm["beta_modifications"][1][0] == "Ox"
-    assert csm["beta_modifications"][1][1] >= 15.95 and csm["beta_modifications"][2][1] <= 16.05
+    assert csm["beta_modifications"][1][1] >= 15.95 and csm["beta_modifications"][1][1] <= 16.05
     assert csm["beta_peptide_crosslink_position"] == 1
     assert len(csm["beta_proteins"]) == 1
     assert csm["beta_proteins"][0] == "PROTEIN"
