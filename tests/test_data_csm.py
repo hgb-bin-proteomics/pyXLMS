@@ -138,3 +138,59 @@ def test3():
     assert csm["charge"] == 3
     assert csm["retention_time"] >= 23.35 and csm["retention_time"] <= 23.45
     assert csm["ion_mobility"] >= -50.05 and csm["ion_mobility"] <= -49.95
+
+def test4():
+    from pyXLMS import data
+    with pytest.raises(TypeError, match = f"modifications_a must be {dict}!"):
+        csm = data.create_csm("PEPTIDE", (" Ox ", 16.0), 1, ["PROTEIN"], [1], [1], 50.3, False,
+                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
+                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+
+def test5():
+    from pyXLMS import data
+    with pytest.raises(TypeError, match = f"Dict values of modifications_b must be {tuple}!"):
+        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
+                              "EDITPEP", {2: {"Ox": 16.0}}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
+                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+
+def test6():
+    from pyXLMS import data
+    with pytest.raises(TypeError, match = f"xl_position_peptide_a must be {int}!"):
+        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
+                              "EDITPEP", {2: ("Ox", 16.0)}, "3", ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
+                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+
+def test7():
+    from pyXLMS import data
+    with pytest.raises(TypeError, match = f"List values of xl_position_proteins_b must be {int}!"):
+        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
+                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, "2"], [5, 2], 170.3, False,
+                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+
+def test8():
+    from pyXLMS import data
+    with pytest.raises(ValueError, match = "Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!"):
+        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1, 2], [1], 50.3, False,
+                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
+                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+
+def test9():
+    from pyXLMS import data
+    with pytest.raises(ValueError, match = "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"):
+        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
+                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5], [5, 2], 170.3, False,
+                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+
+def test10():
+    from pyXLMS import data
+    with pytest.raises(ValueError, match = "Peptide position has to be given for every protein! Length of proteins_a and pep_position_proteins_a has to match!"):
+        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [], 50.3, False,
+                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
+                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+
+def test11():
+    from pyXLMS import data
+    with pytest.raises(ValueError, match = "Peptide position has to be given for every protein! Length of proteins_b and pep_position_proteins_b has to match!"):
+        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
+                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5], 170.3, False,
+                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
