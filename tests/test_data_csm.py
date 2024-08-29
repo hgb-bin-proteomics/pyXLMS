@@ -41,7 +41,7 @@ def test1():
     assert csm["beta_proteins_crosslink_positions"][0] == 1
     assert len(csm["beta_proteins_peptide_positions"]) == 1
     assert csm["beta_proteins_peptide_positions"][0] == 1
-    assert csm["beta_score"] >= 50.25 and csm["alpha_score"] <= 50.35
+    assert csm["beta_score"] >= 50.25 and csm["beta_score"] <= 50.35
     assert csm["beta_decoy"] == False
     # csm
     assert csm["score"] >= 170.25 and csm["score"] <= 170.35
