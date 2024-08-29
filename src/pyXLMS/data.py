@@ -88,6 +88,13 @@ def create_crosslink(peptide_a: str,
         alpha_proteins, alpha_proteins_crosslink_positions, alpha_decoy, beta_peptide, beta_peptide_crosslink_position,
         beta_proteins, beta_proteins_crosslink_positions, beta_decoy, and score.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
+
+    Raises
+    ------
+    TypeError
+        If the parameter is not of the given class.
+    ValueError
+        If the length of crosslink positions is not equal to the length of proteins.
     """
     ## input checks
     check_input(peptide_a, "peptide_a", str)
