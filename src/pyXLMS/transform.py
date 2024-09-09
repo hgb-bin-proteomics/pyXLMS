@@ -35,8 +35,42 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     -----
     This function should not be called directly, it is called from 'to_dataframe'.
     """
-
-    return
+    # columns
+    alpha_peptide = list()
+    alpha_peptide_crosslink_position = list()
+    alpha_proteins = list()
+    alpha_proteins_crosslink_positions = list()
+    alpha_decoy = list()
+    beta_peptide = list()
+    beta_peptide_crosslink_position = list()
+    beta_proteins = list()
+    beta_proteins_crosslink_positions = list()
+    beta_decoy = list()
+    score = list()
+    # assign values
+    for crosslink in data:
+        alpha_peptide.append(crosslink["alpha_peptide"])
+        alpha_peptide_crosslink_position.append(crosslink["alpha_peptide_crosslink_position"])
+        alpha_proteins.append(crosslink["alpha_proteins"])
+        alpha_proteins_crosslink_positions.append(crosslink["alpha_proteins_crosslink_positions"])
+        alpha_decoy.append(crosslink["alpha_decoy"])
+        beta_peptide.append(crosslink["beta_peptide"])
+        beta_peptide_crosslink_position.append(crosslink["beta_peptide_crosslink_position"])
+        beta_proteins.append(crosslink["beta_proteins"])
+        beta_proteins_crosslink_positions.append(crosslink["beta_proteins_crosslink_positions"])
+        beta_decoy.append(crosslink["beta_decoy"])
+        score.append(crosslink["score"])
+    return pd.DataFrame({"Alpha Peptide": alpha_peptide,
+                         "Alpha Peptide Crosslink Position": alpha_peptide_crosslink_position,
+                         "Alpha Proteins": alpha_proteins,
+                         "Alpha Proteins Crosslink Positions": alpha_proteins_crosslink_positions,
+                         "Alpha Decoy": alpha_decoy,
+                         "Beta Peptide": beta_peptide,
+                         "Beta Peptide Crosslink Position": beta_peptide_crosslink_position,
+                         "Beta Proteins": beta_proteins,
+                         "Beta Proteins Crosslink Positions": beta_proteins_crosslink_positions,
+                         "Beta Decoy": beta_decoy,
+                         "Crosslink Score": score})
 
 def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     """Returns a pandas DataFrame of the given crosslink-spectrum-matches.
