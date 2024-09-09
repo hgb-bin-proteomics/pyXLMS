@@ -12,9 +12,57 @@ from typing import Dict
 from typing import Any
 
 def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
+    """Returns a pandas DataFrame of the given crosslinks.
+
+    Parameters
+    ----------
+    data : list
+        A list of crosslinks.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The pandas DataFrame created from the list of input crosslinks.
+
+    Raises
+    ------
+    TypeError
+        If the list does not contain crosslinks.
+    ValueError
+        If the list does not contain any objects.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from 'to_dataframe'.
+    """
+
     return
 
 def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
+    """Returns a pandas DataFrame of the given crosslink-spectrum-matches.
+
+    Parameters
+    ----------
+    data : list
+        A list of crosslink-spectrum-matches.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The pandas DataFrame created from the list of input crosslink-spectrum-matches.
+
+    Raises
+    ------
+    TypeError
+        If the list does not contain crosslink-spectrum-matches.
+    ValueError
+        If the list does not contain any objects.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from 'to_dataframe'.
+    """
+
     return
 
 def to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
