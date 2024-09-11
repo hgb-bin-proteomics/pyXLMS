@@ -35,7 +35,7 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     -----
     This function should not be called directly, it is called from 'to_dataframe'.
     """
-    # columns
+    ## columns
     alpha_peptide = list()
     alpha_peptide_crosslink_position = list()
     alpha_proteins = list()
@@ -47,7 +47,7 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     beta_proteins_crosslink_positions = list()
     beta_decoy = list()
     score = list()
-    # assign values
+    ## assign values
     for crosslink in data:
         alpha_peptide.append(crosslink["alpha_peptide"])
         alpha_peptide_crosslink_position.append(crosslink["alpha_peptide_crosslink_position"])
