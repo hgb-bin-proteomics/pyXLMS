@@ -9,10 +9,13 @@ from typing import Dict
 from typing import Tuple
 from typing import Any
 
-def check_input(parameter: Any,
-                parameter_name: str,
-                supported_class: Any,
-                supported_subclass: Any = None) -> bool:
+
+def check_input(
+    parameter: Any,
+    parameter_name: str,
+    supported_class: Any,
+    supported_subclass: Any = None,
+) -> bool:
     """Checks if the given parameter is of the specified type.
 
     Parameters
@@ -41,24 +44,31 @@ def check_input(parameter: Any,
     if type(parameter) is list and supported_subclass is not None:
         for value in parameter:
             if type(value) is not supported_subclass:
-                raise TypeError(f"List values of {parameter_name} must be {supported_subclass}!")
+                raise TypeError(
+                    f"List values of {parameter_name} must be {supported_subclass}!"
+                )
     if type(parameter) is dict and supported_subclass is not None:
         for key in parameter:
             if type(parameter[key]) is not supported_subclass:
-                raise TypeError(f"Dict values of {parameter_name} must be {supported_subclass}!")
+                raise TypeError(
+                    f"Dict values of {parameter_name} must be {supported_subclass}!"
+                )
     return True
 
-def create_crosslink(peptide_a: str,
-                     xl_position_peptide_a: int,
-                     proteins_a: List[str],
-                     xl_position_proteins_a: List[int],
-                     decoy_a: bool,
-                     peptide_b: str,
-                     xl_position_peptide_b: int,
-                     proteins_b: List[str],
-                     xl_position_proteins_b: List[int],
-                     decoy_b: bool,
-                     score: float) -> Dict[str, Any]:
+
+def create_crosslink(
+    peptide_a: str,
+    xl_position_peptide_a: int,
+    proteins_a: List[str],
+    xl_position_proteins_a: List[int],
+    decoy_a: bool,
+    peptide_b: str,
+    xl_position_peptide_b: int,
+    proteins_b: List[str],
+    xl_position_proteins_b: List[int],
+    decoy_b: bool,
+    score: float,
+) -> Dict[str, Any]:
     """Returns a crosslink dictionary.
 
     Parameters
@@ -114,63 +124,77 @@ def create_crosslink(peptide_a: str,
     check_input(decoy_b, "decoy_b", bool)
     check_input(score, "score", float)
     if len(proteins_a) != len(xl_position_proteins_a):
-        raise ValueError("Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!")
+        raise ValueError(
+            "Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!"
+        )
     if len(proteins_b) != len(xl_position_proteins_b):
-        raise ValueError("Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!")
+        raise ValueError(
+            "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"
+        )
     ## processing
-    crosslink = {f"{peptide_a.strip()}{xl_position_peptide_a}":
-                    {
-                        "peptide": peptide_a,
-                        "xl_position_peptide": xl_position_peptide_a,
-                        "proteins": proteins_a,
-                        "xl_position_proteins": xl_position_proteins_a,
-                        "decoy": decoy_a
-                    },
-                 f"{peptide_b.strip()}{xl_position_peptide_b}":
-                    {
-                        "peptide": peptide_b,
-                        "xl_position_peptide": xl_position_peptide_b,
-                        "proteins": proteins_b,
-                        "xl_position_proteins": xl_position_proteins_b,
-                        "decoy": decoy_b
-                    }
-                }
+    crosslink = {
+        f"{peptide_a.strip()}{xl_position_peptide_a}": {
+            "peptide": peptide_a,
+            "xl_position_peptide": xl_position_peptide_a,
+            "proteins": proteins_a,
+            "xl_position_proteins": xl_position_proteins_a,
+            "decoy": decoy_a,
+        },
+        f"{peptide_b.strip()}{xl_position_peptide_b}": {
+            "peptide": peptide_b,
+            "xl_position_peptide": xl_position_peptide_b,
+            "proteins": proteins_b,
+            "xl_position_proteins": xl_position_proteins_b,
+            "decoy": decoy_b,
+        },
+    }
     keys = sorted(list(crosslink.keys()))
-    return {"data_type": "crosslink",
-            "alpha_peptide": crosslink[keys[0]]["peptide"].strip(),
-            "alpha_peptide_crosslink_position": crosslink[keys[0]]["xl_position_peptide"],
-            "alpha_proteins": [protein.strip() for protein in crosslink[keys[0]]["proteins"]],
-            "alpha_proteins_crosslink_positions": crosslink[keys[0]]["xl_position_proteins"],
-            "alpha_decoy": crosslink[keys[0]]["decoy"],
-            "beta_peptide": crosslink[keys[1]]["peptide"].strip(),
-            "beta_peptide_crosslink_position": crosslink[keys[1]]["xl_position_peptide"],
-            "beta_proteins": [protein.strip() for protein in crosslink[keys[1]]["proteins"]],
-            "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
-            "beta_decoy": crosslink[keys[1]]["decoy"],
-            "score": score}
+    return {
+        "data_type": "crosslink",
+        "alpha_peptide": crosslink[keys[0]]["peptide"].strip(),
+        "alpha_peptide_crosslink_position": crosslink[keys[0]]["xl_position_peptide"],
+        "alpha_proteins": [
+            protein.strip() for protein in crosslink[keys[0]]["proteins"]
+        ],
+        "alpha_proteins_crosslink_positions": crosslink[keys[0]][
+            "xl_position_proteins"
+        ],
+        "alpha_decoy": crosslink[keys[0]]["decoy"],
+        "beta_peptide": crosslink[keys[1]]["peptide"].strip(),
+        "beta_peptide_crosslink_position": crosslink[keys[1]]["xl_position_peptide"],
+        "beta_proteins": [
+            protein.strip() for protein in crosslink[keys[1]]["proteins"]
+        ],
+        "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
+        "beta_decoy": crosslink[keys[1]]["decoy"],
+        "score": score,
+    }
 
-def create_csm(peptide_a: str,
-               modifications_a: Dict[int, Tuple[str, float]],
-               xl_position_peptide_a: int,
-               proteins_a: List[str],
-               xl_position_proteins_a: List[int],
-               pep_position_proteins_a: List[int],
-               score_a: float,
-               decoy_a: bool,
-               peptide_b: str,
-               modifications_b: Dict[int, Tuple[str, float]],
-               xl_position_peptide_b: int,
-               proteins_b: List[str],
-               xl_position_proteins_b: List[int],
-               pep_position_proteins_b: List[int],
-               score_b: float,
-               decoy_b: bool,
-               score: float,
-               spectrum_file: str,
-               scan_nr: int,
-               charge: int,
-               rt: float,
-               im_cv: float) -> Dict[str, Any]:
+
+def create_csm(
+    peptide_a: str,
+    modifications_a: Dict[int, Tuple[str, float]],
+    xl_position_peptide_a: int,
+    proteins_a: List[str],
+    xl_position_proteins_a: List[int],
+    pep_position_proteins_a: List[int],
+    score_a: float,
+    decoy_a: bool,
+    peptide_b: str,
+    modifications_b: Dict[int, Tuple[str, float]],
+    xl_position_peptide_b: int,
+    proteins_b: List[str],
+    xl_position_proteins_b: List[int],
+    pep_position_proteins_b: List[int],
+    score_b: float,
+    decoy_b: bool,
+    score: float,
+    spectrum_file: str,
+    scan_nr: int,
+    charge: int,
+    rt: float,
+    im_cv: float,
+) -> Dict[str, Any]:
     """Returns a crosslink-spectrum-match dictionary.
 
     Parameters
@@ -261,58 +285,79 @@ def create_csm(peptide_a: str,
     check_input(rt, "rt", float)
     check_input(im_cv, "im_cv", float)
     if len(proteins_a) != len(xl_position_proteins_a):
-        raise ValueError("Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!")
+        raise ValueError(
+            "Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!"
+        )
     if len(proteins_b) != len(xl_position_proteins_b):
-        raise ValueError("Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!")
+        raise ValueError(
+            "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"
+        )
     if len(proteins_a) != len(pep_position_proteins_a):
-        raise ValueError("Peptide position has to be given for every protein! Length of proteins_a and pep_position_proteins_a has to match!")
+        raise ValueError(
+            "Peptide position has to be given for every protein! Length of proteins_a and pep_position_proteins_a has to match!"
+        )
     if len(proteins_b) != len(pep_position_proteins_b):
-        raise ValueError("Peptide position has to be given for every protein! Length of proteins_b and pep_position_proteins_b has to match!")
+        raise ValueError(
+            "Peptide position has to be given for every protein! Length of proteins_b and pep_position_proteins_b has to match!"
+        )
     ## processing
-    crosslink = {f"{peptide_a.strip()}{xl_position_peptide_a}":
-                    {
-                        "peptide": peptide_a,
-                        "modifications": {key : (modifications_a[key][0].strip(), float(modifications_a[key][1])) for key in modifications_a.keys()},
-                        "xl_position_peptide": xl_position_peptide_a,
-                        "proteins": proteins_a,
-                        "xl_position_proteins": xl_position_proteins_a,
-                        "pep_position_proteins": pep_position_proteins_a,
-                        "score": score_a,
-                        "decoy": decoy_a
-                    },
-                 f"{peptide_b.strip()}{xl_position_peptide_b}":
-                    {
-                        "peptide": peptide_b,
-                        "modifications": {key : (modifications_b[key][0].strip(), float(modifications_b[key][1])) for key in modifications_b.keys()},
-                        "xl_position_peptide": xl_position_peptide_b,
-                        "proteins": proteins_b,
-                        "xl_position_proteins": xl_position_proteins_b,
-                        "pep_position_proteins": pep_position_proteins_b,
-                        "score": score_b,
-                        "decoy": decoy_b
-                    }
-                }
+    crosslink = {
+        f"{peptide_a.strip()}{xl_position_peptide_a}": {
+            "peptide": peptide_a,
+            "modifications": {
+                key: (modifications_a[key][0].strip(), float(modifications_a[key][1]))
+                for key in modifications_a.keys()
+            },
+            "xl_position_peptide": xl_position_peptide_a,
+            "proteins": proteins_a,
+            "xl_position_proteins": xl_position_proteins_a,
+            "pep_position_proteins": pep_position_proteins_a,
+            "score": score_a,
+            "decoy": decoy_a,
+        },
+        f"{peptide_b.strip()}{xl_position_peptide_b}": {
+            "peptide": peptide_b,
+            "modifications": {
+                key: (modifications_b[key][0].strip(), float(modifications_b[key][1]))
+                for key in modifications_b.keys()
+            },
+            "xl_position_peptide": xl_position_peptide_b,
+            "proteins": proteins_b,
+            "xl_position_proteins": xl_position_proteins_b,
+            "pep_position_proteins": pep_position_proteins_b,
+            "score": score_b,
+            "decoy": decoy_b,
+        },
+    }
     keys = sorted(list(crosslink.keys()))
-    return {"data_type": "crosslink-spectrum-match",
-            "alpha_peptide": crosslink[keys[0]]["peptide"].strip(),
-            "alpha_modifications": crosslink[keys[0]]["modifications"],
-            "alpha_peptide_crosslink_position": crosslink[keys[0]]["xl_position_peptide"],
-            "alpha_proteins": [protein.strip() for protein in crosslink[keys[0]]["proteins"]],
-            "alpha_proteins_crosslink_positions": crosslink[keys[0]]["xl_position_proteins"],
-            "alpha_proteins_peptide_positions": crosslink[keys[0]]["pep_position_proteins"],
-            "alpha_score": crosslink[keys[0]]["score"],
-            "alpha_decoy": crosslink[keys[0]]["decoy"],
-            "beta_peptide": crosslink[keys[1]]["peptide"].strip(),
-            "beta_modifications": crosslink[keys[1]]["modifications"],
-            "beta_peptide_crosslink_position": crosslink[keys[1]]["xl_position_peptide"],
-            "beta_proteins": [protein.strip() for protein in crosslink[keys[1]]["proteins"]],
-            "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
-            "beta_proteins_peptide_positions": crosslink[keys[1]]["pep_position_proteins"],
-            "beta_score": crosslink[keys[1]]["score"],
-            "beta_decoy": crosslink[keys[1]]["decoy"],
-            "score": score,
-            "spectrum_file": spectrum_file.strip(),
-            "scan_nr": scan_nr,
-            "charge": charge,
-            "retention_time": rt,
-            "ion_mobility": im_cv}
+    return {
+        "data_type": "crosslink-spectrum-match",
+        "alpha_peptide": crosslink[keys[0]]["peptide"].strip(),
+        "alpha_modifications": crosslink[keys[0]]["modifications"],
+        "alpha_peptide_crosslink_position": crosslink[keys[0]]["xl_position_peptide"],
+        "alpha_proteins": [
+            protein.strip() for protein in crosslink[keys[0]]["proteins"]
+        ],
+        "alpha_proteins_crosslink_positions": crosslink[keys[0]][
+            "xl_position_proteins"
+        ],
+        "alpha_proteins_peptide_positions": crosslink[keys[0]]["pep_position_proteins"],
+        "alpha_score": crosslink[keys[0]]["score"],
+        "alpha_decoy": crosslink[keys[0]]["decoy"],
+        "beta_peptide": crosslink[keys[1]]["peptide"].strip(),
+        "beta_modifications": crosslink[keys[1]]["modifications"],
+        "beta_peptide_crosslink_position": crosslink[keys[1]]["xl_position_peptide"],
+        "beta_proteins": [
+            protein.strip() for protein in crosslink[keys[1]]["proteins"]
+        ],
+        "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
+        "beta_proteins_peptide_positions": crosslink[keys[1]]["pep_position_proteins"],
+        "beta_score": crosslink[keys[1]]["score"],
+        "beta_decoy": crosslink[keys[1]]["decoy"],
+        "score": score,
+        "spectrum_file": spectrum_file.strip(),
+        "scan_nr": scan_nr,
+        "charge": charge,
+        "retention_time": rt,
+        "ion_mobility": im_cv,
+    }
