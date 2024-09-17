@@ -11,6 +11,24 @@ from typing import List
 from typing import Dict
 from typing import Any
 
+def modifications_to_str(modifications: Dict[int, Tuple[str, float]]) -> str:
+    """Returns the string representation of a modifications dictionary.
+
+    Parameters
+    ----------
+    modifications : dict of str, tuple
+        The modifications of a peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass.
+
+    Returns
+    -------
+    str
+        The string representation of the modifications.
+    """
+    modifications_str = ""
+    for modification_pos in modifications.keys():
+        modifications_str += f"({modification_pos}:[{modifications[modification_pos][0]}|{modifications[modification_pos][1]}]);"
+    return modifications_str.rstrip(";")
+
 def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     """Returns a pandas DataFrame of the given crosslinks.
 
