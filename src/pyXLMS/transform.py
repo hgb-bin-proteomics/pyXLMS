@@ -47,7 +47,7 @@ def __cc(l: List[Any], sep: str = ";") -> str:
     s = ""
     for i in l:
         s += str(i).strip() + sep
-    return s.rstrip(";")
+    return s.rstrip(sep)
 
 def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     """Returns a pandas DataFrame of the given crosslinks.
