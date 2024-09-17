@@ -9,6 +9,7 @@ from .data import check_input
 
 from typing import List
 from typing import Dict
+from typing import Tuple
 from typing import Any
 
 def modifications_to_str(modifications: Dict[int, Tuple[str, float]]) -> str:
