@@ -1,0 +1,28 @@
+name: Ruff
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install ruff
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Lint with Ruff
+      run: |
+        ruff check
+    - name: Check format with Ruff
+      run: |
+        ruff format --check
