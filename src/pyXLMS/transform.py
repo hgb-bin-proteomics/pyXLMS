@@ -89,13 +89,13 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     for crosslink in data:
         alpha_peptide.append(crosslink["alpha_peptide"])
         alpha_peptide_crosslink_position.append(crosslink["alpha_peptide_crosslink_position"])
-        alpha_proteins.append(crosslink["alpha_proteins"])
-        alpha_proteins_crosslink_positions.append(crosslink["alpha_proteins_crosslink_positions"])
+        alpha_proteins.append(__cc(crosslink["alpha_proteins"]))
+        alpha_proteins_crosslink_positions.append(__cc(crosslink["alpha_proteins_crosslink_positions"]))
         alpha_decoy.append(crosslink["alpha_decoy"])
         beta_peptide.append(crosslink["beta_peptide"])
         beta_peptide_crosslink_position.append(crosslink["beta_peptide_crosslink_position"])
-        beta_proteins.append(crosslink["beta_proteins"])
-        beta_proteins_crosslink_positions.append(crosslink["beta_proteins_crosslink_positions"])
+        beta_proteins.append(__cc(crosslink["beta_proteins"]))
+        beta_proteins_crosslink_positions.append(__cc(crosslink["beta_proteins_crosslink_positions"]))
         beta_decoy.append(crosslink["beta_decoy"])
         score.append(crosslink["score"])
     return pd.DataFrame({"Alpha Peptide": alpha_peptide,
