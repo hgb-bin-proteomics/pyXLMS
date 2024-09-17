@@ -36,15 +36,15 @@ def check_input(parameter: Any,
     TypeError
         If the parameter is not of the given class.
     """
-    if type(parameter) != supported_class:
+    if type(parameter) is not supported_class:
         raise TypeError(f"{parameter_name} must be {supported_class}!")
-    if type(parameter) == list and supported_subclass is not None:
+    if type(parameter) is list and supported_subclass is not None:
         for value in parameter:
-            if type(value) != supported_subclass:
+            if type(value) is not supported_subclass:
                 raise TypeError(f"List values of {parameter_name} must be {supported_subclass}!")
-    if type(parameter) == dict and supported_subclass is not None:
+    if type(parameter) is dict and supported_subclass is not None:
         for key in parameter:
-            if type(parameter[key]) != supported_subclass:
+            if type(parameter[key]) is not supported_subclass:
                 raise TypeError(f"Dict values of {parameter_name} must be {supported_subclass}!")
     return True
 

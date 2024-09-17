@@ -38,7 +38,6 @@ def test6():
     assert transform.__cc([]) == ""
 
 def test7():
-    import pandas as pd
     from pyXLMS import data, transform
     c1 = data.create_crosslink("PEPTIDE", 3, ["PROTEINA"], [5], False,
                                "PEPTIDE"[::-1], 5, ["PROTEINA"], [5], True,
@@ -55,27 +54,30 @@ def test7():
     assert df.loc[0, "Alpha Peptide Crosslink Position"] == 5
     assert df.loc[0, "Alpha Proteins"] == "PROTEINA"
     assert df.loc[0, "Alpha Proteins Crosslink Positions"] == "5"
-    assert df.loc[0, "Alpha Decoy"] == True
+    #assert df.loc[0, "Alpha Decoy"] == True
+    assert df.loc[0, "Alpha Decoy"]
     assert df.loc[0, "Beta Peptide"] == "PEPTIDE"
     assert df.loc[0, "Beta Peptide Crosslink Position"] == 3
     assert df.loc[0, "Beta Proteins"] == "PROTEINA"
     assert df.loc[0, "Beta Proteins Crosslink Positions"] == "5"
-    assert df.loc[0, "Beta Decoy"] == False
+    #assert df.loc[0, "Beta Decoy"] == False
+    assert not df.loc[0, "Beta Decoy"]
     assert df.loc[0, "Crosslink Score"] > 70.0 and df.loc[0, "Crosslink Score"] < 71.0
     assert df.loc[1, "Alpha Peptide"] == "PEPTIDEA"
     assert df.loc[1, "Alpha Peptide Crosslink Position"] == 5
     assert df.loc[1, "Alpha Proteins"] == "PROTEINA;PROTEINC"
     assert df.loc[1, "Alpha Proteins Crosslink Positions"] == "1;2"
-    assert df.loc[1, "Alpha Decoy"] == False
+    #assert df.loc[1, "Alpha Decoy"] == False
+    assert not df.loc[1, "Alpha Decoy"]
     assert df.loc[1, "Beta Peptide"] == "PEPTIDEB"
     assert df.loc[1, "Beta Peptide Crosslink Position"] == 3
     assert df.loc[1, "Beta Proteins"] == "PROTEINB"
     assert df.loc[1, "Beta Proteins Crosslink Positions"] == "5"
-    assert df.loc[1, "Beta Decoy"] == False
+    #assert df.loc[1, "Beta Decoy"] == False
+    assert not df.loc[1, "Beta Decoy"]
     assert df.loc[1, "Crosslink Score"] > 123.0 and df.loc[0, "Crosslink Score"] < 124.0
 
 def test8():
-    import pandas as pd
     from pyXLMS import data, transform
     c1 = data.create_crosslink("PEPTIDE", 3, ["PROTEINA"], [5], False,
                                "PEPTIDE"[::-1], 5, ["PROTEINA"], [5], True,
@@ -92,27 +94,30 @@ def test8():
     assert df.loc[0, "Alpha Peptide Crosslink Position"] == 5
     assert df.loc[0, "Alpha Proteins"] == "PROTEINA"
     assert df.loc[0, "Alpha Proteins Crosslink Positions"] == "5"
-    assert df.loc[0, "Alpha Decoy"] == True
+    #assert df.loc[0, "Alpha Decoy"] == True
+    assert df.loc[0, "Alpha Decoy"]
     assert df.loc[0, "Beta Peptide"] == "PEPTIDE"
     assert df.loc[0, "Beta Peptide Crosslink Position"] == 3
     assert df.loc[0, "Beta Proteins"] == "PROTEINA"
     assert df.loc[0, "Beta Proteins Crosslink Positions"] == "5"
-    assert df.loc[0, "Beta Decoy"] == False
+    #assert df.loc[0, "Beta Decoy"] == False
+    assert not df.loc[0, "Beta Decoy"]
     assert df.loc[0, "Crosslink Score"] > 70.0 and df.loc[0, "Crosslink Score"] < 71.0
     assert df.loc[1, "Alpha Peptide"] == "PEPTIDEA"
     assert df.loc[1, "Alpha Peptide Crosslink Position"] == 5
     assert df.loc[1, "Alpha Proteins"] == "PROTEINA;PROTEINC"
     assert df.loc[1, "Alpha Proteins Crosslink Positions"] == "1;2"
-    assert df.loc[1, "Alpha Decoy"] == False
+    #assert df.loc[1, "Alpha Decoy"] == False
+    assert not df.loc[1, "Alpha Decoy"]
     assert df.loc[1, "Beta Peptide"] == "PEPTIDEB"
     assert df.loc[1, "Beta Peptide Crosslink Position"] == 3
     assert df.loc[1, "Beta Proteins"] == "PROTEINB"
     assert df.loc[1, "Beta Proteins Crosslink Positions"] == "5"
-    assert df.loc[1, "Beta Decoy"] == False
+    #assert df.loc[1, "Beta Decoy"] == False
+    assert not df.loc[1, "Beta Decoy"]
     assert df.loc[1, "Crosslink Score"] > 123.0 and df.loc[0, "Crosslink Score"] < 124.0
 
 def test9():
-    import pandas as pd
     from pyXLMS import data, transform
     c1 = data.create_csm("PEPTIDE", {1: ("Oxidation", 15.994915), 5: ("Carbamidomethyl", 57.021464)},
                          3, ["PROTEINA"], [5], [1], 70.3, False,
@@ -146,7 +151,8 @@ def test9():
     assert df.loc[0, "Alpha Proteins Crosslink Positions"] == "4"
     assert df.loc[0, "Alpha Proteins Peptide Positions"] == "2"
     assert df.loc[0, "Alpha Score"] > 20.0 and df.loc[0, "Alpha Score"] < 21.0
-    assert df.loc[0, "Alpha Decoy"] == True
+    #assert df.loc[0, "Alpha Decoy"] == True
+    assert df.loc[0, "Alpha Decoy"]
     assert df.loc[0, "Beta Peptide"] == "PEPTIDE"
     assert df.loc[0, "Beta Peptide Modifications"] == "(1:[Oxidation|15.994915]);(5:[Carbamidomethyl|57.021464])"
     assert df.loc[0, "Beta Peptide Crosslink Position"] == 3
@@ -154,7 +160,8 @@ def test9():
     assert df.loc[0, "Beta Proteins Crosslink Positions"] == "5"
     assert df.loc[0, "Beta Proteins Peptide Positions"] == "1"
     assert df.loc[0, "Beta Score"] > 70.0 and df.loc[0, "Alpha Score"] < 71.0
-    assert df.loc[0, "Beta Decoy"] == False
+    #assert df.loc[0, "Beta Decoy"] == False
+    assert not df.loc[0, "Beta Decoy"]
     assert df.loc[0, "CSM Score"] > 70.0 and df.loc[0, "CSM Score"] < 71.0
     assert df.loc[0, "Spectrum File"] == "MS_EXP1"
     assert df.loc[0, "Scan Nr"] == 1
@@ -168,7 +175,8 @@ def test9():
     assert df.loc[1, "Alpha Proteins Crosslink Positions"] == "4"
     assert df.loc[1, "Alpha Proteins Peptide Positions"] == "2"
     assert df.loc[1, "Alpha Score"] > 21.0 and df.loc[1, "Alpha Score"] < 22.0
-    assert df.loc[1, "Alpha Decoy"] == False
+    #assert df.loc[1, "Alpha Decoy"] == False
+    assert not df.loc[1, "Alpha Decoy"]
     assert df.loc[1, "Beta Peptide"] == "PEPTIDEB"
     assert df.loc[1, "Beta Peptide Modifications"] == "(1:[Oxidation|15.994915]);(5:[Carbamidomethyl|57.021464])"
     assert df.loc[1, "Beta Peptide Crosslink Position"] == 3
@@ -176,7 +184,8 @@ def test9():
     assert df.loc[1, "Beta Proteins Crosslink Positions"] == "5;3"
     assert df.loc[1, "Beta Proteins Peptide Positions"] == "1;2"
     assert df.loc[1, "Beta Score"] > 71.0 and df.loc[1, "Alpha Score"] < 72.0
-    assert df.loc[1, "Beta Decoy"] == False
+    #assert df.loc[1, "Beta Decoy"] == False
+    assert not df.loc[1, "Beta Decoy"]
     assert df.loc[1, "CSM Score"] > 71.0 and df.loc[1, "CSM Score"] < 72.0
     assert df.loc[1, "Spectrum File"] == "MS_EXP1"
     assert df.loc[1, "Scan Nr"] == 2
@@ -185,7 +194,6 @@ def test9():
     assert df.loc[1, "Ion Mobility"] > -71.0 and df.loc[1, "Ion Mobility"] < -69.0
 
 def test10():
-    import pandas as pd
     from pyXLMS import data, transform
     c1 = data.create_csm("PEPTIDE", {1: ("Oxidation", 15.994915), 5: ("Carbamidomethyl", 57.021464)},
                          3, ["PROTEINA"], [5], [1], 70.3, False,
@@ -219,7 +227,8 @@ def test10():
     assert df.loc[0, "Alpha Proteins Crosslink Positions"] == "4"
     assert df.loc[0, "Alpha Proteins Peptide Positions"] == "2"
     assert df.loc[0, "Alpha Score"] > 20.0 and df.loc[0, "Alpha Score"] < 21.0
-    assert df.loc[0, "Alpha Decoy"] == True
+    #assert df.loc[0, "Alpha Decoy"] == True
+    assert df.loc[0, "Alpha Decoy"]
     assert df.loc[0, "Beta Peptide"] == "PEPTIDE"
     assert df.loc[0, "Beta Peptide Modifications"] == "(1:[Oxidation|15.994915]);(5:[Carbamidomethyl|57.021464])"
     assert df.loc[0, "Beta Peptide Crosslink Position"] == 3
@@ -227,7 +236,8 @@ def test10():
     assert df.loc[0, "Beta Proteins Crosslink Positions"] == "5"
     assert df.loc[0, "Beta Proteins Peptide Positions"] == "1"
     assert df.loc[0, "Beta Score"] > 70.0 and df.loc[0, "Alpha Score"] < 71.0
-    assert df.loc[0, "Beta Decoy"] == False
+    #assert df.loc[0, "Beta Decoy"] == False
+    assert not df.loc[0, "Beta Decoy"]
     assert df.loc[0, "CSM Score"] > 70.0 and df.loc[0, "CSM Score"] < 71.0
     assert df.loc[0, "Spectrum File"] == "MS_EXP1"
     assert df.loc[0, "Scan Nr"] == 1
@@ -241,7 +251,8 @@ def test10():
     assert df.loc[1, "Alpha Proteins Crosslink Positions"] == "4"
     assert df.loc[1, "Alpha Proteins Peptide Positions"] == "2"
     assert df.loc[1, "Alpha Score"] > 21.0 and df.loc[1, "Alpha Score"] < 22.0
-    assert df.loc[1, "Alpha Decoy"] == False
+    #assert df.loc[1, "Alpha Decoy"] == False
+    assert not df.loc[1, "Alpha Decoy"]
     assert df.loc[1, "Beta Peptide"] == "PEPTIDEB"
     assert df.loc[1, "Beta Peptide Modifications"] == "(1:[Oxidation|15.994915]);(5:[Carbamidomethyl|57.021464])"
     assert df.loc[1, "Beta Peptide Crosslink Position"] == 3
@@ -249,7 +260,8 @@ def test10():
     assert df.loc[1, "Beta Proteins Crosslink Positions"] == "5;3"
     assert df.loc[1, "Beta Proteins Peptide Positions"] == "1;2"
     assert df.loc[1, "Beta Score"] > 71.0 and df.loc[1, "Alpha Score"] < 72.0
-    assert df.loc[1, "Beta Decoy"] == False
+    #assert df.loc[1, "Beta Decoy"] == False
+    assert not df.loc[1, "Beta Decoy"]
     assert df.loc[1, "CSM Score"] > 71.0 and df.loc[1, "CSM Score"] < 72.0
     assert df.loc[1, "Spectrum File"] == "MS_EXP1"
     assert df.loc[1, "Scan Nr"] == 2
@@ -261,16 +273,16 @@ def test11():
     from pyXLMS import transform
     data = [{"data_type": "peptide-spectrum-match"}]
     with pytest.raises(TypeError, match = "The given data object is not supported!"):
-        df = transform.to_dataframe(data)
+        _df = transform.to_dataframe(data)
 
 def test12():
     from pyXLMS import transform
     data = [{"data-type": "peptide-spectrum-match"}]
     with pytest.raises(TypeError, match = "The given data object is not supported!"):
-        df = transform.to_dataframe(data)
+        _df = transform.to_dataframe(data)
 
-def test12():
+def test13():
     from pyXLMS import transform
     data = []
     with pytest.raises(ValueError, match = "Parameter data has to be at least of length one!"):
-        df = transform.to_dataframe(data)
+        _df = transform.to_dataframe(data)

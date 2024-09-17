@@ -27,7 +27,8 @@ def test1():
     assert len(csm["alpha_proteins_peptide_positions"]) == 2
     assert csm["alpha_proteins_peptide_positions"][0] == 5
     assert csm["alpha_score"] >= 170.25 and csm["alpha_score"] <= 170.35
-    assert csm["alpha_decoy"] == False
+    #assert csm["alpha_decoy"] == False
+    assert not csm["alpha_decoy"]
     # beta
     assert csm["beta_peptide"] == "PEPTIDE"
     assert len(csm["beta_modifications"]) == 1
@@ -42,7 +43,8 @@ def test1():
     assert len(csm["beta_proteins_peptide_positions"]) == 1
     assert csm["beta_proteins_peptide_positions"][0] == 1
     assert csm["beta_score"] >= 50.25 and csm["beta_score"] <= 50.35
-    assert csm["beta_decoy"] == False
+    #assert csm["beta_decoy"] == False
+    assert not csm["beta_decoy"]
     # csm
     assert csm["score"] >= 170.25 and csm["score"] <= 170.35
     assert csm["spectrum_file"] == "RUN_1"
@@ -71,7 +73,8 @@ def test2():
     assert len(csm["alpha_proteins_peptide_positions"]) == 2
     assert csm["alpha_proteins_peptide_positions"][0] == 5
     assert csm["alpha_score"] >= 170.25 and csm["alpha_score"] <= 170.35
-    assert csm["alpha_decoy"] == False
+    #assert csm["alpha_decoy"] == False
+    assert not csm["alpha_decoy"]
     # beta
     assert csm["beta_peptide"] == "PEPTIDE"
     assert len(csm["beta_modifications"]) == 1
@@ -86,7 +89,8 @@ def test2():
     assert len(csm["beta_proteins_peptide_positions"]) == 1
     assert csm["beta_proteins_peptide_positions"][0] == 1
     assert csm["beta_score"] >= 50.25 and csm["beta_score"] <= 50.35
-    assert csm["beta_decoy"] == False
+    #assert csm["beta_decoy"] == False
+    assert not csm["beta_decoy"]
     # csm
     assert csm["score"] >= 170.25 and csm["score"] <= 170.35
     assert csm["spectrum_file"] == "RUN_1"
@@ -115,7 +119,8 @@ def test3():
     assert len(csm["alpha_proteins_peptide_positions"]) == 1
     assert csm["alpha_proteins_peptide_positions"][0] == 1
     assert csm["alpha_score"] >= 170.25 and csm["alpha_score"] <= 170.35
-    assert csm["alpha_decoy"] == False
+    #assert csm["alpha_decoy"] == False
+    assert not csm["alpha_decoy"]
     # beta
     assert csm["beta_peptide"] == "PEPTIDE"
     assert len(csm["beta_modifications"]) == 1
@@ -130,7 +135,8 @@ def test3():
     assert len(csm["beta_proteins_peptide_positions"]) == 1
     assert csm["beta_proteins_peptide_positions"][0] == 3
     assert csm["beta_score"] >= 50.25 and csm["beta_score"] <= 50.35
-    assert csm["beta_decoy"] == False
+    #assert csm["beta_decoy"] == False
+    assert not csm["beta_decoy"]
     # csm
     assert csm["score"] >= 170.25 and csm["score"] <= 170.35
     assert csm["spectrum_file"] == "RUN_1"
@@ -142,55 +148,55 @@ def test3():
 def test4():
     from pyXLMS import data
     with pytest.raises(TypeError, match = f"modifications_a must be {dict}!"):
-        csm = data.create_csm("PEPTIDE", (" Ox ", 16.0), 1, ["PROTEIN"], [1], [1], 50.3, False,
-                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
-                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+        _csm = data.create_csm("PEPTIDE", (" Ox ", 16.0), 1, ["PROTEIN"], [1], [1], 50.3, False,
+                               "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
+                               170.3, "RUN_1", 1, 3, 23.4, -50.0)
 
 def test5():
     from pyXLMS import data
     with pytest.raises(TypeError, match = f"Dict values of modifications_b must be {tuple}!"):
-        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
-                              "EDITPEP", {2: {"Ox": 16.0}}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
-                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+        _csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
+                               "EDITPEP", {2: {"Ox": 16.0}}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
+                               170.3, "RUN_1", 1, 3, 23.4, -50.0)
 
 def test6():
     from pyXLMS import data
     with pytest.raises(TypeError, match = f"xl_position_peptide_b must be {int}!"):
-        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
-                              "EDITPEP", {2: ("Ox", 16.0)}, "3", ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
-                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+        _csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
+                               "EDITPEP", {2: ("Ox", 16.0)}, "3", ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
+                               170.3, "RUN_1", 1, 3, 23.4, -50.0)
 
 def test7():
     from pyXLMS import data
     with pytest.raises(TypeError, match = f"List values of xl_position_proteins_b must be {int}!"):
-        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
-                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, "2"], [5, 2], 170.3, False,
-                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+        _csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
+                               "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, "2"], [5, 2], 170.3, False,
+                               170.3, "RUN_1", 1, 3, 23.4, -50.0)
 
 def test8():
     from pyXLMS import data
     with pytest.raises(ValueError, match = "Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!"):
-        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1, 2], [1], 50.3, False,
-                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
-                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+        _csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1, 2], [1], 50.3, False,
+                               "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
+                               170.3, "RUN_1", 1, 3, 23.4, -50.0)
 
 def test9():
     from pyXLMS import data
     with pytest.raises(ValueError, match = "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"):
-        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
-                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5], [5, 2], 170.3, False,
-                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+        _csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
+                               "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5], [5, 2], 170.3, False,
+                               170.3, "RUN_1", 1, 3, 23.4, -50.0)
 
 def test10():
     from pyXLMS import data
     with pytest.raises(ValueError, match = "Peptide position has to be given for every protein! Length of proteins_a and pep_position_proteins_a has to match!"):
-        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [], 50.3, False,
-                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
-                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+        _csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [], 50.3, False,
+                               "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5, 2], 170.3, False,
+                               170.3, "RUN_1", 1, 3, 23.4, -50.0)
 
 def test11():
     from pyXLMS import data
     with pytest.raises(ValueError, match = "Peptide position has to be given for every protein! Length of proteins_b and pep_position_proteins_b has to match!"):
-        csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
-                              "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5], 170.3, False,
-                              170.3, "RUN_1", 1, 3, 23.4, -50.0)
+        _csm = data.create_csm("PEPTIDE", {1: (" Ox ", 16.0)}, 1, ["PROTEIN"], [1], [1], 50.3, False,
+                               "EDITPEP", {2: ("Ox", 16.0)}, 3, ["NIETORP", "PROTEIN"], [5, 2], [5], 170.3, False,
+                               170.3, "RUN_1", 1, 3, 23.4, -50.0)

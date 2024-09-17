@@ -30,12 +30,12 @@ def modifications_to_str(modifications: Dict[int, Tuple[str, float]]) -> str:
         modifications_str += f"({modification_pos}:[{modifications[modification_pos][0]}|{modifications[modification_pos][1]}]);"
     return modifications_str.rstrip(";")
 
-def __cc(l: List[Any], sep: str = ";") -> str:
+def __cc(input_list: List[Any], sep: str = ";") -> str:
     """Concatenates list elements to a string using the defined seperator.
 
     Parameters
     ----------
-    l : list
+    input_list : list
         The list to concatenate.
     sep : str, default = ";"
         The seperator to use for concatentation.
@@ -46,7 +46,7 @@ def __cc(l: List[Any], sep: str = ";") -> str:
         The concatenated string of the list.
     """
     s = ""
-    for i in l:
+    for i in input_list:
         s += str(i).strip() + sep
     return s.rstrip(sep)
 
