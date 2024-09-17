@@ -38,7 +38,7 @@ def test6():
     assert transform.__cc([]) == ""
 
 def test7():
-    import panda as pd
+    import pandas as pd
     from pyXLMS import data, transform
     c1 = data.create_crosslink("PEPTIDE", 3, ["PROTEINA"], [5], False,
                                "PEPTIDE"[::-1], 5, ["PROTEINA"], [5], True,
@@ -75,7 +75,7 @@ def test7():
     assert df.loc[1, "Crosslink Score"] > 123.0 and df.loc[0, "Crosslink Score"] < 124.0
 
 def test8():
-    import panda as pd
+    import pandas as pd
     from pyXLMS import data, transform
     c1 = data.create_crosslink("PEPTIDE", 3, ["PROTEINA"], [5], False,
                                "PEPTIDE"[::-1], 5, ["PROTEINA"], [5], True,
