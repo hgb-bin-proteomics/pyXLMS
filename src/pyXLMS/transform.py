@@ -134,8 +134,75 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     -----
     This function should not be called directly, it is called from 'to_dataframe'.
     """
-
-    return
+    ## columns
+    alpha_peptide = list()
+    alpha_modifications = list()
+    alpha_peptide_crosslink_position = list()
+    alpha_proteins = list()
+    alpha_proteins_crosslink_positions = list()
+    alpha_proteins_peptide_positions = list()
+    alpha_score = list()
+    alpha_decoy = list()
+    beta_peptide = list()
+    beta_modifications = list()
+    beta_peptide_crosslink_position = list()
+    beta_proteins = list()
+    beta_proteins_crosslink_positions = list()
+    beta_proteins_peptide_positions = list()
+    beta_score = list()
+    beta_decoy = list()
+    score = list()
+    spectrum_file = list()
+    scan_nr = list()
+    charge = list()
+    retention_time = list()
+    ion_mobility = list()
+    ## assign values
+    for csm in data:
+        alpha_peptide.append(csm["alpha_peptide"])
+        alpha_modifications.append(modifications_to_str(csm["alpha_modifications"]))
+        alpha_peptide_crosslink_position.append(csm["alpha_peptide_crosslink_position"])
+        alpha_proteins.append(__cc(csm["alpha_proteins"]))
+        alpha_proteins_crosslink_positions.append(__cc(csm["alpha_proteins_crosslink_positions"]))
+        alpha_proteins_peptide_positions.append(__cc(csm["alpha_proteins_peptide_positions"]))
+        alpha_score.append(csm["alpha_score"])
+        alpha_decoy.append(csm["alpha_decoy"])
+        beta_peptide.append(csm["beta_peptide"])
+        beta_modifications.append(modifications_to_str(csm["beta_modifications"]))
+        beta_peptide_crosslink_position.append(csm["beta_peptide_crosslink_position"])
+        beta_proteins.append(__cc(csm["beta_proteins"]))
+        beta_proteins_crosslink_positions.append(__cc(csm["beta_proteins_crosslink_positions"]))
+        beta_proteins_peptide_positions.append(__cc(csm["beta_proteins_peptide_positions"]))
+        beta_score.append(csm["beta_score"])
+        beta_decoy.append(csm["beta_decoy"])
+        score.append(csm["score"])
+        spectrum_file.append(csm["spectrum_file"])
+        scan_nr.append(csm["scan_nr"])
+        charge.append(csm["charge"])
+        retention_time.append(csm["retention_time"])
+        ion_mobility.append(csm["ion_mobility"])
+    return pd.DataFrame({"Alpha Peptide": alpha_peptide,
+                         "Alpha Peptide Modifications": alpha_modifications,
+                         "Alpha Peptide Crosslink Position": alpha_peptide_crosslink_position,
+                         "Alpha Proteins": alpha_proteins,
+                         "Alpha Proteins Crosslink Positions": alpha_proteins_crosslink_positions,
+                         "Alpha Proteins Peptide Positions": alpha_proteins_peptide_positions,
+                         "Alpha Score": alpha_score,
+                         "Alpha Decoy": alpha_decoy,
+                         "Beta Peptide": beta_peptide,
+                         "Beta Peptide Modifications": beta_modifications,
+                         "Beta Peptide Crosslink Position": beta_peptide_crosslink_position,
+                         "Beta Proteins": beta_proteins,
+                         "Beta Proteins Crosslink Positions": beta_proteins_crosslink_positions,
+                         "Beta Proteins Peptide Positions": beta_proteins_peptide_positions,
+                         "Beta Score": beta_score,
+                         "Beta Decoy": beta_decoy,
+                         "CSM Score": score,
+                         "Spectrum File": spectrum_file,
+                         "Scan Nr": scan_nr,
+                         "Precursor Charge": charge,
+                         "Retention Time": retention_time,
+                         "Ion Mobility": ion_mobility})
 
 def to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     """Returns a pandas DataFrame of the given crosslinks or crosslink-spectrum-matches.
