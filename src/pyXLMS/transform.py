@@ -29,6 +29,26 @@ def modifications_to_str(modifications: Dict[int, Tuple[str, float]]) -> str:
         modifications_str += f"({modification_pos}:[{modifications[modification_pos][0]}|{modifications[modification_pos][1]}]);"
     return modifications_str.rstrip(";")
 
+def __cc(l: List[Any], sep: str = ";") -> str:
+    """Concatenates list elements to a string using the defined seperator.
+
+    Parameters
+    ----------
+    l : list
+        The list to concatenate.
+    sep : str, default = ";"
+        The seperator to use for concatentation.
+
+    Returns
+    -------
+    str
+        The concatenated string of the list.
+    """
+    s = ""
+    for i in l:
+        s += str(i).strip() + sep
+    return s.rstrip(";")
+
 def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     """Returns a pandas DataFrame of the given crosslinks.
 
