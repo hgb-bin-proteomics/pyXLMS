@@ -4,6 +4,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+from __future__ import annotations
+
 from typing import List
 from typing import Dict
 from typing import Tuple
@@ -14,7 +16,7 @@ def check_input(
     parameter: Any,
     parameter_name: str,
     supported_class: Any,
-    supported_subclass: Any = None,
+    supported_subclass: Any | None = None,
 ) -> bool:
     """Checks if the given parameter is of the specified type.
 
@@ -29,7 +31,7 @@ def check_input(
         Name of the parameter.
     supported_class : any
         Class the parameter has to be of.
-    supported_subclass : any
+    supported_subclass : any, or None, default = None
         Class of the values in case the parameter is a list.
 
     Returns
@@ -41,6 +43,16 @@ def check_input(
     ------
     TypeError
         If the parameter is not of the given class.
+
+    Examples
+    --------
+    >>>from pyXLMS.data import check_input
+    >>>check_input("PEPTIDE", "peptide_a", str)
+    True
+
+    >>>from pyXLMS.data import check_input
+    >>>check_input([1, 2], "xl_position_proteins_a", list, int)
+    True
     """
     if type(parameter) is not supported_class:
         raise TypeError(f"{parameter_name} must be {supported_class}!")
@@ -105,9 +117,9 @@ def create_crosslink(
     Returns
     -------
     dict
-        The dictionary representing the crosslink with keys data_type, alpha_peptide, alpha_peptide_crosslink_position,
-        alpha_proteins, alpha_proteins_crosslink_positions, alpha_decoy, beta_peptide, beta_peptide_crosslink_position,
-        beta_proteins, beta_proteins_crosslink_positions, beta_decoy, and score.
+        The dictionary representing the crosslink with keys ``data_type``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
+        ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
+        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, and ``score``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
 
     Raises
@@ -116,6 +128,11 @@ def create_crosslink(
         If the parameter is not of the given class.
     ValueError
         If the length of crosslink positions is not equal to the length of proteins.
+
+    Examples
+    --------
+    >>>from pyXLMS.data import create_crosslink
+    >>>crosslink = create_crosslink("PEPTIDEA", 1, ["PROTEINA"], [1], False, "PEPTIDEB", 5, ["PROTEINB"], [3], False, 34.5)
     """
     ## input checks
     check_input(peptide_a, "peptide_a", str)
@@ -199,7 +216,7 @@ def create_csm(
     scan_nr: int,
     charge: int,
     rt: float,
-    im_cv: float,
+    im_cv: float | None,
 ) -> Dict[str, Any]:
     """Creates a crosslink-spectrum-match data structure.
 
@@ -250,17 +267,17 @@ def create_csm(
         The precursor charge of the corresponding mass spectrum of the crosslink-spectrum-match.
     rt : float
         The retention time of the corresponding mass spectrum of the crosslink-spectrum-match.
-    im_cv : float
+    im_cv : float, or None
         The ion mobility or compensation voltage of the corresponding mass spectrum of the crosslink-spectrum-match.
 
     Returns
     -------
     dict
-        The dictionary representing the crosslink-spectrum-match with keys data_type, alpha_peptide, alpha_modifications,
-        alpha_peptide_crosslink_position, alpha_proteins, alpha_proteins_crosslink_positions, alpha_proteins_peptide_positions,
-        alpha_score, alpha_decoy, beta_peptide, beta_modifications, beta_peptide_crosslink_position, beta_proteins,
-        beta_proteins_crosslink_positions, beta_proteins_peptide_positions, beta_score, beta_decoy, score, spectrum_file, scan_nr,
-        retention_time, and ion_mobility.
+        The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``alpha_peptide``, ``alpha_modifications``,
+        ``alpha_peptide_crosslink_position``, ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_proteins_peptide_positions``,
+        ``alpha_score``, ``alpha_decoy``, ``beta_peptide``, ``beta_modifications``, ``beta_peptide_crosslink_position``, ``beta_proteins``,
+        ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``score``, ``spectrum_file``,
+        ``scan_nr``, ``retention_time``, and ``ion_mobility``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
 
     Raises
@@ -269,6 +286,11 @@ def create_csm(
         If the parameter is not of the given class.
     ValueError
         If the length of crosslink positions or peptide positions is not equal to the length of proteins.
+
+    Examples
+    --------
+    >>>from pyXLMS.data import create_csm
+    >>>csm = create_csm("PEPTIDEA", {1: ("Oxidation", 15.994915)}, 1, ["PROTEINA"], [1], [1], 20.1, False, "PEPTIDEB", {}, 5, ["PROTEINB"], [3], [1], 33.7, False, 20.1, "MS_EXP1", 1, 3, 13.5, -50)
     """
     ## input checks
     check_input(peptide_a, "peptide_a", str)
