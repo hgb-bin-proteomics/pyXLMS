@@ -34,8 +34,8 @@ def create_parser_result(search_engine: str, csms: List[Dict[str, any]], crossli
     Returns
     -------
     dict
-        The parser result data structure which is a dictionary with keys "data_type", "search_engine", "crosslink-spectrum-matches" and
-        "crosslinks".
+        The parser result data structure which is a dictionary with keys data_type, search_engine, crosslink-spectrum-matches and
+        crosslinks.
     """
     return {"data_type": "parser_result",
             "search_engine": search_engine,
