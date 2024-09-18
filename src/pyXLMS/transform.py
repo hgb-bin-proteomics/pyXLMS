@@ -25,6 +25,12 @@ def modifications_to_str(modifications: Dict[int, Tuple[str, float]]) -> str:
     -------
     str
         The string representation of the modifications.
+
+    Examples
+    --------
+    >>>from pyXLMS.transform import modifications_to_str
+    >>>modifications_to_str({1: ("Oxidation", 15.994915), 5: ("Carbamidomethyl", 57.021464)})
+    '(1:[Oxidation|15.994915]);(5:[Carbamidomethyl|57.021464])'
     """
     modifications_str = ""
     for modification_pos in modifications.keys():
@@ -59,7 +65,7 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     Parameters
     ----------
     data : list
-        A list of crosslinks.
+        A list of crosslinks as created by ``data.create_crosslink()``.
 
     Returns
     -------
@@ -75,7 +81,7 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
 
     Notes
     -----
-    This function should not be called directly, it is called from 'to_dataframe'.
+    This function should not be called directly, it is called from ``to_dataframe()``.
     """
     ## columns
     alpha_peptide = list()
@@ -133,7 +139,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     Parameters
     ----------
     data : list
-        A list of crosslink-spectrum-matches.
+        A list of crosslink-spectrum-matches as created by ``data.create_csm()``.
 
     Returns
     -------
@@ -149,7 +155,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
 
     Notes
     -----
-    This function should not be called directly, it is called from 'to_dataframe'.
+    This function should not be called directly, it is called from ``to_dataframe()``.
     """
     ## columns
     alpha_peptide = list()
@@ -240,7 +246,7 @@ def to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     Parameters
     ----------
     data : list
-        A list of crosslinks or crosslink-spectrum-matches.
+        A list of crosslinks or crosslink-spectrum-matches as created by ``data.create_crosslink()`` or ``data.create_csm()``.
 
     Returns
     -------
@@ -253,6 +259,14 @@ def to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
         If the list does not contain crosslinks or crosslink-spectrum-matches.
     ValueError
         If the list does not contain any objects.
+
+    Examples
+    --------
+    >>>from pyXLMS.transform import to_dataframe
+    >>># assume that crosslinks is a list of crosslinks created by data.create_crosslink()
+    >>>crosslink_dataframe = to_dataframe(crosslinks)
+    >>># assume csms is a list of crosslink-spectrum-matches created by data.create_csm()
+    >>>csm_dataframe = to_dataframe(csms)
     """
     ## input checks
     check_input(data, "data", list, dict)
