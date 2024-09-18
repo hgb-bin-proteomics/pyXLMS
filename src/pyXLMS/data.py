@@ -18,6 +18,9 @@ def check_input(
 ) -> bool:
     """Checks if the given parameter is of the specified type.
 
+    Function that checks if a given parameter is of the specified type and if iterable, all elements are of the specified element type.
+    This is mostly an input check function to catch any errors arising from not supported inputs early.
+
     Parameters
     ----------
     parameter : any
@@ -69,7 +72,10 @@ def create_crosslink(
     decoy_b: bool,
     score: float,
 ) -> Dict[str, Any]:
-    """Returns a crosslink dictionary.
+    """Creates a crosslink data structure.
+
+    Contains minimal data necessary for representing a single crosslink. The returned crosslink data structure is a dictionary with keys
+    as detailed in the return section.
 
     Parameters
     ----------
@@ -195,7 +201,10 @@ def create_csm(
     rt: float,
     im_cv: float,
 ) -> Dict[str, Any]:
-    """Returns a crosslink-spectrum-match dictionary.
+    """Creates a crosslink-spectrum-match data structure.
+
+    Contains minimal data necessary for representing a single crosslink-spectrum-match. The returned crosslink-spectrum-match data structure
+    is a dictionary with keys as detailed in the return section.
 
     Parameters
     ----------
