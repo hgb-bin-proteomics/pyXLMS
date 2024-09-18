@@ -19,7 +19,7 @@ def read_custom():
     return
 
 
-def read_msannika(input: Union[str, BinaryIO], format: str = "auto", sep: str = "\t"):
+def read_msannika(input: Union[str, BinaryIO], format: str = "auto", sep: str = "\t") -> Dict[str, Any]:
     data = None
     if format == "auto" and type(input) is not str:
         raise ValueError("Can't detect format for file-like objects. Please specify format manually!")
