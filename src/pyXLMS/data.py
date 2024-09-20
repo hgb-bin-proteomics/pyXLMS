@@ -518,19 +518,27 @@ def create_parser_result(search_engine: str, csms: List[Dict[str, any]] | None, 
     Returns
     -------
     dict
-        The parser result data structure which is a dictionary with keys ``data_type``, ``search_engine``, ``crosslink-spectrum-matches`` and
+        The parser result data structure which is a dictionary with keys ``data_type``, ``completeness``, ``search_engine``, ``crosslink-spectrum-matches`` and
         ``crosslinks``.
 
     Examples
     --------
-    >>> from pyXLMS.data import create_parser_result
-    >>> result = create_parser_result("MS Annika", None, None)
-    >>> result["data_type"]
+    >>>from pyXLMS.data import create_parser_result
+    >>>result = create_parser_result("MS Annika", None, None)
+    >>>result["data_type"]
     'parser_result'
-    >>> result["search_engine"]
+    >>>result["completeness"]
+    'empty'
+    >>>result["search_engine"]
     'MS Annika'
     """
+    completeness = "partial"
+    if csms is None and crosslinks is None:
+        completeness = "empty"
+    if csms is not None and crosslinks is not None:
+        completeness = "full"
     return {"data_type": "parser_result",
+            "completeness": completeness,
             "search_engine": search_engine,
             "crosslink-spectrum-matches": csms,
             "crosslinks": crosslinks}
