@@ -392,3 +392,38 @@ def create_csm(
         "retention_time": rt,
         "ion_mobility": im_cv,
     }
+
+
+def create_parser_result(search_engine: str, csms: List[Dict[str, any]] | None, crosslinks: List[Dict[str, Any]] | None) -> Dict[str, Any]:
+    """Creates a parser result data structure.
+
+    Contains all necessary data elements that should be contained in a result returned by a crosslink search engine result parser.
+
+    Parameters
+    ----------
+    search_engine : str
+        Name of the identifying crosslink search engine.
+    csms : list of dict, or None
+        List of crosslink-spectrum-matches as created by ``data.create_csm()``.
+    crosslinks : list of dict, or None
+        List of crosslinks as created by ``data.create_crosslink()``.
+
+    Returns
+    -------
+    dict
+        The parser result data structure which is a dictionary with keys ``data_type``, ``search_engine``, ``crosslink-spectrum-matches`` and
+        ``crosslinks``.
+
+    Examples
+    --------
+    >>> from pyXLMS.data import create_parser_result
+    >>> result = create_parser_result("MS Annika", None, None)
+    >>> result["data_type"]
+    'parser_result'
+    >>> result["search_engine"]
+    'MS Annika'
+    """
+    return {"data_type": "parser_result",
+            "search_engine": search_engine,
+            "crosslink-spectrum-matches": csms,
+            "crosslinks": crosslinks}
