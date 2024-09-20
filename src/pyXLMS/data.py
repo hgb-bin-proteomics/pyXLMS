@@ -32,7 +32,7 @@ def check_input(
     supported_class : any
         Class the parameter has to be of.
     supported_subclass : any, or None, default = None
-        Class of the values in case the parameter is a list.
+        Class of the values in case the parameter is a list or dict.
 
     Returns
     -------
