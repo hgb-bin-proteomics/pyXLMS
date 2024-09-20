@@ -294,24 +294,24 @@ def create_csm(
     peptide_a: str,
     modifications_a: Dict[int, Tuple[str, float]],
     xl_position_peptide_a: int,
-    proteins_a: List[str],
-    xl_position_proteins_a: List[int],
-    pep_position_proteins_a: List[int],
-    score_a: float,
-    decoy_a: bool,
+    proteins_a: List[str] | None,
+    xl_position_proteins_a: List[int] | None,
+    pep_position_proteins_a: List[int] | None,
+    score_a: float | None,
+    decoy_a: bool | None,
     peptide_b: str,
     modifications_b: Dict[int, Tuple[str, float]],
     xl_position_peptide_b: int,
-    proteins_b: List[str],
-    xl_position_proteins_b: List[int],
-    pep_position_proteins_b: List[int],
-    score_b: float,
-    decoy_b: bool,
-    score: float,
+    proteins_b: List[str] | None,
+    xl_position_proteins_b: List[int] | None,
+    pep_position_proteins_b: List[int] | None,
+    score_b: float | None,
+    decoy_b: bool | None,
+    score: float | None,
     spectrum_file: str,
     scan_nr: int,
-    charge: int,
-    rt: float,
+    charge: int | None,
+    rt: float | None,
     im_cv: float | None,
 ) -> Dict[str, Any]:
     """Creates a crosslink-spectrum-match data structure.
@@ -327,15 +327,15 @@ def create_csm(
         The modifications of the first peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass.
     xl_position_peptide_a : int
         The position of the crosslinker in the sequence of the first peptide (1-based).
-    proteins_a : list of str
+    proteins_a : list of str, or None
         The accessions of proteins that the first peptide is associated with.
-    xl_position_proteins_a : list of int
+    xl_position_proteins_a : list of int, or None
         Positions of the crosslink in the proteins of the first peptide (1-based).
-    pep_position_proteins_a : list of int
+    pep_position_proteins_a : list of int, or None
         Positions of the first peptide in the corresponding proteins (1-based).
-    score_a : float
+    score_a : float, or None
         Identification score of the first peptide.
-    decoy_a : bool
+    decoy_a : bool, or None
         Whether the alpha peptide is from the decoy database or not.
     peptide_b : str
         The unmodified amino acid sequence of the second peptide.
@@ -343,25 +343,25 @@ def create_csm(
         The modifications of the second peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass.
     xl_position_peptide_b : int
         The position of the crosslinker in the sequence of the second peptide (1-based).
-    proteins_b : list of str
+    proteins_b : list of str, or None
         The accessions of proteins that the second peptide is associated with.
-    xl_position_proteins_b : list of int
+    xl_position_proteins_b : list of int, or None
         Positions of the crosslink in the proteins of the second peptide (1-based).
-    pep_position_proteins_b : list of int
+    pep_position_proteins_b : list of int, or None
         Positions of the second peptide in the corresponding proteins (1-based).
-    score_b : float
+    score_b : float, or None
         Identification score of the second peptide.
-    decoy_b : bool
+    decoy_b : bool, or None
         Whether the beta peptide is from the decoy database or not.
-    score: float
+    score: float, or None
         Score of the crosslink-spectrum-match.
     spectrum_file : str
         Name of the spectrum file the crosslink-spectrum-match was identified in.
     scan_nr : int
         The corresponding scan number of the crosslink-spectrum-match.
-    charge : int
+    charge : int, or None
         The precursor charge of the corresponding mass spectrum of the crosslink-spectrum-match.
-    rt : float
+    rt : float, or None
         The retention time of the corresponding mass spectrum of the crosslink-spectrum-match.
     im_cv : float, or None
         The ion mobility or compensation voltage of the corresponding mass spectrum of the crosslink-spectrum-match.
@@ -369,11 +369,11 @@ def create_csm(
     Returns
     -------
     dict
-        The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``alpha_peptide``, ``alpha_modifications``,
+        The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_modifications``,
         ``alpha_peptide_crosslink_position``, ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_proteins_peptide_positions``,
         ``alpha_score``, ``alpha_decoy``, ``beta_peptide``, ``beta_modifications``, ``beta_peptide_crosslink_position``, ``beta_proteins``,
-        ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``score``, ``spectrum_file``,
-        ``scan_nr``, ``retention_time``, and ``ion_mobility``.
+        ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink-type``, ``score``,
+        ``spectrum_file``, ``scan_nr``, ``retention_time``, and ``ion_mobility``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
 
     Raises
@@ -386,47 +386,58 @@ def create_csm(
     Examples
     --------
     >>>from pyXLMS.data import create_csm
+    >>>minimal_csm = create_csm("PEPTIDEA", {}, 1, None, None, None, None, None, "PEPTIDEB", {}, 5, None, None, None, None, None, None, "MS_EXP1", 1, None, None, None)
     >>>csm = create_csm("PEPTIDEA", {1: ("Oxidation", 15.994915)}, 1, ["PROTEINA"], [1], [1], 20.1, False, "PEPTIDEB", {}, 5, ["PROTEINB"], [3], [1], 33.7, False, 20.1, "MS_EXP1", 1, 3, 13.5, -50)
     """
     ## input checks
-    check_input(peptide_a, "peptide_a", str)
-    check_input(peptide_b, "peptide_b", str)
-    check_input(modifications_a, "modifications_a", dict, tuple)
-    check_input(modifications_b, "modifications_b", dict, tuple)
-    check_input(xl_position_peptide_a, "xl_position_peptide_a", int)
-    check_input(xl_position_peptide_b, "xl_position_peptide_b", int)
-    check_input(proteins_a, "proteins_a", list, str)
-    check_input(proteins_b, "proteins_b", list, str)
-    check_input(xl_position_proteins_a, "xl_position_proteins_a", list, int)
-    check_input(xl_position_proteins_b, "xl_position_proteins_b", list, int)
-    check_input(pep_position_proteins_a, "pep_position_proteins_a", list, int)
-    check_input(pep_position_proteins_b, "pep_position_proteins_b", list, int)
-    check_input(score_a, "score_a", float)
-    check_input(score_b, "score_b", float)
-    check_input(decoy_a, "decoy_a", bool)
-    check_input(decoy_b, "decoy_b", bool)
-    check_input(score, "score", float)
-    check_input(spectrum_file, "spectrum_file", str)
-    check_input(scan_nr, "scan_nr", int)
-    check_input(charge, "charge", int)
-    check_input(rt, "rt", float)
-    check_input(im_cv, "im_cv", float)
-    if len(proteins_a) != len(xl_position_proteins_a):
-        raise ValueError(
-            "Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!"
-        )
-    if len(proteins_b) != len(xl_position_proteins_b):
-        raise ValueError(
-            "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"
-        )
-    if len(proteins_a) != len(pep_position_proteins_a):
-        raise ValueError(
-            "Peptide position has to be given for every protein! Length of proteins_a and pep_position_proteins_a has to match!"
-        )
-    if len(proteins_b) != len(pep_position_proteins_b):
-        raise ValueError(
-            "Peptide position has to be given for every protein! Length of proteins_b and pep_position_proteins_b has to match!"
-        )
+    full = check_input(peptide_a, "peptide_a", str)
+    full = check_input(peptide_b, "peptide_b", str)
+    full = check_input(modifications_a, "modifications_a", dict, tuple)
+    full = check_input(modifications_b, "modifications_b", dict, tuple)
+    full = check_input(xl_position_peptide_a, "xl_position_peptide_a", int)
+    full = check_input(xl_position_peptide_b, "xl_position_peptide_b", int)
+    full = full and check_input(proteins_a, "proteins_a", list, str) if proteins_a is not None else False
+    full = full and check_input(proteins_b, "proteins_b", list, str) if proteins_b is not None else False
+    full = full and check_input(xl_position_proteins_a, "xl_position_proteins_a", list, int) if xl_position_proteins_a is not None else False
+    full = full and check_input(xl_position_proteins_b, "xl_position_proteins_b", list, int) if xl_position_proteins_b is not None else False
+    full = full and check_input(pep_position_proteins_a, "pep_position_proteins_a", list, int) if pep_position_proteins_a is not None else False
+    full = full and check_input(pep_position_proteins_b, "pep_position_proteins_b", list, int) if pep_position_proteins_b is not None else False
+    full = full and check_input(score_a, "score_a", float) if score_a is not None else False
+    full = full and check_input(score_b, "score_b", float) if score_b is not None else False
+    full = full and check_input(decoy_a, "decoy_a", bool) if decoy_a is not None else False
+    full = full and check_input(decoy_b, "decoy_b", bool) if decoy_b is not None else False
+    full = full and check_input(score, "score", float) if score is not None else False
+    full = full and check_input(spectrum_file, "spectrum_file", str)
+    full = full and check_input(scan_nr, "scan_nr", int)
+    full = full and check_input(charge, "charge", int) if charge is not None else False
+    full = full and check_input(rt, "rt", float) if rt is not None else False
+    full = full and check_input(im_cv, "im_cv", float) if im_cv is not None else False
+    if proteins_a is not None and xl_position_proteins_a is not None:
+        if len(proteins_a) != len(xl_position_proteins_a):
+            raise ValueError(
+                "Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!"
+            )
+    if proteins_b is not None and xl_position_proteins_b is not None:
+        if len(proteins_b) != len(xl_position_proteins_b):
+            raise ValueError(
+                "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"
+            )
+    if proteins_a is not None and pep_position_proteins_a is not None:
+        if len(proteins_a) != len(pep_position_proteins_a):
+            raise ValueError(
+                "Peptide position has to be given for every protein! Length of proteins_a and pep_position_proteins_a has to match!"
+            )
+    if proteins_b is not None and pep_position_proteins_b is not None:
+        if len(proteins_b) != len(pep_position_proteins_b):
+            raise ValueError(
+                "Peptide position has to be given for every protein! Length of proteins_b and pep_position_proteins_b has to match!"
+            )
+    check_indexing(xl_position_peptide_a)
+    check_indexing(xl_position_peptide_b)
+    check_indexing(xl_position_proteins_a)
+    check_indexing(xl_position_proteins_b)
+    check_indexing(pep_position_proteins_a)
+    check_indexing(pep_position_proteins_b)
     ## processing
     crosslink = {
         f"{peptide_a.strip()}{xl_position_peptide_a}": {
@@ -457,14 +468,15 @@ def create_csm(
         },
     }
     keys = sorted(list(crosslink.keys()))
+    alpha_proteins = [protein.strip() for protein in crosslink[keys[0]]["proteins"]]
+    beta_proteins = [protein.strip() for protein in crosslink[keys[1]]["proteins"]]
     return {
         "data_type": "crosslink-spectrum-match",
+        "completeness": "full" if full else "partial",
         "alpha_peptide": crosslink[keys[0]]["peptide"].strip(),
         "alpha_modifications": crosslink[keys[0]]["modifications"],
         "alpha_peptide_crosslink_position": crosslink[keys[0]]["xl_position_peptide"],
-        "alpha_proteins": [
-            protein.strip() for protein in crosslink[keys[0]]["proteins"]
-        ],
+        "alpha_proteins": alpha_proteins,
         "alpha_proteins_crosslink_positions": crosslink[keys[0]][
             "xl_position_proteins"
         ],
@@ -474,13 +486,12 @@ def create_csm(
         "beta_peptide": crosslink[keys[1]]["peptide"].strip(),
         "beta_modifications": crosslink[keys[1]]["modifications"],
         "beta_peptide_crosslink_position": crosslink[keys[1]]["xl_position_peptide"],
-        "beta_proteins": [
-            protein.strip() for protein in crosslink[keys[1]]["proteins"]
-        ],
+        "beta_proteins": beta_proteins,
         "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
         "beta_proteins_peptide_positions": crosslink[keys[1]]["pep_position_proteins"],
         "beta_score": crosslink[keys[1]]["score"],
         "beta_decoy": crosslink[keys[1]]["decoy"],
+        "crosslink-type": "intra" if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0 else "inter",
         "score": score,
         "spectrum_file": spectrum_file.strip(),
         "scan_nr": scan_nr,
