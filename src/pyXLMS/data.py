@@ -163,15 +163,15 @@ def check_indexing(value: int | List[int]) -> bool:
 def create_crosslink(
     peptide_a: str,
     xl_position_peptide_a: int,
-    proteins_a: List[str],
-    xl_position_proteins_a: List[int],
-    decoy_a: bool,
+    proteins_a: List[str] | None,
+    xl_position_proteins_a: List[int] | None,
+    decoy_a: bool | None,
     peptide_b: str,
     xl_position_peptide_b: int,
-    proteins_b: List[str],
-    xl_position_proteins_b: List[int],
-    decoy_b: bool,
-    score: float,
+    proteins_b: List[str] | None,
+    xl_position_proteins_b: List[int] | None,
+    decoy_b: bool | None,
+    score: float | None,
 ) -> Dict[str, Any]:
     """Creates a crosslink data structure.
 
@@ -184,31 +184,31 @@ def create_crosslink(
         The unmodified amino acid sequence of the first peptide.
     xl_position_peptide_a : int
         The position of the crosslinker in the sequence of the first peptide (1-based).
-    proteins_a : list of str
+    proteins_a : list of str, or None
         The accessions of proteins that the first peptide is associated with.
-    xl_position_proteins_a : list of int
+    xl_position_proteins_a : list of int, or None
         Positions of the crosslink in the proteins of the first peptide (1-based).
-    decoy_a : bool
+    decoy_a : bool, or None
         Whether the alpha peptide is from the decoy database or not.
     peptide_b : str
         The unmodified amino acid sequence of the second peptide.
     xl_position_peptide_b : int
         The position of the crosslinker in the sequence of the second peptide (1-based).
-    proteins_b : list of str
+    proteins_b : list of str, or None
         The accessions of proteins that the second peptide is associated with.
-    xl_position_proteins_b : list of int
+    xl_position_proteins_b : list of int, or None
         Positions of the crosslink in the proteins of the second peptide (1-based).
-    decoy_b : bool
+    decoy_b : bool, or None
         Whether the beta peptide is from the decoy database or not.
-    score: float
+    score: float, or None
         Score of the crosslink.
 
     Returns
     -------
     dict
-        The dictionary representing the crosslink with keys ``data_type``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
+        The dictionary representing the crosslink with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_peptide_crosslink_position``,
         ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
-        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, and ``score``.
+        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink-type``, and ``score``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
 
     Raises
@@ -221,28 +221,35 @@ def create_crosslink(
     Examples
     --------
     >>>from pyXLMS.data import create_crosslink
+    >>>minimal_crosslink = create_crosslink("PEPTIDEA", 1, None, None, None, "PEPTIDEB", 5, None, None, None, None)
     >>>crosslink = create_crosslink("PEPTIDEA", 1, ["PROTEINA"], [1], False, "PEPTIDEB", 5, ["PROTEINB"], [3], False, 34.5)
     """
     ## input checks
-    check_input(peptide_a, "peptide_a", str)
-    check_input(peptide_b, "peptide_b", str)
-    check_input(xl_position_peptide_a, "xl_position_peptide_a", int)
-    check_input(xl_position_peptide_b, "xl_position_peptide_b", int)
-    check_input(proteins_a, "proteins_a", list, str)
-    check_input(proteins_b, "proteins_b", list, str)
-    check_input(xl_position_proteins_a, "xl_position_proteins_a", list, int)
-    check_input(xl_position_proteins_b, "xl_position_proteins_b", list, int)
-    check_input(decoy_a, "decoy_a", bool)
-    check_input(decoy_b, "decoy_b", bool)
-    check_input(score, "score", float)
-    if len(proteins_a) != len(xl_position_proteins_a):
-        raise ValueError(
-            "Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!"
-        )
-    if len(proteins_b) != len(xl_position_proteins_b):
-        raise ValueError(
-            "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"
-        )
+    full = check_input(peptide_a, "peptide_a", str)
+    full = check_input(peptide_b, "peptide_b", str)
+    full = check_input(xl_position_peptide_a, "xl_position_peptide_a", int)
+    full = check_input(xl_position_peptide_b, "xl_position_peptide_b", int)
+    full = full and check_input(proteins_a, "proteins_a", list, str) if proteins_a is not None else False
+    full = full and check_input(proteins_b, "proteins_b", list, str) if proteins_b is not None else False
+    full = full and check_input(xl_position_proteins_a, "xl_position_proteins_a", list, int) if xl_position_proteins_a is not None else False
+    full = full and check_input(xl_position_proteins_b, "xl_position_proteins_b", list, int) if xl_position_proteins_b is not None else False
+    full = full and check_input(decoy_a, "decoy_a", bool) if decoy_a is not None else False
+    full = full and check_input(decoy_b, "decoy_b", bool) if decoy_b is not None else False
+    full = full and check_input(score, "score", float) if score is not None else False
+    if proteins_a is not None and xl_position_proteins_a is not None:
+        if len(proteins_a) != len(xl_position_proteins_a):
+            raise ValueError(
+                "Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!"
+            )
+    if proteins_b is not None and xl_position_proteins_b is not None:
+        if len(proteins_b) != len(xl_position_proteins_b):
+            raise ValueError(
+                "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"
+            )
+    check_indexing(xl_position_peptide_a)
+    check_indexing(xl_position_peptide_b)
+    check_indexing(xl_position_proteins_a)
+    check_indexing(xl_position_proteins_b)
     ## processing
     crosslink = {
         f"{peptide_a.strip()}{xl_position_peptide_a}": {
@@ -261,24 +268,24 @@ def create_crosslink(
         },
     }
     keys = sorted(list(crosslink.keys()))
+    alpha_proteins = [protein.strip() for protein in crosslink[keys[0]]["proteins"]]
+    beta_proteins = [protein.strip() for protein in crosslink[keys[1]]["proteins"]]
     return {
         "data_type": "crosslink",
+        "completeness": "full" if full else "partial",
         "alpha_peptide": crosslink[keys[0]]["peptide"].strip(),
         "alpha_peptide_crosslink_position": crosslink[keys[0]]["xl_position_peptide"],
-        "alpha_proteins": [
-            protein.strip() for protein in crosslink[keys[0]]["proteins"]
-        ],
+        "alpha_proteins": alpha_proteins,
         "alpha_proteins_crosslink_positions": crosslink[keys[0]][
             "xl_position_proteins"
         ],
         "alpha_decoy": crosslink[keys[0]]["decoy"],
         "beta_peptide": crosslink[keys[1]]["peptide"].strip(),
         "beta_peptide_crosslink_position": crosslink[keys[1]]["xl_position_peptide"],
-        "beta_proteins": [
-            protein.strip() for protein in crosslink[keys[1]]["proteins"]
-        ],
+        "beta_proteins": beta_proteins,
         "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
         "beta_decoy": crosslink[keys[1]]["decoy"],
+        "crosslink-type": "intra" if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0 else "inter",
         "score": score,
     }
 
