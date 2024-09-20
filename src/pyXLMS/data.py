@@ -69,6 +69,62 @@ def check_input(
                     f"Dict values of {parameter_name} must be {supported_subclass}!"
                 )
     return True
+    
+def check_input_multi(
+    parameter: Any,
+    parameter_name: str,
+    supported_classes: List[Any],
+    supported_subclass: Any | None = None,
+) -> bool:
+    """Checks if the given parameter is of one of the specified types.
+
+    Function that checks if a given parameter is of one of the specified types and if iterable, all elements are of the specified element type.
+    This is mostly an input check function to catch any errors arising from not supported inputs early.
+
+    Parameters
+    ----------
+    parameter : any
+        Parameter to check class of.
+    parameter_name : str
+        Name of the parameter.
+    supported_class : list of any
+        Classes the parameter has to be of.
+    supported_subclass : any, or None, default = None
+        Class of the values in case the parameter is a list or dict.
+
+    Returns
+    -------
+    bool
+        If the given input is okay.
+
+    Raises
+    ------
+    TypeError
+        If the parameter is not of one of the given classes.
+
+    Examples
+    --------
+    >>>from pyXLMS.data import check_input_multi
+    >>>check_input_multi("PEPTIDE", "peptide_a", [str, list])
+    True
+    """
+    if type(parameter) is not supported_classes:
+        raise TypeError(f"{parameter_name} must be on of {','.join(supported_classes)}!")
+    if type(parameter) is list and supported_subclass is not None:
+        for value in parameter:
+            if type(value) is not supported_subclass:
+                raise TypeError(
+                    f"List values of {parameter_name} must be {supported_subclass}!"
+                )
+    if type(parameter) is dict and supported_subclass is not None:
+        for key in parameter:
+            if type(parameter[key]) is not supported_subclass:
+                raise TypeError(
+                    f"Dict values of {parameter_name} must be {supported_subclass}!"
+                )
+    return True
+    
+
 
 
 def create_crosslink(
