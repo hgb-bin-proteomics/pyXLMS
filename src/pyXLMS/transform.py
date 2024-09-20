@@ -20,6 +20,7 @@ def modifications_to_str(modifications: Dict[int, Tuple[str, float]]) -> str:
     ----------
     modifications : dict of str, tuple
         The modifications of a peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass.
+        ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications should be denoted with position ``len(peptide) + 1``.
 
     Returns
     -------
