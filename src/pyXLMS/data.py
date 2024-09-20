@@ -268,21 +268,21 @@ def create_crosslink(
         },
     }
     keys = sorted(list(crosslink.keys()))
-    alpha_proteins = [protein.strip() for protein in crosslink[keys[0]]["proteins"]]
-    beta_proteins = [protein.strip() for protein in crosslink[keys[1]]["proteins"]]
+    alpha_proteins = [protein.strip() for protein in crosslink[keys[0]]["proteins"]] if crosslink[keys[0]]["proteins"] is not None else []
+    beta_proteins = [protein.strip() for protein in crosslink[keys[1]]["proteins"]] if crosslink[keys[1]]["proteins"] is not None else []
     return {
         "data_type": "crosslink",
         "completeness": "full" if full else "partial",
         "alpha_peptide": crosslink[keys[0]]["peptide"].strip(),
         "alpha_peptide_crosslink_position": crosslink[keys[0]]["xl_position_peptide"],
-        "alpha_proteins": alpha_proteins,
+        "alpha_proteins": alpha_proteins if len(alpha_proteins) > 0 else None,
         "alpha_proteins_crosslink_positions": crosslink[keys[0]][
             "xl_position_proteins"
         ],
         "alpha_decoy": crosslink[keys[0]]["decoy"],
         "beta_peptide": crosslink[keys[1]]["peptide"].strip(),
         "beta_peptide_crosslink_position": crosslink[keys[1]]["xl_position_peptide"],
-        "beta_proteins": beta_proteins,
+        "beta_proteins": beta_proteins if len(beta_proteins) > 0 else None,
         "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
         "beta_decoy": crosslink[keys[1]]["decoy"],
         "crosslink-type": "intra" if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0 else "inter",
@@ -468,15 +468,15 @@ def create_csm(
         },
     }
     keys = sorted(list(crosslink.keys()))
-    alpha_proteins = [protein.strip() for protein in crosslink[keys[0]]["proteins"]]
-    beta_proteins = [protein.strip() for protein in crosslink[keys[1]]["proteins"]]
+    alpha_proteins = [protein.strip() for protein in crosslink[keys[0]]["proteins"]] if crosslink[keys[0]]["proteins"] is not None else []
+    beta_proteins = [protein.strip() for protein in crosslink[keys[1]]["proteins"]] if crosslink[keys[1]]["proteins"] is not None else []
     return {
         "data_type": "crosslink-spectrum-match",
         "completeness": "full" if full else "partial",
         "alpha_peptide": crosslink[keys[0]]["peptide"].strip(),
         "alpha_modifications": crosslink[keys[0]]["modifications"],
         "alpha_peptide_crosslink_position": crosslink[keys[0]]["xl_position_peptide"],
-        "alpha_proteins": alpha_proteins,
+        "alpha_proteins": alpha_proteins if len(alpha_proteins) > 0 else None,
         "alpha_proteins_crosslink_positions": crosslink[keys[0]][
             "xl_position_proteins"
         ],
@@ -486,7 +486,7 @@ def create_csm(
         "beta_peptide": crosslink[keys[1]]["peptide"].strip(),
         "beta_modifications": crosslink[keys[1]]["modifications"],
         "beta_peptide_crosslink_position": crosslink[keys[1]]["xl_position_peptide"],
-        "beta_proteins": beta_proteins,
+        "beta_proteins": beta_proteins if len(beta_proteins) > 0 else None,
         "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
         "beta_proteins_peptide_positions": crosslink[keys[1]]["pep_position_proteins"],
         "beta_score": crosslink[keys[1]]["score"],
