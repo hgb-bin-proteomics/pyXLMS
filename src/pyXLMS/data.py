@@ -125,6 +125,39 @@ def check_input_multi(
     return True
     
 
+def check_indexing(value: int | List[int]) -> bool:
+    """Checks that the given value is not 0-based.
+    
+    Parameters
+    ----------
+    value : int, or list of int
+        The value(s) to check.
+        
+    Returns
+    -------
+    bool
+        If the given value(s) is/are okay.
+        
+    Raises
+    ------
+    ValueError
+        If any of the values are smaller than one.
+        
+    Examples
+    --------
+    >>>from pyXLMS.data import check_indexing
+    >>>check_indexing([1, 2, 3])
+    True
+    """
+    check_input_multi(value, "value", [int, list], int)
+    if type(value) is int:
+        if value < 1:
+            raise ValueError("0-based value found! All positions must use 1-based indexing!")
+    else:
+        for val in value:
+            if val < 1:
+                raise ValueError("0-based value found! All positions must use 1-based indexing!")
+    return True
 
 
 def create_crosslink(
