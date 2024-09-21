@@ -307,7 +307,7 @@ def test4():
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
-    asser csm["crosslink-type"] == "intra"
+    assert csm["crosslink-type"] == "intra"
     assert csm["score"] >= 170.25 and csm["score"] <= 170.35
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
