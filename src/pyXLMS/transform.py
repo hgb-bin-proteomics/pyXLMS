@@ -91,6 +91,7 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     This function should not be called directly, it is called from ``to_dataframe()``.
     """
     ## columns
+    completeness = list()
     alpha_peptide = list()
     alpha_peptide_crosslink_position = list()
     alpha_proteins = list()
@@ -101,9 +102,11 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     beta_proteins = list()
     beta_proteins_crosslink_positions = list()
     beta_decoy = list()
+    crosslink_type = list()
     score = list()
     ## assign values
     for crosslink in data:
+        completeness.append(crosslink["completeness"])
         alpha_peptide.append(crosslink["alpha_peptide"])
         alpha_peptide_crosslink_position.append(
             crosslink["alpha_peptide_crosslink_position"]
@@ -122,9 +125,11 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
             __cc(crosslink["beta_proteins_crosslink_positions"])
         )
         beta_decoy.append(crosslink["beta_decoy"])
+        crosslink_type.append(crosslink["crosslink-type"])
         score.append(crosslink["score"])
     return pd.DataFrame(
         {
+            "Completeness": completeness,
             "Alpha Peptide": alpha_peptide,
             "Alpha Peptide Crosslink Position": alpha_peptide_crosslink_position,
             "Alpha Proteins": alpha_proteins,
@@ -135,6 +140,7 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
             "Beta Proteins": beta_proteins,
             "Beta Proteins Crosslink Positions": beta_proteins_crosslink_positions,
             "Beta Decoy": beta_decoy,
+            "Crosslink Type": crosslink_type,
             "Crosslink Score": score,
         }
     )
@@ -165,6 +171,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     This function should not be called directly, it is called from ``to_dataframe()``.
     """
     ## columns
+    completeness = list()
     alpha_peptide = list()
     alpha_modifications = list()
     alpha_peptide_crosslink_position = list()
@@ -181,6 +188,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     beta_proteins_peptide_positions = list()
     beta_score = list()
     beta_decoy = list()
+    crosslink_type = list()
     score = list()
     spectrum_file = list()
     scan_nr = list()
@@ -189,6 +197,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     ion_mobility = list()
     ## assign values
     for csm in data:
+        completeness.append(csm["completeness"])
         alpha_peptide.append(csm["alpha_peptide"])
         alpha_modifications.append(modifications_to_str(csm["alpha_modifications"]))
         alpha_peptide_crosslink_position.append(csm["alpha_peptide_crosslink_position"])
@@ -213,6 +222,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
         )
         beta_score.append(csm["beta_score"])
         beta_decoy.append(csm["beta_decoy"])
+        crosslink_type.append(csm["crosslink-type"])
         score.append(csm["score"])
         spectrum_file.append(csm["spectrum_file"])
         scan_nr.append(csm["scan_nr"])
@@ -221,6 +231,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
         ion_mobility.append(csm["ion_mobility"])
     return pd.DataFrame(
         {
+            "Completeness": completeness,
             "Alpha Peptide": alpha_peptide,
             "Alpha Peptide Modifications": alpha_modifications,
             "Alpha Peptide Crosslink Position": alpha_peptide_crosslink_position,
@@ -237,6 +248,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
             "Beta Proteins Peptide Positions": beta_proteins_peptide_positions,
             "Beta Score": beta_score,
             "Beta Decoy": beta_decoy,
+            "Crosslink Type": crosslink_type,
             "CSM Score": score,
             "Spectrum File": spectrum_file,
             "Scan Nr": scan_nr,
