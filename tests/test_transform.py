@@ -193,8 +193,8 @@ def test10():
     assert not df.loc[1, "Beta Decoy"]
     assert df.loc[1, "Crosslink Type"] == "inter"
     assert df.loc[1, "Crosslink Score"] > 123.0 and df.loc[0, "Crosslink Score"] < 124.0
-    
-    
+
+
 def test11():
     from pyXLMS import data, transform
     import pandas as pd
@@ -488,7 +488,8 @@ def test13():
     assert df.loc[1, "Precursor Charge"] == 3
     assert df.loc[1, "Retention Time"] > 12.0 and df.loc[1, "Retention Time"] < 13.0
     assert df.loc[1, "Ion Mobility"] > -71.0 and df.loc[1, "Ion Mobility"] < -69.0
-    
+
+
 def test14():
     from pyXLMS import data, transform
     import pandas as pd

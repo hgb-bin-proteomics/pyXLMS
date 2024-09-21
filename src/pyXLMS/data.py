@@ -69,7 +69,8 @@ def check_input(
                     f"Dict values of {parameter_name} must be {supported_subclass}!"
                 )
     return True
-    
+
+
 def check_input_multi(
     parameter: Any,
     parameter_name: str,
@@ -109,7 +110,9 @@ def check_input_multi(
     True
     """
     if type(parameter) is not supported_classes:
-        raise TypeError(f"{parameter_name} must be on of {','.join(supported_classes)}!")
+        raise TypeError(
+            f"{parameter_name} must be on of {','.join(supported_classes)}!"
+        )
     if type(parameter) is list and supported_subclass is not None:
         for value in parameter:
             if type(value) is not supported_subclass:
@@ -123,26 +126,26 @@ def check_input_multi(
                     f"Dict values of {parameter_name} must be {supported_subclass}!"
                 )
     return True
-    
+
 
 def check_indexing(value: int | List[int]) -> bool:
     """Checks that the given value is not 0-based.
-    
+
     Parameters
     ----------
     value : int, or list of int
         The value(s) to check.
-        
+
     Returns
     -------
     bool
         If the given value(s) is/are okay.
-        
+
     Raises
     ------
     ValueError
         If any of the values are smaller than one.
-        
+
     Examples
     --------
     >>>from pyXLMS.data import check_indexing
@@ -152,11 +155,15 @@ def check_indexing(value: int | List[int]) -> bool:
     check_input_multi(value, "value", [int, list], int)
     if type(value) is int:
         if value < 1:
-            raise ValueError("0-based value found! All positions must use 1-based indexing!")
+            raise ValueError(
+                "0-based value found! All positions must use 1-based indexing!"
+            )
     else:
         for val in value:
             if val < 1:
-                raise ValueError("0-based value found! All positions must use 1-based indexing!")
+                raise ValueError(
+                    "0-based value found! All positions must use 1-based indexing!"
+                )
     return True
 
 
@@ -229,12 +236,34 @@ def create_crosslink(
     full = check_input(peptide_b, "peptide_b", str)
     full = check_input(xl_position_peptide_a, "xl_position_peptide_a", int)
     full = check_input(xl_position_peptide_b, "xl_position_peptide_b", int)
-    full = full and check_input(proteins_a, "proteins_a", list, str) if proteins_a is not None else False
-    full = full and check_input(proteins_b, "proteins_b", list, str) if proteins_b is not None else False
-    full = full and check_input(xl_position_proteins_a, "xl_position_proteins_a", list, int) if xl_position_proteins_a is not None else False
-    full = full and check_input(xl_position_proteins_b, "xl_position_proteins_b", list, int) if xl_position_proteins_b is not None else False
-    full = full and check_input(decoy_a, "decoy_a", bool) if decoy_a is not None else False
-    full = full and check_input(decoy_b, "decoy_b", bool) if decoy_b is not None else False
+    full = (
+        full and check_input(proteins_a, "proteins_a", list, str)
+        if proteins_a is not None
+        else False
+    )
+    full = (
+        full and check_input(proteins_b, "proteins_b", list, str)
+        if proteins_b is not None
+        else False
+    )
+    full = (
+        full
+        and check_input(xl_position_proteins_a, "xl_position_proteins_a", list, int)
+        if xl_position_proteins_a is not None
+        else False
+    )
+    full = (
+        full
+        and check_input(xl_position_proteins_b, "xl_position_proteins_b", list, int)
+        if xl_position_proteins_b is not None
+        else False
+    )
+    full = (
+        full and check_input(decoy_a, "decoy_a", bool) if decoy_a is not None else False
+    )
+    full = (
+        full and check_input(decoy_b, "decoy_b", bool) if decoy_b is not None else False
+    )
     full = full and check_input(score, "score", float) if score is not None else False
     if proteins_a is not None and xl_position_proteins_a is not None:
         if len(proteins_a) != len(xl_position_proteins_a):
@@ -268,8 +297,16 @@ def create_crosslink(
         },
     }
     keys = sorted(list(crosslink.keys()))
-    alpha_proteins = [protein.strip() for protein in crosslink[keys[0]]["proteins"]] if crosslink[keys[0]]["proteins"] is not None else []
-    beta_proteins = [protein.strip() for protein in crosslink[keys[1]]["proteins"]] if crosslink[keys[1]]["proteins"] is not None else []
+    alpha_proteins = (
+        [protein.strip() for protein in crosslink[keys[0]]["proteins"]]
+        if crosslink[keys[0]]["proteins"] is not None
+        else []
+    )
+    beta_proteins = (
+        [protein.strip() for protein in crosslink[keys[1]]["proteins"]]
+        if crosslink[keys[1]]["proteins"] is not None
+        else []
+    )
     return {
         "data_type": "crosslink",
         "completeness": "full" if full else "partial",
@@ -285,7 +322,9 @@ def create_crosslink(
         "beta_proteins": beta_proteins if len(beta_proteins) > 0 else None,
         "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
         "beta_decoy": crosslink[keys[1]]["decoy"],
-        "crosslink-type": "intra" if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0 else "inter",
+        "crosslink-type": "intra"
+        if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0
+        else "inter",
         "score": score,
     }
 
@@ -398,18 +437,66 @@ def create_csm(
     full = check_input(peptide_b, "peptide_b", str)
     full = check_input(xl_position_peptide_a, "xl_position_peptide_a", int)
     full = check_input(xl_position_peptide_b, "xl_position_peptide_b", int)
-    full = full and check_input(modifications_a, "modifications_a", dict, tuple) if modifications_a is not None else False
-    full = full and check_input(modifications_b, "modifications_b", dict, tuple) if modifications_b is not None else False
-    full = full and check_input(proteins_a, "proteins_a", list, str) if proteins_a is not None else False
-    full = full and check_input(proteins_b, "proteins_b", list, str) if proteins_b is not None else False
-    full = full and check_input(xl_position_proteins_a, "xl_position_proteins_a", list, int) if xl_position_proteins_a is not None else False
-    full = full and check_input(xl_position_proteins_b, "xl_position_proteins_b", list, int) if xl_position_proteins_b is not None else False
-    full = full and check_input(pep_position_proteins_a, "pep_position_proteins_a", list, int) if pep_position_proteins_a is not None else False
-    full = full and check_input(pep_position_proteins_b, "pep_position_proteins_b", list, int) if pep_position_proteins_b is not None else False
-    full = full and check_input(score_a, "score_a", float) if score_a is not None else False
-    full = full and check_input(score_b, "score_b", float) if score_b is not None else False
-    full = full and check_input(decoy_a, "decoy_a", bool) if decoy_a is not None else False
-    full = full and check_input(decoy_b, "decoy_b", bool) if decoy_b is not None else False
+    full = (
+        full and check_input(modifications_a, "modifications_a", dict, tuple)
+        if modifications_a is not None
+        else False
+    )
+    full = (
+        full and check_input(modifications_b, "modifications_b", dict, tuple)
+        if modifications_b is not None
+        else False
+    )
+    full = (
+        full and check_input(proteins_a, "proteins_a", list, str)
+        if proteins_a is not None
+        else False
+    )
+    full = (
+        full and check_input(proteins_b, "proteins_b", list, str)
+        if proteins_b is not None
+        else False
+    )
+    full = (
+        full
+        and check_input(xl_position_proteins_a, "xl_position_proteins_a", list, int)
+        if xl_position_proteins_a is not None
+        else False
+    )
+    full = (
+        full
+        and check_input(xl_position_proteins_b, "xl_position_proteins_b", list, int)
+        if xl_position_proteins_b is not None
+        else False
+    )
+    full = (
+        full
+        and check_input(pep_position_proteins_a, "pep_position_proteins_a", list, int)
+        if pep_position_proteins_a is not None
+        else False
+    )
+    full = (
+        full
+        and check_input(pep_position_proteins_b, "pep_position_proteins_b", list, int)
+        if pep_position_proteins_b is not None
+        else False
+    )
+    full = (
+        full and check_input(score_a, "score_a", float)
+        if score_a is not None
+        else False
+    )
+    full = (
+        full and check_input(score_b, "score_b", float)
+        if score_b is not None
+        else False
+    )
+    full = (
+        full and check_input(decoy_a, "decoy_a", bool) if decoy_a is not None else False
+    )
+    full = (
+        full and check_input(decoy_b, "decoy_b", bool) if decoy_b is not None else False
+    )
     full = full and check_input(score, "score", float) if score is not None else False
     full = full and check_input(spectrum_file, "spectrum_file", str)
     full = full and check_input(scan_nr, "scan_nr", int)
@@ -472,8 +559,16 @@ def create_csm(
         },
     }
     keys = sorted(list(crosslink.keys()))
-    alpha_proteins = [protein.strip() for protein in crosslink[keys[0]]["proteins"]] if crosslink[keys[0]]["proteins"] is not None else []
-    beta_proteins = [protein.strip() for protein in crosslink[keys[1]]["proteins"]] if crosslink[keys[1]]["proteins"] is not None else []
+    alpha_proteins = (
+        [protein.strip() for protein in crosslink[keys[0]]["proteins"]]
+        if crosslink[keys[0]]["proteins"] is not None
+        else []
+    )
+    beta_proteins = (
+        [protein.strip() for protein in crosslink[keys[1]]["proteins"]]
+        if crosslink[keys[1]]["proteins"] is not None
+        else []
+    )
     return {
         "data_type": "crosslink-spectrum-match",
         "completeness": "full" if full else "partial",
@@ -495,7 +590,9 @@ def create_csm(
         "beta_proteins_peptide_positions": crosslink[keys[1]]["pep_position_proteins"],
         "beta_score": crosslink[keys[1]]["score"],
         "beta_decoy": crosslink[keys[1]]["decoy"],
-        "crosslink-type": "intra" if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0 else "inter",
+        "crosslink-type": "intra"
+        if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0
+        else "inter",
         "score": score,
         "spectrum_file": spectrum_file.strip(),
         "scan_nr": scan_nr,
@@ -505,7 +602,11 @@ def create_csm(
     }
 
 
-def create_parser_result(search_engine: str, csms: List[Dict[str, any]] | None, crosslinks: List[Dict[str, Any]] | None) -> Dict[str, Any]:
+def create_parser_result(
+    search_engine: str,
+    csms: List[Dict[str, any]] | None,
+    crosslinks: List[Dict[str, Any]] | None,
+) -> Dict[str, Any]:
     """Creates a parser result data structure.
 
     Contains all necessary data elements that should be contained in a result returned by a crosslink search engine result parser.
@@ -541,8 +642,10 @@ def create_parser_result(search_engine: str, csms: List[Dict[str, any]] | None, 
         completeness = "empty"
     if csms is not None and crosslinks is not None:
         completeness = "full"
-    return {"data_type": "parser_result",
-            "completeness": completeness,
-            "search_engine": search_engine,
-            "crosslink-spectrum-matches": csms,
-            "crosslinks": crosslinks}
+    return {
+        "data_type": "parser_result",
+        "completeness": completeness,
+        "search_engine": search_engine,
+        "crosslink-spectrum-matches": csms,
+        "crosslinks": crosslinks,
+    }

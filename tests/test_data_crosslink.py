@@ -58,7 +58,8 @@ def test7():
     x = {"a": 1, "b": 2, "c": 3}
     with pytest.raises(TypeError, match=f"Dict values of x must be {str}!"):
         _i = data.check_input(x, "x", dict, str)
-        
+
+
 def test8():
     from pyXLMS import data
 
@@ -102,32 +103,43 @@ def test13():
     x = {"a": 1, "b": 2, "c": 3}
     with pytest.raises(TypeError, match=f"Dict values of x must be {str}!"):
         _i = data.check_input_multi(x, "x", [str, dict], str)
-        
+
+
 def test14():
     from pyXLMS import data
-    
+
     x = 1
     assert data.check_indexing(x)
-    
+
+
 def test15():
     from pyXLMS import data
-    
+
     x = [1, 2]
     assert data.check_indexing(x)
+
 
 def test16():
     from pyXLMS import data
 
     x = 0
-    with pytest.raises(ValueError, match="0-based value found! All positions must use 1-based indexing!"):
+    with pytest.raises(
+        ValueError,
+        match="0-based value found! All positions must use 1-based indexing!",
+    ):
         _i = data.check_indexing(x)
-        
+
+
 def test17():
     from pyXLMS import data
 
     x = [1, 2, 0]
-    with pytest.raises(ValueError, match="0-based value found! All positions must use 1-based indexing!"):
+    with pytest.raises(
+        ValueError,
+        match="0-based value found! All positions must use 1-based indexing!",
+    ):
         _i = data.check_indexing(x)
+
 
 def test18():
     from pyXLMS import data
@@ -280,7 +292,8 @@ def test21():
     assert crosslink["beta_decoy"]
     assert crosslink["crosslink-type"] == "intra"
     assert crosslink["score"] >= 170.25 and crosslink["score"] <= 170.35
-    
+
+
 def test22():
     from pyXLMS import data
 
