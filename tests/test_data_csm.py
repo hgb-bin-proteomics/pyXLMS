@@ -36,6 +36,7 @@ def test1():
         -50.0,
     )
     assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "full"
     # alpha
     assert csm["alpha_peptide"] == "EDITPEP"
     assert len(csm["alpha_modifications"]) == 1
@@ -75,6 +76,7 @@ def test1():
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
+    assert csm["crosslink-type"] == "intra"
     assert csm["score"] >= 170.25 and csm["score"] <= 170.35
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
@@ -84,6 +86,83 @@ def test1():
 
 
 def test2():
+    from pyXLMS import data
+
+    csm = data.create_csm(
+        "PEPTIDE",
+        {1: (" Ox ", 16.0)},
+        1,
+        ["PROTEIN"],
+        [1],
+        [1],
+        50.3,
+        False,
+        "EDITPEP",
+        {2: ("Ox", 16.0)},
+        3,
+        ["NIETORP"],
+        [5],
+        [5],
+        170.3,
+        False,
+        170.3,
+        "RUN_1",
+        1,
+        3,
+        23.4,
+        -50.0,
+    )
+    assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "full"
+    # alpha
+    assert csm["alpha_peptide"] == "EDITPEP"
+    assert len(csm["alpha_modifications"]) == 1
+    assert 2 in csm["alpha_modifications"]
+    assert csm["alpha_modifications"][2][0] == "Ox"
+    assert (
+        csm["alpha_modifications"][2][1] >= 15.95
+        and csm["alpha_modifications"][2][1] <= 16.05
+    )
+    assert csm["alpha_peptide_crosslink_position"] == 3
+    assert len(csm["alpha_proteins"]) == 2
+    assert csm["alpha_proteins"][0] == "NIETORP"
+    assert len(csm["alpha_proteins_crosslink_positions"]) == 2
+    assert csm["alpha_proteins_crosslink_positions"][0] == 5
+    assert len(csm["alpha_proteins_peptide_positions"]) == 2
+    assert csm["alpha_proteins_peptide_positions"][0] == 5
+    assert csm["alpha_score"] >= 170.25 and csm["alpha_score"] <= 170.35
+    # assert csm["alpha_decoy"] == False
+    assert not csm["alpha_decoy"]
+    # beta
+    assert csm["beta_peptide"] == "PEPTIDE"
+    assert len(csm["beta_modifications"]) == 1
+    assert 1 in csm["beta_modifications"]
+    assert csm["beta_modifications"][1][0] == "Ox"
+    assert (
+        csm["beta_modifications"][1][1] >= 15.95
+        and csm["beta_modifications"][1][1] <= 16.05
+    )
+    assert csm["beta_peptide_crosslink_position"] == 1
+    assert len(csm["beta_proteins"]) == 1
+    assert csm["beta_proteins"][0] == "PROTEIN"
+    assert len(csm["beta_proteins_crosslink_positions"]) == 1
+    assert csm["beta_proteins_crosslink_positions"][0] == 1
+    assert len(csm["beta_proteins_peptide_positions"]) == 1
+    assert csm["beta_proteins_peptide_positions"][0] == 1
+    assert csm["beta_score"] >= 50.25 and csm["beta_score"] <= 50.35
+    # assert csm["beta_decoy"] == False
+    assert not csm["beta_decoy"]
+    # csm
+    assert csm["crosslink-type"] == "inter"
+    assert csm["score"] >= 170.25 and csm["score"] <= 170.35
+    assert csm["spectrum_file"] == "RUN_1"
+    assert csm["scan_nr"] == 1
+    assert csm["charge"] == 3
+    assert csm["retention_time"] >= 23.35 and csm["retention_time"] <= 23.45
+    assert csm["ion_mobility"] >= -50.05 and csm["ion_mobility"] <= -49.95
+
+
+def test3():
     from pyXLMS import data
 
     csm = data.create_csm(
@@ -111,6 +190,7 @@ def test2():
         -50.0,
     )
     assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "full"
     # alpha
     assert csm["alpha_peptide"] == "EDITPEP"
     assert len(csm["alpha_modifications"]) == 1
@@ -150,6 +230,7 @@ def test2():
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
+    assert csm["crosslink-type"] == "intra"
     assert csm["score"] >= 170.25 and csm["score"] <= 170.35
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
@@ -158,7 +239,7 @@ def test2():
     assert csm["ion_mobility"] >= -50.05 and csm["ion_mobility"] <= -49.95
 
 
-def test3():
+def test4():
     from pyXLMS import data
 
     csm = data.create_csm(
@@ -186,6 +267,7 @@ def test3():
         -50.0,
     )
     assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "full"
     # alpha
     assert csm["alpha_peptide"] == "PEPTIDE"
     assert len(csm["alpha_modifications"]) == 1
@@ -225,15 +307,72 @@ def test3():
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
+    asser csm["crosslink-type"] == "intra"
     assert csm["score"] >= 170.25 and csm["score"] <= 170.35
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
     assert csm["charge"] == 3
     assert csm["retention_time"] >= 23.35 and csm["retention_time"] <= 23.45
     assert csm["ion_mobility"] >= -50.05 and csm["ion_mobility"] <= -49.95
+    
+def test5():
+    from pyXLMS import data
+
+    csm = data.create_csm(
+        "PEPTIDE",
+        None,
+        3,
+        None,
+        None,
+        None,
+        None,
+        None,
+        "PEPTIDE",
+        None,
+        1,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        "RUN_1",
+        1,
+        None,
+        None,
+        None,
+    )
+    assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "partial"
+    # alpha
+    assert csm["alpha_peptide"] == "PEPTIDE"
+    assert csm["alpha_modifications"] is None
+    assert csm["alpha_peptide_crosslink_position"] == 1
+    assert csm["alpha_proteins"] is None
+    assert csm["alpha_proteins_crosslink_positions"] is None
+    assert csm["alpha_proteins_peptide_positions"] is None
+    assert csm["alpha_score"] is None
+    assert csm["alpha_decoy"] is None
+    # beta
+    assert csm["beta_peptide"] == "PEPTIDE"
+    assert csm["beta_modifications"] is None
+    assert csm["beta_peptide_crosslink_position"] == 3
+    assert csm["beta_proteins"] is None
+    assert csm["beta_proteins_crosslink_positions"] is None
+    assert csm["beta_proteins_peptide_positions"] is None
+    assert csm["beta_score"] is None
+    assert csm["beta_decoy"] is None
+    # csm
+    assert csm["crosslink-type"] == "inter"
+    assert csm["score"] is None
+    assert csm["spectrum_file"] == "RUN_1"
+    assert csm["scan_nr"] == 1
+    assert csm["charge"] is None
+    assert csm["retention_time"] is None
+    assert csm["ion_mobility"] is None
 
 
-def test4():
+def test6():
     from pyXLMS import data
 
     with pytest.raises(TypeError, match=f"modifications_a must be {dict}!"):
@@ -263,7 +402,7 @@ def test4():
         )
 
 
-def test5():
+def test7():
     from pyXLMS import data
 
     with pytest.raises(
@@ -295,7 +434,7 @@ def test5():
         )
 
 
-def test6():
+def test8():
     from pyXLMS import data
 
     with pytest.raises(TypeError, match=f"xl_position_peptide_b must be {int}!"):
@@ -325,7 +464,7 @@ def test6():
         )
 
 
-def test7():
+def test9():
     from pyXLMS import data
 
     with pytest.raises(
@@ -357,7 +496,7 @@ def test7():
         )
 
 
-def test8():
+def test10():
     from pyXLMS import data
 
     with pytest.raises(
@@ -390,7 +529,7 @@ def test8():
         )
 
 
-def test9():
+def test11():
     from pyXLMS import data
 
     with pytest.raises(
@@ -423,7 +562,7 @@ def test9():
         )
 
 
-def test10():
+def test12():
     from pyXLMS import data
 
     with pytest.raises(
@@ -456,7 +595,7 @@ def test10():
         )
 
 
-def test11():
+def test13():
     from pyXLMS import data
 
     with pytest.raises(
