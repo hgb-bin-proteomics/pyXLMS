@@ -292,7 +292,7 @@ def create_crosslink(
 
 def create_csm(
     peptide_a: str,
-    modifications_a: Dict[int, Tuple[str, float]],
+    modifications_a: Dict[int, Tuple[str, float]] | None,
     xl_position_peptide_a: int,
     proteins_a: List[str] | None,
     xl_position_proteins_a: List[int] | None,
@@ -300,7 +300,7 @@ def create_csm(
     score_a: float | None,
     decoy_a: bool | None,
     peptide_b: str,
-    modifications_b: Dict[int, Tuple[str, float]],
+    modifications_b: Dict[int, Tuple[str, float]] | None,
     xl_position_peptide_b: int,
     proteins_b: List[str] | None,
     xl_position_proteins_b: List[int] | None,
@@ -323,8 +323,10 @@ def create_csm(
     ----------
     peptide_a : str
         The unmodified amino acid sequence of the first peptide.
-    modifications_a : dict of str, tuple
+    modifications_a : dict of [str, tuple], or None
         The modifications of the first peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass.
+        ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications should be denoted with position ``len(peptide) + 1``.
+        If the peptide is not modified an empty dictionary should be given.
     xl_position_peptide_a : int
         The position of the crosslinker in the sequence of the first peptide (1-based).
     proteins_a : list of str, or None
@@ -339,8 +341,10 @@ def create_csm(
         Whether the alpha peptide is from the decoy database or not.
     peptide_b : str
         The unmodified amino acid sequence of the second peptide.
-    modifications_b : dict of str, tuple
+    modifications_b : dict of [str, tuple], or None
         The modifications of the second peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass.
+        ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications should be denoted with position ``len(peptide) + 1``.
+        If the peptide is not modified an empty dictionary should be given.
     xl_position_peptide_b : int
         The position of the crosslinker in the sequence of the second peptide (1-based).
     proteins_b : list of str, or None
@@ -392,10 +396,10 @@ def create_csm(
     ## input checks
     full = check_input(peptide_a, "peptide_a", str)
     full = check_input(peptide_b, "peptide_b", str)
-    full = check_input(modifications_a, "modifications_a", dict, tuple)
-    full = check_input(modifications_b, "modifications_b", dict, tuple)
     full = check_input(xl_position_peptide_a, "xl_position_peptide_a", int)
     full = check_input(xl_position_peptide_b, "xl_position_peptide_b", int)
+    full = full and check_input(modifications_a, "modifications_a", dict, tuple) if modifications_a is not None else False
+    full = full and check_input(modifications_b, "modifications_b", dict, tuple) if modifications_b is not None else False
     full = full and check_input(proteins_a, "proteins_a", list, str) if proteins_a is not None else False
     full = full and check_input(proteins_b, "proteins_b", list, str) if proteins_b is not None else False
     full = full and check_input(xl_position_proteins_a, "xl_position_proteins_a", list, int) if xl_position_proteins_a is not None else False
