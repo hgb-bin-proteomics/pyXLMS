@@ -14,7 +14,6 @@ from .data import create_csm
 from .data import create_parser_result
 
 from typing import BinaryIO
-from typing import List
 from typing import Dict
 from typing import Literal
 from typing import Any
