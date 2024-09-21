@@ -4,6 +4,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+from __future__ import annotations
+
 import pandas as pd
 from .data import check_input
 
@@ -13,19 +15,19 @@ from typing import Tuple
 from typing import Any
 
 
-def modifications_to_str(modifications: Dict[int, Tuple[str, float]]) -> str:
+def modifications_to_str(modifications: Dict[int, Tuple[str, float]] | None) -> str:
     """Returns the string representation of a modifications dictionary.
 
     Parameters
     ----------
-    modifications : dict of str, tuple
+    modifications : dict of [str, tuple], or None
         The modifications of a peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass.
         ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications should be denoted with position ``len(peptide) + 1``.
 
     Returns
     -------
-    str
-        The string representation of the modifications.
+    str, or None
+        The string representation of the modifications (or ``None`` if no modification was provided).
 
     Examples
     --------
@@ -34,27 +36,31 @@ def modifications_to_str(modifications: Dict[int, Tuple[str, float]]) -> str:
     '(1:[Oxidation|15.994915]);(5:[Carbamidomethyl|57.021464])'
     """
     modifications_str = ""
+    if modifications is None:
+        return None
     for modification_pos in modifications.keys():
         modifications_str += f"({modification_pos}:[{modifications[modification_pos][0]}|{modifications[modification_pos][1]}]);"
     return modifications_str.rstrip(";")
 
 
-def __cc(input_list: List[Any], sep: str = ";") -> str:
+def __cc(input_list: List[Any] | None, sep: str = ";") -> str:
     """Concatenates list elements to a string using the defined seperator.
 
     Parameters
     ----------
-    input_list : list
+    input_list : list, or None
         The list to concatenate.
     sep : str, default = ";"
         The seperator to use for concatentation.
 
     Returns
     -------
-    str
-        The concatenated string of the list.
+    str, or None
+        The concatenated string of the list (or ``None`` if no list was provided).
     """
     s = ""
+    if input_list is None:
+        return None
     for i in input_list:
         s += str(i).strip() + sep
     return s.rstrip(sep)
