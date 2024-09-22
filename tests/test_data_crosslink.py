@@ -85,7 +85,9 @@ def test11():
     from pyXLMS import data
 
     x = 1
-    with pytest.raises(TypeError, match=f"x must be one of {','.join([str(str), str(list)])}!"):
+    with pytest.raises(
+        TypeError, match=f"x must be one of {','.join([str(str), str(list)])}!"
+    ):
         _i = data.check_input_multi(x, "x", [str, list])
 
 
