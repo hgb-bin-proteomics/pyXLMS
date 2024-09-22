@@ -109,9 +109,9 @@ def check_input_multi(
     >>>check_input_multi("PEPTIDE", "peptide_a", [str, list])
     True
     """
-    if type(parameter) is not supported_classes:
+    if type(parameter) is not in supported_classes:
         raise TypeError(
-            f"{parameter_name} must be on of {','.join(supported_classes)}!"
+            f"{parameter_name} must be one of {','.join(supported_classes)}!"
         )
     if type(parameter) is list and supported_subclass is not None:
         for value in parameter:
