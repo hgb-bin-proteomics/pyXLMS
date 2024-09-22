@@ -1,3 +1,3 @@
-import .data as data
-import .parser as parser
-import .transform as transform
+import data
+import parser
+import transform
