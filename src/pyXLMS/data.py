@@ -277,8 +277,8 @@ def create_crosslink(
             )
     check_indexing(xl_position_peptide_a)
     check_indexing(xl_position_peptide_b)
-    check_indexing(xl_position_proteins_a)
-    check_indexing(xl_position_proteins_b)
+    check_indexing(xl_position_proteins_a) if xl_position_proteins_a is not None
+    check_indexing(xl_position_proteins_b) if xl_position_proteins_b is not None
     ## processing
     crosslink = {
         f"{peptide_a.strip()}{xl_position_peptide_a}": {
@@ -525,10 +525,10 @@ def create_csm(
             )
     check_indexing(xl_position_peptide_a)
     check_indexing(xl_position_peptide_b)
-    check_indexing(xl_position_proteins_a)
-    check_indexing(xl_position_proteins_b)
-    check_indexing(pep_position_proteins_a)
-    check_indexing(pep_position_proteins_b)
+    check_indexing(xl_position_proteins_a) if xl_position_proteins_a is not None
+    check_indexing(xl_position_proteins_b) if xl_position_proteins_b is not None
+    check_indexing(pep_position_proteins_a) if pep_position_proteins_a is not None
+    check_indexing(pep_position_proteins_b) if pep_position_proteins_b is not None
     ## processing
     crosslink = {
         f"{peptide_a.strip()}{xl_position_peptide_a}": {
