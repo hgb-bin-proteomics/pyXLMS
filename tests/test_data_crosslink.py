@@ -9,10 +9,10 @@ import pytest
 
 
 def test1():
-    import pyXLMS as xl
+    from pyXLMS.data import check_input
 
     x = 1
-    assert xl.data.check_input(x, "x", int)
+    assert check_input(x, "x", int)
 
 
 def test2():
