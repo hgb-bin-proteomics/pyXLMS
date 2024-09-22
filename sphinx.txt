@@ -1,0 +1,2 @@
+sphinx-apidoc -f -o docs src/pyXLMS
+sphinx-build -b html docs html
