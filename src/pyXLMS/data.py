@@ -275,10 +275,10 @@ def create_crosslink(
             raise ValueError(
                 "Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!"
             )
-    ok = check_indexing(xl_position_peptide_a)
-    ok = check_indexing(xl_position_peptide_b)
-    ok = check_indexing(xl_position_proteins_a) if xl_position_proteins_a is not None else True
-    ok = check_indexing(xl_position_proteins_b) if xl_position_proteins_b is not None else True
+    _ok = check_indexing(xl_position_peptide_a)
+    _ok = check_indexing(xl_position_peptide_b)
+    _ok = check_indexing(xl_position_proteins_a) if xl_position_proteins_a is not None else True
+    _ok = check_indexing(xl_position_proteins_b) if xl_position_proteins_b is not None else True
     ## processing
     crosslink = {
         f"{peptide_a.strip()}{xl_position_peptide_a}": {
@@ -523,12 +523,12 @@ def create_csm(
             raise ValueError(
                 "Peptide position has to be given for every protein! Length of proteins_b and pep_position_proteins_b has to match!"
             )
-    ok = check_indexing(xl_position_peptide_a)
-    ok = check_indexing(xl_position_peptide_b)
-    ok = check_indexing(xl_position_proteins_a) if xl_position_proteins_a is not None else True
-    ok = check_indexing(xl_position_proteins_b) if xl_position_proteins_b is not None else True
-    ok = check_indexing(pep_position_proteins_a) if pep_position_proteins_a is not None else True
-    ok = check_indexing(pep_position_proteins_b) if pep_position_proteins_b is not None else True
+    _ok = check_indexing(xl_position_peptide_a)
+    _ok = check_indexing(xl_position_peptide_b)
+    _ok = check_indexing(xl_position_proteins_a) if xl_position_proteins_a is not None else True
+    _ok = check_indexing(xl_position_proteins_b) if xl_position_proteins_b is not None else True
+    _ok = check_indexing(pep_position_proteins_a) if pep_position_proteins_a is not None else True
+    _ok = check_indexing(pep_position_proteins_b) if pep_position_proteins_b is not None else True
     ## processing
     crosslink = {
         f"{peptide_a.strip()}{xl_position_peptide_a}": {
