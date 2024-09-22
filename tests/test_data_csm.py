@@ -124,7 +124,7 @@ def test2():
         and csm["alpha_modifications"][2][1] <= 16.05
     )
     assert csm["alpha_peptide_crosslink_position"] == 3
-    assert len(csm["alpha_proteins"]) == 2
+    assert len(csm["alpha_proteins"]) == 1
     assert csm["alpha_proteins"][0] == "NIETORP"
     assert len(csm["alpha_proteins_crosslink_positions"]) == 2
     assert csm["alpha_proteins_crosslink_positions"][0] == 5
