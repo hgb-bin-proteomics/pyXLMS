@@ -560,7 +560,7 @@ def create_csm(
             "modifications": {
                 key: (modifications_a[key][0].strip(), float(modifications_a[key][1]))
                 for key in modifications_a.keys()
-            },
+            } if modifications_a is not None else None,
             "xl_position_peptide": xl_position_peptide_a,
             "proteins": proteins_a,
             "xl_position_proteins": xl_position_proteins_a,
@@ -573,7 +573,7 @@ def create_csm(
             "modifications": {
                 key: (modifications_b[key][0].strip(), float(modifications_b[key][1]))
                 for key in modifications_b.keys()
-            },
+            } if modifications_b is not None else None,
             "xl_position_peptide": xl_position_peptide_b,
             "proteins": proteins_b,
             "xl_position_proteins": xl_position_proteins_b,
