@@ -44,11 +44,12 @@ def read_msannika(
     """
     ## reading data
     data = None
-    if format == "auto" and type(input) is not str:
+    if format == "auto" and not isinstance(input, str):
         raise ValueError(
             "Can't detect format for file-like objects. Please specify format manually!"
         )
-    if format == "auto":
+    # and isinstance specified for type checking
+    if format == "auto" and isinstance(input, str):
         file_extension = splitext(input)
         if file_extension == ".tsv" or file_extension == ".csv":
             data = pd.read_csv(input, sep=sep)
