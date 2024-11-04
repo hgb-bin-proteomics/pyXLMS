@@ -153,7 +153,7 @@ def check_indexing(value: int | List[int]) -> bool:
     True
     """
     check_input_multi(value, "value", [int, list], int)
-    if type(value) is int:
+    if isinstance(value, int):
         if value < 1:
             raise ValueError(
                 "0-based value found! All positions must use 1-based indexing!"
@@ -632,7 +632,7 @@ def create_csm(
 
 def create_parser_result(
     search_engine: str,
-    csms: List[Dict[str, any]] | None,
+    csms: List[Dict[str, Any]] | None,
     crosslinks: List[Dict[str, Any]] | None,
 ) -> Dict[str, Any]:
     """Creates a parser result data structure.
