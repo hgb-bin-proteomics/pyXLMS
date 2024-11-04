@@ -15,7 +15,9 @@ from typing import Tuple
 from typing import Any
 
 
-def modifications_to_str(modifications: Dict[int, Tuple[str, float]] | None) -> str | None:
+def modifications_to_str(
+    modifications: Dict[int, Tuple[str, float]] | None,
+) -> str | None:
     """Returns the string representation of a modifications dictionary.
 
     Parameters
