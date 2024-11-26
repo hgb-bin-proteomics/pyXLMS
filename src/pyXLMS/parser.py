@@ -10,10 +10,12 @@ import warnings
 import pandas as pd
 from os.path import splitext
 
+from .data import check_input
 from .data import create_crosslink
 from .data import create_csm
 from .data import create_parser_result
 from .constants import AMINO_ACIDS
+from .constants import MODIFICATIONS
 
 from typing import BinaryIO
 from typing import Dict
@@ -235,28 +237,30 @@ def read_msannika(
         for i, row in data.iterrows():
             # create csm
             csm = create_csm(
-                peptide_a="",
-                modifications_a={},
-                xl_position_peptide_a=0,
-                proteins_a=[""],
-                xl_position_proteins_a=[0],
-                pep_position_proteins_a=[0],
-                score_a=0.0,
-                decoy_a=False,
-                peptide_b="",
-                modifications_b={},
-                xl_position_peptide_b=0,
-                proteins_b=[""],
-                xl_position_proteins_b=[0],
-                pep_position_proteins_b=[0],
-                score_b=0.0,
-                decoy_b=False,
-                score=0.0,
-                spectrum_file="",
-                scan_nr=0,
-                charge=0,
-                rt=0.0,
-                im_cv=None,
+                peptide_a=format_sequence(str(row["Sequence A"]).strip()),
+                modifications_a=parse_modification_str(format_sequence(str(row["Sequence A"]).strip()),
+                                                       str(row["Modifications A"]).strip()),
+                xl_position_peptide_a=int(row["Crosslinker Position A"]),
+                proteins_a=[protein.strip() for protein in str(row["Accession A"]).split(";")],
+                xl_position_proteins_a=[int(position)+int(row["Crosslinker Position A"]) for position in str(row["A in protein"]).split(";")],
+                pep_position_proteins_a=[int(position)+1 for position in str(row["A in protein"]).split(";")],
+                score_a=float(row["Score Alpha"]),
+                decoy_a=get_bool_from_value(str(row["Alpha T/D"])),
+                peptide_b=format_sequence(str(row["Sequence B"]).strip()),
+                modifications_b=parse_modification_str(format_sequence(str(row["Sequence B"]).strip()),
+                                                       str(row["Modifications B"]).strip()),
+                xl_position_peptide_b=int(row["Crosslinker Position A"]),
+                proteins_b=[protein.strip() for protein in str(row["Accession B"]).split(";")],
+                xl_position_proteins_b=[int(position)+int(row["Crosslinker Position B"]) for position in str(row["B in protein"]).split(";")],
+                pep_position_proteins_b=[int(position)+1 for position in str(row["B in protein"]).split(";")],
+                score_b=float(row["Score Beta"]),
+                decoy_b=get_bool_from_value(str(row["Beta T/D"])),
+                score=float(row["Combined Score"]),
+                spectrum_file=str(row["Spectrum File"]).strip(),
+                scan_nr=int(row["First Scan"]),
+                charge=int(row["Charge"]),
+                rt=float(row["RT [min]"]) * 60.0,
+                im_cv=float(row["Compensation Voltage"]),
             )
             csms.append(csm)
     ## check results
