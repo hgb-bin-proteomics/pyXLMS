@@ -41,6 +41,20 @@ def format_sequence(str: sequence, remove_non_aa = True, remove_lower = True) ->
     -------
     str
         The formatted sequence.
+
+    Examples
+    --------
+    >>>from pyXLMS.parser import format_sequence
+    >>>format_sequence("PEP[K]TIDE")
+    'PEPKTIDE'
+
+    >>>from pyXLMS.parser import format_sequence
+    >>>format_sequence("PEPKdssoTIDE")
+    'PEPKTIDE'
+
+    >>>from pyXLMS.parser import format_sequence
+    >>>format_sequence("peptide", remove_lower = False)
+    'PEPTIDE'
     """
     fmt_seq = ""
     for aa in sequence:
