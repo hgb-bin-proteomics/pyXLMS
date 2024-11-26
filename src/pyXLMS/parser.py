@@ -76,6 +76,54 @@ def format_sequence(str: sequence, remove_non_aa = True, remove_lower = True) ->
             fmt_seq += aa.upper()
     return fmt_seq
 
+
+def get_bool_from_value(value: Any) -> bool:
+    """Parse a bool value from the given input.
+
+    Tries to parse a boolean value from the given input object. If the object is of instance ``bool`` it will return the object, if it is of
+    instance ``int`` it will return ``True`` if the object is ``1`` or ``False`` if the object is ``0``, any other number will raise a
+    ``ValueError``. If the object is of instance ``str`` it will return ``True`` if the lower case version contains the letter ``t`` and
+    otherwise ``False``. If the object is none of these types a ``ValueError`` will be raised.
+
+    Parameters
+    ----------
+    value: Any
+        The value to parse from.
+
+    Returns
+    -------
+    bool
+        The parsed boolean value.
+
+    Raises
+    ------
+    ValueError
+        If the object could not be parsed to bool.
+
+    Examples
+    --------
+    >>>from pyXLMS.parser import get_bool_from_value
+    >>>get_bool_from_value(0)
+    False
+
+    >>>from pyXLMS.parser import get_bool_from_value
+    >>>get_bool_from_value("T")
+    True
+    """
+    if isinstance(value, bool):
+        return value
+    elif isinstance(value, int):
+        if value in [0, 1]:
+            return bool(value)
+        else:
+            raise ValueError(f"Cannot parse bool value from the given input {value}.")
+    elif isinstance(value, str):
+        return "t" in value.lower()
+    else:
+        raise ValueError(f"Cannot parse bool value from the given input {value}.")
+    return False
+
+
 ## TODO
 def read_custom():
     return
