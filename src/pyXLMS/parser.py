@@ -132,6 +132,7 @@ def read_custom():
 ## WIP
 def read_msannika(
     input: str | BinaryIO,
+    modifications: Dict[str, float] = MODIFICATIONS,
     format: Literal["auto", "csv", "tsv", "xlsx"] = "auto",
     sep: str = "\t",
 ) -> Dict[str, Any]:
@@ -161,6 +162,22 @@ def read_msannika(
     RuntimeError
         If the file could not be read.
     """
+    ## check input
+    _ok = check_input(modifications, "modifications", dict, float)
+    ## helper functions
+    def parse_modification_str(sequence: str, modification_str: str) -> Dict[int, Tuple[str, float]]:
+        mods = [mod.strip() for mod in modification_str.split(";")]
+        parsed_mods = dict()
+        for mod in mods:
+            mod_type = mod.split("(")[1].split(")")[0].strip()
+            mod_pos = mod.split("(")[0].strip()
+            if "Nterm" in mod_pos:
+                parsed_mods[0] = (mod_type, modifications[mod_type])
+            elif "Cterm" in mod_pos:
+                parsed_mods[len(sequence)] = (mod_type, modifications[mod_type])
+            else:
+                parsed_mods[int(mod_pos[1:])] = (mod_type, modifications[mod_type])
+        return parsed_mods
     ## reading data
     data = None
     if format == "auto" and not isinstance(input, str):
