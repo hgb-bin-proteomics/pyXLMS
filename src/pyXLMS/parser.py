@@ -146,6 +146,20 @@ def read_msannika(
         The name/path of the MS Annika result file or a file-like object/stream.
     format : "auto", "csv", "tsv", or "xlsx", default = "auto"
         The format of the result file. ``"auto"`` is only available if the name/path to the MS Annika result file is given.
+    sep : str, default = "\t"
+        Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` format.
+
+    Returns
+    -------
+    dict
+        The ``parser_result`` object containing all parsed information.
+
+    Raises
+    ------
+    ValueError
+        If the input format is not supported or cannot be inferred.
+    RuntimeError
+        If the file could not be read.
     """
     ## reading data
     data = None

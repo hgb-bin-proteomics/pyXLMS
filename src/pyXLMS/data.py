@@ -413,7 +413,7 @@ def create_csm(
     charge : int, or None
         The precursor charge of the corresponding mass spectrum of the crosslink-spectrum-match.
     rt : float, or None
-        The retention time of the corresponding mass spectrum of the crosslink-spectrum-match.
+        The retention time of the corresponding mass spectrum of the crosslink-spectrum-match in seconds.
     im_cv : float, or None
         The ion mobility or compensation voltage of the corresponding mass spectrum of the crosslink-spectrum-match.
 
