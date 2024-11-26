@@ -558,7 +558,10 @@ def create_csm(
         f"{peptide_a.strip()}{xl_position_peptide_a}": {
             "peptide": peptide_a,
             "modifications": {
-                int(key): (modifications_a[key][0].strip(), float(modifications_a[key][1]))
+                int(key): (
+                    modifications_a[key][0].strip(),
+                    float(modifications_a[key][1]),
+                )
                 for key in modifications_a.keys()
             }
             if modifications_a is not None
@@ -573,7 +576,10 @@ def create_csm(
         f"{peptide_b.strip()}{xl_position_peptide_b}": {
             "peptide": peptide_b,
             "modifications": {
-                int(key): (modifications_b[key][0].strip(), float(modifications_b[key][1]))
+                int(key): (
+                    modifications_b[key][0].strip(),
+                    float(modifications_b[key][1]),
+                )
                 for key in modifications_b.keys()
             }
             if modifications_b is not None

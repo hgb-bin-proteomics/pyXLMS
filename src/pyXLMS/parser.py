@@ -23,7 +23,10 @@ from typing import Literal
 from typing import Any
 from typing import Tuple
 
-def format_sequence(sequence: str, remove_non_aa: bool = True, remove_lower: bool = True) -> str:
+
+def format_sequence(
+    sequence: str, remove_non_aa: bool = True, remove_lower: bool = True
+) -> str:
     """Formats the given amino acid sequence into common represenation.
 
     The given amino acid sequence is re-formatted by converting all amino acids to upper case and optionally removing non-encoding and
@@ -66,7 +69,10 @@ def format_sequence(sequence: str, remove_non_aa: bool = True, remove_lower: boo
                 if remove_non_aa:
                     continue
                 else:
-                    warnings.warn(f"The sequence {sequence} contains non-valid characters.", RuntimeWarning)
+                    warnings.warn(
+                        f"The sequence {sequence} contains non-valid characters.",
+                        RuntimeWarning,
+                    )
             fmt_seq += aa
         elif remove_lower:
             continue
@@ -75,7 +81,10 @@ def format_sequence(sequence: str, remove_non_aa: bool = True, remove_lower: boo
                 if remove_non_aa:
                     continue
                 else:
-                    warnings.warn(f"The sequence {sequence} contains non-valid characters.", RuntimeWarning)
+                    warnings.warn(
+                        f"The sequence {sequence} contains non-valid characters.",
+                        RuntimeWarning,
+                    )
             fmt_seq += aa.upper()
     return fmt_seq
 
@@ -167,8 +176,11 @@ def read_msannika(
     """
     ## check input
     _ok = check_input(modifications, "modifications", dict, float)
+
     ## helper functions
-    def parse_modification_str(sequence: str, modification_str: str) -> Dict[int, Tuple[str, float]]:
+    def parse_modification_str(
+        sequence: str, modification_str: str
+    ) -> Dict[int, Tuple[str, float]]:
         mods = [mod.strip() for mod in modification_str.split(";")]
         parsed_mods = dict()
         for mod in mods:
@@ -181,6 +193,7 @@ def read_msannika(
             else:
                 parsed_mods[int(mod_pos[1:])] = (mod_type, modifications[mod_type])
         return parsed_mods
+
     ## reading data
     data = None
     if format == "auto" and not isinstance(input, str):
@@ -223,13 +236,21 @@ def read_msannika(
             crosslink = create_crosslink(
                 peptide_a=format_sequence(str(row["Sequence A"]).strip()),
                 xl_position_peptide_a=int(row["Position A"]),
-                proteins_a=[protein.strip() for protein in str(row["Accession A"]).split(";")],
-                xl_position_proteins_a=[int(position) for position in str(row["In protein A"]).split(";")],
+                proteins_a=[
+                    protein.strip() for protein in str(row["Accession A"]).split(";")
+                ],
+                xl_position_proteins_a=[
+                    int(position) for position in str(row["In protein A"]).split(";")
+                ],
                 decoy_a=get_bool_from_value(row["Decoy"]),
                 peptide_b=format_sequence(str(row["Sequence B"]).strip()),
                 xl_position_peptide_b=int(row["Position A"]),
-                proteins_b=[protein.strip() for protein in str(row["Accession B"]).split(";")],
-                xl_position_proteins_b=[int(position) for position in str(row["In protein B"]).split(";")],
+                proteins_b=[
+                    protein.strip() for protein in str(row["Accession B"]).split(";")
+                ],
+                xl_position_proteins_b=[
+                    int(position) for position in str(row["In protein B"]).split(";")
+                ],
                 decoy_b=get_bool_from_value(row["Decoy"]),
                 score=float(row["Best CSM score"]),
             )
@@ -239,21 +260,41 @@ def read_msannika(
             # create csm
             csm = create_csm(
                 peptide_a=format_sequence(str(row["Sequence A"]).strip()),
-                modifications_a=parse_modification_str(format_sequence(str(row["Sequence A"]).strip()),
-                                                       str(row["Modifications A"]).strip()),
+                modifications_a=parse_modification_str(
+                    format_sequence(str(row["Sequence A"]).strip()),
+                    str(row["Modifications A"]).strip(),
+                ),
                 xl_position_peptide_a=int(row["Crosslinker Position A"]),
-                proteins_a=[protein.strip() for protein in str(row["Accession A"]).split(";")],
-                xl_position_proteins_a=[int(position)+int(row["Crosslinker Position A"]) for position in str(row["A in protein"]).split(";")],
-                pep_position_proteins_a=[int(position)+1 for position in str(row["A in protein"]).split(";")],
+                proteins_a=[
+                    protein.strip() for protein in str(row["Accession A"]).split(";")
+                ],
+                xl_position_proteins_a=[
+                    int(position) + int(row["Crosslinker Position A"])
+                    for position in str(row["A in protein"]).split(";")
+                ],
+                pep_position_proteins_a=[
+                    int(position) + 1
+                    for position in str(row["A in protein"]).split(";")
+                ],
                 score_a=float(row["Score Alpha"]),
                 decoy_a=get_bool_from_value(str(row["Alpha T/D"])),
                 peptide_b=format_sequence(str(row["Sequence B"]).strip()),
-                modifications_b=parse_modification_str(format_sequence(str(row["Sequence B"]).strip()),
-                                                       str(row["Modifications B"]).strip()),
+                modifications_b=parse_modification_str(
+                    format_sequence(str(row["Sequence B"]).strip()),
+                    str(row["Modifications B"]).strip(),
+                ),
                 xl_position_peptide_b=int(row["Crosslinker Position A"]),
-                proteins_b=[protein.strip() for protein in str(row["Accession B"]).split(";")],
-                xl_position_proteins_b=[int(position)+int(row["Crosslinker Position B"]) for position in str(row["B in protein"]).split(";")],
-                pep_position_proteins_b=[int(position)+1 for position in str(row["B in protein"]).split(";")],
+                proteins_b=[
+                    protein.strip() for protein in str(row["Accession B"]).split(";")
+                ],
+                xl_position_proteins_b=[
+                    int(position) + int(row["Crosslinker Position B"])
+                    for position in str(row["B in protein"]).split(";")
+                ],
+                pep_position_proteins_b=[
+                    int(position) + 1
+                    for position in str(row["B in protein"]).split(";")
+                ],
                 score_b=float(row["Score Beta"]),
                 decoy_b=get_bool_from_value(str(row["Beta T/D"])),
                 score=float(row["Combined Score"]),
