@@ -6,18 +6,61 @@
 
 from __future__ import annotations
 
+import warnings
 import pandas as pd
 from os.path import splitext
 
 from .data import create_crosslink
 from .data import create_csm
 from .data import create_parser_result
+from .constants import AMINO_ACIDS
 
 from typing import BinaryIO
 from typing import Dict
 from typing import Literal
 from typing import Any
 
+def format_sequence(str: sequence, remove_non_aa = True, remove_lower = True) -> str:
+    """Formats the given amino acid sequence into common represenation.
+
+    The given amino acid sequence is re-formatted by converting all amino acids to upper case and optionally removing non-encoding and
+    lower case characters.
+
+    Parameters
+    ----------
+    sequence : str
+        The amino acid sequence that should be formatted. Post-translational-modifications can be included in lower case but will
+        be removed.
+    remove_non_aa : bool, default = True
+        Whether or not to remove characters that do not encode amino acids.
+    remove_lower : bool, default = True
+        Whether or not to remove lower case characters, this should be true if the amino acid sequence encodes post-translational-modifications
+        in lower case.
+
+    Returns
+    -------
+    str
+        The formatted sequence.
+    """
+    fmt_seq = ""
+    for aa in sequence:
+        if aa.isupper():
+            if aa not in AMINO_ACIDS:
+                if remove_non_aa:
+                    continue
+                else:
+                    warnings.warn(f"The sequence {sequence} contains non-valid characters.", RuntimeWarning)
+            fmt_seq += aa
+        elif remove_lower:
+            continue
+        else:
+            if aa.upper() not in AMINO_ACIDS:
+                if remove_non_aa:
+                    continue
+                else:
+                    warnings.warn(f"The sequence {sequence} contains non-valid characters.", RuntimeWarning)
+            fmt_seq += aa.upper()
+    return fmt_seq
 
 ## TODO
 def read_custom():
