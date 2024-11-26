@@ -187,17 +187,17 @@ def read_msannika(
         for i, row in data.iterrows():
             # create crosslink
             crosslink = create_crosslink(
-                peptide_a="",
-                xl_position_peptide_a=0,
-                proteins_a=[""],
-                xl_position_proteins_a=[0],
-                decoy_a=False,
-                peptide_b="",
-                xl_position_peptide_b=0,
-                proteins_b=[""],
-                xl_position_proteins_b=[0],
-                decoy_b=False,
-                score=0.0,
+                peptide_a=format_sequence(str(row["Sequence A"]).strip()),
+                xl_position_peptide_a=int(row["Position A"]),
+                proteins_a=[protein.strip() for protein in str(row["Accession A"]).split(";")],
+                xl_position_proteins_a=[int(position) for position in str(row["In protein A"]).split(";")],
+                decoy_a=get_bool_from_value(row["Decoy"]),
+                peptide_b=format_sequence(str(row["Sequence B"]).strip()),
+                xl_position_peptide_b=int(row["Position A"]),
+                proteins_b=[protein.strip() for protein in str(row["Accession B"]).split(";")],
+                xl_position_proteins_b=[int(position) for position in str(row["In protein B"]).split(";")],
+                decoy_b=get_bool_from_value(row["Decoy"]),
+                score=float(row["Best CSM score"]),
             )
             crosslinks.append(crosslink)
     else:
