@@ -21,8 +21,9 @@ from typing import BinaryIO
 from typing import Dict
 from typing import Literal
 from typing import Any
+from typing import Tuple
 
-def format_sequence(str: sequence, remove_non_aa = True, remove_lower = True) -> str:
+def format_sequence(sequence: str, remove_non_aa: bool = True, remove_lower: bool = True) -> str:
     """Formats the given amino acid sequence into common represenation.
 
     The given amino acid sequence is re-formatted by converting all amino acids to upper case and optionally removing non-encoding and
