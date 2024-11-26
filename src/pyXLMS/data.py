@@ -370,7 +370,7 @@ def create_csm(
     ----------
     peptide_a : str
         The unmodified amino acid sequence of the first peptide.
-    modifications_a : dict of [str, tuple], or None
+    modifications_a : dict of [int, tuple], or None
         The modifications of the first peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass.
         ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications should be denoted with position ``len(peptide) + 1``.
         If the peptide is not modified an empty dictionary should be given.
@@ -388,7 +388,7 @@ def create_csm(
         Whether the alpha peptide is from the decoy database or not.
     peptide_b : str
         The unmodified amino acid sequence of the second peptide.
-    modifications_b : dict of [str, tuple], or None
+    modifications_b : dict of [int, tuple], or None
         The modifications of the second peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass.
         ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications should be denoted with position ``len(peptide) + 1``.
         If the peptide is not modified an empty dictionary should be given.
@@ -558,7 +558,7 @@ def create_csm(
         f"{peptide_a.strip()}{xl_position_peptide_a}": {
             "peptide": peptide_a,
             "modifications": {
-                key: (modifications_a[key][0].strip(), float(modifications_a[key][1]))
+                int(key): (modifications_a[key][0].strip(), float(modifications_a[key][1]))
                 for key in modifications_a.keys()
             }
             if modifications_a is not None
@@ -573,7 +573,7 @@ def create_csm(
         f"{peptide_b.strip()}{xl_position_peptide_b}": {
             "peptide": peptide_b,
             "modifications": {
-                key: (modifications_b[key][0].strip(), float(modifications_b[key][1]))
+                int(key): (modifications_b[key][0].strip(), float(modifications_b[key][1]))
                 for key in modifications_b.keys()
             }
             if modifications_b is not None
