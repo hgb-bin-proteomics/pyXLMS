@@ -273,7 +273,7 @@ def read_msannika(
                     ],
                     decoy_a=get_bool_from_value(row["Decoy"]),
                     peptide_b=format_sequence(str(row["Sequence B"]).strip()),
-                    xl_position_peptide_b=int(row["Position A"]),
+                    xl_position_peptide_b=int(row["Position B"]),
                     proteins_b=[
                         protein.strip()
                         for protein in str(row["Accession B"]).split(";")
