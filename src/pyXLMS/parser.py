@@ -29,6 +29,7 @@ try:
 except ImportError:
     from typing_extensions import Literal
 
+
 def format_sequence(
     sequence: str, remove_non_aa: bool = True, remove_lower: bool = True
 ) -> str:
