@@ -40,7 +40,7 @@ def modifications_to_str(
     modifications_str = ""
     if modifications is None:
         return None
-    for modification_pos in modifications.keys():
+    for modification_pos in sorted(modifications.keys()):
         modifications_str += f"({modification_pos}:[{modifications[modification_pos][0]}|{modifications[modification_pos][1]}]);"
     return modifications_str.rstrip(";")
 
