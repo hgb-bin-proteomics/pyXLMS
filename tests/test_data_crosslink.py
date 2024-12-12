@@ -178,7 +178,7 @@ def test18():
     # assert crosslink["beta_decoy"] == False
     assert not crosslink["beta_decoy"]
     assert crosslink["crosslink-type"] == "intra"
-    assert crosslink["score"] >= 170.25 and crosslink["score"] <= 170.35
+    assert crosslink["score"] == pytest.approx(170.3)
 
 
 def test19():
@@ -216,7 +216,7 @@ def test19():
     # assert crosslink["beta_decoy"] == False
     assert not crosslink["beta_decoy"]
     assert crosslink["crosslink-type"] == "intra"
-    assert crosslink["score"] >= 170.25 and crosslink["score"] <= 170.35
+    assert crosslink["score"] == pytest.approx(170.3)
 
 
 def test20():
@@ -255,7 +255,7 @@ def test20():
     # assert crosslink["beta_decoy"] == False
     assert not crosslink["beta_decoy"]
     assert crosslink["crosslink-type"] == "intra"
-    assert crosslink["score"] >= 170.25 and crosslink["score"] <= 170.35
+    assert crosslink["score"] == pytest.approx(170.3)
 
 
 def test21():
@@ -293,7 +293,7 @@ def test21():
     # assert crosslink["beta_decoy"] == True
     assert crosslink["beta_decoy"]
     assert crosslink["crosslink-type"] == "intra"
-    assert crosslink["score"] >= 170.25 and crosslink["score"] <= 170.35
+    assert crosslink["score"] == pytest.approx(170.3)
 
 
 def test22():
