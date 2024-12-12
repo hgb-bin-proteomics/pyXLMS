@@ -255,7 +255,7 @@ def test5():
     )
     assert csm["alpha_peptide_crosslink_position"] == 1
     assert csm["alpha_proteins"] == ["Cas9"]
-    assert csm["alpha_proteins_crosslink_positions"] == [576]
+    assert csm["alpha_proteins_crosslink_positions"] == [575]
     assert csm["alpha_proteins_peptide_positions"] == [575]
     assert csm["alpha_score"] == pytest.approx(376.15)
     assert not csm["alpha_decoy"]
