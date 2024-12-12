@@ -301,6 +301,7 @@ def test5():
     assert last_csm["retention_time"] == pytest.approx(7421.657999999999)
     assert last_csm["ion_mobility"] == pytest.approx(0.0)
 
+
 def test6():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
@@ -399,6 +400,7 @@ def test6():
     assert last_csm["charge"] == 3
     assert last_csm["retention_time"] == pytest.approx(7421.657999999999)
     assert last_csm["ion_mobility"] == pytest.approx(0.0)
+
 
 def test7():
     from pyXLMS import parser as p
@@ -499,6 +501,7 @@ def test7():
     assert last_csm["retention_time"] == pytest.approx(7421.657999999999)
     assert last_csm["ion_mobility"] == pytest.approx(0.0)
 
+
 def test8():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
@@ -597,6 +600,7 @@ def test8():
     assert last_csm["charge"] == 3
     assert last_csm["retention_time"] == pytest.approx(7421.657999999999)
     assert last_csm["ion_mobility"] == pytest.approx(0.0)
+
 
 def test9():
     from pyXLMS import parser as p
@@ -733,6 +737,7 @@ def test9():
     assert last_csm["retention_time"] == pytest.approx(7421.657999999999)
     assert last_csm["ion_mobility"] == pytest.approx(0.0)
 
+
 def test10():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
@@ -867,6 +872,7 @@ def test10():
     assert last_csm["charge"] == 3
     assert last_csm["retention_time"] == pytest.approx(7421.657999999999)
     assert last_csm["ion_mobility"] == pytest.approx(0.0)
+
 
 def test11():
     from pyXLMS import parser as p
@@ -1003,6 +1009,7 @@ def test11():
     assert last_csm["retention_time"] == pytest.approx(7421.657999999999)
     assert last_csm["ion_mobility"] == pytest.approx(0.0)
 
+
 def test12():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
@@ -1137,6 +1144,7 @@ def test12():
     assert last_csm["charge"] == 3
     assert last_csm["retention_time"] == pytest.approx(7421.657999999999)
     assert last_csm["ion_mobility"] == pytest.approx(0.0)
+
 
 def test13():
     from pyXLMS import parser as p
