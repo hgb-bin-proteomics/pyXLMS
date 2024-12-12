@@ -271,7 +271,7 @@ def test4():
     assert len(csm["beta_modifications"]) == 1
     assert 1 in csm["beta_modifications"]
     assert csm["beta_modifications"][1][0] == "Oxidation"
-    assert csm["beta_modifications"][1][1]== pytest.approx(15.994915)
+    assert csm["beta_modifications"][1][1] == pytest.approx(15.994915)
     assert csm["beta_peptide_crosslink_position"] == 3
     assert len(csm["beta_proteins"]) == 1
     assert csm["beta_proteins"][0] == "PROTEIN"
