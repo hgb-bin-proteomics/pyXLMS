@@ -323,7 +323,7 @@ def read_msannika(
                         for position in str(row["A in protein"]).split(";")
                     ],
                     score_a=float(row["Score Alpha"]),
-                    decoy_a=get_bool_from_value(str(row["Alpha T/D"])),
+                    decoy_a=not get_bool_from_value(str(row["Alpha T/D"])),
                     peptide_b=format_sequence(str(row["Sequence B"]).strip()),
                     modifications_b=parse_modification_str(
                         format_sequence(str(row["Sequence B"]).strip()),
@@ -343,7 +343,7 @@ def read_msannika(
                         for position in str(row["B in protein"]).split(";")
                     ],
                     score_b=float(row["Score Beta"]),
-                    decoy_b=get_bool_from_value(str(row["Beta T/D"])),
+                    decoy_b=not get_bool_from_value(str(row["Beta T/D"])),
                     score=float(row["Combined Score"]),
                     spectrum_file=str(row["Spectrum File"]).strip(),
                     scan_nr=int(row["First Scan"]),
