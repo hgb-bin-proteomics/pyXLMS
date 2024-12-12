@@ -22,6 +22,7 @@ from typing import Dict
 from typing import Literal
 from typing import Any
 from typing import Tuple
+from typing import List
 
 
 def format_sequence(
@@ -213,9 +214,11 @@ def read_msannika(
 
     ## handle input
     if not isinstance(files, list):
-        files = [files]
+        inputs = [files]
+    else:
+        inputs = files
 
-    for input in files:
+    for input in inputs:
         ## reading data
         data = None
         if format == "auto" and not isinstance(input, str):
