@@ -142,7 +142,7 @@ def read_custom():
 
 
 def read_msannika(
-    input: str | BinaryIO,
+    files: str | List[str] | BinaryIO,
     modifications: Dict[str, float] = MODIFICATIONS,
     format: Literal["auto", "csv", "tsv", "xlsx"] = "auto",
     sep: str = "\t",
@@ -154,8 +154,8 @@ def read_msannika(
 
     Parameters
     ----------
-    input : str or file stream
-        The name/path of the MS Annika result file or a file-like object/stream.
+    files : str, list of str, or file stream
+        The name/path of the MS Annika result file(s) or a file-like object/stream.
     format : "auto", "csv", "tsv", or "xlsx", default = "auto"
         The format of the result file. ``"auto"`` is only available if the name/path to the MS Annika result file is given.
     sep : str, default = "\t"
@@ -207,117 +207,124 @@ def read_msannika(
                 parsed_mods[int(mod_pos[1:])] = (mod_type, modifications[mod_type])
         return parsed_mods
 
-    ## reading data
-    data = None
-    if format == "auto" and not isinstance(input, str):
-        raise ValueError(
-            "Can't detect format for file-like objects. Please specify format manually!"
-        )
-    # and isinstance specified for type checking
-    if format == "auto" and isinstance(input, str):
-        file_extension = splitext(input)
-        if file_extension == ".tsv" or file_extension == ".csv":
-            data = pd.read_csv(input, sep=sep)
-        elif file_extension == ".xlsx":
-            data = pd.read_excel(input, engine="openpyxl")
-        else:
-            raise ValueError(
-                f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv' or '.xlsx'!"
-            )
-    elif format in ["csv", "tsv", "xlsx"]:
-        if format == "xlsx":
-            data = pd.read_excel(input, engine="openpyxl")
-        else:
-            data = pd.read_csv(input, sep=sep)
-    else:
-        raise ValueError(
-            f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv' or 'xlsx'!"
-        )
-    if data is None:
-        raise RuntimeError(
-            "Something went wrong while reading the file! Please file a bug report!"
-        )
-    ## detect input file type
-    col_names = data.columns.values.tolist()
-    is_crosslink_dataframe = "# CSMs" in col_names
-    ## process data
+    # data structures
     crosslinks = list()
     csms = list()
-    if is_crosslink_dataframe:
-        for i, row in data.iterrows():
-            # create crosslink
-            crosslink = create_crosslink(
-                peptide_a=format_sequence(str(row["Sequence A"]).strip()),
-                xl_position_peptide_a=int(row["Position A"]),
-                proteins_a=[
-                    protein.strip() for protein in str(row["Accession A"]).split(";")
-                ],
-                xl_position_proteins_a=[
-                    int(position) for position in str(row["In protein A"]).split(";")
-                ],
-                decoy_a=get_bool_from_value(row["Decoy"]),
-                peptide_b=format_sequence(str(row["Sequence B"]).strip()),
-                xl_position_peptide_b=int(row["Position A"]),
-                proteins_b=[
-                    protein.strip() for protein in str(row["Accession B"]).split(";")
-                ],
-                xl_position_proteins_b=[
-                    int(position) for position in str(row["In protein B"]).split(";")
-                ],
-                decoy_b=get_bool_from_value(row["Decoy"]),
-                score=float(row["Best CSM score"]),
+
+    # handle input
+    if not isinstance(files, list):
+        files = [files]
+
+    for input in files:
+        ## reading data
+        data = None
+        if format == "auto" and not isinstance(input, str):
+            raise ValueError(
+                "Can't detect format for file-like objects. Please specify format manually!"
             )
-            crosslinks.append(crosslink)
-    else:
-        for i, row in data.iterrows():
-            # create csm
-            csm = create_csm(
-                peptide_a=format_sequence(str(row["Sequence A"]).strip()),
-                modifications_a=parse_modification_str(
-                    format_sequence(str(row["Sequence A"]).strip()),
-                    str(row["Modifications A"]).strip(),
-                ),
-                xl_position_peptide_a=int(row["Crosslinker Position A"]),
-                proteins_a=[
-                    protein.strip() for protein in str(row["Accession A"]).split(";")
-                ],
-                xl_position_proteins_a=[
-                    int(position) + int(row["Crosslinker Position A"])
-                    for position in str(row["A in protein"]).split(";")
-                ],
-                pep_position_proteins_a=[
-                    int(position) + 1
-                    for position in str(row["A in protein"]).split(";")
-                ],
-                score_a=float(row["Score Alpha"]),
-                decoy_a=get_bool_from_value(str(row["Alpha T/D"])),
-                peptide_b=format_sequence(str(row["Sequence B"]).strip()),
-                modifications_b=parse_modification_str(
-                    format_sequence(str(row["Sequence B"]).strip()),
-                    str(row["Modifications B"]).strip(),
-                ),
-                xl_position_peptide_b=int(row["Crosslinker Position A"]),
-                proteins_b=[
-                    protein.strip() for protein in str(row["Accession B"]).split(";")
-                ],
-                xl_position_proteins_b=[
-                    int(position) + int(row["Crosslinker Position B"])
-                    for position in str(row["B in protein"]).split(";")
-                ],
-                pep_position_proteins_b=[
-                    int(position) + 1
-                    for position in str(row["B in protein"]).split(";")
-                ],
-                score_b=float(row["Score Beta"]),
-                decoy_b=get_bool_from_value(str(row["Beta T/D"])),
-                score=float(row["Combined Score"]),
-                spectrum_file=str(row["Spectrum File"]).strip(),
-                scan_nr=int(row["First Scan"]),
-                charge=int(row["Charge"]),
-                rt=float(row["RT [min]"]) * 60.0,
-                im_cv=float(row["Compensation Voltage"]),
+        # and isinstance specified for type checking
+        if format == "auto" and isinstance(input, str):
+            file_extension = splitext(input)
+            if file_extension == ".tsv" or file_extension == ".csv":
+                data = pd.read_csv(input, sep=sep)
+            elif file_extension == ".xlsx":
+                data = pd.read_excel(input, engine="openpyxl")
+            else:
+                raise ValueError(
+                    f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv' or '.xlsx'!"
+                )
+        elif format in ["csv", "tsv", "xlsx"]:
+            if format == "xlsx":
+                data = pd.read_excel(input, engine="openpyxl")
+            else:
+                data = pd.read_csv(input, sep=sep)
+        else:
+            raise ValueError(
+                f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv' or 'xlsx'!"
             )
-            csms.append(csm)
+        if data is None:
+            raise RuntimeError(
+                "Something went wrong while reading the file! Please file a bug report!"
+            )
+        ## detect input file type
+        col_names = data.columns.values.tolist()
+        is_crosslink_dataframe = "# CSMs" in col_names
+        ## process data
+        if is_crosslink_dataframe:
+            for i, row in data.iterrows():
+                # create crosslink
+                crosslink = create_crosslink(
+                    peptide_a=format_sequence(str(row["Sequence A"]).strip()),
+                    xl_position_peptide_a=int(row["Position A"]),
+                    proteins_a=[
+                        protein.strip() for protein in str(row["Accession A"]).split(";")
+                    ],
+                    xl_position_proteins_a=[
+                        int(position) for position in str(row["In protein A"]).split(";")
+                    ],
+                    decoy_a=get_bool_from_value(row["Decoy"]),
+                    peptide_b=format_sequence(str(row["Sequence B"]).strip()),
+                    xl_position_peptide_b=int(row["Position A"]),
+                    proteins_b=[
+                        protein.strip() for protein in str(row["Accession B"]).split(";")
+                    ],
+                    xl_position_proteins_b=[
+                        int(position) for position in str(row["In protein B"]).split(";")
+                    ],
+                    decoy_b=get_bool_from_value(row["Decoy"]),
+                    score=float(row["Best CSM score"]),
+                )
+                crosslinks.append(crosslink)
+        else:
+            for i, row in data.iterrows():
+                # create csm
+                csm = create_csm(
+                    peptide_a=format_sequence(str(row["Sequence A"]).strip()),
+                    modifications_a=parse_modification_str(
+                        format_sequence(str(row["Sequence A"]).strip()),
+                        str(row["Modifications A"]).strip(),
+                    ),
+                    xl_position_peptide_a=int(row["Crosslinker Position A"]),
+                    proteins_a=[
+                        protein.strip() for protein in str(row["Accession A"]).split(";")
+                    ],
+                    xl_position_proteins_a=[
+                        int(position) + int(row["Crosslinker Position A"])
+                        for position in str(row["A in protein"]).split(";")
+                    ],
+                    pep_position_proteins_a=[
+                        int(position) + 1
+                        for position in str(row["A in protein"]).split(";")
+                    ],
+                    score_a=float(row["Score Alpha"]),
+                    decoy_a=get_bool_from_value(str(row["Alpha T/D"])),
+                    peptide_b=format_sequence(str(row["Sequence B"]).strip()),
+                    modifications_b=parse_modification_str(
+                        format_sequence(str(row["Sequence B"]).strip()),
+                        str(row["Modifications B"]).strip(),
+                    ),
+                    xl_position_peptide_b=int(row["Crosslinker Position A"]),
+                    proteins_b=[
+                        protein.strip() for protein in str(row["Accession B"]).split(";")
+                    ],
+                    xl_position_proteins_b=[
+                        int(position) + int(row["Crosslinker Position B"])
+                        for position in str(row["B in protein"]).split(";")
+                    ],
+                    pep_position_proteins_b=[
+                        int(position) + 1
+                        for position in str(row["B in protein"]).split(";")
+                    ],
+                    score_b=float(row["Score Beta"]),
+                    decoy_b=get_bool_from_value(str(row["Beta T/D"])),
+                    score=float(row["Combined Score"]),
+                    spectrum_file=str(row["Spectrum File"]).strip(),
+                    scan_nr=int(row["First Scan"]),
+                    charge=int(row["Charge"]),
+                    rt=float(row["RT [min]"]) * 60.0,
+                    im_cv=float(row["Compensation Voltage"]),
+                )
+                csms.append(csm)
     ## check results
     if len(crosslinks) + len(csms) == 0:
         raise RuntimeError(
