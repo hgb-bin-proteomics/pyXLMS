@@ -227,7 +227,7 @@ def read_msannika(
             )
         # and isinstance specified for type checking
         if format == "auto" and isinstance(input, str):
-            file_extension = splitext(input)
+            file_extension = splitext(input)[1]
             if file_extension == ".txt" or file_extension == ".tsv" or file_extension == ".csv":
                 data = pd.read_csv(input, sep=sep)
             elif file_extension == ".xlsx":
