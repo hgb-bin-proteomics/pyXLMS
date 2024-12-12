@@ -19,11 +19,15 @@ from .constants import MODIFICATIONS
 
 from typing import BinaryIO
 from typing import Dict
-from typing import Literal
 from typing import Any
 from typing import Tuple
 from typing import List
 
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
 def format_sequence(
     sequence: str, remove_non_aa: bool = True, remove_lower: bool = True
