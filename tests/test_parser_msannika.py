@@ -28,7 +28,7 @@ def test1():
     assert len(crosslinks) == 300
 
     first_crosslink = crosslinks[0]
-    last_crosslink = crosslink[299]
+    last_crosslink = crosslinks[299]
 
     assert first_crosslink["data_type"] == "crosslink"
     assert first_crosslink["completeness"] == "full"
