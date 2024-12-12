@@ -198,13 +198,15 @@ def read_msannika(
 
     ## helper functions
     def parse_modification_str(
-        sequence: str, modification_str: str
+        sequence: str, modification_str: str, modifications: Dict[str, float] = modifications
     ) -> Dict[int, Tuple[str, float]]:
         mods = [mod.strip() for mod in modification_str.split(";")]
         parsed_mods = dict()
         for mod in mods:
             mod_type = mod.split("(")[1].split(")")[0].strip()
             mod_pos = mod.split("(")[0].strip()
+            if mod_type not in modifications:
+                raise KeyError(f"Unable to find modification {mod_type} in the set of provided modifications. Please pass the full set of expected modifications to the parser.")
             if "Nterm" in mod_pos:
                 parsed_mods[0] = (mod_type, modifications[mod_type])
             elif "Cterm" in mod_pos:
