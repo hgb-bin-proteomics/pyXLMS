@@ -207,11 +207,11 @@ def read_msannika(
                 parsed_mods[int(mod_pos[1:])] = (mod_type, modifications[mod_type])
         return parsed_mods
 
-    # data structures
+    ## data structures
     crosslinks = list()
     csms = list()
 
-    # handle input
+    ## handle input
     if not isinstance(files, list):
         files = [files]
 
