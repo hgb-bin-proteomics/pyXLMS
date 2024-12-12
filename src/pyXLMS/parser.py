@@ -145,7 +145,7 @@ def read_custom():
 def read_msannika(
     files: str | List[str] | BinaryIO,
     modifications: Dict[str, float] = MODIFICATIONS,
-    format: Literal["auto", "csv", "tsv", "xlsx"] = "auto",
+    format: Literal["auto", "csv", "txt", "tsv", "xlsx"] = "auto",
     sep: str = "\t",
 ) -> Dict[str, Any]:
     """Read an MS Annika result file.
@@ -157,7 +157,7 @@ def read_msannika(
     ----------
     files : str, list of str, or file stream
         The name/path of the MS Annika result file(s) or a file-like object/stream.
-    format : "auto", "csv", "tsv", or "xlsx", default = "auto"
+    format : "auto", "csv", "tsv", "txt", or "xlsx", default = "auto"
         The format of the result file. ``"auto"`` is only available if the name/path to the MS Annika result file is given.
     sep : str, default = "\t"
         Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` format.
@@ -228,7 +228,7 @@ def read_msannika(
         # and isinstance specified for type checking
         if format == "auto" and isinstance(input, str):
             file_extension = splitext(input)
-            if file_extension == ".tsv" or file_extension == ".csv":
+            if file_extension == ".txt" or file_extension == ".tsv" or file_extension == ".csv":
                 data = pd.read_csv(input, sep=sep)
             elif file_extension == ".xlsx":
                 data = pd.read_excel(input, engine="openpyxl")
