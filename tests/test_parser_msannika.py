@@ -60,6 +60,7 @@ def test1():
     assert last_crosslink["crosslink-type"] == "inter"
     assert last_crosslink["score"] == pytest.approx(15.89)
 
+
 def test2():
     from pyXLMS import parser as p
 
@@ -105,6 +106,7 @@ def test2():
     assert last_crosslink["beta_decoy"]
     assert last_crosslink["crosslink-type"] == "inter"
     assert last_crosslink["score"] == pytest.approx(15.89)
+
 
 def test3():
     from pyXLMS import parser as p
@@ -152,6 +154,7 @@ def test3():
     assert last_crosslink["crosslink-type"] == "inter"
     assert last_crosslink["score"] == pytest.approx(15.89)
 
+
 def test4():
     from pyXLMS import parser as p
 
@@ -197,6 +200,7 @@ def test4():
     assert last_crosslink["beta_decoy"]
     assert last_crosslink["crosslink-type"] == "inter"
     assert last_crosslink["score"] == pytest.approx(15.89)
+
 
 def test5():
     from pyXLMS import parser as p
@@ -245,7 +249,10 @@ def test5():
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "full"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
-    assert mts(csm["alpha_modifications"]) == "(1:[DSS|138.06808]);(4:[Carbamidomethyl|57.021464])"
+    assert (
+        mts(csm["alpha_modifications"])
+        == "(1:[DSS|138.06808]);(4:[Carbamidomethyl|57.021464])"
+    )
     assert csm["alpha_peptide_crosslink_position"] == 1
     assert csm["alpha_proteins"] == ["Cas9"]
     assert csm["alpha_proteins_crosslink_positions"] == [576]
