@@ -283,7 +283,7 @@ def read_msannika(
                         for position in str(row["In protein B"]).split(";")
                     ],
                     decoy_b=get_bool_from_value(row["Decoy"]),
-                    score=float(row["Best CSM score"]),
+                    score=float(row["Best CSM Score"]),
                 )
                 crosslinks.append(crosslink)
         else:
