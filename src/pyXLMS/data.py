@@ -288,15 +288,21 @@ def create_crosslink(
         else True
     )
     ## processing
+    key_a = f"{peptide_a.strip()}{xl_position_peptide_a}"
+    key_b = f"{peptide_b.strip()}{xl_position_peptide_b}"
+    # if homomeric crosslink
+    if key_a == key_b:
+        key_a += "_0"
+        key_b += "_1"
     crosslink = {
-        f"{peptide_a.strip()}{xl_position_peptide_a}": {
+        key_a: {
             "peptide": peptide_a,
             "xl_position_peptide": xl_position_peptide_a,
             "proteins": proteins_a,
             "xl_position_proteins": xl_position_proteins_a,
             "decoy": decoy_a,
         },
-        f"{peptide_b.strip()}{xl_position_peptide_b}": {
+        key_b: {
             "peptide": peptide_b,
             "xl_position_peptide": xl_position_peptide_b,
             "proteins": proteins_b,
@@ -554,8 +560,14 @@ def create_csm(
         else True
     )
     ## processing
+    key_a = f"{peptide_a.strip()}{xl_position_peptide_a}"
+    key_b = f"{peptide_b.strip()}{xl_position_peptide_b}"
+    # if homomeric crosslink
+    if key_a == key_b:
+        key_a += "_0"
+        key_b += "_1"
     crosslink = {
-        f"{peptide_a.strip()}{xl_position_peptide_a}": {
+        key_a: {
             "peptide": peptide_a,
             "modifications": {
                 int(key): (
@@ -573,7 +585,7 @@ def create_csm(
             "score": score_a,
             "decoy": decoy_a,
         },
-        f"{peptide_b.strip()}{xl_position_peptide_b}": {
+        key_b: {
             "peptide": peptide_b,
             "modifications": {
                 int(key): (
