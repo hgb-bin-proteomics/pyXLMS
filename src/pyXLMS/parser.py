@@ -178,6 +178,8 @@ def read_msannika(
         If the input format is not supported or cannot be inferred.
     RuntimeError
         If the file could not be read.
+    KeyError
+        If one of the found post-translational-modifications could not be found/mapped.
 
     Examples
     --------
