@@ -329,7 +329,7 @@ def read_msannika(
                         format_sequence(str(row["Sequence B"]).strip()),
                         str(row["Modifications B"]).strip(),
                     ),
-                    xl_position_peptide_b=int(row["Crosslinker Position A"]),
+                    xl_position_peptide_b=int(row["Crosslinker Position B"]),
                     proteins_b=[
                         protein.strip()
                         for protein in str(row["Accession B"]).split(";")
