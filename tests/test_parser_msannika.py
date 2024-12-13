@@ -1310,8 +1310,8 @@ def test16():
 
     modifications = {"DSS": 138.06808, "Carbamidomethyl": 57.021464}
     err_str = (
-        f"Unable to find modification Oxidation in the set of provided modifications. "
+        "Unable to find modification Oxidation in the set of provided modifications. "
         + "Please pass the full set of expected modifications to the parser."
     )
     with pytest.raises(KeyError, match=err_str):
-        _r = p.read_msannika(XL_XLSX, modifications=modifications)
+        _r = p.read_msannika(CSMS_XLSX, modifications=modifications)
