@@ -254,7 +254,7 @@ def read_msannika(
                 raise ValueError(
                     f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv' or '.xlsx'!"
                 )
-        elif format in ["csv", "tsv", "xlsx"]:
+        elif format in ["csv", "tsv", "txt", "xlsx"]:
             if format == "xlsx":
                 data = pd.read_excel(input, engine="openpyxl")
             else:
