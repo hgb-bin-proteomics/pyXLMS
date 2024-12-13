@@ -177,7 +177,7 @@ def read_msannika(
     ValueError
         If the input format is not supported or cannot be inferred.
     RuntimeError
-        If the file could not be read.
+        If the file(s) could not be read or if the file(s) contain no crosslinks or crosslink-spectrum-matches.
     KeyError
         If one of the found post-translational-modifications could not be found/mapped.
 
