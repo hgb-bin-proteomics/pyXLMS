@@ -1280,3 +1280,34 @@ def test13():
     assert last_csm["charge"] == 3
     assert last_csm["retention_time"] == pytest.approx(7421.657999999999)
     assert last_csm["ion_mobility"] == pytest.approx(0.0)
+    
+def test14():
+    from pyXLMS import parser as p
+
+
+    file_extension = ".pdresult"
+    unsupp_file = XL_XLSX + file_extension
+    with pytest.raises(
+        ValueError, match=f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv' or '.xlsx'!"
+    ):
+        _r = p.read_msannika(unsupp_file)
+
+def test15():
+    from pyXLMS import parser as p
+
+    format = "sqlite"
+    with pytest.raises(
+        ValueError, match=f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv' or 'xlsx'!"
+    ):
+        _r = p.read_msannika(XL_XLSX, format = format)
+        
+def test16():
+    from pyXLMS import parser as p
+    
+    modifications = {"DSS": 138.06808, "Carbamidomethyl": 57.021464}
+    err_str = f"Unable to find modification Oxidation in the set of provided modifications. "
+    err_str += "Please pass the full set of expected modifications to the parser."
+    with pytest.raises(
+        KeyError, match=err_str
+    ):
+        _r = p.read_msannika(XL_XLSX, modifications = modifications)
