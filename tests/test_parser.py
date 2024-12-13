@@ -10,14 +10,15 @@ import pytest
 
 def test1():
     from pyXLMS import parser as p
-    
+
     assert p.format_sequence("PEP[K]TIDE") == "PEPKTIDE"
     assert p.format_sequence("PEPKdssoTIDE") == "PEPKTIDE"
-    assert p.format_sequence("peptide", remove_lower = False) == "PEPTIDE"
-    
+    assert p.format_sequence("peptide", remove_lower=False) == "PEPTIDE"
+
+
 def test2():
     from pyXLMS import parser as p
-    
+
     assert p.get_bool_from_value(True)
     assert not p.get_bool_from_value(False)
     assert p.get_bool_from_value("True")
@@ -28,24 +29,33 @@ def test2():
     assert not p.get_bool_from_value("f")
     assert p.get_bool_from_value(1)
     assert not p.get_bool_from_value(0)
-    
+
+
 def test3():
     from pyXLMS import parser as p
-    
+
     value = 2
-    with pytest.raises(ValueError, match=f"Cannot parse bool value from the given input {value}."):
+    with pytest.raises(
+        ValueError, match=f"Cannot parse bool value from the given input {value}."
+    ):
         _b = p.get_bool_from_value(value)
+
 
 def test4():
     from pyXLMS import parser as p
-    
+
     value = 2.0
-    with pytest.raises(ValueError, match=f"Cannot parse bool value from the given input {value}."):
+    with pytest.raises(
+        ValueError, match=f"Cannot parse bool value from the given input {value}."
+    ):
         _b = p.get_bool_from_value(value)
+
 
 def test5():
     from pyXLMS import parser as p
-    
+
     value = list()
-    with pytest.raises(ValueError, match=f"Cannot parse bool value from the given input {value}."):
+    with pytest.raises(
+        ValueError, match=f"Cannot parse bool value from the given input {value}."
+    ):
         _b = p.get_bool_from_value(value)
