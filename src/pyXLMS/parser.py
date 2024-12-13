@@ -211,7 +211,7 @@ def read_msannika(
             mod_pos = mod.split("(")[0].strip()
             if mod_type not in modifications:
                 raise KeyError(
-                    f"Unable to find modification {mod_type} in the set of provided modifications."
+                    f"Unable to find modification {mod_type} in the set of provided modifications. "
                     + "Please pass the full set of expected modifications to the parser."
                 )
             if "Nterm" in mod_pos:
