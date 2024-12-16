@@ -2,7 +2,8 @@ Supported search engines:
 - MS Annika
 - xiSearch / xiFDR
 - MaxLynx
-- ?
+- Scout
+- pLink
 
 General interface with csv input
 
