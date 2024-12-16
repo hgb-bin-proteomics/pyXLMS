@@ -56,16 +56,16 @@ def format_sequence(
 
     Examples
     --------
-    >>>from pyXLMS.parser import format_sequence
-    >>>format_sequence("PEP[K]TIDE")
+    >>> from pyXLMS.parser import format_sequence
+    >>> format_sequence("PEP[K]TIDE")
     'PEPKTIDE'
 
-    >>>from pyXLMS.parser import format_sequence
-    >>>format_sequence("PEPKdssoTIDE")
+    >>> from pyXLMS.parser import format_sequence
+    >>> format_sequence("PEPKdssoTIDE")
     'PEPKTIDE'
 
-    >>>from pyXLMS.parser import format_sequence
-    >>>format_sequence("peptide", remove_lower = False)
+    >>> from pyXLMS.parser import format_sequence
+    >>> format_sequence("peptide", remove_lower = False)
     'PEPTIDE'
     """
     fmt_seq = ""
@@ -120,12 +120,12 @@ def get_bool_from_value(value: Any) -> bool:
 
     Examples
     --------
-    >>>from pyXLMS.parser import get_bool_from_value
-    >>>get_bool_from_value(0)
+    >>> from pyXLMS.parser import get_bool_from_value
+    >>> get_bool_from_value(0)
     False
 
-    >>>from pyXLMS.parser import get_bool_from_value
-    >>>get_bool_from_value("T")
+    >>> from pyXLMS.parser import get_bool_from_value
+    >>> get_bool_from_value("T")
     True
     """
     if isinstance(value, bool):
@@ -183,17 +183,17 @@ def read_msannika(
 
     Examples
     --------
-    >>>from pyXLMS.parser import read_msannika
-    >>>csms_from_xlsx = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx")
+    >>> from pyXLMS.parser import read_msannika
+    >>> csms_from_xlsx = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx")
 
-    >>>from pyXLMS.parser import read_msannika
-    >>>crosslinks_from_xlsx = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx")
+    >>> from pyXLMS.parser import read_msannika
+    >>> crosslinks_from_xlsx = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx")
 
-    >>>from pyXLMS.parser import read_msannika
-    >>>csms_from_tsv = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt")
+    >>> from pyXLMS.parser import read_msannika
+    >>> csms_from_tsv = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt")
 
-    >>>from pyXLMS.parser import read_msannika
-    >>>crosslinks_from_tsv = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.txt")
+    >>> from pyXLMS.parser import read_msannika
+    >>> crosslinks_from_tsv = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.txt")
     """
     ## check input
     _ok = check_input(modifications, "modifications", dict, float)

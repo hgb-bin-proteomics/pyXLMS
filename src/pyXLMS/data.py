@@ -46,12 +46,12 @@ def check_input(
 
     Examples
     --------
-    >>>from pyXLMS.data import check_input
-    >>>check_input("PEPTIDE", "peptide_a", str)
+    >>> from pyXLMS.data import check_input
+    >>> check_input("PEPTIDE", "peptide_a", str)
     True
 
-    >>>from pyXLMS.data import check_input
-    >>>check_input([1, 2], "xl_position_proteins_a", list, int)
+    >>> from pyXLMS.data import check_input
+    >>> check_input([1, 2], "xl_position_proteins_a", list, int)
     True
     """
     if type(parameter) is not supported_class:
@@ -105,8 +105,8 @@ def check_input_multi(
 
     Examples
     --------
-    >>>from pyXLMS.data import check_input_multi
-    >>>check_input_multi("PEPTIDE", "peptide_a", [str, list])
+    >>> from pyXLMS.data import check_input_multi
+    >>> check_input_multi("PEPTIDE", "peptide_a", [str, list])
     True
     """
     if type(parameter) not in supported_classes:
@@ -148,8 +148,8 @@ def check_indexing(value: int | List[int]) -> bool:
 
     Examples
     --------
-    >>>from pyXLMS.data import check_indexing
-    >>>check_indexing([1, 2, 3])
+    >>> from pyXLMS.data import check_indexing
+    >>> check_indexing([1, 2, 3])
     True
     """
     check_input_multi(value, "value", [int, list], int)
@@ -227,9 +227,9 @@ def create_crosslink(
 
     Examples
     --------
-    >>>from pyXLMS.data import create_crosslink
-    >>>minimal_crosslink = create_crosslink("PEPTIDEA", 1, None, None, None, "PEPTIDEB", 5, None, None, None, None)
-    >>>crosslink = create_crosslink("PEPTIDEA", 1, ["PROTEINA"], [1], False, "PEPTIDEB", 5, ["PROTEINB"], [3], False, 34.5)
+    >>> from pyXLMS.data import create_crosslink
+    >>> minimal_crosslink = create_crosslink("PEPTIDEA", 1, None, None, None, "PEPTIDEB", 5, None, None, None, None)
+    >>> crosslink = create_crosslink("PEPTIDEA", 1, ["PROTEINA"], [1], False, "PEPTIDEB", 5, ["PROTEINB"], [3], False, 34.5)
     """
     ## input checks
     full = check_input(peptide_a, "peptide_a", str)
@@ -442,9 +442,9 @@ def create_csm(
 
     Examples
     --------
-    >>>from pyXLMS.data import create_csm
-    >>>minimal_csm = create_csm("PEPTIDEA", {}, 1, None, None, None, None, None, "PEPTIDEB", {}, 5, None, None, None, None, None, None, "MS_EXP1", 1, None, None, None)
-    >>>csm = create_csm("PEPTIDEA", {1: ("Oxidation", 15.994915)}, 1, ["PROTEINA"], [1], [1], 20.1, False, "PEPTIDEB", {}, 5, ["PROTEINB"], [3], [1], 33.7, False, 20.1, "MS_EXP1", 1, 3, 13.5, -50)
+    >>> from pyXLMS.data import create_csm
+    >>> minimal_csm = create_csm("PEPTIDEA", {}, 1, None, None, None, None, None, "PEPTIDEB", {}, 5, None, None, None, None, None, None, "MS_EXP1", 1, None, None, None)
+    >>> csm = create_csm("PEPTIDEA", {1: ("Oxidation", 15.994915)}, 1, ["PROTEINA"], [1], [1], 20.1, False, "PEPTIDEB", {}, 5, ["PROTEINB"], [3], [1], 33.7, False, 20.1, "MS_EXP1", 1, 3, 13.5, -50)
     """
     ## input checks
     full = check_input(peptide_a, "peptide_a", str)
@@ -674,13 +674,13 @@ def create_parser_result(
 
     Examples
     --------
-    >>>from pyXLMS.data import create_parser_result
-    >>>result = create_parser_result("MS Annika", None, None)
-    >>>result["data_type"]
+    >>> from pyXLMS.data import create_parser_result
+    >>> result = create_parser_result("MS Annika", None, None)
+    >>> result["data_type"]
     'parser_result'
-    >>>result["completeness"]
+    >>> result["completeness"]
     'empty'
-    >>>result["search_engine"]
+    >>> result["search_engine"]
     'MS Annika'
     """
     completeness = "partial"
