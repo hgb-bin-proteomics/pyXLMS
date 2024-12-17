@@ -46,12 +46,12 @@ def check_input(
 
     Examples
     --------
-    >>>from pyXLMS.data import check_input
-    >>>check_input("PEPTIDE", "peptide_a", str)
+    >>> from pyXLMS.data import check_input
+    >>> check_input("PEPTIDE", "peptide_a", str)
     True
 
-    >>>from pyXLMS.data import check_input
-    >>>check_input([1, 2], "xl_position_proteins_a", list, int)
+    >>> from pyXLMS.data import check_input
+    >>> check_input([1, 2], "xl_position_proteins_a", list, int)
     True
     """
     if type(parameter) is not supported_class:
@@ -105,8 +105,8 @@ def check_input_multi(
 
     Examples
     --------
-    >>>from pyXLMS.data import check_input_multi
-    >>>check_input_multi("PEPTIDE", "peptide_a", [str, list])
+    >>> from pyXLMS.data import check_input_multi
+    >>> check_input_multi("PEPTIDE", "peptide_a", [str, list])
     True
     """
     if type(parameter) not in supported_classes:
@@ -148,8 +148,8 @@ def check_indexing(value: int | List[int]) -> bool:
 
     Examples
     --------
-    >>>from pyXLMS.data import check_indexing
-    >>>check_indexing([1, 2, 3])
+    >>> from pyXLMS.data import check_indexing
+    >>> check_indexing([1, 2, 3])
     True
     """
     check_input_multi(value, "value", [int, list], int)
@@ -227,9 +227,9 @@ def create_crosslink(
 
     Examples
     --------
-    >>>from pyXLMS.data import create_crosslink
-    >>>minimal_crosslink = create_crosslink("PEPTIDEA", 1, None, None, None, "PEPTIDEB", 5, None, None, None, None)
-    >>>crosslink = create_crosslink("PEPTIDEA", 1, ["PROTEINA"], [1], False, "PEPTIDEB", 5, ["PROTEINB"], [3], False, 34.5)
+    >>> from pyXLMS.data import create_crosslink
+    >>> minimal_crosslink = create_crosslink("PEPTIDEA", 1, None, None, None, "PEPTIDEB", 5, None, None, None, None)
+    >>> crosslink = create_crosslink("PEPTIDEA", 1, ["PROTEINA"], [1], False, "PEPTIDEB", 5, ["PROTEINB"], [3], False, 34.5)
     """
     ## input checks
     full = check_input(peptide_a, "peptide_a", str)
@@ -288,15 +288,21 @@ def create_crosslink(
         else True
     )
     ## processing
+    key_a = f"{peptide_a.strip()}{xl_position_peptide_a}"
+    key_b = f"{peptide_b.strip()}{xl_position_peptide_b}"
+    # if homomeric crosslink
+    if key_a == key_b:
+        key_a += "_0"
+        key_b += "_1"
     crosslink = {
-        f"{peptide_a.strip()}{xl_position_peptide_a}": {
+        key_a: {
             "peptide": peptide_a,
             "xl_position_peptide": xl_position_peptide_a,
             "proteins": proteins_a,
             "xl_position_proteins": xl_position_proteins_a,
             "decoy": decoy_a,
         },
-        f"{peptide_b.strip()}{xl_position_peptide_b}": {
+        key_b: {
             "peptide": peptide_b,
             "xl_position_peptide": xl_position_peptide_b,
             "proteins": proteins_b,
@@ -370,7 +376,7 @@ def create_csm(
     ----------
     peptide_a : str
         The unmodified amino acid sequence of the first peptide.
-    modifications_a : dict of [str, tuple], or None
+    modifications_a : dict of [int, tuple], or None
         The modifications of the first peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass.
         ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications should be denoted with position ``len(peptide) + 1``.
         If the peptide is not modified an empty dictionary should be given.
@@ -388,7 +394,7 @@ def create_csm(
         Whether the alpha peptide is from the decoy database or not.
     peptide_b : str
         The unmodified amino acid sequence of the second peptide.
-    modifications_b : dict of [str, tuple], or None
+    modifications_b : dict of [int, tuple], or None
         The modifications of the second peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass.
         ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications should be denoted with position ``len(peptide) + 1``.
         If the peptide is not modified an empty dictionary should be given.
@@ -413,7 +419,7 @@ def create_csm(
     charge : int, or None
         The precursor charge of the corresponding mass spectrum of the crosslink-spectrum-match.
     rt : float, or None
-        The retention time of the corresponding mass spectrum of the crosslink-spectrum-match.
+        The retention time of the corresponding mass spectrum of the crosslink-spectrum-match in seconds.
     im_cv : float, or None
         The ion mobility or compensation voltage of the corresponding mass spectrum of the crosslink-spectrum-match.
 
@@ -436,9 +442,9 @@ def create_csm(
 
     Examples
     --------
-    >>>from pyXLMS.data import create_csm
-    >>>minimal_csm = create_csm("PEPTIDEA", {}, 1, None, None, None, None, None, "PEPTIDEB", {}, 5, None, None, None, None, None, None, "MS_EXP1", 1, None, None, None)
-    >>>csm = create_csm("PEPTIDEA", {1: ("Oxidation", 15.994915)}, 1, ["PROTEINA"], [1], [1], 20.1, False, "PEPTIDEB", {}, 5, ["PROTEINB"], [3], [1], 33.7, False, 20.1, "MS_EXP1", 1, 3, 13.5, -50)
+    >>> from pyXLMS.data import create_csm
+    >>> minimal_csm = create_csm("PEPTIDEA", {}, 1, None, None, None, None, None, "PEPTIDEB", {}, 5, None, None, None, None, None, None, "MS_EXP1", 1, None, None, None)
+    >>> csm = create_csm("PEPTIDEA", {1: ("Oxidation", 15.994915)}, 1, ["PROTEINA"], [1], [1], 20.1, False, "PEPTIDEB", {}, 5, ["PROTEINB"], [3], [1], 33.7, False, 20.1, "MS_EXP1", 1, 3, 13.5, -50)
     """
     ## input checks
     full = check_input(peptide_a, "peptide_a", str)
@@ -554,11 +560,20 @@ def create_csm(
         else True
     )
     ## processing
+    key_a = f"{peptide_a.strip()}{xl_position_peptide_a}"
+    key_b = f"{peptide_b.strip()}{xl_position_peptide_b}"
+    # if homomeric crosslink
+    if key_a == key_b:
+        key_a += "_0"
+        key_b += "_1"
     crosslink = {
-        f"{peptide_a.strip()}{xl_position_peptide_a}": {
+        key_a: {
             "peptide": peptide_a,
             "modifications": {
-                key: (modifications_a[key][0].strip(), float(modifications_a[key][1]))
+                int(key): (
+                    modifications_a[key][0].strip(),
+                    float(modifications_a[key][1]),
+                )
                 for key in modifications_a.keys()
             }
             if modifications_a is not None
@@ -570,10 +585,13 @@ def create_csm(
             "score": score_a,
             "decoy": decoy_a,
         },
-        f"{peptide_b.strip()}{xl_position_peptide_b}": {
+        key_b: {
             "peptide": peptide_b,
             "modifications": {
-                key: (modifications_b[key][0].strip(), float(modifications_b[key][1]))
+                int(key): (
+                    modifications_b[key][0].strip(),
+                    float(modifications_b[key][1]),
+                )
                 for key in modifications_b.keys()
             }
             if modifications_b is not None
@@ -656,13 +674,13 @@ def create_parser_result(
 
     Examples
     --------
-    >>>from pyXLMS.data import create_parser_result
-    >>>result = create_parser_result("MS Annika", None, None)
-    >>>result["data_type"]
+    >>> from pyXLMS.data import create_parser_result
+    >>> result = create_parser_result("MS Annika", None, None)
+    >>> result["data_type"]
     'parser_result'
-    >>>result["completeness"]
+    >>> result["completeness"]
     'empty'
-    >>>result["search_engine"]
+    >>> result["search_engine"]
     'MS Annika'
     """
     completeness = "partial"

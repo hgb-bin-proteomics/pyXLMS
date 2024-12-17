@@ -111,7 +111,7 @@ def test9():
     # assert df.loc[0, "Beta Decoy"] == False
     assert not df.loc[0, "Beta Decoy"]
     assert df.loc[0, "Crosslink Type"] == "intra"
-    assert df.loc[0, "Crosslink Score"] > 70.0 and df.loc[0, "Crosslink Score"] < 71.0
+    assert df.loc[0, "Crosslink Score"] == pytest.approx(70.3)
     assert df.loc[1, "Completeness"] == "full"
     assert df.loc[1, "Alpha Peptide"] == "PEPTIDEA"
     assert df.loc[1, "Alpha Peptide Crosslink Position"] == 5
@@ -126,7 +126,7 @@ def test9():
     # assert df.loc[1, "Beta Decoy"] == False
     assert not df.loc[1, "Beta Decoy"]
     assert df.loc[1, "Crosslink Type"] == "inter"
-    assert df.loc[1, "Crosslink Score"] > 123.0 and df.loc[0, "Crosslink Score"] < 124.0
+    assert df.loc[1, "Crosslink Score"] == pytest.approx(123.7)
 
 
 def test10():
@@ -177,7 +177,7 @@ def test10():
     # assert df.loc[0, "Beta Decoy"] == False
     assert not df.loc[0, "Beta Decoy"]
     assert df.loc[0, "Crosslink Type"] == "intra"
-    assert df.loc[0, "Crosslink Score"] > 70.0 and df.loc[0, "Crosslink Score"] < 71.0
+    assert df.loc[0, "Crosslink Score"] == pytest.approx(70.3)
     assert df.loc[1, "Completeness"] == "full"
     assert df.loc[1, "Alpha Peptide"] == "PEPTIDEA"
     assert df.loc[1, "Alpha Peptide Crosslink Position"] == 5
@@ -192,7 +192,7 @@ def test10():
     # assert df.loc[1, "Beta Decoy"] == False
     assert not df.loc[1, "Beta Decoy"]
     assert df.loc[1, "Crosslink Type"] == "inter"
-    assert df.loc[1, "Crosslink Score"] > 123.0 and df.loc[0, "Crosslink Score"] < 124.0
+    assert df.loc[1, "Crosslink Score"] == pytest.approx(123.7)
 
 
 def test11():
@@ -321,7 +321,7 @@ def test12():
     assert df.loc[0, "Alpha Proteins"] == "PROTEINA"
     assert df.loc[0, "Alpha Proteins Crosslink Positions"] == "4"
     assert df.loc[0, "Alpha Proteins Peptide Positions"] == "2"
-    assert df.loc[0, "Alpha Score"] > 20.0 and df.loc[0, "Alpha Score"] < 21.0
+    assert df.loc[0, "Alpha Score"] == pytest.approx(20.4)
     # assert df.loc[0, "Alpha Decoy"] == True
     assert df.loc[0, "Alpha Decoy"]
     assert df.loc[0, "Beta Peptide"] == "PEPTIDE"
@@ -333,16 +333,16 @@ def test12():
     assert df.loc[0, "Beta Proteins"] == "PROTEINA"
     assert df.loc[0, "Beta Proteins Crosslink Positions"] == "5"
     assert df.loc[0, "Beta Proteins Peptide Positions"] == "1"
-    assert df.loc[0, "Beta Score"] > 70.0 and df.loc[0, "Alpha Score"] < 71.0
+    assert df.loc[0, "Beta Score"] == pytest.approx(70.3)
     # assert df.loc[0, "Beta Decoy"] == False
     assert not df.loc[0, "Beta Decoy"]
     assert df.loc[0, "Crosslink Type"] == "intra"
-    assert df.loc[0, "CSM Score"] > 70.0 and df.loc[0, "CSM Score"] < 71.0
+    assert df.loc[0, "CSM Score"] == pytest.approx(70.3)
     assert df.loc[0, "Spectrum File"] == "MS_EXP1"
     assert df.loc[0, "Scan Nr"] == 1
     assert df.loc[0, "Precursor Charge"] == 4
-    assert df.loc[0, "Retention Time"] > 12.0 and df.loc[0, "Retention Time"] < 13.0
-    assert df.loc[0, "Ion Mobility"] > -51.0 and df.loc[0, "Ion Mobility"] < -49.0
+    assert df.loc[0, "Retention Time"] == pytest.approx(12.8)
+    assert df.loc[0, "Ion Mobility"] == pytest.approx(-50)
     assert df.loc[1, "Completeness"] == "full"
     assert df.loc[1, "Alpha Peptide"] == "PEPTIDEA"
     assert df.loc[1, "Alpha Peptide Modifications"] == ""
@@ -350,7 +350,7 @@ def test12():
     assert df.loc[1, "Alpha Proteins"] == "PROTEINA"
     assert df.loc[1, "Alpha Proteins Crosslink Positions"] == "4"
     assert df.loc[1, "Alpha Proteins Peptide Positions"] == "2"
-    assert df.loc[1, "Alpha Score"] > 21.0 and df.loc[1, "Alpha Score"] < 22.0
+    assert df.loc[1, "Alpha Score"] == pytest.approx(21.4)
     # assert df.loc[1, "Alpha Decoy"] == False
     assert not df.loc[1, "Alpha Decoy"]
     assert df.loc[1, "Beta Peptide"] == "PEPTIDEB"
@@ -362,16 +362,16 @@ def test12():
     assert df.loc[1, "Beta Proteins"] == "PROTEINB;PROTEINC"
     assert df.loc[1, "Beta Proteins Crosslink Positions"] == "5;3"
     assert df.loc[1, "Beta Proteins Peptide Positions"] == "1;2"
-    assert df.loc[1, "Beta Score"] > 71.0 and df.loc[1, "Alpha Score"] < 72.0
+    assert df.loc[1, "Beta Score"] == pytest.approx(71.3)
     # assert df.loc[1, "Beta Decoy"] == False
     assert not df.loc[1, "Beta Decoy"]
     assert df.loc[1, "Crosslink Type"] == "inter"
-    assert df.loc[1, "CSM Score"] > 71.0 and df.loc[1, "CSM Score"] < 72.0
+    assert df.loc[1, "CSM Score"] == pytest.approx(71.3)
     assert df.loc[1, "Spectrum File"] == "MS_EXP1"
     assert df.loc[1, "Scan Nr"] == 2
     assert df.loc[1, "Precursor Charge"] == 3
-    assert df.loc[1, "Retention Time"] > 12.0 and df.loc[1, "Retention Time"] < 13.0
-    assert df.loc[1, "Ion Mobility"] > -71.0 and df.loc[1, "Ion Mobility"] < -69.0
+    assert df.loc[1, "Retention Time"] == pytest.approx(12.9)
+    assert df.loc[1, "Ion Mobility"] == pytest.approx(-70)
 
 
 def test13():
@@ -437,7 +437,7 @@ def test13():
     assert df.loc[0, "Alpha Proteins"] == "PROTEINA"
     assert df.loc[0, "Alpha Proteins Crosslink Positions"] == "4"
     assert df.loc[0, "Alpha Proteins Peptide Positions"] == "2"
-    assert df.loc[0, "Alpha Score"] > 20.0 and df.loc[0, "Alpha Score"] < 21.0
+    assert df.loc[0, "Alpha Score"] == pytest.approx(20.4)
     # assert df.loc[0, "Alpha Decoy"] == True
     assert df.loc[0, "Alpha Decoy"]
     assert df.loc[0, "Beta Peptide"] == "PEPTIDE"
@@ -449,16 +449,16 @@ def test13():
     assert df.loc[0, "Beta Proteins"] == "PROTEINA"
     assert df.loc[0, "Beta Proteins Crosslink Positions"] == "5"
     assert df.loc[0, "Beta Proteins Peptide Positions"] == "1"
-    assert df.loc[0, "Beta Score"] > 70.0 and df.loc[0, "Alpha Score"] < 71.0
+    assert df.loc[0, "Beta Score"] == pytest.approx(70.3)
     # assert df.loc[0, "Beta Decoy"] == False
     assert not df.loc[0, "Beta Decoy"]
     assert df.loc[0, "Crosslink Type"] == "intra"
-    assert df.loc[0, "CSM Score"] > 70.0 and df.loc[0, "CSM Score"] < 71.0
+    assert df.loc[0, "CSM Score"] == pytest.approx(70.3)
     assert df.loc[0, "Spectrum File"] == "MS_EXP1"
     assert df.loc[0, "Scan Nr"] == 1
     assert df.loc[0, "Precursor Charge"] == 4
-    assert df.loc[0, "Retention Time"] > 12.0 and df.loc[0, "Retention Time"] < 13.0
-    assert df.loc[0, "Ion Mobility"] > -51.0 and df.loc[0, "Ion Mobility"] < -49.0
+    assert df.loc[0, "Retention Time"] == pytest.approx(12.8)
+    assert df.loc[0, "Ion Mobility"] == pytest.approx(-50)
     assert df.loc[1, "Completeness"] == "full"
     assert df.loc[1, "Alpha Peptide"] == "PEPTIDEA"
     assert df.loc[1, "Alpha Peptide Modifications"] == ""
@@ -466,7 +466,7 @@ def test13():
     assert df.loc[1, "Alpha Proteins"] == "PROTEINA"
     assert df.loc[1, "Alpha Proteins Crosslink Positions"] == "4"
     assert df.loc[1, "Alpha Proteins Peptide Positions"] == "2"
-    assert df.loc[1, "Alpha Score"] > 21.0 and df.loc[1, "Alpha Score"] < 22.0
+    assert df.loc[1, "Alpha Score"] == pytest.approx(21.4)
     # assert df.loc[1, "Alpha Decoy"] == False
     assert not df.loc[1, "Alpha Decoy"]
     assert df.loc[1, "Beta Peptide"] == "PEPTIDEB"
@@ -478,16 +478,16 @@ def test13():
     assert df.loc[1, "Beta Proteins"] == "PROTEINB;PROTEINC"
     assert df.loc[1, "Beta Proteins Crosslink Positions"] == "5;3"
     assert df.loc[1, "Beta Proteins Peptide Positions"] == "1;2"
-    assert df.loc[1, "Beta Score"] > 71.0 and df.loc[1, "Alpha Score"] < 72.0
+    assert df.loc[1, "Beta Score"] == pytest.approx(71.3)
     # assert df.loc[1, "Beta Decoy"] == False
     assert not df.loc[1, "Beta Decoy"]
     assert df.loc[1, "Crosslink Type"] == "inter"
-    assert df.loc[1, "CSM Score"] > 71.0 and df.loc[1, "CSM Score"] < 72.0
+    assert df.loc[1, "CSM Score"] == pytest.approx(71.3)
     assert df.loc[1, "Spectrum File"] == "MS_EXP1"
     assert df.loc[1, "Scan Nr"] == 2
     assert df.loc[1, "Precursor Charge"] == 3
-    assert df.loc[1, "Retention Time"] > 12.0 and df.loc[1, "Retention Time"] < 13.0
-    assert df.loc[1, "Ion Mobility"] > -71.0 and df.loc[1, "Ion Mobility"] < -69.0
+    assert df.loc[1, "Retention Time"] == pytest.approx(12.9)
+    assert df.loc[1, "Ion Mobility"] == pytest.approx(-70.0)
 
 
 def test14():

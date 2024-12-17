@@ -33,14 +33,14 @@ def modifications_to_str(
 
     Examples
     --------
-    >>>from pyXLMS.transform import modifications_to_str
-    >>>modifications_to_str({1: ("Oxidation", 15.994915), 5: ("Carbamidomethyl", 57.021464)})
+    >>> from pyXLMS.transform import modifications_to_str
+    >>> modifications_to_str({1: ("Oxidation", 15.994915), 5: ("Carbamidomethyl", 57.021464)})
     '(1:[Oxidation|15.994915]);(5:[Carbamidomethyl|57.021464])'
     """
     modifications_str = ""
     if modifications is None:
         return None
-    for modification_pos in modifications.keys():
+    for modification_pos in sorted(modifications.keys()):
         modifications_str += f"({modification_pos}:[{modifications[modification_pos][0]}|{modifications[modification_pos][1]}]);"
     return modifications_str.rstrip(";")
 
@@ -283,11 +283,11 @@ def to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
 
     Examples
     --------
-    >>>from pyXLMS.transform import to_dataframe
-    >>># assume that crosslinks is a list of crosslinks created by data.create_crosslink()
-    >>>crosslink_dataframe = to_dataframe(crosslinks)
-    >>># assume csms is a list of crosslink-spectrum-matches created by data.create_csm()
-    >>>csm_dataframe = to_dataframe(csms)
+    >>> from pyXLMS.transform import to_dataframe
+    >>> # assume that crosslinks is a list of crosslinks created by data.create_crosslink()
+    >>> crosslink_dataframe = to_dataframe(crosslinks)
+    >>> # assume csms is a list of crosslink-spectrum-matches created by data.create_csm()
+    >>> csm_dataframe = to_dataframe(csms)
     """
     ## input checks
     check_input(data, "data", list, dict)

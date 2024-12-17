@@ -13,7 +13,7 @@ def test1():
 
     csm = data.create_csm(
         "PEPTIDE",
-        {1: (" Ox ", 16.0)},
+        {1: (" Oxidation ", 15.994915)},
         1,
         ["PROTEIN"],
         [1],
@@ -21,7 +21,7 @@ def test1():
         50.3,
         False,
         "EDITPEP",
-        {2: ("Ox", 16.0)},
+        {2: ("Oxidation", 15.994915)},
         3,
         ["NIETORP", "PROTEIN"],
         [5, 2],
@@ -41,11 +41,8 @@ def test1():
     assert csm["alpha_peptide"] == "EDITPEP"
     assert len(csm["alpha_modifications"]) == 1
     assert 2 in csm["alpha_modifications"]
-    assert csm["alpha_modifications"][2][0] == "Ox"
-    assert (
-        csm["alpha_modifications"][2][1] >= 15.95
-        and csm["alpha_modifications"][2][1] <= 16.05
-    )
+    assert csm["alpha_modifications"][2][0] == "Oxidation"
+    assert csm["alpha_modifications"][2][1] == pytest.approx(15.994915)
     assert csm["alpha_peptide_crosslink_position"] == 3
     assert len(csm["alpha_proteins"]) == 2
     assert csm["alpha_proteins"][0] == "NIETORP"
@@ -53,18 +50,15 @@ def test1():
     assert csm["alpha_proteins_crosslink_positions"][0] == 5
     assert len(csm["alpha_proteins_peptide_positions"]) == 2
     assert csm["alpha_proteins_peptide_positions"][0] == 5
-    assert csm["alpha_score"] >= 170.25 and csm["alpha_score"] <= 170.35
+    assert csm["alpha_score"] == pytest.approx(170.3)
     # assert csm["alpha_decoy"] == False
     assert not csm["alpha_decoy"]
     # beta
     assert csm["beta_peptide"] == "PEPTIDE"
     assert len(csm["beta_modifications"]) == 1
     assert 1 in csm["beta_modifications"]
-    assert csm["beta_modifications"][1][0] == "Ox"
-    assert (
-        csm["beta_modifications"][1][1] >= 15.95
-        and csm["beta_modifications"][1][1] <= 16.05
-    )
+    assert csm["beta_modifications"][1][0] == "Oxidation"
+    assert csm["beta_modifications"][1][1] == pytest.approx(15.994915)
     assert csm["beta_peptide_crosslink_position"] == 1
     assert len(csm["beta_proteins"]) == 1
     assert csm["beta_proteins"][0] == "PROTEIN"
@@ -72,17 +66,17 @@ def test1():
     assert csm["beta_proteins_crosslink_positions"][0] == 1
     assert len(csm["beta_proteins_peptide_positions"]) == 1
     assert csm["beta_proteins_peptide_positions"][0] == 1
-    assert csm["beta_score"] >= 50.25 and csm["beta_score"] <= 50.35
+    assert csm["beta_score"] == pytest.approx(50.3)
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
     assert csm["crosslink-type"] == "intra"
-    assert csm["score"] >= 170.25 and csm["score"] <= 170.35
+    assert csm["score"] == pytest.approx(170.3)
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
     assert csm["charge"] == 3
-    assert csm["retention_time"] >= 23.35 and csm["retention_time"] <= 23.45
-    assert csm["ion_mobility"] >= -50.05 and csm["ion_mobility"] <= -49.95
+    assert csm["retention_time"] == pytest.approx(23.4)
+    assert csm["ion_mobility"] == pytest.approx(-50.0)
 
 
 def test2():
@@ -90,7 +84,7 @@ def test2():
 
     csm = data.create_csm(
         "PEPTIDE",
-        {1: (" Ox ", 16.0)},
+        {1: (" Oxidation ", 15.994915)},
         1,
         ["PROTEIN"],
         [1],
@@ -98,7 +92,7 @@ def test2():
         50.3,
         False,
         "EDITPEP",
-        {2: ("Ox", 16.0)},
+        {2: ("Oxidation", 15.994915)},
         3,
         ["NIETORP"],
         [5],
@@ -118,11 +112,8 @@ def test2():
     assert csm["alpha_peptide"] == "EDITPEP"
     assert len(csm["alpha_modifications"]) == 1
     assert 2 in csm["alpha_modifications"]
-    assert csm["alpha_modifications"][2][0] == "Ox"
-    assert (
-        csm["alpha_modifications"][2][1] >= 15.95
-        and csm["alpha_modifications"][2][1] <= 16.05
-    )
+    assert csm["alpha_modifications"][2][0] == "Oxidation"
+    assert csm["alpha_modifications"][2][1] == pytest.approx(15.994915)
     assert csm["alpha_peptide_crosslink_position"] == 3
     assert len(csm["alpha_proteins"]) == 1
     assert csm["alpha_proteins"][0] == "NIETORP"
@@ -130,18 +121,15 @@ def test2():
     assert csm["alpha_proteins_crosslink_positions"][0] == 5
     assert len(csm["alpha_proteins_peptide_positions"]) == 1
     assert csm["alpha_proteins_peptide_positions"][0] == 5
-    assert csm["alpha_score"] >= 170.25 and csm["alpha_score"] <= 170.35
+    assert csm["alpha_score"] == pytest.approx(170.3)
     # assert csm["alpha_decoy"] == False
     assert not csm["alpha_decoy"]
     # beta
     assert csm["beta_peptide"] == "PEPTIDE"
     assert len(csm["beta_modifications"]) == 1
     assert 1 in csm["beta_modifications"]
-    assert csm["beta_modifications"][1][0] == "Ox"
-    assert (
-        csm["beta_modifications"][1][1] >= 15.95
-        and csm["beta_modifications"][1][1] <= 16.05
-    )
+    assert csm["beta_modifications"][1][0] == "Oxidation"
+    assert csm["beta_modifications"][1][1] == pytest.approx(15.994915)
     assert csm["beta_peptide_crosslink_position"] == 1
     assert len(csm["beta_proteins"]) == 1
     assert csm["beta_proteins"][0] == "PROTEIN"
@@ -149,17 +137,17 @@ def test2():
     assert csm["beta_proteins_crosslink_positions"][0] == 1
     assert len(csm["beta_proteins_peptide_positions"]) == 1
     assert csm["beta_proteins_peptide_positions"][0] == 1
-    assert csm["beta_score"] >= 50.25 and csm["beta_score"] <= 50.35
+    assert csm["beta_score"] == pytest.approx(50.3)
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
     assert csm["crosslink-type"] == "inter"
-    assert csm["score"] >= 170.25 and csm["score"] <= 170.35
+    assert csm["score"] == pytest.approx(170.3)
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
     assert csm["charge"] == 3
-    assert csm["retention_time"] >= 23.35 and csm["retention_time"] <= 23.45
-    assert csm["ion_mobility"] >= -50.05 and csm["ion_mobility"] <= -49.95
+    assert csm["retention_time"] == pytest.approx(23.4)
+    assert csm["ion_mobility"] == pytest.approx(-50.0)
 
 
 def test3():
@@ -167,7 +155,7 @@ def test3():
 
     csm = data.create_csm(
         "EDITPEP",
-        {2: ("Ox", 16.0)},
+        {2: ("Oxidation", 15.994915)},
         3,
         ["NIETORP", "PROTEIN"],
         [5, 2],
@@ -175,7 +163,7 @@ def test3():
         170.3,
         False,
         "PEPTIDE",
-        {1: (" Ox ", 16.0)},
+        {1: (" Oxidation ", 15.994915)},
         1,
         ["PROTEIN"],
         [1],
@@ -195,11 +183,8 @@ def test3():
     assert csm["alpha_peptide"] == "EDITPEP"
     assert len(csm["alpha_modifications"]) == 1
     assert 2 in csm["alpha_modifications"]
-    assert csm["alpha_modifications"][2][0] == "Ox"
-    assert (
-        csm["alpha_modifications"][2][1] >= 15.95
-        and csm["alpha_modifications"][2][1] <= 16.05
-    )
+    assert csm["alpha_modifications"][2][0] == "Oxidation"
+    assert csm["alpha_modifications"][2][1] == pytest.approx(15.994915)
     assert csm["alpha_peptide_crosslink_position"] == 3
     assert len(csm["alpha_proteins"]) == 2
     assert csm["alpha_proteins"][0] == "NIETORP"
@@ -207,18 +192,15 @@ def test3():
     assert csm["alpha_proteins_crosslink_positions"][0] == 5
     assert len(csm["alpha_proteins_peptide_positions"]) == 2
     assert csm["alpha_proteins_peptide_positions"][0] == 5
-    assert csm["alpha_score"] >= 170.25 and csm["alpha_score"] <= 170.35
+    assert csm["alpha_score"] == pytest.approx(170.3)
     # assert csm["alpha_decoy"] == False
     assert not csm["alpha_decoy"]
     # beta
     assert csm["beta_peptide"] == "PEPTIDE"
     assert len(csm["beta_modifications"]) == 1
     assert 1 in csm["beta_modifications"]
-    assert csm["beta_modifications"][1][0] == "Ox"
-    assert (
-        csm["beta_modifications"][1][1] >= 15.95
-        and csm["beta_modifications"][1][1] <= 16.05
-    )
+    assert csm["beta_modifications"][1][0] == "Oxidation"
+    assert csm["beta_modifications"][1][1] == pytest.approx(15.994915)
     assert csm["beta_peptide_crosslink_position"] == 1
     assert len(csm["beta_proteins"]) == 1
     assert csm["beta_proteins"][0] == "PROTEIN"
@@ -226,17 +208,17 @@ def test3():
     assert csm["beta_proteins_crosslink_positions"][0] == 1
     assert len(csm["beta_proteins_peptide_positions"]) == 1
     assert csm["beta_proteins_peptide_positions"][0] == 1
-    assert csm["beta_score"] >= 50.25 and csm["beta_score"] <= 50.35
+    assert csm["beta_score"] == pytest.approx(50.3)
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
     assert csm["crosslink-type"] == "intra"
-    assert csm["score"] >= 170.25 and csm["score"] <= 170.35
+    assert csm["score"] == pytest.approx(170.3)
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
     assert csm["charge"] == 3
-    assert csm["retention_time"] >= 23.35 and csm["retention_time"] <= 23.45
-    assert csm["ion_mobility"] >= -50.05 and csm["ion_mobility"] <= -49.95
+    assert csm["retention_time"] == pytest.approx(23.4)
+    assert csm["ion_mobility"] == pytest.approx(-50.0)
 
 
 def test4():
@@ -244,7 +226,7 @@ def test4():
 
     csm = data.create_csm(
         "PEPTIDE  ",
-        {1: ("    Ox ", 16.0)},
+        {1: ("    Oxidation ", 15.994915)},
         3,
         ["   PROTEIN"],
         [3],
@@ -252,7 +234,7 @@ def test4():
         50.3,
         False,
         "   PEPTIDE",
-        {2: ("Ox", 16.0)},
+        {2: ("Oxidation", 15.994915)},
         1,
         ["PROTEIN  "],
         [1],
@@ -272,11 +254,8 @@ def test4():
     assert csm["alpha_peptide"] == "PEPTIDE"
     assert len(csm["alpha_modifications"]) == 1
     assert 2 in csm["alpha_modifications"]
-    assert csm["alpha_modifications"][2][0] == "Ox"
-    assert (
-        csm["alpha_modifications"][2][1] >= 15.95
-        and csm["alpha_modifications"][2][1] <= 16.05
-    )
+    assert csm["alpha_modifications"][2][0] == "Oxidation"
+    assert csm["alpha_modifications"][2][1] == pytest.approx(15.994915)
     assert csm["alpha_peptide_crosslink_position"] == 1
     assert len(csm["alpha_proteins"]) == 1
     assert csm["alpha_proteins"][0] == "PROTEIN"
@@ -284,18 +263,15 @@ def test4():
     assert csm["alpha_proteins_crosslink_positions"][0] == 1
     assert len(csm["alpha_proteins_peptide_positions"]) == 1
     assert csm["alpha_proteins_peptide_positions"][0] == 1
-    assert csm["alpha_score"] >= 170.25 and csm["alpha_score"] <= 170.35
+    assert csm["alpha_score"] == pytest.approx(170.3)
     # assert csm["alpha_decoy"] == False
     assert not csm["alpha_decoy"]
     # beta
     assert csm["beta_peptide"] == "PEPTIDE"
     assert len(csm["beta_modifications"]) == 1
     assert 1 in csm["beta_modifications"]
-    assert csm["beta_modifications"][1][0] == "Ox"
-    assert (
-        csm["beta_modifications"][1][1] >= 15.95
-        and csm["beta_modifications"][1][1] <= 16.05
-    )
+    assert csm["beta_modifications"][1][0] == "Oxidation"
+    assert csm["beta_modifications"][1][1] == pytest.approx(15.994915)
     assert csm["beta_peptide_crosslink_position"] == 3
     assert len(csm["beta_proteins"]) == 1
     assert csm["beta_proteins"][0] == "PROTEIN"
@@ -303,17 +279,17 @@ def test4():
     assert csm["beta_proteins_crosslink_positions"][0] == 3
     assert len(csm["beta_proteins_peptide_positions"]) == 1
     assert csm["beta_proteins_peptide_positions"][0] == 3
-    assert csm["beta_score"] >= 50.25 and csm["beta_score"] <= 50.35
+    assert csm["beta_score"] == pytest.approx(50.3)
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
     assert csm["crosslink-type"] == "intra"
-    assert csm["score"] >= 170.25 and csm["score"] <= 170.35
+    assert csm["score"] == pytest.approx(170.3)
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
     assert csm["charge"] == 3
-    assert csm["retention_time"] >= 23.35 and csm["retention_time"] <= 23.45
-    assert csm["ion_mobility"] >= -50.05 and csm["ion_mobility"] <= -49.95
+    assert csm["retention_time"] == pytest.approx(23.4)
+    assert csm["ion_mobility"] == pytest.approx(-50.0)
 
 
 def test5():
@@ -379,7 +355,7 @@ def test6():
     with pytest.raises(TypeError, match=f"modifications_a must be {dict}!"):
         _csm = data.create_csm(
             "PEPTIDE",
-            (" Ox ", 16.0),
+            (" Oxidation ", 15.994915),
             1,
             ["PROTEIN"],
             [1],
@@ -387,7 +363,7 @@ def test6():
             50.3,
             False,
             "EDITPEP",
-            {2: ("Ox", 16.0)},
+            {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
             [5, 2],
@@ -411,7 +387,7 @@ def test7():
     ):
         _csm = data.create_csm(
             "PEPTIDE",
-            {1: (" Ox ", 16.0)},
+            {1: (" Oxidation ", 15.994915)},
             1,
             ["PROTEIN"],
             [1],
@@ -419,7 +395,7 @@ def test7():
             50.3,
             False,
             "EDITPEP",
-            {2: {"Ox": 16.0}},
+            {2: {"Oxidation": 15.994915}},
             3,
             ["NIETORP", "PROTEIN"],
             [5, 2],
@@ -441,7 +417,7 @@ def test8():
     with pytest.raises(TypeError, match=f"xl_position_peptide_b must be {int}!"):
         _csm = data.create_csm(
             "PEPTIDE",
-            {1: (" Ox ", 16.0)},
+            {1: (" Oxidation ", 15.994915)},
             1,
             ["PROTEIN"],
             [1],
@@ -449,7 +425,7 @@ def test8():
             50.3,
             False,
             "EDITPEP",
-            {2: ("Ox", 16.0)},
+            {2: ("Oxidation", 15.994915)},
             "3",
             ["NIETORP", "PROTEIN"],
             [5, 2],
@@ -473,7 +449,7 @@ def test9():
     ):
         _csm = data.create_csm(
             "PEPTIDE",
-            {1: (" Ox ", 16.0)},
+            {1: (" Oxidation ", 15.994915)},
             1,
             ["PROTEIN"],
             [1],
@@ -481,7 +457,7 @@ def test9():
             50.3,
             False,
             "EDITPEP",
-            {2: ("Ox", 16.0)},
+            {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
             [5, "2"],
@@ -506,7 +482,7 @@ def test10():
     ):
         _csm = data.create_csm(
             "PEPTIDE",
-            {1: (" Ox ", 16.0)},
+            {1: (" Oxidation ", 15.994915)},
             1,
             ["PROTEIN"],
             [1, 2],
@@ -514,7 +490,7 @@ def test10():
             50.3,
             False,
             "EDITPEP",
-            {2: ("Ox", 16.0)},
+            {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
             [5, 2],
@@ -539,7 +515,7 @@ def test11():
     ):
         _csm = data.create_csm(
             "PEPTIDE",
-            {1: (" Ox ", 16.0)},
+            {1: (" Oxidation ", 15.994915)},
             1,
             ["PROTEIN"],
             [1],
@@ -547,7 +523,7 @@ def test11():
             50.3,
             False,
             "EDITPEP",
-            {2: ("Ox", 16.0)},
+            {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
             [5],
@@ -572,7 +548,7 @@ def test12():
     ):
         _csm = data.create_csm(
             "PEPTIDE",
-            {1: (" Ox ", 16.0)},
+            {1: (" Oxidation ", 15.994915)},
             1,
             ["PROTEIN"],
             [1],
@@ -580,7 +556,7 @@ def test12():
             50.3,
             False,
             "EDITPEP",
-            {2: ("Ox", 16.0)},
+            {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
             [5, 2],
@@ -605,7 +581,7 @@ def test13():
     ):
         _csm = data.create_csm(
             "PEPTIDE",
-            {1: (" Ox ", 16.0)},
+            {1: (" Oxidation ", 15.994915)},
             1,
             ["PROTEIN"],
             [1],
@@ -613,7 +589,7 @@ def test13():
             50.3,
             False,
             "EDITPEP",
-            {2: ("Ox", 16.0)},
+            {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
             [5, 2],
