@@ -179,6 +179,7 @@ def create_crosslink(
     xl_position_proteins_b: List[int] | None,
     decoy_b: bool | None,
     score: float | None,
+    additional_information: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     """Creates a crosslink data structure.
 
@@ -209,13 +210,15 @@ def create_crosslink(
         Whether the beta peptide is from the decoy database or not.
     score: float, or None
         Score of the crosslink.
+    additional_information: dict with str keys, or None, default = None
+        A dictionary with additional information associated with the crosslink.
 
     Returns
     -------
     dict
         The dictionary representing the crosslink with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_peptide_crosslink_position``,
         ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
-        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink-type``, and ``score``.
+        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink-type``, ``score``, and ``additional_information``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
 
     Raises
@@ -340,6 +343,7 @@ def create_crosslink(
         if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0
         else "inter",
         "score": score,
+        "additional_information": additional_information,
     }
 
 
@@ -366,6 +370,7 @@ def create_csm(
     charge: int | None,
     rt: float | None,
     im_cv: float | None,
+    additional_information: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     """Creates a crosslink-spectrum-match data structure.
 
@@ -422,6 +427,8 @@ def create_csm(
         The retention time of the corresponding mass spectrum of the crosslink-spectrum-match in seconds.
     im_cv : float, or None
         The ion mobility or compensation voltage of the corresponding mass spectrum of the crosslink-spectrum-match.
+    additional_information: dict with str keys, or None, default = None
+        A dictionary with additional information associated with the crosslink-spectrum-match.
 
     Returns
     -------
@@ -430,7 +437,7 @@ def create_csm(
         ``alpha_peptide_crosslink_position``, ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_proteins_peptide_positions``,
         ``alpha_score``, ``alpha_decoy``, ``beta_peptide``, ``beta_modifications``, ``beta_peptide_crosslink_position``, ``beta_proteins``,
         ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink-type``, ``score``,
-        ``spectrum_file``, ``scan_nr``, ``retention_time``, and ``ion_mobility``.
+        ``spectrum_file``, ``scan_nr``, ``retention_time``, ``ion_mobility``, and ``additional_information``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
 
     Raises
@@ -645,6 +652,7 @@ def create_csm(
         "charge": charge,
         "retention_time": rt,
         "ion_mobility": im_cv,
+        "additional_information": additional_information,
     }
 
 
