@@ -12,6 +12,7 @@ from .constants import AMINO_ACIDS
 
 from typing import Any
 
+
 def format_sequence(
     sequence: str, remove_non_aa: bool = True, remove_lower: bool = True
 ) -> str:

@@ -6,6 +6,7 @@
 
 from .parser_msannika import read_msannika
 
+
 ## TODO
 def read(file: str):
     if file:

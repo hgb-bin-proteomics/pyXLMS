@@ -29,6 +29,7 @@ try:
 except ImportError:
     from typing_extensions import Literal
 
+
 def read_msannika(
     files: str | List[str] | BinaryIO,
     modifications: Dict[str, float] = MODIFICATIONS,
