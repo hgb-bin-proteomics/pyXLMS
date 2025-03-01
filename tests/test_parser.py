@@ -9,7 +9,7 @@ import pytest
 
 
 def test1():
-    from pyXLMS import parser as p
+    from pyXLMS import parser_util as p
 
     assert p.format_sequence("PEP[K]TIDE") == "PEPKTIDE"
     assert p.format_sequence("PEPKdssoTIDE") == "PEPKTIDE"
@@ -17,7 +17,7 @@ def test1():
 
 
 def test2():
-    from pyXLMS import parser as p
+    from pyXLMS import parser_util as p
 
     assert p.get_bool_from_value(True)
     assert not p.get_bool_from_value(False)
@@ -32,7 +32,7 @@ def test2():
 
 
 def test3():
-    from pyXLMS import parser as p
+    from pyXLMS import parser_util as p
 
     value = 2
     with pytest.raises(
@@ -42,7 +42,7 @@ def test3():
 
 
 def test4():
-    from pyXLMS import parser as p
+    from pyXLMS import parser_util as p
 
     value = 2.0
     with pytest.raises(
@@ -52,7 +52,7 @@ def test4():
 
 
 def test5():
-    from pyXLMS import parser as p
+    from pyXLMS import parser_util as p
 
     with pytest.raises(
         ValueError, match="Cannot parse bool value from the given input \[\]."
