@@ -152,6 +152,11 @@ def read_msannika(
             raise RuntimeError(
                 "Something went wrong while reading the file! Please file a bug report!"
             )
+        # this should be impossible, but check here for pyright
+        if not isinstance(data, pd.DataFrame):
+            raise RuntimeError(
+                "Something went wrong while reading the file! Please file a bug report!"
+            )
         ## detect input file type
         col_names = data.columns.values.tolist()
         is_crosslink_dataframe = "# CSMs" in col_names
