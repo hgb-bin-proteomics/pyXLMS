@@ -13,7 +13,7 @@ from .data import check_input
 from .data import create_crosslink
 from .data import create_csm
 from .data import create_parser_result
-from .constants import MODIFICATIONS
+from .constants import XI_MODIFICATION_MAPPING
 from .parser_util import format_sequence
 from .parser_util import get_bool_from_value
 
@@ -23,18 +23,22 @@ from typing import Any
 from typing import Tuple
 from typing import List
 
-# legacy
-try:
-    from typing import Literal
-except ImportError:
-    from typing_extensions import Literal
 
+def detect_xi_filetype():
+    return
 
-def read_msannika(
+def read_xisearch():
+    return
+
+def read_xifdr_csms():
+    return
+
+def read_xifdr_crosslinks():
+    return
+
+def read_xi(
     files: str | List[str] | BinaryIO,
-    modifications: Dict[str, float] = MODIFICATIONS,
-    format: Literal["auto", "csv", "txt", "tsv", "xlsx"] = "auto",
-    sep: str = "\t",
+    modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING
 ) -> Dict[str, Any]:
     """Read an MS Annika result file.
 
@@ -45,7 +49,7 @@ def read_msannika(
     ----------
     files : str, list of str, or file stream
         The name/path of the MS Annika result file(s) or a file-like object/stream.
-    modifications: dict of str, float, default = ``constants.MODIFICATIONS``
+    modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
         Mapping of modification names to modification masses.
     format : "auto", "csv", "tsv", "txt", or "xlsx", default = "auto"
         The format of the result file. ``"auto"`` is only available if the name/path to the MS Annika result file is given.
@@ -81,31 +85,10 @@ def read_msannika(
     >>> crosslinks_from_tsv = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.txt")
     """
     ## check input
-    _ok = check_input(modifications, "modifications", dict, float)
+    _ok = check_input(modifications, "modifications", dict, tuple)
 
     ## helper functions
-    def parse_modification_str(
-        sequence: str,
-        modification_str: str,
-        modifications: Dict[str, float] = modifications,
-    ) -> Dict[int, Tuple[str, float]]:
-        mods = [mod.strip() for mod in modification_str.split(";")]
-        parsed_mods = dict()
-        for mod in mods:
-            mod_type = mod.split("(")[1].split(")")[0].strip()
-            mod_pos = mod.split("(")[0].strip()
-            if mod_type not in modifications:
-                raise KeyError(
-                    f"Unable to find modification {mod_type} in the set of provided modifications. "
-                    + "Please pass the full set of expected modifications to the parser."
-                )
-            if "Nterm" in mod_pos:
-                parsed_mods[0] = (mod_type, modifications[mod_type])
-            elif "Cterm" in mod_pos:
-                parsed_mods[len(sequence)] = (mod_type, modifications[mod_type])
-            else:
-                parsed_mods[int(mod_pos[1:])] = (mod_type, modifications[mod_type])
-        return parsed_mods
+
 
     ## data structures
     crosslinks = list()
@@ -158,90 +141,9 @@ def read_msannika(
                 "Something went wrong while reading the file! Please file a bug report!"
             )
         ## detect input file type
-        col_names = data.columns.values.tolist()
-        is_crosslink_dataframe = "# CSMs" in col_names
+
         ## process data
-        if is_crosslink_dataframe:
-            for i, row in data.iterrows():
-                # create crosslink
-                crosslink = create_crosslink(
-                    peptide_a=format_sequence(str(row["Sequence A"]).strip()),
-                    xl_position_peptide_a=int(row["Position A"]),
-                    proteins_a=[
-                        protein.strip()
-                        for protein in str(row["Accession A"]).split(";")
-                    ],
-                    xl_position_proteins_a=[
-                        int(position)
-                        for position in str(row["In protein A"]).split(";")
-                    ],
-                    decoy_a=get_bool_from_value(row["Decoy"]),
-                    peptide_b=format_sequence(str(row["Sequence B"]).strip()),
-                    xl_position_peptide_b=int(row["Position B"]),
-                    proteins_b=[
-                        protein.strip()
-                        for protein in str(row["Accession B"]).split(";")
-                    ],
-                    xl_position_proteins_b=[
-                        int(position)
-                        for position in str(row["In protein B"]).split(";")
-                    ],
-                    decoy_b=get_bool_from_value(row["Decoy"]),
-                    score=float(row["Best CSM Score"]),
-                )
-                crosslinks.append(crosslink)
-        else:
-            for i, row in data.iterrows():
-                # create csm
-                csm = create_csm(
-                    peptide_a=format_sequence(str(row["Sequence A"]).strip()),
-                    modifications_a=parse_modification_str(
-                        format_sequence(str(row["Sequence A"]).strip()),
-                        str(row["Modifications A"]).strip(),
-                    ),
-                    xl_position_peptide_a=int(row["Crosslinker Position A"]),
-                    proteins_a=[
-                        protein.strip()
-                        for protein in str(row["Accession A"]).split(";")
-                    ],
-                    xl_position_proteins_a=[
-                        int(position) + int(row["Crosslinker Position A"])
-                        for position in str(row["A in protein"]).split(";")
-                    ],
-                    pep_position_proteins_a=[
-                        int(position) + 1
-                        for position in str(row["A in protein"]).split(";")
-                    ],
-                    score_a=float(row["Score Alpha"]),
-                    decoy_a=not get_bool_from_value(str(row["Alpha T/D"])),
-                    peptide_b=format_sequence(str(row["Sequence B"]).strip()),
-                    modifications_b=parse_modification_str(
-                        format_sequence(str(row["Sequence B"]).strip()),
-                        str(row["Modifications B"]).strip(),
-                    ),
-                    xl_position_peptide_b=int(row["Crosslinker Position B"]),
-                    proteins_b=[
-                        protein.strip()
-                        for protein in str(row["Accession B"]).split(";")
-                    ],
-                    xl_position_proteins_b=[
-                        int(position) + int(row["Crosslinker Position B"])
-                        for position in str(row["B in protein"]).split(";")
-                    ],
-                    pep_position_proteins_b=[
-                        int(position) + 1
-                        for position in str(row["B in protein"]).split(";")
-                    ],
-                    score_b=float(row["Score Beta"]),
-                    decoy_b=not get_bool_from_value(str(row["Beta T/D"])),
-                    score=float(row["Combined Score"]),
-                    spectrum_file=str(row["Spectrum File"]).strip(),
-                    scan_nr=int(row["First Scan"]),
-                    charge=int(row["Charge"]),
-                    rt=float(row["RT [min]"]) * 60.0,
-                    im_cv=float(row["Compensation Voltage"]),
-                )
-                csms.append(csm)
+
     ## check results
     if len(crosslinks) + len(csms) == 0:
         raise RuntimeError(
@@ -249,7 +151,7 @@ def read_msannika(
         )
     ## return parser result
     return create_parser_result(
-        search_engine="MS Annika",
+        search_engine="xiSearch/xiFDR",
         csms=csms if len(csms) > 0 else None,
         crosslinks=crosslinks if len(crosslinks) > 0 else None,
     )
