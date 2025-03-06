@@ -85,19 +85,19 @@ Examples
 MODIFICATIONS.update(CROSSLINKERS)
 
 XI_MODIFICATION_MAPPING = {
-    "Ccm": ("C", "Carbamidomethyl"),
-    "Mox": ("M", "Oxidation"),
+    "Ccm": ("C", "Carbamidomethyl", 57.021464),
+    "Mox": ("M", "Oxidation", 15.994915),
 }
 """Dictionary that maps sequence elements from xiSearch and xiFDR to their corresponding amino acids and post-translational-modifications.
 
 Dictionary that maps sequence elements (e.g. `"Ccm"`) from xiSearch and xiFDR to their corresponding amino acids and
-post-translational-modifications (e.g. `("C", "Carbamidomethyl")`).
+post-translational-modifications (e.g. `("C", "Carbamidomethyl", 57.021464)`).
 
 Examples
 --------
 >>> from pyXLMS.constants import XI_MODIFICATION_MAPPING
 >>> XI_MODIFICATION_MAPPING["Ccm"]
-('C', 'Carbamidomethyl')
+('C', 'Carbamidomethyl', 57.021464)
 >>> XI_MODIFICATION_MAPPING["Mox"]
-('M', 'Oxidation')
+('M', 'Oxidation', 15.994915)
 """
