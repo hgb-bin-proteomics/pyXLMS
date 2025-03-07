@@ -27,13 +27,13 @@ from typing import List
 def detect_xi_filetype():
     return
 
-def read_xisearch():
+def read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
     return
 
-def read_xifdr_csms():
+def read_xifdr_csms(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
     return
 
-def read_xifdr_crosslinks():
+def read_xifdr_crosslinks(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
     return
 
 def read_xi(
