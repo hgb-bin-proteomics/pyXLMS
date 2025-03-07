@@ -23,9 +23,65 @@ from typing import Any
 from typing import Tuple
 from typing import List
 
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
-def detect_xi_filetype():
-    return
+def detect_xi_filetype(data: pd.DataFrame) -> Literal["xisearch", "xifdr_csms", "xifdr_crosslinks"]:
+    """Detects the source application of the data.
+
+    Detects whether the input data is originating from xiSearch or xiFDR, and if xiFDR which type of data is
+    being read (CSMs or crosslinks).
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        The input data originating from xiSearch or xiFDR.
+
+    Returns
+    -------
+    str
+        "xisearch" if a xiSearch result file was read, "xifdr_csms" if CSMs from xiFDR were read,
+        "xifdr_crosslinks" if crosslinks from xiFDR were read.
+
+    Raises
+    ------
+    ValueError
+        If the data source could not be determined.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser_xi import detect_xi_filetype
+    >>> import pandas as pd
+    >>> df1 = pd.read_csv("data/xi/r1_Xi1.7.6.7.csv")
+    >>> detect_xi_filetype(df1)
+    'xisearch'
+
+    >>> from pyXLMS.parser_xi import detect_xi_filetype
+    >>> import pandas as pd
+    >>> df2 = pd.read_csv("data/xi/1perc_xl_boost_CSM_xiFDR2.2.1.csv")
+    >>> detect_xi_filetype(df2)
+    'xifdr_csms'
+
+    >>> from pyXLMS.parser_xi import detect_xi_filetype
+    >>> import pandas as pd
+    >>> df3 = pd.read_csv("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv")
+    >>> detect_xi_filetype(df3)
+    'xifdr_crosslinks'
+    """
+    col_names = data.columns.values.tolist()
+    if "AllScore" in col_names:
+        return "xisearch"
+    if "LinkPos1" in col_names:
+        return "xifdr_csms"
+    if "ToSite" in col_names:
+        return "xifdr_crosslinks"
+
+    raise ValueError("Could not infer data source, are you sure you read a xi result file?")
+
+    return "err"
 
 def read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
     return
