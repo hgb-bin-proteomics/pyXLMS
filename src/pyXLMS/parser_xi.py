@@ -96,21 +96,17 @@ def read_xi(
     files: str | List[str] | BinaryIO,
     modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING
 ) -> Dict[str, Any]:
-    """Read an MS Annika result file.
+    """Read a xiSearch/xiFDR result file.
 
-    Reads an MS Annika crosslink-spectrum-matches result file or crosslink result file in ``.csv`` or ``.xlsx`` format and returns a
-    ``parser_result``.
+    Reads a xiSearch crosslink-spectrum-matches result file or a xiFDR crosslink-spectrum-matches
+    result file or crosslink result file in ``.csv`` format and returns a ``parser_result``.
 
     Parameters
     ----------
     files : str, list of str, or file stream
-        The name/path of the MS Annika result file(s) or a file-like object/stream.
+        The name/path of the xiSearch/xiFDR result file(s) or a file-like object/stream.
     modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
-        Mapping of modification names to modification masses.
-    format : "auto", "csv", "tsv", "txt", or "xlsx", default = "auto"
-        The format of the result file. ``"auto"`` is only available if the name/path to the MS Annika result file is given.
-    sep : str, default = "\t"
-        Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` format.
+        Mapping of xi sequence elements (e.g. ``"Ccm"``) to their modifications (e.g. ``("C", "Carbamidomethyl", 57.021464)``).
 
     Returns
     -------
@@ -119,32 +115,22 @@ def read_xi(
 
     Raises
     ------
-    ValueError
-        If the input format is not supported or cannot be inferred.
     RuntimeError
-        If the file(s) could not be read or if the file(s) contain no crosslinks or crosslink-spectrum-matches.
-    KeyError
-        If one of the found post-translational-modifications could not be found/mapped.
+        If the file(s) contain no crosslinks or crosslink-spectrum-matches.
 
     Examples
     --------
-    >>> from pyXLMS.parser import read_msannika
-    >>> csms_from_xlsx = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx")
+    >>> from pyXLMS.parser import read_xi
+    >>> csms_from_xiSearch = read_xi("data/xi/r1_Xi1.7.6.7.csv")
 
-    >>> from pyXLMS.parser import read_msannika
-    >>> crosslinks_from_xlsx = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx")
+    >>> from pyXLMS.parser import read_xi
+    >>> csms_from_xiFDR = read_xi("data/xi/1perc_xl_boost_CSM_xiFDR2.2.1.csv")
 
-    >>> from pyXLMS.parser import read_msannika
-    >>> csms_from_tsv = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt")
-
-    >>> from pyXLMS.parser import read_msannika
-    >>> crosslinks_from_tsv = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.txt")
+    >>> from pyXLMS.parser import read_xi
+    >>> crosslinks_from_xiFDR = read_xi("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv")
     """
     ## check input
     _ok = check_input(modifications, "modifications", dict, tuple)
-
-    ## helper functions
-
 
     ## data structures
     crosslinks = list()
@@ -158,47 +144,16 @@ def read_xi(
 
     for input in inputs:
         ## reading data
-        data = None
-        if format == "auto" and not isinstance(input, str):
-            raise ValueError(
-                "Can't detect format for file-like objects. Please specify format manually!"
-            )
-        # and isinstance specified for type checking
-        if format == "auto" and isinstance(input, str):
-            file_extension = splitext(input)[1]
-            if (
-                file_extension == ".txt"
-                or file_extension == ".tsv"
-                or file_extension == ".csv"
-            ):
-                data = pd.read_csv(input, sep=sep)
-            elif file_extension == ".xlsx":
-                data = pd.read_excel(input, engine="openpyxl")
-            else:
-                raise ValueError(
-                    f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv' or '.xlsx'!"
-                )
-        elif format in ["csv", "tsv", "txt", "xlsx"]:
-            if format == "xlsx":
-                data = pd.read_excel(input, engine="openpyxl")
-            else:
-                data = pd.read_csv(input, sep=sep)
-        else:
-            raise ValueError(
-                f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv' or 'xlsx'!"
-            )
-        if data is None:
-            raise RuntimeError(
-                "Something went wrong while reading the file! Please file a bug report!"
-            )
-        # this should be impossible, but check here for pyright
-        if not isinstance(data, pd.DataFrame):
-            raise RuntimeError(
-                "Something went wrong while reading the file! Please file a bug report!"
-            )
+        data = pd.read_csv(input)
         ## detect input file type
-
+        xi_file_type = detect_xi_filetype(data)
         ## process data
+        if xi_file_type == "xifdr_csms":
+            csms += read_xifdr_csms(data, modifications)
+        elif xi_file_type ==  "xifdr_crosslinks":
+            crosslinks += read_xifdr_crosslinks(data, modifications)
+        else:
+            csms += read_xisearch(data, modifications)
 
     ## check results
     if len(crosslinks) + len(csms) == 0:
