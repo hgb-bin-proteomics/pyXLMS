@@ -83,8 +83,54 @@ def detect_xi_filetype(data: pd.DataFrame) -> Literal["xisearch", "xifdr_csms", 
 
     return "err"
 
-def read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
+def __parse_xisearch_modifications(row: pd.Series, alpha: bool, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> Dict[int, Tuple[str, float]]:
+    # Modifications2                                                                                      Mox;Mox
+    # ModificationPositions2                                                                                  5;7
     return
+
+def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
+    """
+    """
+    # remove monolinks
+    xl = data.dropna(axis = 0, subset = "BasePeptide2")
+    # create csms list
+    csms = list()
+    # create csms
+    for i, row in xl.iterrows():
+        csm = create_crosslink(
+            peptide_a = format_sequence(str(row["BasePeptide1"]).strip()),
+            modifications_a = __parse_xisearch_modifications(row, True, modifications),
+            xl_position_peptide_a = int(row["Link1"]),
+            proteins_a = [p.strip() for p in str(row["Protein1"]).split(";")],
+            xl_position_proteins_a = [int(float(p)) for p in str(row["ProteinLink1"]).split(";")],
+            pep_position_proteins_a = [int(float(p)) for p in str(row["Start1"]).split(";")],
+            score_a = float(row["Pep1Score"]),
+            decoy_a = get_bool_from_value(int(row["Protein1decoy"])),
+            peptide_b = format_sequence(str(row["BasePeptide2"]).strip()),
+            modifications_b = __parse_xisearch_modifications(row, False, modifications),
+            xl_position_peptide_b = int(row["Link2"]),
+            proteins_b = [p.strip() for p in str(row["Protein2"]).split(";")],
+            xl_position_proteins_b = [int(float(p)) for p in str(row["ProteinLink2"]).split(";")],
+            pep_position_proteins_b = [int(float(p)) for p in str(row["Start2"]).split(";")],
+            score_b = float(row["Pep2Score"]),
+            decoy_b = get_bool_from_value(int(row["Protein2decoy"])),
+            score: float | None,
+            spectrum_file = str(row["peakListFileName"]).strip(),
+            scan_nr = int(row["Scan"]),
+            charge = int(row["PrecoursorCharge"]),
+            rt = None,
+            im_cv = None,
+            additional_information = {
+                "spectrum quality score": float(row["spectrum quality score"]),
+                "AllScore": float(row["AllScore"]),
+                "AllScoreLib": float(row["AllScoreLib"]),
+                "MatchScore": float(row["MatchScore"]),
+                "NormScore": float(row["NormScore"]),
+                "match score": float(row["match score"]),
+            }
+        )
+        csms.append(csm)
+    return csms
 
 def read_xifdr_csms(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
     return
