@@ -33,7 +33,7 @@ def detect_xi_filetype(data: pd.DataFrame) -> Literal["xisearch", "xifdr_csms", 
     """Detects the source application of the data.
 
     Detects whether the input data is originating from xiSearch or xiFDR, and if xiFDR which type of data is
-    being read (CSMs or crosslinks).
+    being read (crosslink-spectrum-matches or crosslinks).
 
     Parameters
     ----------
@@ -84,12 +84,12 @@ def detect_xi_filetype(data: pd.DataFrame) -> Literal["xisearch", "xifdr_csms", 
     return "err"
 
 def __parse_xisearch_modifications(row: pd.Series, alpha: bool, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> Dict[int, Tuple[str, float]]:
-    """Returns the corresponding modifications object for a CSM from xiSearch.
+    """Returns the corresponding modifications object for a crosslink-spectrum-matches from xiSearch.
 
     Parameters
     ----------
     row : pandas.Series
-        One row/CSM of the xiSearch result file.
+        One row/crosslink-spectrum-matches of the xiSearch result file.
     alpha : bool
         Whether to parse modifications from the alpha peptide or - if ``False`` - from the beta peptide.
     modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
