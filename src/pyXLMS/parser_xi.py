@@ -114,7 +114,7 @@ def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = X
             pep_position_proteins_b = [int(float(p)) for p in str(row["Start2"]).split(";")],
             score_b = float(row["Pep2Score"]),
             decoy_b = get_bool_from_value(int(row["Protein2decoy"])),
-            score: float | None,
+            score = float(row["match score"]),
             spectrum_file = str(row["peakListFileName"]).strip(),
             scan_nr = int(row["Scan"]),
             charge = int(row["PrecoursorCharge"]),
@@ -126,7 +126,6 @@ def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = X
                 "AllScoreLib": float(row["AllScoreLib"]),
                 "MatchScore": float(row["MatchScore"]),
                 "NormScore": float(row["NormScore"]),
-                "match score": float(row["match score"]),
             }
         )
         csms.append(csm)
