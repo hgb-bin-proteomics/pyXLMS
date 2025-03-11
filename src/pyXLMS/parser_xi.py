@@ -84,9 +84,65 @@ def detect_xi_filetype(data: pd.DataFrame) -> Literal["xisearch", "xifdr_csms", 
     return "err"
 
 def __parse_xisearch_modifications(row: pd.Series, alpha: bool, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> Dict[int, Tuple[str, float]]:
-    # Modifications2                                                                                      Mox;Mox
-    # ModificationPositions2                                                                                  5;7
-    return
+    """
+    """
+    # EXAMPLE VALUES
+    # Modifications2            Mox;Mox
+    # ModificationPositions2    5;7
+    crosslinker = str(row["Crosslinker"]).strip()
+    crosslinker_mass = float(row["CrosslinkerMass"])
+    modifications = dict()
+    if alpha:
+        modifications[int(row["Link1"])] = (crosslinker, crosslinker_mass)
+        if not pd.isna(row["Modifications1"]):
+            if ";" in str(row["Modifications1"]):
+                mods = [mod.strip() for mod in str(row["Modifications1"]).split(";")]
+                positions = [int(pos) for pos in str(row["ModificationPositions1"]).split(";")]
+                if len(mods) != len(positions):
+                    err_str = "Parsed modifications and their positions are not of the same length!\n"
+                    err_str += f"Parsed modifications: {row['Modifications1']}; Parsed positions: {row['ModificationPositions1']}\n"
+                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                    raise RuntimeError(err_str)
+                for i in range(len(mods)):
+                    if positions[i] in modifications:
+                        err_str = f"Modification at position {positions[i]} already exists!\n"
+                        err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                        raise RuntimeError(err_str)
+                    modifications[positions[i]] = (XI_MODIFICATION_MAPPING[mods[i]][1], XI_MODIFICATION_MAPPING[mods[i]][2])
+            else:
+                mod = str(row["Modifications1"]).strip()
+                pos = int(row["ModificationPositions1"])
+                if pos in modifications:
+                    err_str = f"Modification at position {pos} already exists!\n"
+                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                    raise RuntimeError(err_str)
+                modifications[pos] = (XI_MODIFICATION_MAPPING[mod][1], XI_MODIFICATION_MAPPING[mod][2])
+    else:
+        modifications[int(row["Link2"])] = (crosslinker, crosslinker_mass)
+        if not pd.isna(row["Modifications2"]):
+            if ";" in str(row["Modifications2"]):
+                mods = [mod.strip() for mod in str(row["Modifications2"]).split(";")]
+                positions = [int(pos) for pos in str(row["ModificationPositions2"]).split(";")]
+                if len(mods) != len(positions):
+                    err_str = "Parsed modifications and their positions are not of the same length!\n"
+                    err_str += f"Parsed modifications: {row['Modifications2']}; Parsed positions: {row['ModificationPositions2']}\n"
+                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                    raise RuntimeError(err_str)
+                for i in range(len(mods)):
+                    if positions[i] in modifications:
+                        err_str = f"Modification at position {positions[i]} already exists!\n"
+                        err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                        raise RuntimeError(err_str)
+                    modifications[positions[i]] = (XI_MODIFICATION_MAPPING[mods[i]][1], XI_MODIFICATION_MAPPING[mods[i]][2])
+            else:
+                mod = str(row["Modifications2"]).strip()
+                pos = int(row["ModificationPositions2"])
+                if pos in modifications:
+                    err_str = f"Modification at position {pos} already exists!\n"
+                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                    raise RuntimeError(err_str)
+                modifications[pos] = (XI_MODIFICATION_MAPPING[mod][1], XI_MODIFICATION_MAPPING[mod][2])
+    return modifications
 
 def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
     """
