@@ -84,7 +84,32 @@ def detect_xi_filetype(data: pd.DataFrame) -> Literal["xisearch", "xifdr_csms", 
     return "err"
 
 def __parse_xisearch_modifications(row: pd.Series, alpha: bool, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> Dict[int, Tuple[str, float]]:
-    """
+    """Returns the corresponding modifications object for a CSM from xiSearch.
+
+    Parameters
+    ----------
+    row : pandas.Series
+        One row/CSM of the xiSearch result file.
+    alpha : bool
+        Whether to parse modifications from the alpha peptide or - if ``False`` - from the beta peptide.
+    modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
+        Mapping of xi sequence elements (e.g. ``"Ccm"``) to their modifications (e.g. ``("C", "Carbamidomethyl", 57.021464)``).
+
+    Returns
+    -------
+    dict of int, tuple
+        The ``pyXLMS`` specific modifications object, a dictionary that maps positions to their corresponding modifications and their
+        monoisotopic masses.
+
+    Raises
+    ------
+    RuntimeError
+        If the parsed modifications and positions are not of the same length.
+        If multiple modifications on the same residue are parsed.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``__read_xisearch()``.
     """
     # EXAMPLE VALUES
     # Modifications2            Mox;Mox
