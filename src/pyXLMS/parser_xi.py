@@ -170,7 +170,23 @@ def __parse_xisearch_modifications(row: pd.Series, alpha: bool, modifications: D
     return modifications
 
 def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
-    """
+    """Reads a xiSearch pandas dataframe and returns a list of crosslink-spectrum-matches.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Dataframe of a xiSearch result ``.csv`` file read with pandas.
+    modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
+        Mapping of xi sequence elements (e.g. ``"Ccm"``) to their modifications (e.g. ``("C", "Carbamidomethyl", 57.021464)``).
+
+    Returns
+    -------
+    list of dict
+        The read crosslink-spectrum-matches.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``read_xi()``.
     """
     # remove monolinks
     xl = data.dropna(axis = 0, subset = "BasePeptide2")
