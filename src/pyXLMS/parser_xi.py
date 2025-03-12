@@ -150,12 +150,12 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
     return modifications
 
 def __parse_xisearch_modifications(row: pd.Series, alpha: bool, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> Dict[int, Tuple[str, float]]:
-    """Returns the corresponding modifications object for a crosslink-spectrum-matches from xiSearch.
+    """Returns the corresponding modifications object for a crosslink-spectrum-match from xiSearch.
 
     Parameters
     ----------
     row : pandas.Series
-        One row/crosslink-spectrum-matches of the xiSearch result file.
+        One row/crosslink-spectrum-match of the xiSearch result file.
     alpha : bool
         Whether to parse modifications from the alpha peptide or - if ``False`` - from the beta peptide.
     modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
