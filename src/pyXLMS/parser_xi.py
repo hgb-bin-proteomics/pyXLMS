@@ -195,7 +195,7 @@ def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = X
     # create csms
     for i, row in xl.iterrows():
         csm = create_crosslink(
-            peptide_a = format_sequence(str(row["BasePeptide1"]).strip()),
+            peptide_a = format_sequence(str(row["BasePeptide1"])),
             modifications_a = __parse_xisearch_modifications(row, True, modifications),
             xl_position_peptide_a = int(row["Link1"]),
             proteins_a = [p.strip() if p.strip()[:4] != "REV_" else p.strip()[4:] for p in str(row["Protein1"]).split(";")],
@@ -203,7 +203,7 @@ def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = X
             pep_position_proteins_a = [int(float(p)) for p in str(row["Start1"]).split(";")],
             score_a = float(row["Pep1Score"]),
             decoy_a = get_bool_from_value(int(row["Protein1decoy"])),
-            peptide_b = format_sequence(str(row["BasePeptide2"]).strip()),
+            peptide_b = format_sequence(str(row["BasePeptide2"])),
             modifications_b = __parse_xisearch_modifications(row, False, modifications),
             xl_position_peptide_b = int(row["Link2"]),
             proteins_b = [p.strip() if p.strip()[:4] != "REV_" else p.strip()[4:] for p in str(row["Protein2"]).split(";")],
