@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+from typing import Optional
 from typing import List
 from typing import Dict
 from typing import Tuple
@@ -16,7 +17,7 @@ def check_input(
     parameter: Any,
     parameter_name: str,
     supported_class: Any,
-    supported_subclass: Any | None = None,
+    supported_subclass: Optional[Any] = None,
 ) -> bool:
     """Checks if the given parameter is of the specified type.
 
@@ -75,7 +76,7 @@ def check_input_multi(
     parameter: Any,
     parameter_name: str,
     supported_classes: List[Any],
-    supported_subclass: Any | None = None,
+    supported_subclass: Optional[Any] = None,
 ) -> bool:
     """Checks if the given parameter is of one of the specified types.
 
@@ -170,16 +171,16 @@ def check_indexing(value: int | List[int]) -> bool:
 def create_crosslink(
     peptide_a: str,
     xl_position_peptide_a: int,
-    proteins_a: List[str] | None,
-    xl_position_proteins_a: List[int] | None,
-    decoy_a: bool | None,
+    proteins_a: Optional[List[str]],
+    xl_position_proteins_a: Optional[List[int]],
+    decoy_a: Optional[bool],
     peptide_b: str,
     xl_position_peptide_b: int,
-    proteins_b: List[str] | None,
-    xl_position_proteins_b: List[int] | None,
-    decoy_b: bool | None,
-    score: float | None,
-    additional_information: Dict[str, Any] | None = None,
+    proteins_b: Optional[List[str]],
+    xl_position_proteins_b: Optional[List[int]],
+    decoy_b: Optional[bool],
+    score: Optional[float],
+    additional_information: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Creates a crosslink data structure.
 
@@ -349,28 +350,28 @@ def create_crosslink(
 
 def create_csm(
     peptide_a: str,
-    modifications_a: Dict[int, Tuple[str, float]] | None,
+    modifications_a: Optional[Dict[int, Tuple[str, float]]],
     xl_position_peptide_a: int,
-    proteins_a: List[str] | None,
-    xl_position_proteins_a: List[int] | None,
-    pep_position_proteins_a: List[int] | None,
-    score_a: float | None,
-    decoy_a: bool | None,
+    proteins_a: Optional[List[str]],
+    xl_position_proteins_a: Optional[List[int]],
+    pep_position_proteins_a: Optional[List[int]],
+    score_a: Optional[float],
+    decoy_a: Optional[bool],
     peptide_b: str,
-    modifications_b: Dict[int, Tuple[str, float]] | None,
+    modifications_b: Optional[Dict[int, Tuple[str, float]]],
     xl_position_peptide_b: int,
-    proteins_b: List[str] | None,
-    xl_position_proteins_b: List[int] | None,
-    pep_position_proteins_b: List[int] | None,
-    score_b: float | None,
-    decoy_b: bool | None,
-    score: float | None,
+    proteins_b: Optional[List[str]],
+    xl_position_proteins_b: Optional[List[int]],
+    pep_position_proteins_b: Optional[List[int]],
+    score_b: Optional[float],
+    decoy_b: Optional[bool],
+    score: Optional[float],
     spectrum_file: str,
     scan_nr: int,
-    charge: int | None,
-    rt: float | None,
-    im_cv: float | None,
-    additional_information: Dict[str, Any] | None = None,
+    charge: Optional[int],
+    rt: Optional[float],
+    im_cv: Optional[float],
+    additional_information: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Creates a crosslink-spectrum-match data structure.
 
@@ -658,8 +659,8 @@ def create_csm(
 
 def create_parser_result(
     search_engine: str,
-    csms: List[Dict[str, Any]] | None,
-    crosslinks: List[Dict[str, Any]] | None,
+    csms: Optional[List[Dict[str, Any]]],
+    crosslinks: Optional[List[Dict[str, Any]]],
 ) -> Dict[str, Any]:
     """Creates a parser result data structure.
 

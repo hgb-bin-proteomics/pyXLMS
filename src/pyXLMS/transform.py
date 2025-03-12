@@ -9,6 +9,7 @@ from __future__ import annotations
 import pandas as pd
 from .data import check_input
 
+from typing import Optional
 from typing import List
 from typing import Dict
 from typing import Tuple
@@ -16,7 +17,7 @@ from typing import Any
 
 
 def modifications_to_str(
-    modifications: Dict[int, Tuple[str, float]] | None,
+    modifications: Optional[Dict[int, Tuple[str, float]]],
 ) -> str | None:
     """Returns the string representation of a modifications dictionary.
 
@@ -45,7 +46,10 @@ def modifications_to_str(
     return modifications_str.rstrip(";")
 
 
-def __cc(input_list: List[Any] | None, sep: str = ";") -> str | None:
+def __cc(
+    input_list: Optional[List[Any]],
+    sep: str = ";"
+) -> str | None:
     """Concatenates list elements to a string using the defined seperator.
 
     Parameters
