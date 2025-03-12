@@ -84,7 +84,30 @@ def detect_xi_filetype(data: pd.DataFrame) -> Literal["xisearch", "xifdr_csms", 
     return "err"
 
 def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
-    """
+    """Parses all post-translational-modifications from a peptide sequence as reported by xiFDR.
+
+    Parses all post-translational-modifications from a peptide sequence as reported by xiFDR. This assumes
+    that amino acids are given in upper case letters and post-translational-modifications in lower case letters.
+    The parsed modifications are returned as a dictionary that maps their position in the sequence (1-based) to
+    their xiFDR annotation, for example ``"Ccm"`` or ``"Mox"``.
+
+    Parameters
+    ----------
+    sequence : str
+        The peptide sequence as given by xiFDR.
+
+    Returns
+    -------
+    dict of int, str
+        Dictionary that maps modifications (values) to their respective positions in the peptide sequence (1-based)
+        (keys). The modifications are given in xiFDR annotation style which is the amino acid followed by the lower
+        letter modification code, for example ``"Ccm"`` for carbamidomethylation of cysteine.
+
+    Raises
+    ------
+    RuntimeError
+        If multiple modifications on the same residue are parsed.
+
     Examples
     --------
     >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
@@ -266,8 +289,6 @@ def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = X
         )
         csms.append(csm)
     return csms
-
-
 
 def __parse_xifdr_modifications(row: pd.Series, alpha: bool, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> Dict[int, Tuple[str, float]]:
     """
