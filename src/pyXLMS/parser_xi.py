@@ -219,10 +219,6 @@ def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = X
             im_cv = None,
             additional_information = {
                 "spectrum quality score": float(row["spectrum quality score"]),
-                "AllScore": float(row["AllScore"]),
-                "AllScoreLib": float(row["AllScoreLib"]),
-                "MatchScore": float(row["MatchScore"]),
-                "NormScore": float(row["NormScore"]),
             }
         )
         csms.append(csm)
