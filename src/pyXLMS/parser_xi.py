@@ -83,6 +83,49 @@ def detect_xi_filetype(data: pd.DataFrame) -> Literal["xisearch", "xifdr_csms", 
 
     return "err"
 
+def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
+    """
+    Examples
+    --------
+    >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
+    >>> seq1 = "KIECcmFDSVEISGVEDR"
+    >>> parse_modifications_from_xi_sequence(seq1)
+    {4: 'Ccm'}
+
+    >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
+    >>> seq2 = "KIECcmFDSVEMoxISGVEDR"
+    >>> parse_modifications_from_xi_sequence(seq2)
+    {4: 'Ccm', 10: 'Mox'}
+
+    >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
+    >>> seq3 = "KIECcmFDSVEISGVEDRMox"
+    >>> parse_modifications_from_xi_sequence(seq3)
+    {4: 'Ccm', 17: 'Mox'}
+
+    >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
+    >>> seq4 = "CcmKIECcmFDSVEISGVEDRMox"
+    >>> parse_modifications_from_xi_sequence(seq4)
+    {1: 'Ccm', 5: 'Ccm', 18: 'Mox'}
+    """
+    modifications = dict()
+    pos = 0
+    current_mod = ""
+    for i, aa in enumerate(str(sequence).strip()):
+        if aa.isupper():
+            pos += 1
+            current_mod = aa
+        else:
+            current_mod += aa
+            if i + 1 >= len(sequence):
+                if pos in modifications:
+                    raise RuntimeError(f"Modification at position {pos} already exists!")
+                modifications[pos] = current_mod
+            elif sequence[i + 1].isupper():
+                if pos in modifications:
+                    raise RuntimeError(f"Modification at position {pos} already exists!")
+                modifications[pos] = current_mod
+    return modifications
+
 def __parse_xisearch_modifications(row: pd.Series, alpha: bool, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> Dict[int, Tuple[str, float]]:
     """Returns the corresponding modifications object for a crosslink-spectrum-matches from xiSearch.
 
