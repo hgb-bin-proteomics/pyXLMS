@@ -227,6 +227,41 @@ def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = X
 def read_xifdr_csms(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
     return
 
+def __read_xifdr_csms(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
+    """
+    """
+    # create csms list
+    csms = list()
+    # create csms
+    for i, row in data.iterrows():
+        csm = create_crosslink(
+            peptide_a = format_sequence(str(row["PepSeq1"])),
+            modifications_a = __parse_xifdr_modifications(row, True, modifications),
+            xl_position_peptide_a = int(row["LinkPos1"]),
+            proteins_a = [p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:] for p in str(row["Protein1"]).split(";")],
+            xl_position_proteins_a = [int(p) for p in str(row["ProteinLinkPos1"]).split(";")],
+            pep_position_proteins_a = [int(p) for p in str(row["PepPos1"]).split(";")],
+            score_a = None,
+            decoy_a = get_bool_from_value(row["Decoy1"]),
+            peptide_b = format_sequence(str(row["PepSeq2"])),
+            modifications_b = __parse_xifdr_modifications(row, False, modifications),
+            xl_position_peptide_b = int(row["LinkPos2"]),
+            proteins_b = [p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:] for p in str(row["Protein2"]).split(";")],
+            xl_position_proteins_b = [int(p) for p in str(row["ProteinLinkPos2"]).split(";")],
+            pep_position_proteins_b = [int(p) for p in str(row["PepPos2"]).split(";")],
+            score_b = None,
+            decoy_b = get_bool_from_value(row["Decoy2"]),
+            score = float(row["Score"]),
+            spectrum_file = str(row["PeakListFileName"]).strip(),
+            scan_nr = int(row["scan"]),
+            charge = int(row["exp charge"]),
+            rt = None,
+            im_cv = None,
+            additional_information = None,
+        )
+        csms.append(csm)
+    return csms
+
 def read_xifdr_crosslinks(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
     return
 
