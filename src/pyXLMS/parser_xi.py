@@ -311,7 +311,23 @@ def __parse_xifdr_modifications(row: pd.Series, alpha: bool, modifications: Dict
     return parsed_modifications
 
 def __read_xifdr_csms(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
-    """
+    """Reads a xiFDR CSM pandas dataframe and returns a list of crosslink-spectrum-matches.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Dataframe of a xiFDR CSM result ``.csv`` file read with pandas.
+    modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
+        Mapping of xi sequence elements (e.g. ``"Ccm"``) to their modifications (e.g. ``("C", "Carbamidomethyl", 57.021464)``).
+
+    Returns
+    -------
+    list of dict
+        The read crosslink-spectrum-matches.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``read_xi()``.
     """
     # create csms list
     csms = list()
