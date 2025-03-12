@@ -389,8 +389,27 @@ def __read_xifdr_csms(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] =
         csms.append(csm)
     return csms
 
-def read_xifdr_crosslinks(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
-    return
+def __read_xifdr_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
+    # create crosslink list
+    crosslinks = list()
+    # create crosslinks
+    for i, row in data.iterrows():
+        crosslink = create_crosslink(
+            peptide_a = ,
+            xl_position_peptide_a = ,
+            proteins_a = [p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:] for p in str(row["Protein1"]).split(";")],
+            xl_position_proteins_a = [int(p) for p in str(row["fromSite"]).split(";")],
+            decoy_a = get_bool_from_value(row["Decoy1"]),
+            peptide_b = ,
+            xl_position_peptide_b = ,
+            proteins_b = [p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:] for p in str(row["Protein2"]).split(";")],
+            xl_position_proteins_b = [int(p) for p in str(row["ToSite"]).split(";")],
+            decoy_b = get_bool_from_value(row["Decoy2"]),
+            score = float(row["Score"]),
+            additional_information = None,
+        )
+        crosslinks.append(crosslink)
+    return crosslinks
 
 def read_xi(
     files: str | List[str] | BinaryIO,
