@@ -267,8 +267,27 @@ def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = X
         csms.append(csm)
     return csms
 
-def read_xifdr_csms(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
-    return
+
+
+def __parse_xifdr_modifications(row: pd.Series, alpha: bool, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> Dict[int, Tuple[str, float]]:
+    """
+    """
+    crosslinker = str(row["Crosslinker"]).strip()
+    crosslinker_mass = float(row["CrosslinkerModMass"])
+    parsed_modifications = dict()
+    if alpha:
+        parsed_modifications[int(row["LinkPos1"])] = (crosslinker, crosslinker_mass)
+        for pos, mod in parse_modifications_from_xi_sequence(str(row["PepSeq1"]).strip()).items():
+            if pos in parsed_modifications:
+                raise RuntimeError(f"Modification at position {pos} already exists!")
+            parsed_modifications[pos] = (modifications[mod][1], modifications[mod][2])
+    else:
+        parsed_modifications[int(row["LinkPos2"])] = (crosslinker, crosslinker_mass)
+        for pos, mod in parse_modifications_from_xi_sequence(str(row["PepSeq2"]).strip()).items():
+            if pos in parsed_modifications:
+                raise RuntimeError(f"Modification at position {pos} already exists!")
+            parsed_modifications[pos] = (modifications[mod][1], modifications[mod][2])
+    return parsed_modifications
 
 def __read_xifdr_csms(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
     """
