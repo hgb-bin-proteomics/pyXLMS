@@ -291,7 +291,31 @@ def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = X
     return csms
 
 def __parse_xifdr_modifications(row: pd.Series, alpha: bool, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> Dict[int, Tuple[str, float]]:
-    """
+    """Returns the corresponding modifications object for a crosslink-spectrum-match from xiFDR.
+
+    Parameters
+    ----------
+    row : pandas.Series
+        One row/crosslink-spectrum-match of the xiFDR CSM result file.
+    alpha : bool
+        Whether to parse modifications from the alpha peptide or - if ``False`` - from the beta peptide.
+    modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
+        Mapping of xi sequence elements (e.g. ``"Ccm"``) to their modifications (e.g. ``("C", "Carbamidomethyl", 57.021464)``).
+
+    Returns
+    -------
+    dict of int, tuple
+        The ``pyXLMS`` specific modifications object, a dictionary that maps positions to their corresponding modifications and their
+        monoisotopic masses.
+
+    Raises
+    ------
+    RuntimeError
+        If multiple modifications on the same residue are parsed.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``__read_xifdr_csms()``.
     """
     crosslinker = str(row["Crosslinker"]).strip()
     crosslinker_mass = float(row["CrosslinkerModMass"])
