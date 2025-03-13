@@ -239,7 +239,7 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         if verbose == 1:
-                            warnings.warn(UserWarning(err_str))
+                            warnings.warn(RuntimeWarning(err_str))
                         elif verbose == 2:
                             raise RuntimeError(err_str)
                         try:
@@ -290,7 +290,7 @@ def __parse_xisearch_modifications(
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     if verbose == 1:
-                        warnings.warn(UserWarning(err_str))
+                        warnings.warn(RuntimeWarning(err_str))
                     elif verbose == 2:
                         raise RuntimeError(err_str)
                     try:
@@ -349,7 +349,7 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         if verbose == 1:
-                            warnings.warn(UserWarning(err_str))
+                            warnings.warn(RuntimeWarning(err_str))
                         elif verbose == 2:
                             raise RuntimeError(err_str)
                         try:
@@ -398,7 +398,7 @@ def __parse_xisearch_modifications(
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     if verbose == 1:
-                        warnings.warn(UserWarning(err_str))
+                        warnings.warn(RuntimeWarning(err_str))
                     elif verbose == 2:
                         raise RuntimeError(err_str)
                     try:
@@ -578,7 +578,7 @@ def __parse_xifdr_modifications(
                 err_str = f"Modification at position {pos} already exists!\n"
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                 if verbose == 1:
-                    warnings.warn(UserWarning(err_str))
+                    warnings.warn(RuntimeWarning(err_str))
                 elif verbose == 2:
                     raise RuntimeError(err_str)
                 try:
@@ -617,7 +617,7 @@ def __parse_xifdr_modifications(
                 err_str = f"Modification at position {pos} already exists!\n"
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                 if verbose == 1:
-                    warnings.warn(UserWarning(err_str))
+                    warnings.warn(RuntimeWarning(err_str))
                 elif verbose == 2:
                     raise RuntimeError(err_str)
                 try:
