@@ -198,12 +198,14 @@ def __parse_xisearch_modifications(
     -----
     This function should not be called directly, it is called from ``__read_xisearch()``.
     """
+
     # EXAMPLE VALUES
     # Modifications2            Mox;Mox
     # ModificationPositions2    5;7
     # helper function that changes ``SYMBOL`` to ``SYMBOLEXT``
-    def preprocess_mod(str: mod) -> str:
+    def preprocess_mod(mod: str) -> str:
         return "".join([c for c in mod if c.islower()]).strip()
+
     crosslinker = str(row["Crosslinker"]).strip()
     crosslinker_mass = float(row["CrosslinkerMass"])
     parsed_modifications = dict()
@@ -211,7 +213,9 @@ def __parse_xisearch_modifications(
         parsed_modifications[int(row["Link1"])] = (crosslinker, crosslinker_mass)
         if not pd.isna(row["Modifications1"]):  # pyright: ignore [reportGeneralTypeIssues]
             if ";" in str(row["Modifications1"]):
-                mods = [preprocess_mod(mod) for mod in str(row["Modifications1"]).split(";")]
+                mods = [
+                    preprocess_mod(mod) for mod in str(row["Modifications1"]).split(";")
+                ]
                 positions = [
                     int(pos) for pos in str(row["ModificationPositions1"]).split(";")
                 ]
@@ -270,7 +274,9 @@ def __parse_xisearch_modifications(
         parsed_modifications[int(row["Link2"])] = (crosslinker, crosslinker_mass)
         if not pd.isna(row["Modifications2"]):  # pyright: ignore [reportGeneralTypeIssues]
             if ";" in str(row["Modifications2"]):
-                mods = [preprocess_mod(mod) for mod in str(row["Modifications2"]).split(";")]
+                mods = [
+                    preprocess_mod(mod) for mod in str(row["Modifications2"]).split(";")
+                ]
                 positions = [
                     int(pos) for pos in str(row["ModificationPositions2"]).split(";")
                 ]
