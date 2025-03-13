@@ -86,6 +86,7 @@ Examples
 MODIFICATIONS.update(CROSSLINKERS)
 
 XI_MODIFICATION_MAPPING = {
+    "->": ("Substitution", float("nan")),
     "cm": ("Carbamidomethyl", 57.021464),
     "ox": ("Oxidation", 15.994915),
     "bs3oh": ("BS3 Hydrolized", 156.0786347),
