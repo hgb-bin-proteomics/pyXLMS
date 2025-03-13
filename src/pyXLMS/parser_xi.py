@@ -533,11 +533,11 @@ def read_xi(
         xi_file_type = detect_xi_filetype(data)
         ## process data
         if xi_file_type == "xifdr_csms":
-            csms += read_xifdr_csms(data, modifications)
-        elif xi_file_type ==  "xifdr_crosslinks":
-            crosslinks += read_xifdr_crosslinks(data, modifications)
+            csms += __read_xifdr_csms(data, modifications)
+        elif xi_file_type == "xifdr_crosslinks":
+            crosslinks += __read_xifdr_crosslinks(data, modifications)
         else:
-            csms += read_xisearch(data, modifications)
+            csms += __read_xisearch(data, modifications)
 
     ## check results
     if len(crosslinks) + len(csms) == 0:
