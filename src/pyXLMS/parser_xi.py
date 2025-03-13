@@ -246,14 +246,21 @@ def __parse_xisearch_modifications(
                             t1 = parsed_modifications[positions[i]][0] + (
                                 "," + modifications[mods[i]][0]
                             )
-                            t2 = parsed_modifications[positions[i]][1] + modifications[
-                                mods[i]
-                            ][1]
+                            t2 = (
+                                parsed_modifications[positions[i]][1]
+                                + modifications[mods[i]][1]
+                            )
                             parsed_modifications[positions[i]] = (t1, t2)
                         except KeyError:
                             if ignore_errors:
-                                t1 = parsed_modifications[positions[i]][0] + "," + mods[i]
-                                t2 = parsed_modifications[positions[i]][1] + float("nan")
+                                t1 = (
+                                    parsed_modifications[positions[i]][0]
+                                    + ","
+                                    + mods[i]
+                                )
+                                t2 = parsed_modifications[positions[i]][1] + float(
+                                    "nan"
+                                )
                                 parsed_modifications[positions[i]] = (t1, t2)
                             else:
                                 err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
@@ -349,14 +356,19 @@ def __parse_xisearch_modifications(
                             t1 = parsed_modifications[positions[i]][0] + (
                                 "," + modifications[mods[i]][0]
                             )
-                            t2 = parsed_modifications[positions[i]][1] + modifications[
-                                mods[i]
-                            ][1]
+                            t2 = (
+                                parsed_modifications[positions[i]][1]
+                                + modifications[mods[i]][1]
+                            )
                             parsed_modifications[positions[i]] = (t1, t2)
                         except KeyError:
                             if ignore_errors:
-                                t1 = parsed_modifications[positions[i]][0] = "," + mods[i]
-                                t2 = parsed_modifications[positions[i]][1] = float("nan")
+                                t1 = parsed_modifications[positions[i]][0] = (
+                                    "," + mods[i]
+                                )
+                                t2 = parsed_modifications[positions[i]][1] = float(
+                                    "nan"
+                                )
                                 parsed_modifications[positions[i]] = (t1, t2)
                             else:
                                 err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
