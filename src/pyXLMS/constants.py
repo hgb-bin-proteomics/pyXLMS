@@ -86,19 +86,35 @@ Examples
 MODIFICATIONS.update(CROSSLINKERS)
 
 XI_MODIFICATION_MAPPING = {
-    "Ccm": ("C", "Carbamidomethyl", 57.021464),
-    "Mox": ("M", "Oxidation", 15.994915),
+    "cm": ("Carbamidomethyl", 57.021464),
+    "ox": ("Oxidation", 15.994915),
+    "bs3oh": ("BS3 Hydrolized", 156.0786347),
+    "bs3nh2": ("BS3 Amidated", 155.094619105),
+    "bs3loop" ("BS3 Looplink", 138.06808),
+    "bs3_hyd": ("BS3 Hydrolized", 156.0786347),
+    "bs3_ami": ("BS3 Amidated", 155.094619105),
+    "bs3_tris": ("BS3 Tris", 259.141973),
+    "dssoloop": ("DSSO Looplink", 158.00376),
+    "dsso_loop": ("DSSO Looplink", 158.00376),
+    "dsso_hyd": ("DSSO Hydrolized", 176.0143295),
+    "dsso_ami": ("DSSO Amidated", 175.030313905),
+    "dsso_tris": ("DSSO Tris", 279.077658),
+    "dsbuloop": ("DSBU Looplink", 196.08479231),
+    "dsbu_loop": ("DSBU Looplink", 196.08479231),
+    "dsbu_hyd": ("DSBU Hydrolized", 214.095357),
+    "dsbu_ami": ("DSBU Amidated", 213.111341),
+    "dsbu_tris": ("DSBU Tris", 317.158685),
 }
 """Dictionary that maps sequence elements from xiSearch and xiFDR to their corresponding amino acids and post-translational-modifications.
 
-Dictionary that maps sequence elements (e.g. `"Ccm"`) from xiSearch and xiFDR to their corresponding amino acids and
-post-translational-modifications (e.g. `("C", "Carbamidomethyl", 57.021464)`).
+Dictionary that maps sequence elements (e.g. `"cm"`) from xiSearch and xiFDR to their corresponding amino acids and
+post-translational-modifications (e.g. `("Carbamidomethyl", 57.021464)`).
 
 Examples
 --------
 >>> from pyXLMS.constants import XI_MODIFICATION_MAPPING
->>> XI_MODIFICATION_MAPPING["Ccm"]
-('C', 'Carbamidomethyl', 57.021464)
->>> XI_MODIFICATION_MAPPING["Mox"]
-('M', 'Oxidation', 15.994915)
+>>> XI_MODIFICATION_MAPPING["cm"]
+('Carbamidomethyl', 57.021464)
+>>> XI_MODIFICATION_MAPPING["ox"]
+('Oxidation', 15.994915)
 """
