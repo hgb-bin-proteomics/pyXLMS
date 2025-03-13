@@ -199,7 +199,7 @@ def __parse_xisearch_modifications(
     parsed_modifications = dict()
     if alpha:
         parsed_modifications[int(row["Link1"])] = (crosslinker, crosslinker_mass)
-        if not pd.isna(row["Modifications1"]): # pyright: ignore [reportGeneralTypeIssues]
+        if not pd.isna(row["Modifications1"]):  # pyright: ignore [reportGeneralTypeIssues]
             if ";" in str(row["Modifications1"]):
                 mods = [mod.strip() for mod in str(row["Modifications1"]).split(";")]
                 positions = [
@@ -236,7 +236,7 @@ def __parse_xisearch_modifications(
                 )
     else:
         parsed_modifications[int(row["Link2"])] = (crosslinker, crosslinker_mass)
-        if not pd.isna(row["Modifications2"]): # pyright: ignore [reportGeneralTypeIssues]
+        if not pd.isna(row["Modifications2"]):  # pyright: ignore [reportGeneralTypeIssues]
             if ";" in str(row["Modifications2"]):
                 mods = [mod.strip() for mod in str(row["Modifications2"]).split(";")]
                 positions = [
@@ -275,7 +275,8 @@ def __parse_xisearch_modifications(
 
 
 def __read_xisearch(
-    data: pd.DataFrame, modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING
+    data: pd.DataFrame,
+    modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING,
 ) -> List[Dict[str, Any]]:
     """Reads a xiSearch pandas dataframe and returns a list of crosslink-spectrum-matches.
 
@@ -404,7 +405,8 @@ def __parse_xifdr_modifications(
 
 
 def __read_xifdr_csms(
-    data: pd.DataFrame, modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING
+    data: pd.DataFrame,
+    modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING,
 ) -> List[Dict[str, Any]]:
     """Reads a xiFDR CSM pandas dataframe and returns a list of crosslink-spectrum-matches.
 

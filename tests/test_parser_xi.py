@@ -11,6 +11,7 @@ XISEARCH = "data/xi/r1_Xi1.7.6.7.csv"
 XIFDR_CSMS = "data/xi/1perc_xl_boost_CSM_xiFDR2.2.1.csv"
 XIFDR_LINKS = "data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv"
 
+
 def test1():
     from pyXLMS.parser_xi import detect_xi_file
     import pandas as pd
@@ -30,10 +31,11 @@ def test1():
     ):
         _r = detect_xi_file(err)
 
+
 def test2():
     from pyXLMS.parser_xi import parse_modifications_from_xi_sequence as pseq
 
-    assert pseq("KIECcmFDSVEISGVEDR") == {4: 'Ccm'}
-    assert pseq("KIECcmFDSVEMoxISGVEDR") == {4: 'Ccm', 10: 'Mox'}
-    assert pseq("KIECcmFDSVEISGVEDRMox") == {4: 'Ccm', 17: 'Mox'}
-    assert pseq("CcmKIECcmFDSVEISGVEDRMox") == {1: 'Ccm', 5: 'Ccm', 18: 'Mox'}
+    assert pseq("KIECcmFDSVEISGVEDR") == {4: "Ccm"}
+    assert pseq("KIECcmFDSVEMoxISGVEDR") == {4: "Ccm", 10: "Mox"}
+    assert pseq("KIECcmFDSVEISGVEDRMox") == {4: "Ccm", 17: "Mox"}
+    assert pseq("CcmKIECcmFDSVEISGVEDRMox") == {1: "Ccm", 5: "Ccm", 18: "Mox"}
