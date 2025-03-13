@@ -238,7 +238,9 @@ def __parse_xisearch_modifications(
                                 0.0,
                             )
                         else:
-                            raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
+                            raise KeyError(
+                                f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
+                            )
             else:
                 mod = str(row["Modifications1"]).strip()
                 pos = int(row["ModificationPositions1"])
@@ -258,7 +260,9 @@ def __parse_xisearch_modifications(
                             0.0,
                         )
                     else:
-                        raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
+                        raise KeyError(
+                            f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
+                        )
     else:
         parsed_modifications[int(row["Link2"])] = (crosslinker, crosslinker_mass)
         if not pd.isna(row["Modifications2"]):  # pyright: ignore [reportGeneralTypeIssues]
@@ -293,7 +297,9 @@ def __parse_xisearch_modifications(
                                 0.0,
                             )
                         else:
-                            raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
+                            raise KeyError(
+                                f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
+                            )
             else:
                 mod = str(row["Modifications2"]).strip()
                 pos = int(row["ModificationPositions2"])
@@ -313,7 +319,9 @@ def __parse_xisearch_modifications(
                             0.0,
                         )
                     else:
-                        raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
+                        raise KeyError(
+                            f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
+                        )
     return parsed_modifications
 
 
@@ -352,7 +360,9 @@ def __read_xisearch(
     for i, row in xl.iterrows():
         csm = create_csm(
             peptide_a=format_sequence(str(row["BasePeptide1"])),
-            modifications_a=__parse_xisearch_modifications(row, True, modifications, ignore_errors),
+            modifications_a=__parse_xisearch_modifications(
+                row, True, modifications, ignore_errors
+            ),
             xl_position_peptide_a=int(row["Link1"]),
             proteins_a=[
                 p.strip() if p.strip()[:4] != "REV_" else p.strip()[4:]
@@ -367,7 +377,9 @@ def __read_xisearch(
             score_a=float(row["Pep1Score"]),
             decoy_a=get_bool_from_value(int(row["Protein1decoy"])),
             peptide_b=format_sequence(str(row["BasePeptide2"])),
-            modifications_b=__parse_xisearch_modifications(row, False, modifications, ignore_errors),
+            modifications_b=__parse_xisearch_modifications(
+                row, False, modifications, ignore_errors
+            ),
             xl_position_peptide_b=int(row["Link2"]),
             proteins_b=[
                 p.strip() if p.strip()[:4] != "REV_" else p.strip()[4:]
@@ -446,12 +458,17 @@ def __parse_xifdr_modifications(
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                 raise RuntimeError(err_str)
             try:
-                parsed_modifications[pos] = (modifications[mod][0], modifications[mod][1])
+                parsed_modifications[pos] = (
+                    modifications[mod][0],
+                    modifications[mod][1],
+                )
             except KeyError:
                 if ignore_errors:
                     parsed_modifications[pos] = (mod, 0.0)
                 else:
-                    raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
+                    raise KeyError(
+                        f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
+                    )
     else:
         parsed_modifications[int(row["LinkPos2"])] = (crosslinker, crosslinker_mass)
         for pos, mod in parse_modifications_from_xi_sequence(
@@ -462,19 +479,24 @@ def __parse_xifdr_modifications(
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                 raise RuntimeError(err_str)
             try:
-                parsed_modifications[pos] = (modifications[mod][0], modifications[mod][1])
+                parsed_modifications[pos] = (
+                    modifications[mod][0],
+                    modifications[mod][1],
+                )
             except KeyError:
                 if ignore_errors:
                     parsed_modifications[pos] = (mod, 0.0)
                 else:
-                    raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
+                    raise KeyError(
+                        f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
+                    )
     return parsed_modifications
 
 
 def __read_xifdr_csms(
     data: pd.DataFrame,
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
-    ignore_errors: bool = False
+    ignore_errors: bool = False,
 ) -> List[Dict[str, Any]]:
     """Reads a xiFDR CSM pandas dataframe and returns a list of crosslink-spectrum-matches.
 
@@ -504,7 +526,9 @@ def __read_xifdr_csms(
     for i, row in data.iterrows():
         csm = create_csm(
             peptide_a=format_sequence(str(row["PepSeq1"])),
-            modifications_a=__parse_xifdr_modifications(row, True, modifications, ignore_errors),
+            modifications_a=__parse_xifdr_modifications(
+                row, True, modifications, ignore_errors
+            ),
             xl_position_peptide_a=int(row["LinkPos1"]),
             proteins_a=[
                 p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:]
@@ -517,7 +541,9 @@ def __read_xifdr_csms(
             score_a=None,
             decoy_a=get_bool_from_value(row["Decoy1"]),
             peptide_b=format_sequence(str(row["PepSeq2"])),
-            modifications_b=__parse_xifdr_modifications(row, False, modifications, ignore_errors),
+            modifications_b=__parse_xifdr_modifications(
+                row, False, modifications, ignore_errors
+            ),
             xl_position_peptide_b=int(row["LinkPos2"]),
             proteins_b=[
                 p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:]
