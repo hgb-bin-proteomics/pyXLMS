@@ -162,7 +162,7 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
 def __parse_xisearch_modifications(
     row: pd.Series,
     alpha: bool,
-    modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING,
+    modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING,
 ) -> Dict[int, Tuple[str, float]]:
     """Returns the corresponding modifications object for a crosslink-spectrum-match from xiSearch.
 
@@ -196,10 +196,10 @@ def __parse_xisearch_modifications(
     # ModificationPositions2    5;7
     crosslinker = str(row["Crosslinker"]).strip()
     crosslinker_mass = float(row["CrosslinkerMass"])
-    modifications = dict()
+    parsed_modifications = dict()
     if alpha:
-        modifications[int(row["Link1"])] = (crosslinker, crosslinker_mass)
-        if not pd.isna(row["Modifications1"]):
+        parsed_modifications[int(row["Link1"])] = (crosslinker, crosslinker_mass)
+        if not pd.isna(row["Modifications1"]): # pyright: ignore [reportGeneralTypeIssues]
             if ";" in str(row["Modifications1"]):
                 mods = [mod.strip() for mod in str(row["Modifications1"]).split(";")]
                 positions = [
@@ -211,7 +211,7 @@ def __parse_xisearch_modifications(
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
                 for i in range(len(mods)):
-                    if positions[i] in modifications:
+                    if positions[i] in parsed_modifications:
                         err_str = (
                             f"Modification at position {positions[i]} already exists!\n"
                         )
@@ -219,24 +219,24 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         raise RuntimeError(err_str)
-                    modifications[positions[i]] = (
-                        XI_MODIFICATION_MAPPING[mods[i]][1],
-                        XI_MODIFICATION_MAPPING[mods[i]][2],
+                    parsed_modifications[positions[i]] = (
+                        modifications[mods[i]][1],
+                        modifications[mods[i]][2],
                     )
             else:
                 mod = str(row["Modifications1"]).strip()
                 pos = int(row["ModificationPositions1"])
-                if pos in modifications:
+                if pos in parsed_modifications:
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
-                modifications[pos] = (
-                    XI_MODIFICATION_MAPPING[mod][1],
-                    XI_MODIFICATION_MAPPING[mod][2],
+                parsed_modifications[pos] = (
+                    modifications[mod][1],
+                    modifications[mod][2],
                 )
     else:
-        modifications[int(row["Link2"])] = (crosslinker, crosslinker_mass)
-        if not pd.isna(row["Modifications2"]):
+        parsed_modifications[int(row["Link2"])] = (crosslinker, crosslinker_mass)
+        if not pd.isna(row["Modifications2"]): # pyright: ignore [reportGeneralTypeIssues]
             if ";" in str(row["Modifications2"]):
                 mods = [mod.strip() for mod in str(row["Modifications2"]).split(";")]
                 positions = [
@@ -248,7 +248,7 @@ def __parse_xisearch_modifications(
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
                 for i in range(len(mods)):
-                    if positions[i] in modifications:
+                    if positions[i] in parsed_modifications:
                         err_str = (
                             f"Modification at position {positions[i]} already exists!\n"
                         )
@@ -256,26 +256,26 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         raise RuntimeError(err_str)
-                    modifications[positions[i]] = (
-                        XI_MODIFICATION_MAPPING[mods[i]][1],
-                        XI_MODIFICATION_MAPPING[mods[i]][2],
+                    parsed_modifications[positions[i]] = (
+                        modifications[mods[i]][1],
+                        modifications[mods[i]][2],
                     )
             else:
                 mod = str(row["Modifications2"]).strip()
                 pos = int(row["ModificationPositions2"])
-                if pos in modifications:
+                if pos in parsed_modifications:
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
-                modifications[pos] = (
-                    XI_MODIFICATION_MAPPING[mod][1],
-                    XI_MODIFICATION_MAPPING[mod][2],
+                parsed_modifications[pos] = (
+                    modifications[mod][1],
+                    modifications[mod][2],
                 )
-    return modifications
+    return parsed_modifications
 
 
 def __read_xisearch(
-    data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING
+    data: pd.DataFrame, modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING
 ) -> List[Dict[str, Any]]:
     """Reads a xiSearch pandas dataframe and returns a list of crosslink-spectrum-matches.
 
@@ -349,7 +349,7 @@ def __read_xisearch(
 def __parse_xifdr_modifications(
     row: pd.Series,
     alpha: bool,
-    modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING,
+    modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING,
 ) -> Dict[int, Tuple[str, float]]:
     """Returns the corresponding modifications object for a crosslink-spectrum-match from xiFDR.
 
@@ -404,7 +404,7 @@ def __parse_xifdr_modifications(
 
 
 def __read_xifdr_csms(
-    data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING
+    data: pd.DataFrame, modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING
 ) -> List[Dict[str, Any]]:
     """Reads a xiFDR CSM pandas dataframe and returns a list of crosslink-spectrum-matches.
 
@@ -551,7 +551,7 @@ def __read_xifdr_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
 
 def read_xi(
     files: str | List[str] | BinaryIO,
-    modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING,
+    modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING,
 ) -> Dict[str, Any]:
     """Read a xiSearch/xiFDR result file.
 
@@ -608,7 +608,7 @@ def read_xi(
         if xi_file_type == "xifdr_csms":
             csms += __read_xifdr_csms(data, modifications)
         elif xi_file_type == "xifdr_crosslinks":
-            crosslinks += __read_xifdr_crosslinks(data, modifications)
+            crosslinks += __read_xifdr_crosslinks(data)
         else:
             csms += __read_xisearch(data, modifications)
 
