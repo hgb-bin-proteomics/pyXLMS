@@ -29,3 +29,11 @@ def test1():
         match="Could not infer data source, are you sure you read a xi result file?",
     ):
         _r = detect_xi_file(err)
+
+def test2():
+    from pyXLMS.parser_xi import parse_modifications_from_xi_sequence as pseq
+
+    assert pseq("KIECcmFDSVEISGVEDR") == {4: 'Ccm'}
+    assert pseq("KIECcmFDSVEMoxISGVEDR") == {4: 'Ccm', 10: 'Mox'}
+    assert pseq("KIECcmFDSVEISGVEDRMox") == {4: 'Ccm', 17: 'Mox'}
+    assert pseq("CcmKIECcmFDSVEISGVEDRMox") == {1: 'Ccm', 5: 'Ccm', 18: 'Mox'}
