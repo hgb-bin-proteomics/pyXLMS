@@ -469,7 +469,7 @@ def __read_xisearch(
     This function should not be called directly, it is called from ``read_xi()``.
     """
     # remove monolinks
-    xl = data.dropna(axis=0, subset="BasePeptide2")
+    xl = data.dropna(axis=0, subset=["BasePeptide2"])
     # create csms list
     csms = list()
     # create csms
