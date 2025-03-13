@@ -52,7 +52,7 @@ def format_sequence(
     'PEPTIDE'
     """
     fmt_seq = ""
-    for aa in sequence:
+    for aa in str(sequence).strip():
         if aa.isupper():
             if aa not in AMINO_ACIDS:
                 if remove_non_aa:
