@@ -46,10 +46,7 @@ def modifications_to_str(
     return modifications_str.rstrip(";")
 
 
-def __cc(
-    input_list: Optional[List[Any]],
-    sep: str = ";"
-) -> str | None:
+def __cc(input_list: Optional[List[Any]], sep: str = ";") -> str | None:
     """Concatenates list elements to a string using the defined seperator.
 
     Parameters
