@@ -204,7 +204,7 @@ def __parse_xisearch_modifications(
     # ModificationPositions2    5;7
     # helper function that changes ``SYMBOL`` to ``SYMBOLEXT``
     def preprocess_mod(mod: str) -> str:
-        return "".join([c for c in mod if c.islower()]).strip()
+        return "".join([c for c in mod if not c.isupper()]).strip()
 
     crosslinker = str(row["Crosslinker"]).strip()
     crosslinker_mass = float(row["CrosslinkerMass"])
