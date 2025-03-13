@@ -225,7 +225,7 @@ def __parse_xisearch_modifications(
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
                 for i in range(len(mods)):
-                    if positions[i] in parsed_modifications:
+                    if positions[i] in parsed_modifications and mods[i] != "->":
                         err_str = (
                             f"Modification at position {positions[i]} already exists!\n"
                         )
@@ -253,7 +253,7 @@ def __parse_xisearch_modifications(
             else:
                 mod = preprocess_mod(str(row["Modifications1"]))
                 pos = int(row["ModificationPositions1"])
-                if pos in parsed_modifications:
+                if pos in parsed_modifications and mod != "->":
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
@@ -290,7 +290,7 @@ def __parse_xisearch_modifications(
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
                 for i in range(len(mods)):
-                    if positions[i] in parsed_modifications:
+                    if positions[i] in parsed_modifications and mods[i] != "->":
                         err_str = (
                             f"Modification at position {positions[i]} already exists!\n"
                         )
@@ -318,7 +318,7 @@ def __parse_xisearch_modifications(
             else:
                 mod = preprocess_mod(str(row["Modifications2"]))
                 pos = int(row["ModificationPositions2"])
-                if pos in parsed_modifications:
+                if pos in parsed_modifications and mod != "->":
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
