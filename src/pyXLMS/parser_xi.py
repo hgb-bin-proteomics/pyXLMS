@@ -285,14 +285,14 @@ def __parse_xisearch_modifications(
                     elif verbose == 2:
                         raise RuntimeError(err_str)
                     try:
-                        parsed_modifications[positions[i]][0] += (
+                        parsed_modifications[pos][0] += (
                             "," + modifications[mod][0]
                         )
-                        parsed_modifications[positions[i]][1] += modifications[mod][1]
+                        parsed_modifications[pos][1] += modifications[mod][1]
                     except KeyError:
                         if ignore_errors:
-                            parsed_modifications[positions[i]][0] += "," + mod
-                            parsed_modifications[positions[i]][1] += float("nan")
+                            parsed_modifications[pos][0] += "," + mod
+                            parsed_modifications[pos][1] += float("nan")
                         else:
                             err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
                             err_str += (
@@ -386,14 +386,14 @@ def __parse_xisearch_modifications(
                     elif verbose == 2:
                         raise RuntimeError(err_str)
                     try:
-                        parsed_modifications[positions[i]][0] += (
+                        parsed_modifications[pos][0] += (
                             "," + modifications[mod][0]
                         )
-                        parsed_modifications[positions[i]][1] += modifications[mod][1]
+                        parsed_modifications[pos][1] += modifications[mod][1]
                     except KeyError:
                         if ignore_errors:
-                            parsed_modifications[positions[i]][0] += "," + mod
-                            parsed_modifications[positions[i]][1] += float("nan")
+                            parsed_modifications[pos][0] += "," + mod
+                            parsed_modifications[pos][1] += float("nan")
                         else:
                             err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
                             err_str += (
