@@ -390,7 +390,26 @@ def __read_xifdr_csms(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] =
     return csms
 
 def __read_xifdr_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
-    """
+    """Reads a xiFDR Links pandas dataframe and returns a list of crosslinks.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Dataframe of a xiFDR Links result ``.csv`` file read with pandas.
+
+    Returns
+    -------
+    list of dict
+        The read crosslinks.
+
+    Raises
+    ------
+    RuntimeError
+        If (one of) the peptide sequence(s) could not be parsed.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``read_xi()``.
     """
     # helper function
     def parse_peptide(sequence: str) -> str:
