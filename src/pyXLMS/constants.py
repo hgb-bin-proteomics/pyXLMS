@@ -90,7 +90,7 @@ XI_MODIFICATION_MAPPING = {
     "ox": ("Oxidation", 15.994915),
     "bs3oh": ("BS3 Hydrolized", 156.0786347),
     "bs3nh2": ("BS3 Amidated", 155.094619105),
-    "bs3loop" ("BS3 Looplink", 138.06808),
+    "bs3loop": ("BS3 Looplink", 138.06808),
     "bs3_hyd": ("BS3 Hydrolized", 156.0786347),
     "bs3_ami": ("BS3 Amidated", 155.094619105),
     "bs3_tris": ("BS3 Tris", 259.141973),
