@@ -45,7 +45,7 @@ def test3():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
 
-    pr = p.read_xi(XISEARCH, verbose = 0)
+    pr = p.read_xi(XISEARCH, verbose=0)
     assert pr["data_type"] == "parser_result"
     assert pr["completeness"] == "partial"
     assert pr["search_engine"] == "xiSearch/xiFDR"
