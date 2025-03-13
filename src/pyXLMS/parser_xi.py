@@ -255,13 +255,13 @@ def __parse_xisearch_modifications(
                     )
                 except KeyError:
                     if ignore_errors:
-                        parsed_modifications[positions[i]] = (
-                            mods[i],
+                        parsed_modifications[pos] = (
+                            mod,
                             0.0,
                         )
                     else:
                         raise KeyError(
-                            f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
+                            f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?"
                         )
     else:
         parsed_modifications[int(row["Link2"])] = (crosslinker, crosslinker_mass)
@@ -314,13 +314,13 @@ def __parse_xisearch_modifications(
                     )
                 except KeyError:
                     if ignore_errors:
-                        parsed_modifications[positions[i]] = (
-                            mods[i],
+                        parsed_modifications[pos] = (
+                            mod,
                             0.0,
                         )
                     else:
                         raise KeyError(
-                            f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
+                            f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?"
                         )
     return parsed_modifications
 
@@ -467,7 +467,7 @@ def __parse_xifdr_modifications(
                     parsed_modifications[pos] = (mod, 0.0)
                 else:
                     raise KeyError(
-                        f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
+                        f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?"
                     )
     else:
         parsed_modifications[int(row["LinkPos2"])] = (crosslinker, crosslinker_mass)
@@ -488,7 +488,7 @@ def __parse_xifdr_modifications(
                     parsed_modifications[pos] = (mod, 0.0)
                 else:
                     raise KeyError(
-                        f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
+                        f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?"
                     )
     return parsed_modifications
 
