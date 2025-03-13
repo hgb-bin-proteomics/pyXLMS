@@ -7,7 +7,6 @@
 from __future__ import annotations
 
 import pandas as pd
-from os.path import splitext
 
 from .data import check_input
 from .data import create_crosslink
@@ -267,7 +266,7 @@ def __read_xisearch(
     csms = list()
     # create csms
     for i, row in xl.iterrows():
-        csm = create_crosslink(
+        csm = create_csm(
             peptide_a = format_sequence(str(row["BasePeptide1"])),
             modifications_a = __parse_xisearch_modifications(row, True, modifications),
             xl_position_peptide_a = int(row["Link1"]),
@@ -375,7 +374,7 @@ def __read_xifdr_csms(
     csms = list()
     # create csms
     for i, row in data.iterrows():
-        csm = create_crosslink(
+        csm = create_csm(
             peptide_a = format_sequence(str(row["PepSeq1"])),
             modifications_a = __parse_xifdr_modifications(row, True, modifications),
             xl_position_peptide_a = int(row["LinkPos1"]),
