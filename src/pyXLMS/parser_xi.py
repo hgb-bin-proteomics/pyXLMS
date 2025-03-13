@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import warnings
 import pandas as pd
 
 from .data import check_input
@@ -164,6 +165,7 @@ def __parse_xisearch_modifications(
     alpha: bool,
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
     ignore_errors: bool = False,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[int, Tuple[str, float]]:
     """Returns the corresponding modifications object for a crosslink-spectrum-match from xiSearch.
 
@@ -179,6 +181,10 @@ def __parse_xisearch_modifications(
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
 
     Returns
     -------
@@ -190,7 +196,7 @@ def __parse_xisearch_modifications(
     ------
     RuntimeError
         If the parsed modifications and positions are not of the same length.
-        If multiple modifications on the same residue are parsed.
+        If multiple modifications on the same residue are parsed (only for ``verbose = 2``).
     KeyError
         If an unknown modification is encountered.
 
@@ -225,14 +231,30 @@ def __parse_xisearch_modifications(
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
                 for i in range(len(mods)):
-                    if positions[i] in parsed_modifications and mods[i] != "->":
+                    if positions[i] in parsed_modifications:
                         err_str = (
                             f"Modification at position {positions[i]} already exists!\n"
                         )
                         err_str += (
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
-                        raise RuntimeError(err_str)
+                        if verbose == 1:
+                            warnings.warn(UserWarning(err_str))
+                        elif verbose == 2:
+                            raise RuntimeError(err_str)
+                        try:
+                            parsed_modifications[positions[i]][0] += ("," + modifications[mods[i]][0])
+                            parsed_modifications[positions[i]][1] += modifications[mods[i]][1]
+                        except KeyError:
+                            if ignore_errors:
+                                parsed_modifications[positions[i]][0] += ("," + mods[i])
+                                parsed_modifications[positions[i]][1] += float("nan")
+                            else:
+                                err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
+                                err_str += (
+                                    f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                                )
+                                raise KeyError(err_str)
                     try:
                         parsed_modifications[positions[i]] = (
                             modifications[mods[i]][0],
@@ -253,10 +275,26 @@ def __parse_xisearch_modifications(
             else:
                 mod = preprocess_mod(str(row["Modifications1"]))
                 pos = int(row["ModificationPositions1"])
-                if pos in parsed_modifications and mod != "->":
+                if pos in parsed_modifications:
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                    raise RuntimeError(err_str)
+                    if verbose == 1:
+                        warnings.warn(UserWarning(err_str))
+                    elif verbose == 2:
+                        raise RuntimeError(err_str)
+                    try:
+                        parsed_modifications[positions[i]][0] += ("," + modifications[mod][0])
+                        parsed_modifications[positions[i]][1] += modifications[mod[1]
+                    except KeyError:
+                        if ignore_errors:
+                            parsed_modifications[positions[i]][0] += ("," + mod)
+                            parsed_modifications[positions[i]][1] += float("nan")
+                        else:
+                            err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
+                            err_str += (
+                                f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                            )
+                            raise KeyError(err_str)
                 try:
                     parsed_modifications[pos] = (
                         modifications[mod][0],
@@ -290,14 +328,30 @@ def __parse_xisearch_modifications(
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
                 for i in range(len(mods)):
-                    if positions[i] in parsed_modifications and mods[i] != "->":
+                    if positions[i] in parsed_modifications:
                         err_str = (
                             f"Modification at position {positions[i]} already exists!\n"
                         )
                         err_str += (
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
-                        raise RuntimeError(err_str)
+                        if verbose == 1:
+                            warnings.warn(UserWarning(err_str))
+                        elif verbose == 2:
+                            raise RuntimeError(err_str)
+                        try:
+                            parsed_modifications[positions[i]][0] += ("," + modifications[mods[i]][0])
+                            parsed_modifications[positions[i]][1] += modifications[mods[i]][1]
+                        except KeyError:
+                            if ignore_errors:
+                                parsed_modifications[positions[i]][0] += ("," + mods[i])
+                                parsed_modifications[positions[i]][1] += float("nan")
+                            else:
+                                err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
+                                err_str += (
+                                    f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                                )
+                                raise KeyError(err_str)
                     try:
                         parsed_modifications[positions[i]] = (
                             modifications[mods[i]][0],
@@ -318,10 +372,26 @@ def __parse_xisearch_modifications(
             else:
                 mod = preprocess_mod(str(row["Modifications2"]))
                 pos = int(row["ModificationPositions2"])
-                if pos in parsed_modifications and mod != "->":
+                if pos in parsed_modifications:
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                    raise RuntimeError(err_str)
+                    if verbose == 1:
+                        warnings.warn(UserWarning(err_str))
+                    elif verbose == 2:
+                        raise RuntimeError(err_str)
+                    try:
+                        parsed_modifications[positions[i]][0] += ("," + modifications[mod][0])
+                        parsed_modifications[positions[i]][1] += modifications[mod[1]
+                    except KeyError:
+                        if ignore_errors:
+                            parsed_modifications[positions[i]][0] += ("," + mod)
+                            parsed_modifications[positions[i]][1] += float("nan")
+                        else:
+                            err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
+                            err_str += (
+                                f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                            )
+                            raise KeyError(err_str)
                 try:
                     parsed_modifications[pos] = (
                         modifications[mod][0],
@@ -346,6 +416,7 @@ def __read_xisearch(
     data: pd.DataFrame,
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
     ignore_errors: bool = False,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> List[Dict[str, Any]]:
     """Reads a xiSearch pandas dataframe and returns a list of crosslink-spectrum-matches.
 
@@ -359,6 +430,10 @@ def __read_xisearch(
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
 
     Returns
     -------
@@ -378,7 +453,7 @@ def __read_xisearch(
         csm = create_csm(
             peptide_a=format_sequence(str(row["BasePeptide1"])),
             modifications_a=__parse_xisearch_modifications(
-                row, True, modifications, ignore_errors
+                row, True, modifications, ignore_errors, verbose
             ),
             xl_position_peptide_a=int(row["Link1"]),
             proteins_a=[
@@ -395,7 +470,7 @@ def __read_xisearch(
             decoy_a=get_bool_from_value(int(row["Protein1decoy"])),
             peptide_b=format_sequence(str(row["BasePeptide2"])),
             modifications_b=__parse_xisearch_modifications(
-                row, False, modifications, ignore_errors
+                row, False, modifications, ignore_errors, verbose
             ),
             xl_position_peptide_b=int(row["Link2"]),
             proteins_b=[
@@ -429,6 +504,7 @@ def __parse_xifdr_modifications(
     alpha: bool,
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
     ignore_errors: bool = False,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[int, Tuple[str, float]]:
     """Returns the corresponding modifications object for a crosslink-spectrum-match from xiFDR.
 
@@ -444,6 +520,10 @@ def __parse_xifdr_modifications(
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
 
     Returns
     -------
@@ -454,7 +534,7 @@ def __parse_xifdr_modifications(
     Raises
     ------
     RuntimeError
-        If multiple modifications on the same residue are parsed.
+        If multiple modifications on the same residue are parsed (only if ``verbose = 2``).
     KeyError
         If an unknown modification is encountered.
 
@@ -473,7 +553,21 @@ def __parse_xifdr_modifications(
             if pos in parsed_modifications:
                 err_str = f"Modification at position {pos} already exists!\n"
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                raise RuntimeError(err_str)
+                if verbose == 1:
+                    warnings.warn(UserWarning(err_str))
+                elif verbose == 2:
+                    raise RuntimeError(err_str)
+                try:
+                    parsed_modifications[pos][0] += ("," + modifications[mod][0])
+                    parsed_modifications[pos][1] += modifications[mod][1]
+                except KeyError:
+                    if ignore_errors:
+                        parsed_modifications[pos][0] += ("," + mod)
+                        parsed_modifications[pos][1] += float("nan")
+                    else:
+                        err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
+                        err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                        raise KeyError(err_str)
             try:
                 parsed_modifications[pos] = (
                     modifications[mod][0],
@@ -494,7 +588,21 @@ def __parse_xifdr_modifications(
             if pos in parsed_modifications:
                 err_str = f"Modification at position {pos} already exists!\n"
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                raise RuntimeError(err_str)
+                if verbose == 1:
+                    warnings.warn(UserWarning(err_str))
+                elif verbose == 2:
+                    raise RuntimeError(err_str)
+                try:
+                    parsed_modifications[pos][0] += ("," + modifications[mod][0])
+                    parsed_modifications[pos][1] += modifications[mod][1]
+                except KeyError:
+                    if ignore_errors:
+                        parsed_modifications[pos][0] += ("," + mod)
+                        parsed_modifications[pos][1] += float("nan")
+                    else:
+                        err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
+                        err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                        raise KeyError(err_str)
             try:
                 parsed_modifications[pos] = (
                     modifications[mod][0],
@@ -514,6 +622,7 @@ def __read_xifdr_csms(
     data: pd.DataFrame,
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
     ignore_errors: bool = False,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> List[Dict[str, Any]]:
     """Reads a xiFDR CSM pandas dataframe and returns a list of crosslink-spectrum-matches.
 
@@ -527,6 +636,10 @@ def __read_xifdr_csms(
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
 
     Returns
     -------
@@ -544,7 +657,7 @@ def __read_xifdr_csms(
         csm = create_csm(
             peptide_a=format_sequence(str(row["PepSeq1"])),
             modifications_a=__parse_xifdr_modifications(
-                row, True, modifications, ignore_errors
+                row, True, modifications, ignore_errors, verbose
             ),
             xl_position_peptide_a=int(row["LinkPos1"]),
             proteins_a=[
@@ -559,7 +672,7 @@ def __read_xifdr_csms(
             decoy_a=get_bool_from_value(row["Decoy1"]),
             peptide_b=format_sequence(str(row["PepSeq2"])),
             modifications_b=__parse_xifdr_modifications(
-                row, False, modifications, ignore_errors
+                row, False, modifications, ignore_errors, verbose
             ),
             xl_position_peptide_b=int(row["LinkPos2"]),
             proteins_b=[
@@ -670,6 +783,7 @@ def read_xi(
     files: str | List[str] | BinaryIO,
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
     ignore_errors: bool = False,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
     """Read a xiSearch/xiFDR result file.
 
@@ -687,6 +801,10 @@ def read_xi(
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
 
     Returns
     -------
@@ -729,11 +847,11 @@ def read_xi(
         xi_file_type = detect_xi_filetype(data)
         ## process data
         if xi_file_type == "xifdr_csms":
-            csms += __read_xifdr_csms(data, modifications)
+            csms += __read_xifdr_csms(data, modifications, ignore_errors, verbose)
         elif xi_file_type == "xifdr_crosslinks":
             crosslinks += __read_xifdr_crosslinks(data)
         else:
-            csms += __read_xisearch(data, modifications)
+            csms += __read_xisearch(data, modifications, ignore_errors, verbose)
 
     ## check results
     if len(crosslinks) + len(csms) == 0:
