@@ -201,6 +201,9 @@ def __parse_xisearch_modifications(
     # EXAMPLE VALUES
     # Modifications2            Mox;Mox
     # ModificationPositions2    5;7
+    # helper function that changes ``SYMBOL`` to ``SYMBOLEXT``
+    def preprocess_mod(str: mod) -> str:
+        return "".join([c for c in mod if c.islower()]).strip()
     crosslinker = str(row["Crosslinker"]).strip()
     crosslinker_mass = float(row["CrosslinkerMass"])
     parsed_modifications = dict()
@@ -208,7 +211,7 @@ def __parse_xisearch_modifications(
         parsed_modifications[int(row["Link1"])] = (crosslinker, crosslinker_mass)
         if not pd.isna(row["Modifications1"]):  # pyright: ignore [reportGeneralTypeIssues]
             if ";" in str(row["Modifications1"]):
-                mods = [mod.strip() for mod in str(row["Modifications1"]).split(";")]
+                mods = [preprocess_mod(mod) for mod in str(row["Modifications1"]).split(";")]
                 positions = [
                     int(pos) for pos in str(row["ModificationPositions1"]).split(";")
                 ]
@@ -242,7 +245,7 @@ def __parse_xisearch_modifications(
                                 f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
                             )
             else:
-                mod = str(row["Modifications1"]).strip()
+                mod = preprocess_mod(str(row["Modifications1"]))
                 pos = int(row["ModificationPositions1"])
                 if pos in parsed_modifications:
                     err_str = f"Modification at position {pos} already exists!\n"
@@ -267,7 +270,7 @@ def __parse_xisearch_modifications(
         parsed_modifications[int(row["Link2"])] = (crosslinker, crosslinker_mass)
         if not pd.isna(row["Modifications2"]):  # pyright: ignore [reportGeneralTypeIssues]
             if ";" in str(row["Modifications2"]):
-                mods = [mod.strip() for mod in str(row["Modifications2"]).split(";")]
+                mods = [preprocess_mod(mod) for mod in str(row["Modifications2"]).split(";")]
                 positions = [
                     int(pos) for pos in str(row["ModificationPositions2"]).split(";")
                 ]
@@ -301,7 +304,7 @@ def __parse_xisearch_modifications(
                                 f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?"
                             )
             else:
-                mod = str(row["Modifications2"]).strip()
+                mod = preprocess_mod(str(row["Modifications2"]))
                 pos = int(row["ModificationPositions2"])
                 if pos in parsed_modifications:
                     err_str = f"Modification at position {pos} already exists!\n"
