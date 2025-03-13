@@ -390,18 +390,50 @@ def __read_xifdr_csms(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] =
     return csms
 
 def __read_xifdr_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
+    """
+    """
+    # helper function
+    def parse_peptide(sequence: str) -> str:
+        # PEPTIDE
+        if "." not in sequence and len(sequence.strip()) > 1:
+            return sequence.strip()
+        if "." in sequence:
+            parts = [part.strip() for part in sequence.split(".")]
+            # K.PEPTPIDE.P.EP <- wrong format
+            if len(parts) > 3:
+                raise RuntimeError(f"Could not parse peptide from sequence {sequence}!")
+            # K.PEPTIDE.R
+            if len(parts) == 3 and len(parts[1]) > 1:
+                return parts[1]
+            if len(parts) == 2:
+                # PEPTIDE.R
+                if len(parts[0]) > 1 and len(parts[1]) == 1:
+                    return parts[0]
+                # K.PEPTIDE
+                if len(parts[1]) > 1 and len(parts[0]) == 1:
+                    return parts[1]
+        # if none of these cases match, raise error
+        raise RuntimeError(f"Could not parse peptide from sequence {sequence}!")
+        return "err"
     # create crosslink list
     crosslinks = list()
     # create crosslinks
     for i, row in data.iterrows():
+        psmid = str(row["PSMIDs"]).split(";")[0]
+        s1 = psmid.split("P1_")[1].split(" ")[0]
+        p1 = parse_peptide(s1)
+        s2 = psmid.split("P2_")[1].split(" ")[0]
+        p2 = parse_peptide(s2)
+        pos1 = int(psmid.split("P2_")[1].split(" ")[1])
+        pos2 = int(psmid.split("P2_")[1].split(" ")[2])
         crosslink = create_crosslink(
-            peptide_a = ,
-            xl_position_peptide_a = ,
+            peptide_a = format_sequence(p1),
+            xl_position_peptide_a = pos1,
             proteins_a = [p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:] for p in str(row["Protein1"]).split(";")],
             xl_position_proteins_a = [int(p) for p in str(row["fromSite"]).split(";")],
             decoy_a = get_bool_from_value(row["Decoy1"]),
-            peptide_b = ,
-            xl_position_peptide_b = ,
+            peptide_b = format_sequence(p2),
+            xl_position_peptide_b = pos2,
             proteins_b = [p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:] for p in str(row["Protein2"]).split(";")],
             xl_position_proteins_b = [int(p) for p in str(row["ToSite"]).split(";")],
             decoy_b = get_bool_from_value(row["Decoy2"]),
