@@ -19,7 +19,7 @@ def test1():
     xi = pd.read_csv(XISEARCH)
     csms = pd.read_csv(XIFDR_CSMS)
     xls = pd.read_csv(XIFDR_LINKS)
-    err = pd.read_excel("data/msannika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx")
+    err = pd.read_excel("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx")
 
     assert detect_xi_filetype(xi) == "xisearch"
     assert detect_xi_filetype(csms) == "xifdr_csms"
