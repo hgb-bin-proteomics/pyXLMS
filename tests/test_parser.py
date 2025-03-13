@@ -55,6 +55,6 @@ def test5():
     from pyXLMS import parser_util as p
 
     with pytest.raises(
-        ValueError, match=r"Cannot parse bool value from the given input []."
+        ValueError, match=r"Cannot parse bool value from the given input \[\]."
     ):
         _b = p.get_bool_from_value([])
