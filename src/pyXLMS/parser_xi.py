@@ -149,7 +149,11 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
                 modifications[pos] = current_mod
     return modifications
 
-def __parse_xisearch_modifications(row: pd.Series, alpha: bool, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> Dict[int, Tuple[str, float]]:
+def __parse_xisearch_modifications(
+    row: pd.Series,
+    alpha: bool,
+    modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING
+) -> Dict[int, Tuple[str, float]]:
     """Returns the corresponding modifications object for a crosslink-spectrum-match from xiSearch.
 
     Parameters
@@ -235,7 +239,10 @@ def __parse_xisearch_modifications(row: pd.Series, alpha: bool, modifications: D
                 modifications[pos] = (XI_MODIFICATION_MAPPING[mod][1], XI_MODIFICATION_MAPPING[mod][2])
     return modifications
 
-def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
+def __read_xisearch(
+    data: pd.DataFrame,
+    modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING
+) -> List[Dict[str, Any]]:
     """Reads a xiSearch pandas dataframe and returns a list of crosslink-spectrum-matches.
 
     Parameters
@@ -290,7 +297,11 @@ def __read_xisearch(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = X
         csms.append(csm)
     return csms
 
-def __parse_xifdr_modifications(row: pd.Series, alpha: bool, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> Dict[int, Tuple[str, float]]:
+def __parse_xifdr_modifications(
+    row: pd.Series,
+    alpha: bool,
+    modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING
+) -> Dict[int, Tuple[str, float]]:
     """Returns the corresponding modifications object for a crosslink-spectrum-match from xiFDR.
 
     Parameters
@@ -338,7 +349,10 @@ def __parse_xifdr_modifications(row: pd.Series, alpha: bool, modifications: Dict
             parsed_modifications[pos] = (modifications[mod][1], modifications[mod][2])
     return parsed_modifications
 
-def __read_xifdr_csms(data: pd.DataFrame, modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING) -> List[Dict[str, Any]]:
+def __read_xifdr_csms(
+    data: pd.DataFrame,
+    modifications: Dict[str, Tuple[Any]] = XI_MODIFICATION_MAPPING
+) -> List[Dict[str, Any]]:
     """Reads a xiFDR CSM pandas dataframe and returns a list of crosslink-spectrum-matches.
 
     Parameters
