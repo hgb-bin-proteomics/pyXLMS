@@ -178,7 +178,7 @@ def __parse_xisearch_modifications(
     ignore_errors : bool, default = False
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
-        shortcode (``SYMBOLEXT``) and 0.0 modification mass.
+        shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
 
     Returns
     -------
@@ -242,7 +242,7 @@ def __parse_xisearch_modifications(
                         if ignore_errors:
                             parsed_modifications[positions[i]] = (
                                 mods[i],
-                                0.0,
+                                float("nan"),
                             )
                         else:
                             err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
@@ -266,7 +266,7 @@ def __parse_xisearch_modifications(
                     if ignore_errors:
                         parsed_modifications[pos] = (
                             mod,
-                            0.0,
+                            float("nan"),
                         )
                     else:
                         err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
@@ -307,7 +307,7 @@ def __parse_xisearch_modifications(
                         if ignore_errors:
                             parsed_modifications[positions[i]] = (
                                 mods[i],
-                                0.0,
+                                float("nan"),
                             )
                         else:
                             err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
@@ -331,7 +331,7 @@ def __parse_xisearch_modifications(
                     if ignore_errors:
                         parsed_modifications[pos] = (
                             mod,
-                            0.0,
+                            float("nan"),
                         )
                     else:
                         err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
@@ -358,7 +358,7 @@ def __read_xisearch(
     ignore_errors : bool, default = False
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
-        shortcode (``SYMBOLEXT``) and 0.0 modification mass.
+        shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
 
     Returns
     -------
@@ -443,7 +443,7 @@ def __parse_xifdr_modifications(
     ignore_errors : bool, default = False
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
-        shortcode (``SYMBOLEXT``) and 0.0 modification mass.
+        shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
 
     Returns
     -------
@@ -481,7 +481,7 @@ def __parse_xifdr_modifications(
                 )
             except KeyError:
                 if ignore_errors:
-                    parsed_modifications[pos] = (mod, 0.0)
+                    parsed_modifications[pos] = (mod, float("nan"))
                 else:
                     err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
@@ -502,7 +502,7 @@ def __parse_xifdr_modifications(
                 )
             except KeyError:
                 if ignore_errors:
-                    parsed_modifications[pos] = (mod, 0.0)
+                    parsed_modifications[pos] = (mod, float("nan"))
                 else:
                     err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
@@ -526,7 +526,7 @@ def __read_xifdr_csms(
     ignore_errors : bool, default = False
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
-        shortcode (``SYMBOLEXT``) and 0.0 modification mass.
+        shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
 
     Returns
     -------
@@ -686,7 +686,7 @@ def read_xi(
     ignore_errors : bool, default = False
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
-        shortcode (``SYMBOLEXT``) and 0.0 modification mass.
+        shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
 
     Returns
     -------
