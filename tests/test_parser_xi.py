@@ -35,7 +35,7 @@ def test1():
 def test2():
     from pyXLMS.parser_xi import parse_modifications_from_xi_sequence as pseq
 
-    assert pseq("KIECcmFDSVEISGVEDR") == {4: "Ccm"}
-    assert pseq("KIECcmFDSVEMoxISGVEDR") == {4: "Ccm", 10: "Mox"}
-    assert pseq("KIECcmFDSVEISGVEDRMox") == {4: "Ccm", 17: "Mox"}
-    assert pseq("CcmKIECcmFDSVEISGVEDRMox") == {1: "Ccm", 5: "Ccm", 18: "Mox"}
+    assert pseq("KIECcmFDSVEISGVEDR") == {4: "cm"}
+    assert pseq("KIECcmFDSVEMoxISGVEDR") == {4: "cm", 10: "ox"}
+    assert pseq("KIECcmFDSVEISGVEDRMox") == {4: "cm", 17: "ox"}
+    assert pseq("CcmKIECcmFDSVEISGVEDRMox") == {1: "cm", 5: "cm", 18: "ox"}

@@ -94,7 +94,7 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
     Parses all post-translational-modifications from a peptide sequence as reported by xiFDR. This assumes
     that amino acids are given in upper case letters and post-translational-modifications in lower case letters.
     The parsed modifications are returned as a dictionary that maps their position in the sequence (1-based) to
-    their xiFDR annotation, for example ``"Ccm"`` or ``"Mox"``.
+    their xiFDR annotation (``SYMBOLEXT``), for example ``"cm"`` or ``"ox"``.
 
     Parameters
     ----------
@@ -105,8 +105,8 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
     -------
     dict of int, str
         Dictionary that maps modifications (values) to their respective positions in the peptide sequence (1-based)
-        (keys). The modifications are given in xiFDR annotation style which is the amino acid followed by the lower
-        letter modification code, for example ``"Ccm"`` for carbamidomethylation of cysteine.
+        (keys). The modifications are given in xiFDR annotation style (``SYMBOLEXT``) which is the lower letter
+        modification code, for example ``"cm"`` for carbamidomethylation.
 
     Raises
     ------
@@ -118,22 +118,22 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
     >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
     >>> seq1 = "KIECcmFDSVEISGVEDR"
     >>> parse_modifications_from_xi_sequence(seq1)
-    {4: 'Ccm'}
+    {4: 'cm'}
 
     >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
     >>> seq2 = "KIECcmFDSVEMoxISGVEDR"
     >>> parse_modifications_from_xi_sequence(seq2)
-    {4: 'Ccm', 10: 'Mox'}
+    {4: 'cm', 10: 'ox'}
 
     >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
     >>> seq3 = "KIECcmFDSVEISGVEDRMox"
     >>> parse_modifications_from_xi_sequence(seq3)
-    {4: 'Ccm', 17: 'Mox'}
+    {4: 'cm', 17: 'ox'}
 
     >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
     >>> seq4 = "CcmKIECcmFDSVEISGVEDRMox"
     >>> parse_modifications_from_xi_sequence(seq4)
-    {1: 'Ccm', 5: 'Ccm', 18: 'Mox'}
+    {1: 'cm', 5: 'cm', 18: 'ox'}
     """
     modifications = dict()
     pos = 0
@@ -141,7 +141,7 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
     for i, aa in enumerate(str(sequence).strip()):
         if aa.isupper():
             pos += 1
-            current_mod = aa
+            current_mod = ""
         else:
             current_mod += aa
             if i + 1 >= len(sequence):
@@ -162,7 +162,8 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
 def __parse_xisearch_modifications(
     row: pd.Series,
     alpha: bool,
-    modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING,
+    modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
+    ignore_errors: bool = False,
 ) -> Dict[int, Tuple[str, float]]:
     """Returns the corresponding modifications object for a crosslink-spectrum-match from xiSearch.
 
@@ -172,8 +173,12 @@ def __parse_xisearch_modifications(
         One row/crosslink-spectrum-match of the xiSearch result file.
     alpha : bool
         Whether to parse modifications from the alpha peptide or - if ``False`` - from the beta peptide.
-    modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
-        Mapping of xi sequence elements (e.g. ``"Ccm"``) to their modifications (e.g. ``("C", "Carbamidomethyl", 57.021464)``).
+    modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
+        Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
+    ignore_errors : bool, default = False
+        If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
+        raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
+        shortcode (``SYMBOLEXT``) and 0.0 modification mass.
 
     Returns
     -------
@@ -186,6 +191,8 @@ def __parse_xisearch_modifications(
     RuntimeError
         If the parsed modifications and positions are not of the same length.
         If multiple modifications on the same residue are parsed.
+    KeyError
+        If an unknown modification is encountered.
 
     Notes
     -----
@@ -219,10 +226,19 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         raise RuntimeError(err_str)
-                    parsed_modifications[positions[i]] = (
-                        modifications[mods[i]][1],
-                        modifications[mods[i]][2],
-                    )
+                    try:
+                        parsed_modifications[positions[i]] = (
+                            modifications[mods[i]][0],
+                            modifications[mods[i]][1],
+                        )
+                    except KeyError:
+                        if ignore_errors:
+                            parsed_modifications[positions[i]] = (
+                                mods[i],
+                                0.0,
+                            )
+                        else:
+                            raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
             else:
                 mod = str(row["Modifications1"]).strip()
                 pos = int(row["ModificationPositions1"])
@@ -230,10 +246,19 @@ def __parse_xisearch_modifications(
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
-                parsed_modifications[pos] = (
-                    modifications[mod][1],
-                    modifications[mod][2],
-                )
+                try:
+                    parsed_modifications[pos] = (
+                        modifications[mod][0],
+                        modifications[mod][1],
+                    )
+                except KeyError:
+                    if ignore_errors:
+                        parsed_modifications[positions[i]] = (
+                            mods[i],
+                            0.0,
+                        )
+                    else:
+                        raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
     else:
         parsed_modifications[int(row["Link2"])] = (crosslinker, crosslinker_mass)
         if not pd.isna(row["Modifications2"]):  # pyright: ignore [reportGeneralTypeIssues]
@@ -256,10 +281,19 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         raise RuntimeError(err_str)
-                    parsed_modifications[positions[i]] = (
-                        modifications[mods[i]][1],
-                        modifications[mods[i]][2],
-                    )
+                    try:
+                        parsed_modifications[positions[i]] = (
+                            modifications[mods[i]][0],
+                            modifications[mods[i]][1],
+                        )
+                    except KeyError:
+                        if ignore_errors:
+                            parsed_modifications[positions[i]] = (
+                                mods[i],
+                                0.0,
+                            )
+                        else:
+                            raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
             else:
                 mod = str(row["Modifications2"]).strip()
                 pos = int(row["ModificationPositions2"])
@@ -267,16 +301,26 @@ def __parse_xisearch_modifications(
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise RuntimeError(err_str)
-                parsed_modifications[pos] = (
-                    modifications[mod][1],
-                    modifications[mod][2],
-                )
+                try:
+                    parsed_modifications[pos] = (
+                        modifications[mod][0],
+                        modifications[mod][1],
+                    )
+                except KeyError:
+                    if ignore_errors:
+                        parsed_modifications[positions[i]] = (
+                            mods[i],
+                            0.0,
+                        )
+                    else:
+                        raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
     return parsed_modifications
 
 
 def __read_xisearch(
     data: pd.DataFrame,
-    modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING,
+    modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
+    ignore_errors: bool = False,
 ) -> List[Dict[str, Any]]:
     """Reads a xiSearch pandas dataframe and returns a list of crosslink-spectrum-matches.
 
@@ -284,8 +328,12 @@ def __read_xisearch(
     ----------
     data : pandas.DataFrame
         Dataframe of a xiSearch result ``.csv`` file read with pandas.
-    modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
-        Mapping of xi sequence elements (e.g. ``"Ccm"``) to their modifications (e.g. ``("C", "Carbamidomethyl", 57.021464)``).
+    modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
+        Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
+    ignore_errors : bool, default = False
+        If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
+        raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
+        shortcode (``SYMBOLEXT``) and 0.0 modification mass.
 
     Returns
     -------
@@ -304,7 +352,7 @@ def __read_xisearch(
     for i, row in xl.iterrows():
         csm = create_csm(
             peptide_a=format_sequence(str(row["BasePeptide1"])),
-            modifications_a=__parse_xisearch_modifications(row, True, modifications),
+            modifications_a=__parse_xisearch_modifications(row, True, modifications, ignore_errors),
             xl_position_peptide_a=int(row["Link1"]),
             proteins_a=[
                 p.strip() if p.strip()[:4] != "REV_" else p.strip()[4:]
@@ -319,7 +367,7 @@ def __read_xisearch(
             score_a=float(row["Pep1Score"]),
             decoy_a=get_bool_from_value(int(row["Protein1decoy"])),
             peptide_b=format_sequence(str(row["BasePeptide2"])),
-            modifications_b=__parse_xisearch_modifications(row, False, modifications),
+            modifications_b=__parse_xisearch_modifications(row, False, modifications, ignore_errors),
             xl_position_peptide_b=int(row["Link2"]),
             proteins_b=[
                 p.strip() if p.strip()[:4] != "REV_" else p.strip()[4:]
@@ -350,7 +398,8 @@ def __read_xisearch(
 def __parse_xifdr_modifications(
     row: pd.Series,
     alpha: bool,
-    modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING,
+    modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
+    ignore_errors: bool = False,
 ) -> Dict[int, Tuple[str, float]]:
     """Returns the corresponding modifications object for a crosslink-spectrum-match from xiFDR.
 
@@ -360,8 +409,12 @@ def __parse_xifdr_modifications(
         One row/crosslink-spectrum-match of the xiFDR CSM result file.
     alpha : bool
         Whether to parse modifications from the alpha peptide or - if ``False`` - from the beta peptide.
-    modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
-        Mapping of xi sequence elements (e.g. ``"Ccm"``) to their modifications (e.g. ``("C", "Carbamidomethyl", 57.021464)``).
+    modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
+        Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
+    ignore_errors : bool, default = False
+        If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
+        raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
+        shortcode (``SYMBOLEXT``) and 0.0 modification mass.
 
     Returns
     -------
@@ -373,6 +426,8 @@ def __parse_xifdr_modifications(
     ------
     RuntimeError
         If multiple modifications on the same residue are parsed.
+    KeyError
+        If an unknown modification is encountered.
 
     Notes
     -----
@@ -390,7 +445,13 @@ def __parse_xifdr_modifications(
                 err_str = f"Modification at position {pos} already exists!\n"
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                 raise RuntimeError(err_str)
-            parsed_modifications[pos] = (modifications[mod][1], modifications[mod][2])
+            try:
+                parsed_modifications[pos] = (modifications[mod][0], modifications[mod][1])
+            except KeyError:
+                if ignore_errors:
+                    parsed_modifications[pos] = (mod, 0.0)
+                else:
+                    raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
     else:
         parsed_modifications[int(row["LinkPos2"])] = (crosslinker, crosslinker_mass)
         for pos, mod in parse_modifications_from_xi_sequence(
@@ -400,13 +461,20 @@ def __parse_xifdr_modifications(
                 err_str = f"Modification at position {pos} already exists!\n"
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                 raise RuntimeError(err_str)
-            parsed_modifications[pos] = (modifications[mod][1], modifications[mod][2])
+            try:
+                parsed_modifications[pos] = (modifications[mod][0], modifications[mod][1])
+            except KeyError:
+                if ignore_errors:
+                    parsed_modifications[pos] = (mod, 0.0)
+                else:
+                    raise KeyError(f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?")
     return parsed_modifications
 
 
 def __read_xifdr_csms(
     data: pd.DataFrame,
-    modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING,
+    modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
+    ignore_errors: bool = False
 ) -> List[Dict[str, Any]]:
     """Reads a xiFDR CSM pandas dataframe and returns a list of crosslink-spectrum-matches.
 
@@ -414,8 +482,12 @@ def __read_xifdr_csms(
     ----------
     data : pandas.DataFrame
         Dataframe of a xiFDR CSM result ``.csv`` file read with pandas.
-    modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
-        Mapping of xi sequence elements (e.g. ``"Ccm"``) to their modifications (e.g. ``("C", "Carbamidomethyl", 57.021464)``).
+    modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
+        Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
+    ignore_errors : bool, default = False
+        If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
+        raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
+        shortcode (``SYMBOLEXT``) and 0.0 modification mass.
 
     Returns
     -------
@@ -432,7 +504,7 @@ def __read_xifdr_csms(
     for i, row in data.iterrows():
         csm = create_csm(
             peptide_a=format_sequence(str(row["PepSeq1"])),
-            modifications_a=__parse_xifdr_modifications(row, True, modifications),
+            modifications_a=__parse_xifdr_modifications(row, True, modifications, ignore_errors),
             xl_position_peptide_a=int(row["LinkPos1"]),
             proteins_a=[
                 p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:]
@@ -445,7 +517,7 @@ def __read_xifdr_csms(
             score_a=None,
             decoy_a=get_bool_from_value(row["Decoy1"]),
             peptide_b=format_sequence(str(row["PepSeq2"])),
-            modifications_b=__parse_xifdr_modifications(row, False, modifications),
+            modifications_b=__parse_xifdr_modifications(row, False, modifications, ignore_errors),
             xl_position_peptide_b=int(row["LinkPos2"]),
             proteins_b=[
                 p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:]
@@ -553,7 +625,8 @@ def __read_xifdr_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
 
 def read_xi(
     files: str | List[str] | BinaryIO,
-    modifications: Dict[str, Tuple[str, str, float]] = XI_MODIFICATION_MAPPING,
+    modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
+    ignore_errors: bool = False,
 ) -> Dict[str, Any]:
     """Read a xiSearch/xiFDR result file.
 
@@ -564,8 +637,13 @@ def read_xi(
     ----------
     files : str, list of str, or file stream
         The name/path of the xiSearch/xiFDR result file(s) or a file-like object/stream.
-    modifications: dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
-        Mapping of xi sequence elements (e.g. ``"Ccm"``) to their modifications (e.g. ``("C", "Carbamidomethyl", 57.021464)``).
+    modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
+        Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
+        This corresponds to the ``SYMBOLEXT`` field, or the ``SYMBOL`` field minus the amino acid in the xiSearch config.
+    ignore_errors : bool, default = False
+        If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
+        raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
+        shortcode (``SYMBOLEXT``) and 0.0 modification mass.
 
     Returns
     -------
