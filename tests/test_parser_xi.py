@@ -81,3 +81,6 @@ def test3():
     assert csm["charge"] == 3
     assert csm["retention_time"] is None
     assert csm["ion_mobility"] is None
+
+    # csm = csms[29]
+    # csm = csms[184]
