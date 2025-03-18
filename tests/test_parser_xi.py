@@ -99,6 +99,7 @@ def test4():
     csm = csms[29]
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "partial"
+    assert csm["scan_nr"] == 6482
     assert csm["alpha_peptide"] == "SKKLK"
     assert (
         mts(csm["alpha_modifications"])
@@ -124,7 +125,6 @@ def test4():
     assert csm["crosslink-type"] == "inter"
     assert csm["score"] == pytest.approx(1.468129)
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.mgf"
-    assert csm["scan_nr"] == 6482
     assert csm["charge"] == 3
     assert csm["retention_time"] is None
     assert csm["ion_mobility"] is None
