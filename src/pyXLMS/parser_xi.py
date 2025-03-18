@@ -89,6 +89,64 @@ def detect_xi_filetype(
     return "err"
 
 
+def parse_peptide(sequence: str) -> str:
+    """Parses the peptide sequence from a sequence string including flanking amino acids.
+
+    Parses the peptide sequence from a sequence string including flanking amino acids, for example ``"K.KKMoxKLS.S"``.
+    The returned peptide sequence for this example would be ``"KKMoxKLS"``.
+
+    Parameters
+    ----------
+    sequence : str
+        The sequence string containing the peptide sequence and flanking amino acids.
+
+    Returns
+    -------
+    str
+        The parsed peptide sequence without flanking amino acids.
+
+    Raises
+    ------
+    RuntimeError
+        If (one of) the peptide sequence(s) could not be parsed.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser_xi import parse_peptide
+    >>> parse_peptide("K.KKMoxKLS.S")
+    'KKMoxKLS'
+
+    >>> from pyXLMS.parser_xi import parse_peptide
+    >>> parse_peptide("-.CcmCcmPSR.T")
+    'CcmCcmPSR'
+
+    >>> from pyXLMS.parser_xi import parse_peptide
+    >>> parse_peptide("CCPSR")
+    'CCPSR'
+    """
+    # PEPTIDE
+    if "." not in sequence and len(sequence.strip()) > 1:
+        return sequence.strip()
+    if "." in sequence:
+        parts = [part.strip() for part in sequence.split(".")]
+        # K.PEPTPIDE.P.EP <- wrong format
+        if len(parts) > 3:
+            raise RuntimeError(f"Could not parse peptide from sequence {sequence}!")
+        # K.PEPTIDE.R
+        if len(parts) == 3 and len(parts[1]) > 1:
+            return parts[1]
+        if len(parts) == 2:
+            # PEPTIDE.R
+            if len(parts[0]) > 1 and len(parts[1]) == 1:
+                return parts[0]
+            # K.PEPTIDE
+            if len(parts[1]) > 1 and len(parts[0]) == 1:
+                return parts[1]
+    # if none of these cases match, raise error
+    raise RuntimeError(f"Could not parse peptide from sequence {sequence}!")
+    return "err"
+
+
 def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
     """Parses all post-translational-modifications from a peptide sequence as reported by xiFDR.
 
@@ -742,40 +800,10 @@ def __read_xifdr_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
     list of dict
         The read crosslinks.
 
-    Raises
-    ------
-    RuntimeError
-        If (one of) the peptide sequence(s) could not be parsed.
-
     Notes
     -----
     This function should not be called directly, it is called from ``read_xi()``.
     """
-
-    # helper function
-    def parse_peptide(sequence: str) -> str:
-        # PEPTIDE
-        if "." not in sequence and len(sequence.strip()) > 1:
-            return sequence.strip()
-        if "." in sequence:
-            parts = [part.strip() for part in sequence.split(".")]
-            # K.PEPTPIDE.P.EP <- wrong format
-            if len(parts) > 3:
-                raise RuntimeError(f"Could not parse peptide from sequence {sequence}!")
-            # K.PEPTIDE.R
-            if len(parts) == 3 and len(parts[1]) > 1:
-                return parts[1]
-            if len(parts) == 2:
-                # PEPTIDE.R
-                if len(parts[0]) > 1 and len(parts[1]) == 1:
-                    return parts[0]
-                # K.PEPTIDE
-                if len(parts[1]) > 1 and len(parts[0]) == 1:
-                    return parts[1]
-        # if none of these cases match, raise error
-        raise RuntimeError(f"Could not parse peptide from sequence {sequence}!")
-        return "err"
-
     # create crosslink list
     crosslinks = list()
     # create crosslinks
