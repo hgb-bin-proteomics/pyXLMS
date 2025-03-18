@@ -40,7 +40,7 @@ def test2():
     assert pp("CCPSR") == "CCPSR"
 
     with pytest.raises(
-        ValueError,
+        RuntimeError,
         match="Could not parse peptide from sequence -.CcmCcmPSR.T.K!",
     ):
         _r = pp("-.CcmCcmPSR.T.K")
