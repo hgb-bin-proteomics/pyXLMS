@@ -96,7 +96,7 @@ def test4():
     assert csm["retention_time"] is None
     assert csm["ion_mobility"] is None
 
-    csm = csms[20]
+    csm = csms[29]
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "SKKLK"
