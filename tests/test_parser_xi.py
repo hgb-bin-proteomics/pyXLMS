@@ -31,8 +31,20 @@ def test1():
     ):
         _r = detect_xi_filetype(err)
 
-
 def test2():
+    from pyXLMS.parser_xi import parse_peptide as pp
+
+    assert pp("K.KKMoxKLS.S") == "KKMoxKLS"
+    assert pp("-.CcmCcmPSR.T") == "CcmCcmPSR"
+    assert pp("CCPSR") == "CCPSR"
+
+    with pytest.raises(
+        ValueError,
+        match="Could not parse peptide from sequence -.CcmCcmPSR.T.K!",
+    ):
+        _r = pp("-.CcmCcmPSR.T.K")
+
+def test3():
     from pyXLMS.parser_xi import parse_modifications_from_xi_sequence as pseq
 
     assert pseq("KIECcmFDSVEISGVEDR") == {4: "cm"}
@@ -41,7 +53,7 @@ def test2():
     assert pseq("CcmKIECcmFDSVEISGVEDRMox") == {1: "cm", 5: "cm", 18: "ox"}
 
 
-def test3():
+def test4():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
 
