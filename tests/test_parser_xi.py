@@ -99,32 +99,32 @@ def test4():
     csm = csms[29]
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "partial"
-    assert csm["scan_nr"] == 6482
-    assert csm["alpha_peptide"] == "SKKLK"
+    assert csm["alpha_peptide"] == "CCPSR"
     assert (
         mts(csm["alpha_modifications"])
-        == "(1:[Substitution|nan]);(2:[Substitution|nan]);(3:[BS3,Substitution|nan]);(4:[Substitution|nan]);(5:[Substitution|nan])"
-    )
-    assert csm["alpha_peptide_crosslink_position"] == 3
-    assert csm["alpha_proteins"] == ["Cas9"]
-    assert csm["alpha_proteins_crosslink_positions"] == [213]
-    assert csm["alpha_proteins_peptide_positions"] == [211]
-    assert csm["alpha_score"] == pytest.approx(0.355769)
-    assert csm["alpha_decoy"]
-    assert csm["beta_peptide"] == "CCPSR"
-    assert (
-        mts(csm["beta_modifications"])
         == "(1:[BS3,Carbamidomethyl|195.08953400000001]);(2:[Carbamidomethyl|57.021464])"
     )
-    assert csm["beta_peptide_crosslink_position"] == 1
-    assert csm["beta_proteins"] == ["KRA3_SHEEP"]
-    assert csm["beta_proteins_crosslink_positions"] == [1]
-    assert csm["beta_proteins_peptide_positions"] == [1]
-    assert csm["beta_score"] == pytest.approx(0.240385)
+    assert csm["alpha_peptide_crosslink_position"] == 1
+    assert csm["alpha_proteins"] == ["KRA3_SHEEP"]
+    assert csm["alpha_proteins_crosslink_positions"] == [1]
+    assert csm["alpha_proteins_peptide_positions"] == [1]
+    assert csm["alpha_score"] == pytest.approx(0.240385)
+    assert csm["alpha_decoy"]
+    assert csm["beta_peptide"] == "SKKLK"
+    assert (
+        mts(csm["beta_modifications"])
+        == "(1:[Substitution|nan]);(2:[Substitution|nan]);(3:[BS3,Substitution|nan]);(4:[Substitution|nan]);(5:[Substitution|nan])"
+    )
+    assert csm["beta_peptide_crosslink_position"] == 3
+    assert csm["beta_proteins"] == ["Cas9"]
+    assert csm["beta_proteins_crosslink_positions"] == [213]
+    assert csm["beta_proteins_peptide_positions"] == [211]
+    assert csm["beta_score"] == pytest.approx(0.355769)
     assert csm["beta_decoy"]
     assert csm["crosslink-type"] == "inter"
     assert csm["score"] == pytest.approx(1.468129)
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.mgf"
+    assert csm["scan_nr"] == 6482
     assert csm["charge"] == 3
     assert csm["retention_time"] is None
     assert csm["ion_mobility"] is None
