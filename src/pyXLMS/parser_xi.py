@@ -506,7 +506,7 @@ def __parse_xisearch_modifications(
                     raise RuntimeError(err_str)
                 mod_mapped = None
                 try:
-                    mod_mapped = modifcations[mod]
+                    mod_mapped = modifications[mod]
                 except KeyError:
                     if ignore_errors:
                         mod_mapped = (mod, float("nan"))
@@ -523,7 +523,7 @@ def __parse_xisearch_modifications(
             else:
                 mod_mapped = None
                 try:
-                    mod_mapped = modifcations[mod]
+                    mod_mapped = modifications[mod]
                 except KeyError:
                     if ignore_errors:
                         mod_mapped = (mod, float("nan"))
@@ -548,7 +548,7 @@ def __parse_xisearch_modifications(
                     raise RuntimeError(err_str)
                 mod_mapped = None
                 try:
-                    mod_mapped = modifcations[mod]
+                    mod_mapped = modifications[mod]
                 except KeyError:
                     if ignore_errors:
                         mod_mapped = (mod, float("nan"))
@@ -565,7 +565,7 @@ def __parse_xisearch_modifications(
             else:
                 mod_mapped = None
                 try:
-                    mod_mapped = modifcations[mod]
+                    mod_mapped = modifications[mod]
                 except KeyError:
                     if ignore_errors:
                         mod_mapped = (mod, float("nan"))
