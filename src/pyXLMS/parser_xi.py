@@ -518,8 +518,10 @@ def __parse_xisearch_modifications(
                         raise KeyError(err_str)
                 if mod_mapped is not None and isinstance(mod_mapped, tuple):
                     if mod_mapped[0] not in parsed_modifications[pos][0]:
-                        parsed_modifications[pos] = (parsed_modifications[pos][0] + "," + mod_mapped[0],
-                                                     parsed_modifications[pos][1] + mod_mapped[1])
+                        parsed_modifications[pos] = (
+                            parsed_modifications[pos][0] + "," + mod_mapped[0],
+                            parsed_modifications[pos][1] + mod_mapped[1],
+                        )
             else:
                 mod_mapped = None
                 try:
@@ -560,8 +562,10 @@ def __parse_xisearch_modifications(
                         raise KeyError(err_str)
                 if mod_mapped is not None and isinstance(mod_mapped, tuple):
                     if mod_mapped[0] not in parsed_modifications[pos][0]:
-                        parsed_modifications[pos] = (parsed_modifications[pos][0] + "," + mod_mapped[0],
-                                                     parsed_modifications[pos][1] + mod_mapped[1])
+                        parsed_modifications[pos] = (
+                            parsed_modifications[pos][0] + "," + mod_mapped[0],
+                            parsed_modifications[pos][1] + mod_mapped[1],
+                        )
             else:
                 mod_mapped = None
                 try:
