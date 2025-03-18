@@ -325,23 +325,24 @@ def __parse_xisearch_modifications(
                                 err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
                                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                                 raise KeyError(err_str)
-                    try:
-                        parsed_modifications[positions[i]] = (
-                            modifications[mods[i]][0],
-                            modifications[mods[i]][1],
-                        )
-                    except KeyError:
-                        if ignore_errors:
+                    else:
+                        try:
                             parsed_modifications[positions[i]] = (
-                                mods[i],
-                                float("nan"),
+                                modifications[mods[i]][0],
+                                modifications[mods[i]][1],
                             )
-                        else:
-                            err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
-                            err_str += (
-                                f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                            )
-                            raise KeyError(err_str)
+                        except KeyError:
+                            if ignore_errors:
+                                parsed_modifications[positions[i]] = (
+                                    mods[i],
+                                    float("nan"),
+                                )
+                            else:
+                                err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
+                                err_str += (
+                                    f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                                )
+                                raise KeyError(err_str)
             else:
                 mod = preprocess_mod(str(row["Modifications1"]))
                 pos = int(row["ModificationPositions1"])
@@ -367,23 +368,24 @@ def __parse_xisearch_modifications(
                                 f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                             )
                             raise KeyError(err_str)
-                try:
-                    parsed_modifications[pos] = (
-                        modifications[mod][0],
-                        modifications[mod][1],
-                    )
-                except KeyError:
-                    if ignore_errors:
+                else:
+                    try:
                         parsed_modifications[pos] = (
-                            mod,
-                            float("nan"),
+                            modifications[mod][0],
+                            modifications[mod][1],
                         )
-                    else:
-                        err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                        err_str += (
-                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                        )
-                        raise KeyError(err_str)
+                    except KeyError:
+                        if ignore_errors:
+                            parsed_modifications[pos] = (
+                                mod,
+                                float("nan"),
+                            )
+                        else:
+                            err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
+                            err_str += (
+                                f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                            )
+                            raise KeyError(err_str)
     else:
         parsed_modifications[int(row["Link2"])] = (crosslinker, crosslinker_mass)
         if not pd.isna(row["Modifications2"]):  # pyright: ignore [reportGeneralTypeIssues]
@@ -433,23 +435,24 @@ def __parse_xisearch_modifications(
                                 err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
                                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                                 raise KeyError(err_str)
-                    try:
-                        parsed_modifications[positions[i]] = (
-                            modifications[mods[i]][0],
-                            modifications[mods[i]][1],
-                        )
-                    except KeyError:
-                        if ignore_errors:
+                    else:
+                        try:
                             parsed_modifications[positions[i]] = (
-                                mods[i],
-                                float("nan"),
+                                modifications[mods[i]][0],
+                                modifications[mods[i]][1],
                             )
-                        else:
-                            err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
-                            err_str += (
-                                f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                            )
-                            raise KeyError(err_str)
+                        except KeyError:
+                            if ignore_errors:
+                                parsed_modifications[positions[i]] = (
+                                    mods[i],
+                                    float("nan"),
+                                )
+                            else:
+                                err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
+                                err_str += (
+                                    f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                                )
+                                raise KeyError(err_str)
             else:
                 mod = preprocess_mod(str(row["Modifications2"]))
                 pos = int(row["ModificationPositions2"])
@@ -475,23 +478,24 @@ def __parse_xisearch_modifications(
                                 f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                             )
                             raise KeyError(err_str)
-                try:
-                    parsed_modifications[pos] = (
-                        modifications[mod][0],
-                        modifications[mod][1],
-                    )
-                except KeyError:
-                    if ignore_errors:
+                else:
+                    try:
                         parsed_modifications[pos] = (
-                            mod,
-                            float("nan"),
+                            modifications[mod][0],
+                            modifications[mod][1],
                         )
-                    else:
-                        err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                        err_str += (
-                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                        )
-                        raise KeyError(err_str)
+                    except KeyError:
+                        if ignore_errors:
+                            parsed_modifications[pos] = (
+                                mod,
+                                float("nan"),
+                            )
+                        else:
+                            err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
+                            err_str += (
+                                f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                            )
+                            raise KeyError(err_str)
     # parse from sequence (because fixed modifcations are not reported in Modifications)
     if alpha:
         modified_sequence = parse_peptide(str(row["Peptide1"]).strip())
