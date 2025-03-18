@@ -160,7 +160,10 @@ def test4():
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "EYNSAMKR"
-    assert mts(csm["alpha_modifications"]) == "(6:[Oxidation|]);(7:[BS3|138.06807])"
+    assert (
+        mts(csm["alpha_modifications"])
+        == "(6:[Oxidation|15.994915]);(7:[BS3|138.06807])"
+    )
     assert csm["alpha_peptide_crosslink_position"] == 7
     assert csm["alpha_proteins"] == ["MYG_HUMAN"]
     assert csm["alpha_proteins_crosslink_positions"] == [13]
