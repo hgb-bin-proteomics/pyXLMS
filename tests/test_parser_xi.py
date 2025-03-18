@@ -31,6 +31,7 @@ def test1():
     ):
         _r = detect_xi_filetype(err)
 
+
 def test2():
     from pyXLMS.parser_xi import parse_peptide as pp
 
@@ -43,6 +44,7 @@ def test2():
         match="Could not parse peptide from sequence -.CcmCcmPSR.T.K!",
     ):
         _r = pp("-.CcmCcmPSR.T.K")
+
 
 def test3():
     from pyXLMS.parser_xi import parse_modifications_from_xi_sequence as pseq
