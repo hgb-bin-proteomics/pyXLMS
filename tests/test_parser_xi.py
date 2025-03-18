@@ -188,3 +188,18 @@ def test4():
     assert csm["charge"] == 3
     assert csm["retention_time"] is None
     assert csm["ion_mobility"] is None
+
+
+def test5():
+    from pyXLMS import parser as p
+    from pyXLMS.transform import modifications_to_str as mts
+
+    pr = p.read_xi(XIFDR_CSMS, verbose=0)
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "partial"
+    assert pr["search_engine"] == "xiSearch/xiFDR"
+    assert pr["crosslink-spectrum-matches"] is not None
+    assert pr["crosslinks"] is None
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert len(csms) == 413
