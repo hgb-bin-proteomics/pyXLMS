@@ -210,7 +210,7 @@ def test5():
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
     assert (
         mts(csm["alpha_modifications"])
-        == "(1:[BS3|138.06807]);(4:[Carbamidomethyl|57.021464])"
+        == "(1:[BS3|138.068]);(4:[Carbamidomethyl|57.021464])"
     )
     assert csm["alpha_peptide_crosslink_position"] == 1
     assert csm["alpha_proteins"] == ["Cas9"]
@@ -221,7 +221,7 @@ def test5():
     assert csm["beta_peptide"] == "KIECFDSVEISGVEDR"
     assert (
         mts(csm["beta_modifications"])
-        == "(1:[BS3|138.06807]);(4:[Carbamidomethyl|57.021464])"
+        == "(1:[BS3|138.068]);(4:[Carbamidomethyl|57.021464])"
     )
     assert csm["beta_peptide_crosslink_position"] == 1
     assert csm["beta_proteins"] == ["Cas9"]
