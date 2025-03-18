@@ -273,6 +273,7 @@ def __parse_xisearch_modifications(
     crosslinker = str(row["Crosslinker"]).strip()
     crosslinker_mass = float(row["CrosslinkerMass"])
     parsed_modifications = dict()
+    # parse from Modifications
     if alpha:
         parsed_modifications[int(row["Link1"])] = (crosslinker, crosslinker_mass)
         if not pd.isna(row["Modifications1"]):  # pyright: ignore [reportGeneralTypeIssues]
@@ -491,6 +492,91 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         raise KeyError(err_str)
+    # parse from sequence (because fixed modifcations are not reported in Modifications)
+    if alpha:
+        modified_sequence = parse_peptide(str(row["Peptide1"]).strip())
+        mods_from_sequence = parse_modifications_from_xi_sequence(modified_sequence)
+        for pos, mod in mods_from_sequence.items():
+            if pos in parsed_modifications:
+                err_str = f"Modification at position {pos} already exists!\n"
+                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                if verbose == 1:
+                    warnings.warn(RuntimeWarning(err_str))
+                elif verbose == 2:
+                    raise RuntimeError(err_str)
+                mod_mapped = None
+                try:
+                    mod_mapped = modifcations[mod]
+                except KeyError:
+                    if ignore_errors:
+                        mod_mapped = (mod, float("nan"))
+                    else:
+                        err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
+                        err_str += (
+                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                        )
+                        raise KeyError(err_str)
+                if mod_mapped is not None and isinstance(mod_mapped, tuple):
+                    if mod_mapped[0] not in parsed_modifications[pos][0]:
+                        parsed_modifications[pos] = (parsed_modifications[pos][0] + "," + mod_mapped[0],
+                                                     parsed_modifications[pos][1] + mod_mapped[1])
+            else:
+                mod_mapped = None
+                try:
+                    mod_mapped = modifcations[mod]
+                except KeyError:
+                    if ignore_errors:
+                        mod_mapped = (mod, float("nan"))
+                    else:
+                        err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
+                        err_str += (
+                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                        )
+                        raise KeyError(err_str)
+                if mod_mapped is not None and isinstance(mod_mapped, tuple):
+                    parsed_modifications[pos] = mod_mapped
+    else:
+        modified_sequence = parse_peptide(str(row["Peptide2"]).strip())
+        mods_from_sequence = parse_modifications_from_xi_sequence(modified_sequence)
+        for pos, mod in mods_from_sequence.items():
+            if pos in parsed_modifications:
+                err_str = f"Modification at position {pos} already exists!\n"
+                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                if verbose == 1:
+                    warnings.warn(RuntimeWarning(err_str))
+                elif verbose == 2:
+                    raise RuntimeError(err_str)
+                mod_mapped = None
+                try:
+                    mod_mapped = modifcations[mod]
+                except KeyError:
+                    if ignore_errors:
+                        mod_mapped = (mod, float("nan"))
+                    else:
+                        err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
+                        err_str += (
+                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                        )
+                        raise KeyError(err_str)
+                if mod_mapped is not None and isinstance(mod_mapped, tuple):
+                    if mod_mapped[0] not in parsed_modifications[pos][0]:
+                        parsed_modifications[pos] = (parsed_modifications[pos][0] + "," + mod_mapped[0],
+                                                     parsed_modifications[pos][1] + mod_mapped[1])
+            else:
+                mod_mapped = None
+                try:
+                    mod_mapped = modifcations[mod]
+                except KeyError:
+                    if ignore_errors:
+                        mod_mapped = (mod, float("nan"))
+                    else:
+                        err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
+                        err_str += (
+                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                        )
+                        raise KeyError(err_str)
+                if mod_mapped is not None and isinstance(mod_mapped, tuple):
+                    parsed_modifications[pos] = mod_mapped
     return parsed_modifications
 
 
