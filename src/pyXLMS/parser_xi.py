@@ -422,10 +422,10 @@ def __parse_xisearch_modifications(
                             parsed_modifications[positions[i]] = (t1, t2)
                         except KeyError:
                             if ignore_errors:
-                                t1 = parsed_modifications[positions[i]][0] = (
+                                t1 = parsed_modifications[positions[i]][0] + (
                                     "," + mods[i]
                                 )
-                                t2 = parsed_modifications[positions[i]][1] = float(
+                                t2 = parsed_modifications[positions[i]][1] + float(
                                     "nan"
                                 )
                                 parsed_modifications[positions[i]] = (t1, t2)
@@ -466,8 +466,8 @@ def __parse_xisearch_modifications(
                         parsed_modifications[pos] = (t1, t2)
                     except KeyError:
                         if ignore_errors:
-                            t1 = parsed_modifications[pos][0] = "," + mod
-                            t2 = parsed_modifications[pos][1] = float("nan")
+                            t1 = parsed_modifications[pos][0] + "," + mod
+                            t2 = parsed_modifications[pos][1] + float("nan")
                             parsed_modifications[pos] = (t1, t2)
                         else:
                             err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
