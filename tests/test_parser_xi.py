@@ -241,10 +241,7 @@ def test5():
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "QITKHVAQILDSR"
-    assert (
-        mts(csm["alpha_modifications"])
-        == "(4:[BS3|138.068])"
-    )
+    assert mts(csm["alpha_modifications"]) == "(4:[BS3|138.068])"
     assert csm["alpha_peptide_crosslink_position"] == 4
     assert csm["alpha_proteins"] == ["Cas9"]
     assert csm["alpha_proteins_crosslink_positions"] == [933]
@@ -252,10 +249,7 @@ def test5():
     assert csm["alpha_score"] is None
     assert not csm["alpha_decoy"]
     assert csm["beta_peptide"] == "QQLPEKYK"
-    assert (
-        mts(csm["beta_modifications"])
-        == "(6:[BS3|138.068])"
-    )
+    assert mts(csm["beta_modifications"]) == "(6:[BS3|138.068])"
     assert csm["beta_peptide_crosslink_position"] == 6
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [350]
