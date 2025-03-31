@@ -132,7 +132,7 @@ def read_msannika(
                 or file_extension == ".tsv"
                 or file_extension == ".csv"
             ):
-                data = pd.read_csv(input, sep=sep)
+                data = pd.read_csv(input, sep=sep, low_memory=False)
             elif file_extension == ".xlsx":
                 data = pd.read_excel(input, engine="openpyxl")
             else:
@@ -143,7 +143,7 @@ def read_msannika(
             if format == "xlsx":
                 data = pd.read_excel(input, engine="openpyxl")
             else:
-                data = pd.read_csv(input, sep=sep)
+                data = pd.read_csv(input, sep=sep, low_memory=False)
         else:
             raise ValueError(
                 f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv' or 'xlsx'!"

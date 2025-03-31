@@ -992,7 +992,7 @@ def read_xi(
 
     for input in inputs:
         ## reading data
-        data = pd.read_csv(input)
+        data = pd.read_csv(input, low_memory=False)
         ## detect input file type
         xi_file_type = detect_xi_filetype(data)
         ## process data
