@@ -622,7 +622,9 @@ def __read_xisearch(
     # create csms list
     csms = list()
     # create csms
-    for i, row in tqdm(xl.iterrows(), total=xl.shape[0], desc="Reading xiSearch CSMs..."):
+    for i, row in tqdm(
+        xl.iterrows(), total=xl.shape[0], desc="Reading xiSearch CSMs..."
+    ):
         csm = create_csm(
             peptide_a=format_sequence(str(row["BasePeptide1"])),
             modifications_a=__parse_xisearch_modifications(
@@ -834,7 +836,9 @@ def __read_xifdr_csms(
     # create csms list
     csms = list()
     # create csms
-    for i, row in tqdm(data.iterrows(), total=data.shape[0], desc="Reading xiFDR CSMs..."):
+    for i, row in tqdm(
+        data.iterrows(), total=data.shape[0], desc="Reading xiFDR CSMs..."
+    ):
         csm = create_csm(
             peptide_a=format_sequence(str(row["PepSeq1"])),
             modifications_a=__parse_xifdr_modifications(
@@ -898,7 +902,9 @@ def __read_xifdr_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
     # create crosslink list
     crosslinks = list()
     # create crosslinks
-    for i, row in tqdm(data.iterrows(), total=data.shape[0], desc="Reading xiFDR crosslinks..."):
+    for i, row in tqdm(
+        data.iterrows(), total=data.shape[0], desc="Reading xiFDR crosslinks..."
+    ):
         psmid = str(row["PSMIDs"]).split(";")[0]
         s1 = psmid.split("P1_")[1].split(" ")[0]
         p1 = parse_peptide(s1)

@@ -163,7 +163,11 @@ def read_msannika(
         is_crosslink_dataframe = "# CSMs" in col_names
         ## process data
         if is_crosslink_dataframe:
-            for i, row in tqdm(data.iterrows(), total=data.shape[0], desc="Reading MS Annika crosslinks..."):
+            for i, row in tqdm(
+                data.iterrows(),
+                total=data.shape[0],
+                desc="Reading MS Annika crosslinks...",
+            ):
                 # create crosslink
                 crosslink = create_crosslink(
                     peptide_a=format_sequence(str(row["Sequence A"])),
@@ -192,7 +196,9 @@ def read_msannika(
                 )
                 crosslinks.append(crosslink)
         else:
-            for i, row in tqdm(data.iterrows(), total=data.shape[0], desc="Reading MS Annika CSMs..."):
+            for i, row in tqdm(
+                data.iterrows(), total=data.shape[0], desc="Reading MS Annika CSMs..."
+            ):
                 # create csm
                 csm = create_csm(
                     peptide_a=format_sequence(str(row["Sequence A"])),
