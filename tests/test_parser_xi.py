@@ -263,3 +263,65 @@ def test5():
     assert csm["charge"] == 5
     assert csm["retention_time"] is None
     assert csm["ion_mobility"] is None
+
+
+def test6():
+    from pyXLMS import parser as p
+
+    pr = p.read_xi(XIFDR_LINKS, verbose=0)
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "partial"
+    assert pr["search_engine"] == "xiSearch/xiFDR"
+    assert pr["crosslink-spectrum-matches"] is None
+    assert pr["crosslinks"] is not None
+
+    xls = pr["crosslinks"]
+    assert len(xls) == 227
+
+    xl = xls[0]
+    assert xl["data_type"] == "crosslink"
+    assert xl["completeness"] == "full"
+    assert xl["alpha_peptide"] == "VVDELVKVMGR"
+    assert xl["alpha_peptide_crosslink_position"] == 7
+    assert xl["alpha_proteins"] == ["Cas9"]
+    assert xl["alpha_proteins_crosslink_positions"] == [753]
+    assert not xl["alpha_decoy"]
+    assert xl["beta_peptide"] == "VVDELVKVMGR"
+    assert xl["beta_peptide_crosslink_position"] == 7
+    assert xl["beta_proteins"] == ["Cas9"]
+    assert xl["beta_proteins_crosslink_positions"] == [753]
+    assert not xl["beta_decoy"]
+    assert xl["crosslink-type"] == "intra"
+    assert xl["score"] == pytest.approx(40.679)
+
+    xl = xls[30]
+    assert xl["data_type"] == "crosslink"
+    assert xl["completeness"] == "full"
+    assert xl["alpha_peptide"] == "FDNLTKAER"
+    assert xl["alpha_peptide_crosslink_position"] == 6
+    assert xl["alpha_proteins"] == ["Cas9"]
+    assert xl["alpha_proteins_crosslink_positions"] == [952]
+    assert not xl["alpha_decoy"]
+    assert xl["beta_peptide"] == "YDENDKLIR"
+    assert xl["beta_peptide_crosslink_position"] == 6
+    assert xl["beta_proteins"] == ["Cas9"]
+    assert xl["beta_proteins_crosslink_positions"] == [906]
+    assert not xl["beta_decoy"]
+    assert xl["crosslink-type"] == "intra"
+    assert xl["score"] == pytest.approx(25.616)
+
+    xl = xls[-1]
+    assert xl["data_type"] == "crosslink"
+    assert xl["completeness"] == "full"
+    assert xl["alpha_peptide"] == "LSKSR"
+    assert xl["alpha_peptide_crosslink_position"] == 3
+    assert xl["alpha_proteins"] == ["Cas9"]
+    assert xl["alpha_proteins_crosslink_positions"] == [222]
+    assert not xl["alpha_decoy"]
+    assert xl["beta_peptide"] == "LSKSR"
+    assert xl["beta_peptide_crosslink_position"] == 3
+    assert xl["beta_proteins"] == ["Cas9"]
+    assert xl["beta_proteins_crosslink_positions"] == [222]
+    assert not xl["beta_decoy"]
+    assert xl["crosslink-type"] == "intra"
+    assert xl["score"] == pytest.approx(9.619)
