@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import warnings
 import pandas as pd
-from tdqm import tqdm
+from tqdm import tqdm
 
 from .data import check_input
 from .data import create_crosslink
