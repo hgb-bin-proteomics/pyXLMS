@@ -83,6 +83,8 @@ def read_msannika(
     """
     ## check input
     _ok = check_input(modifications, "modifications", dict, float)
+    _ok = check_input(format, "format", str)
+    _ok = check_input(sep, "sep", str)
 
     ## helper functions
     def parse_modification_str(

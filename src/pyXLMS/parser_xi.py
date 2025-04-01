@@ -18,6 +18,7 @@ from .constants import XI_MODIFICATION_MAPPING
 from .parser_util import format_sequence
 from .parser_util import get_bool_from_value
 
+from typing import Optional
 from typing import BinaryIO
 from typing import Dict
 from typing import Any
@@ -75,6 +76,9 @@ def detect_xi_filetype(
     >>> detect_xi_filetype(df3)
     'xifdr_crosslinks'
     """
+    ## check input
+    _ok = check_input(data, "data", pd.DataFrame)
+
     col_names = data.columns.values.tolist()
     if "AllScore" in col_names:
         return "xisearch"
@@ -125,6 +129,9 @@ def parse_peptide(sequence: str) -> str:
     >>> parse_peptide("CCPSR")
     'CCPSR'
     """
+    ## check input
+    _ok = check_input(sequence, "sequence", str)
+
     # PEPTIDE
     if "." not in sequence and len(sequence.strip()) > 1:
         return sequence.strip()
@@ -195,6 +202,9 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
     >>> parse_modifications_from_xi_sequence(seq4)
     {1: 'cm', 5: 'cm', 18: 'ox'}
     """
+    ## check input
+    _ok = check_input(sequence, "sequence", str)
+
     modifications = dict()
     pos = 0
     current_mod = ""
@@ -587,6 +597,7 @@ def __parse_xisearch_modifications(
 
 def __read_xisearch(
     data: pd.DataFrame,
+    decoy_prefix: str = "REV_",
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
@@ -597,6 +608,8 @@ def __read_xisearch(
     ----------
     data : pandas.DataFrame
         Dataframe of a xiSearch result ``.csv`` file read with pandas.
+    decoy_prefix : str, default = "REV_"
+        The prefix that indicates that a protein is from the decoy database.
     modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
         Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
     ignore_errors : bool, default = False
@@ -632,7 +645,9 @@ def __read_xisearch(
             ),
             xl_position_peptide_a=int(row["Link1"]),
             proteins_a=[
-                p.strip() if p.strip()[:4] != "REV_" else p.strip()[4:]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein1"]).split(";")
             ],
             xl_position_proteins_a=[
@@ -649,7 +664,9 @@ def __read_xisearch(
             ),
             xl_position_peptide_b=int(row["Link2"]),
             proteins_b=[
-                p.strip() if p.strip()[:4] != "REV_" else p.strip()[4:]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein2"]).split(";")
             ],
             xl_position_proteins_b=[
@@ -803,6 +820,7 @@ def __parse_xifdr_modifications(
 
 def __read_xifdr_csms(
     data: pd.DataFrame,
+    decoy_prefix: str = "decoy:",
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
@@ -813,6 +831,8 @@ def __read_xifdr_csms(
     ----------
     data : pandas.DataFrame
         Dataframe of a xiFDR CSM result ``.csv`` file read with pandas.
+    decoy_prefix : str, default = "decoy:"
+        The prefix that indicates that a protein is from the decoy database.
     modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
         Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
     ignore_errors : bool, default = False
@@ -846,7 +866,9 @@ def __read_xifdr_csms(
             ),
             xl_position_peptide_a=int(row["LinkPos1"]),
             proteins_a=[
-                p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein1"]).split(";")
             ],
             xl_position_proteins_a=[
@@ -861,7 +883,9 @@ def __read_xifdr_csms(
             ),
             xl_position_peptide_b=int(row["LinkPos2"]),
             proteins_b=[
-                p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein2"]).split(";")
             ],
             xl_position_proteins_b=[
@@ -882,13 +906,17 @@ def __read_xifdr_csms(
     return csms
 
 
-def __read_xifdr_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
+def __read_xifdr_crosslinks(
+    data: pd.DataFrame, decoy_prefix: str = "decoy:"
+) -> List[Dict[str, Any]]:
     """Reads a xiFDR Links pandas dataframe and returns a list of crosslinks.
 
     Parameters
     ----------
     data : pandas.DataFrame
         Dataframe of a xiFDR Links result ``.csv`` file read with pandas.
+    decoy_prefix : str, default = "decoy:"
+        The prefix that indicates that a protein is from the decoy database.
 
     Returns
     -------
@@ -916,7 +944,9 @@ def __read_xifdr_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
             peptide_a=format_sequence(p1),
             xl_position_peptide_a=pos1,
             proteins_a=[
-                p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein1"]).split(";")
             ],
             xl_position_proteins_a=[int(p) for p in str(row["fromSite"]).split(";")],
@@ -924,7 +954,9 @@ def __read_xifdr_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
             peptide_b=format_sequence(p2),
             xl_position_peptide_b=pos2,
             proteins_b=[
-                p.strip() if p.strip()[:6] != "decoy:" else p.strip()[6:]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein2"]).split(";")
             ],
             xl_position_proteins_b=[int(p) for p in str(row["ToSite"]).split(";")],
@@ -938,6 +970,7 @@ def __read_xifdr_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
 
 def read_xi(
     files: str | List[str] | BinaryIO,
+    decoy_prefix: Optional[str] = "auto",
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
@@ -951,6 +984,9 @@ def read_xi(
     ----------
     files : str, list of str, or file stream
         The name/path of the xiSearch/xiFDR result file(s) or a file-like object/stream.
+    decoy_prefix : str, or None, default = "auto"
+        The prefix that indicates that a protein is from the decoy database.
+        If "auto" or None it will use the default for each xi file type.
     modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
         Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
         This corresponds to the ``SYMBOLEXT`` field, or the ``SYMBOL`` field minus the amino acid in the xiSearch config.
@@ -972,6 +1008,8 @@ def read_xi(
     ------
     RuntimeError
         If the file(s) contain no crosslinks or crosslink-spectrum-matches.
+    TypeError
+        If parameter verbose was not set correctly.
 
     Examples
     --------
@@ -985,7 +1023,16 @@ def read_xi(
     >>> crosslinks_from_xiFDR = read_xi("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv")
     """
     ## check input
+    _ok = (
+        check_input(decoy_prefix, "decoy_prefix", str)
+        if decoy_prefix is not None
+        else True
+    )
     _ok = check_input(modifications, "modifications", dict, tuple)
+    _ok = check_input(ignore_errors, "ignore_errors", bool)
+    _ok = check_input(verbose, "verbose", int)
+    if verbose not in [0, 1, 2]:
+        raise TypeError("Verbose level has to be one of 0, 1, or 2!")
 
     ## data structures
     crosslinks = list()
@@ -1002,13 +1049,20 @@ def read_xi(
         data = pd.read_csv(input, low_memory=False)
         ## detect input file type
         xi_file_type = detect_xi_filetype(data)
+        ## set decoy prefix
+        if decoy_prefix is None or decoy_prefix == "auto":
+            decoy_prefix = "REV_" if xi_file_type == "xisearch" else "decoy:"
         ## process data
         if xi_file_type == "xifdr_csms":
-            csms += __read_xifdr_csms(data, modifications, ignore_errors, verbose)
+            csms += __read_xifdr_csms(
+                data, decoy_prefix, modifications, ignore_errors, verbose
+            )
         elif xi_file_type == "xifdr_crosslinks":
-            crosslinks += __read_xifdr_crosslinks(data)
+            crosslinks += __read_xifdr_crosslinks(data, decoy_prefix)
         else:
-            csms += __read_xisearch(data, modifications, ignore_errors, verbose)
+            csms += __read_xisearch(
+                data, decoy_prefix, modifications, ignore_errors, verbose
+            )
 
     ## check results
     if len(crosslinks) + len(csms) == 0:
