@@ -23,7 +23,8 @@ classifiers = [
 ]
 dependencies = [
   "pandas",
-  "openpyxl"
+  "openpyxl",
+  "tqdm"
 ]
 
 [project.optional-dependencies]

@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import pandas as pd
+from tqdm import tqdm
 from os.path import splitext
 
 from .data import check_input
@@ -162,7 +163,7 @@ def read_msannika(
         is_crosslink_dataframe = "# CSMs" in col_names
         ## process data
         if is_crosslink_dataframe:
-            for i, row in data.iterrows():
+            for i, row in tqdm(data.iterrows(), total=data.shape[0], desc="Reading MS Annika crosslinks..."):
                 # create crosslink
                 crosslink = create_crosslink(
                     peptide_a=format_sequence(str(row["Sequence A"])),
@@ -191,7 +192,7 @@ def read_msannika(
                 )
                 crosslinks.append(crosslink)
         else:
-            for i, row in data.iterrows():
+            for i, row in tqdm(data.iterrows(), total=data.shape[0], desc="Reading MS Annika CSMs..."):
                 # create csm
                 csm = create_csm(
                     peptide_a=format_sequence(str(row["Sequence A"])),
