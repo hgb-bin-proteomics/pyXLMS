@@ -177,7 +177,7 @@ def test18():
     assert crosslink["beta_proteins_crosslink_positions"][0] == 1
     # assert crosslink["beta_decoy"] == False
     assert not crosslink["beta_decoy"]
-    assert crosslink["crosslink-type"] == "intra"
+    assert crosslink["crosslink_type"] == "intra"
     assert crosslink["score"] == pytest.approx(170.3)
 
 
@@ -215,7 +215,7 @@ def test19():
     assert crosslink["beta_proteins_crosslink_positions"][0] == 1
     # assert crosslink["beta_decoy"] == False
     assert not crosslink["beta_decoy"]
-    assert crosslink["crosslink-type"] == "intra"
+    assert crosslink["crosslink_type"] == "intra"
     assert crosslink["score"] == pytest.approx(170.3)
 
 
@@ -254,7 +254,7 @@ def test20():
     assert crosslink["beta_proteins_crosslink_positions"][0] == 1
     # assert crosslink["beta_decoy"] == False
     assert not crosslink["beta_decoy"]
-    assert crosslink["crosslink-type"] == "intra"
+    assert crosslink["crosslink_type"] == "intra"
     assert crosslink["score"] == pytest.approx(170.3)
 
 
@@ -292,7 +292,7 @@ def test21():
     assert crosslink["beta_proteins_crosslink_positions"][0] == 3
     # assert crosslink["beta_decoy"] == True
     assert crosslink["beta_decoy"]
-    assert crosslink["crosslink-type"] == "intra"
+    assert crosslink["crosslink_type"] == "intra"
     assert crosslink["score"] == pytest.approx(170.3)
 
 
@@ -324,7 +324,7 @@ def test22():
     assert crosslink["beta_proteins"] is None
     assert crosslink["beta_proteins_crosslink_positions"] is None
     assert crosslink["beta_decoy"] is None
-    assert crosslink["crosslink-type"] == "inter"
+    assert crosslink["crosslink_type"] == "inter"
     assert crosslink["score"] is None
 
 

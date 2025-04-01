@@ -219,7 +219,7 @@ def create_crosslink(
     dict
         The dictionary representing the crosslink with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_peptide_crosslink_position``,
         ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
-        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink-type``, ``score``, and ``additional_information``.
+        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink_type``, ``score``, and ``additional_information``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
 
     Raises
@@ -340,7 +340,7 @@ def create_crosslink(
         "beta_proteins": beta_proteins if len(beta_proteins) > 0 else None,
         "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
         "beta_decoy": crosslink[keys[1]]["decoy"],
-        "crosslink-type": "intra"
+        "crosslink_type": "intra"
         if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0
         else "inter",
         "score": score,
@@ -437,7 +437,7 @@ def create_csm(
         The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_modifications``,
         ``alpha_peptide_crosslink_position``, ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_proteins_peptide_positions``,
         ``alpha_score``, ``alpha_decoy``, ``beta_peptide``, ``beta_modifications``, ``beta_peptide_crosslink_position``, ``beta_proteins``,
-        ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink-type``, ``score``,
+        ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink_type``, ``score``,
         ``spectrum_file``, ``scan_nr``, ``retention_time``, ``ion_mobility``, and ``additional_information``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
 
@@ -644,7 +644,7 @@ def create_csm(
         "beta_proteins_peptide_positions": crosslink[keys[1]]["pep_position_proteins"],
         "beta_score": crosslink[keys[1]]["score"],
         "beta_decoy": crosslink[keys[1]]["decoy"],
-        "crosslink-type": "intra"
+        "crosslink_type": "intra"
         if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0
         else "inter",
         "score": score,

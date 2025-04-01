@@ -128,7 +128,7 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
             __cc(crosslink["beta_proteins_crosslink_positions"])
         )
         beta_decoy.append(crosslink["beta_decoy"])
-        crosslink_type.append(crosslink["crosslink-type"])
+        crosslink_type.append(crosslink["crosslink_type"])
         score.append(crosslink["score"])
     return pd.DataFrame(
         {
@@ -225,7 +225,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
         )
         beta_score.append(csm["beta_score"])
         beta_decoy.append(csm["beta_decoy"])
-        crosslink_type.append(csm["crosslink-type"])
+        crosslink_type.append(csm["crosslink_type"])
         score.append(csm["score"])
         spectrum_file.append(csm["spectrum_file"])
         scan_nr.append(csm["scan_nr"])

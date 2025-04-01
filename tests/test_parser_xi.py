@@ -88,7 +88,7 @@ def test4():
     assert csm["beta_proteins_peptide_positions"] == [864]
     assert csm["beta_score"] == pytest.approx(0.596154)
     assert not csm["beta_decoy"]
-    assert csm["crosslink-type"] == "intra"
+    assert csm["crosslink_type"] == "intra"
     assert csm["score"] == pytest.approx(8.758549)
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.mgf"
     assert csm["scan_nr"] == 2561
@@ -121,7 +121,7 @@ def test4():
     assert csm["beta_proteins_peptide_positions"] == [211]
     assert csm["beta_score"] == pytest.approx(0.355769)
     assert csm["beta_decoy"]
-    assert csm["crosslink-type"] == "inter"
+    assert csm["crosslink_type"] == "inter"
     assert csm["score"] == pytest.approx(1.468129)
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.mgf"
     assert csm["scan_nr"] == 6482
@@ -148,7 +148,7 @@ def test4():
     assert csm["beta_proteins_peptide_positions"] == [1]
     assert csm["beta_score"] == pytest.approx(0.138462)
     assert csm["beta_decoy"]
-    assert csm["crosslink-type"] == "inter"
+    assert csm["crosslink_type"] == "inter"
     assert csm["score"] == pytest.approx(-0.014849)
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.mgf"
     assert csm["scan_nr"] == 8316
@@ -181,7 +181,7 @@ def test4():
     assert csm["beta_proteins_peptide_positions"] == [1249]
     assert csm["beta_score"] == pytest.approx(0.126068)
     assert not csm["beta_decoy"]
-    assert csm["crosslink-type"] == "inter"
+    assert csm["crosslink_type"] == "inter"
     assert csm["score"] == pytest.approx(0.48559)
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.mgf"
     assert csm["scan_nr"] == 27092
@@ -229,7 +229,7 @@ def test5():
     assert csm["beta_proteins_peptide_positions"] == [575]
     assert csm["beta_score"] is None
     assert not csm["beta_decoy"]
-    assert csm["crosslink-type"] == "intra"
+    assert csm["crosslink_type"] == "intra"
     assert csm["score"] == pytest.approx(27.268)
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.mgf"
     assert csm["scan_nr"] == 19140
@@ -256,7 +256,7 @@ def test5():
     assert csm["beta_proteins_peptide_positions"] == [345]
     assert csm["beta_score"] is None
     assert not csm["beta_decoy"]
-    assert csm["crosslink-type"] == "intra"
+    assert csm["crosslink_type"] == "intra"
     assert csm["score"] == pytest.approx(6.808)
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.mgf"
     assert csm["scan_nr"] == 12190
@@ -291,7 +291,7 @@ def test6():
     assert xl["beta_proteins"] == ["Cas9"]
     assert xl["beta_proteins_crosslink_positions"] == [753]
     assert not xl["beta_decoy"]
-    assert xl["crosslink-type"] == "intra"
+    assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(40.679)
 
     xl = xls[30]
@@ -307,7 +307,7 @@ def test6():
     assert xl["beta_proteins"] == ["Cas9"]
     assert xl["beta_proteins_crosslink_positions"] == [906]
     assert not xl["beta_decoy"]
-    assert xl["crosslink-type"] == "intra"
+    assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(25.616)
 
     xl = xls[-1]
@@ -323,7 +323,7 @@ def test6():
     assert xl["beta_proteins"] == ["Cas9"]
     assert xl["beta_proteins_crosslink_positions"] == [222]
     assert not xl["beta_decoy"]
-    assert xl["crosslink-type"] == "intra"
+    assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(9.619)
 
 
@@ -366,7 +366,7 @@ def test7():
     assert csm["beta_proteins_peptide_positions"] == [575]
     assert csm["beta_score"] is None
     assert not csm["beta_decoy"]
-    assert csm["crosslink-type"] == "intra"
+    assert csm["crosslink_type"] == "intra"
     assert csm["score"] == pytest.approx(27.268)
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.mgf"
     assert csm["scan_nr"] == 19140
@@ -393,7 +393,7 @@ def test7():
     assert csm["beta_proteins_peptide_positions"] == [345]
     assert csm["beta_score"] is None
     assert not csm["beta_decoy"]
-    assert csm["crosslink-type"] == "intra"
+    assert csm["crosslink_type"] == "intra"
     assert csm["score"] == pytest.approx(6.808)
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.mgf"
     assert csm["scan_nr"] == 12190
@@ -417,7 +417,7 @@ def test7():
     assert xl["beta_proteins"] == ["Cas9"]
     assert xl["beta_proteins_crosslink_positions"] == [753]
     assert not xl["beta_decoy"]
-    assert xl["crosslink-type"] == "intra"
+    assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(40.679)
 
     xl = xls[30]
@@ -433,7 +433,7 @@ def test7():
     assert xl["beta_proteins"] == ["Cas9"]
     assert xl["beta_proteins_crosslink_positions"] == [906]
     assert not xl["beta_decoy"]
-    assert xl["crosslink-type"] == "intra"
+    assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(25.616)
 
     xl = xls[-1]
@@ -449,5 +449,5 @@ def test7():
     assert xl["beta_proteins"] == ["Cas9"]
     assert xl["beta_proteins_crosslink_positions"] == [222]
     assert not xl["beta_decoy"]
-    assert xl["crosslink-type"] == "intra"
+    assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(9.619)
