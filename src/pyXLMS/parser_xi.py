@@ -75,6 +75,9 @@ def detect_xi_filetype(
     >>> detect_xi_filetype(df3)
     'xifdr_crosslinks'
     """
+    ## check input
+    _ok = check_input(data, "data", pd.DataFrame)
+
     col_names = data.columns.values.tolist()
     if "AllScore" in col_names:
         return "xisearch"
@@ -125,6 +128,9 @@ def parse_peptide(sequence: str) -> str:
     >>> parse_peptide("CCPSR")
     'CCPSR'
     """
+    ## check input
+    _ok = check_input(sequence, "sequence", str)
+
     # PEPTIDE
     if "." not in sequence and len(sequence.strip()) > 1:
         return sequence.strip()
@@ -195,6 +201,9 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
     >>> parse_modifications_from_xi_sequence(seq4)
     {1: 'cm', 5: 'cm', 18: 'ox'}
     """
+    ## check input
+    _ok = check_input(sequence, "sequence", str)
+    
     modifications = dict()
     pos = 0
     current_mod = ""
@@ -972,6 +981,8 @@ def read_xi(
     ------
     RuntimeError
         If the file(s) contain no crosslinks or crosslink-spectrum-matches.
+    TypeError
+        If parameter verbose was not set correctly.
 
     Examples
     --------
@@ -985,7 +996,12 @@ def read_xi(
     >>> crosslinks_from_xiFDR = read_xi("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv")
     """
     ## check input
+    _ok = check_input(decoy_prefix, "decoy_prefix", str) if decoy_prefix is not None else True
     _ok = check_input(modifications, "modifications", dict, tuple)
+    _ok = check_input(ignore_errors, "ignore_errors", bool)
+    _ok = check_input(verbose, "verbose", int)
+    if verbose not in [0, 1, 2]:
+        raise TypeError("Verbose level has to be one of 0, 1, or 2!")
 
     ## data structures
     crosslinks = list()
