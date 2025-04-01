@@ -333,7 +333,7 @@ def test7():
 
     pr = p.read_xi([XIFDR_LINKS, XIFDR_CSMS], verbose=0)
     assert pr["data_type"] == "parser_result"
-    assert pr["completeness"] == "partial"
+    assert pr["completeness"] == "full"
     assert pr["search_engine"] == "xiSearch/xiFDR"
     assert pr["crosslink-spectrum-matches"] is not None
     assert pr["crosslinks"] is not None
