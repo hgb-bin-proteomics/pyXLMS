@@ -132,7 +132,7 @@ def read_msannika(
                 or file_extension == ".tsv"
                 or file_extension == ".csv"
             ):
-                data = pd.read_csv(input, sep=sep)
+                data = pd.read_csv(input, sep=sep, low_memory=False)
             elif file_extension == ".xlsx":
                 data = pd.read_excel(input, engine="openpyxl")
             else:
@@ -143,7 +143,7 @@ def read_msannika(
             if format == "xlsx":
                 data = pd.read_excel(input, engine="openpyxl")
             else:
-                data = pd.read_csv(input, sep=sep)
+                data = pd.read_csv(input, sep=sep, low_memory=False)
         else:
             raise ValueError(
                 f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv' or 'xlsx'!"
@@ -165,7 +165,7 @@ def read_msannika(
             for i, row in data.iterrows():
                 # create crosslink
                 crosslink = create_crosslink(
-                    peptide_a=format_sequence(str(row["Sequence A"]).strip()),
+                    peptide_a=format_sequence(str(row["Sequence A"])),
                     xl_position_peptide_a=int(row["Position A"]),
                     proteins_a=[
                         protein.strip()
@@ -176,7 +176,7 @@ def read_msannika(
                         for position in str(row["In protein A"]).split(";")
                     ],
                     decoy_a=get_bool_from_value(row["Decoy"]),
-                    peptide_b=format_sequence(str(row["Sequence B"]).strip()),
+                    peptide_b=format_sequence(str(row["Sequence B"])),
                     xl_position_peptide_b=int(row["Position B"]),
                     proteins_b=[
                         protein.strip()
@@ -194,7 +194,7 @@ def read_msannika(
             for i, row in data.iterrows():
                 # create csm
                 csm = create_csm(
-                    peptide_a=format_sequence(str(row["Sequence A"]).strip()),
+                    peptide_a=format_sequence(str(row["Sequence A"])),
                     modifications_a=parse_modification_str(
                         format_sequence(str(row["Sequence A"]).strip()),
                         str(row["Modifications A"]).strip(),
@@ -214,7 +214,7 @@ def read_msannika(
                     ],
                     score_a=float(row["Score Alpha"]),
                     decoy_a=not get_bool_from_value(str(row["Alpha T/D"])),
-                    peptide_b=format_sequence(str(row["Sequence B"]).strip()),
+                    peptide_b=format_sequence(str(row["Sequence B"])),
                     modifications_b=parse_modification_str(
                         format_sequence(str(row["Sequence B"]).strip()),
                         str(row["Modifications B"]).strip(),

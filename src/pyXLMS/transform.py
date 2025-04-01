@@ -9,6 +9,7 @@ from __future__ import annotations
 import pandas as pd
 from .data import check_input
 
+from typing import Optional
 from typing import List
 from typing import Dict
 from typing import Tuple
@@ -16,7 +17,7 @@ from typing import Any
 
 
 def modifications_to_str(
-    modifications: Dict[int, Tuple[str, float]] | None,
+    modifications: Optional[Dict[int, Tuple[str, float]]],
 ) -> str | None:
     """Returns the string representation of a modifications dictionary.
 
@@ -45,7 +46,7 @@ def modifications_to_str(
     return modifications_str.rstrip(";")
 
 
-def __cc(input_list: List[Any] | None, sep: str = ";") -> str | None:
+def __cc(input_list: Optional[List[Any]], sep: str = ";") -> str | None:
     """Concatenates list elements to a string using the defined seperator.
 
     Parameters
@@ -127,7 +128,7 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
             __cc(crosslink["beta_proteins_crosslink_positions"])
         )
         beta_decoy.append(crosslink["beta_decoy"])
-        crosslink_type.append(crosslink["crosslink-type"])
+        crosslink_type.append(crosslink["crosslink_type"])
         score.append(crosslink["score"])
     return pd.DataFrame(
         {
@@ -224,7 +225,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
         )
         beta_score.append(csm["beta_score"])
         beta_decoy.append(csm["beta_decoy"])
-        crosslink_type.append(csm["crosslink-type"])
+        crosslink_type.append(csm["crosslink_type"])
         score.append(csm["score"])
         spectrum_file.append(csm["spectrum_file"])
         scan_nr.append(csm["scan_nr"])

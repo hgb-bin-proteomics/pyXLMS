@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+from typing import Optional
 from typing import List
 from typing import Dict
 from typing import Tuple
@@ -16,7 +17,7 @@ def check_input(
     parameter: Any,
     parameter_name: str,
     supported_class: Any,
-    supported_subclass: Any | None = None,
+    supported_subclass: Optional[Any] = None,
 ) -> bool:
     """Checks if the given parameter is of the specified type.
 
@@ -75,7 +76,7 @@ def check_input_multi(
     parameter: Any,
     parameter_name: str,
     supported_classes: List[Any],
-    supported_subclass: Any | None = None,
+    supported_subclass: Optional[Any] = None,
 ) -> bool:
     """Checks if the given parameter is of one of the specified types.
 
@@ -170,16 +171,16 @@ def check_indexing(value: int | List[int]) -> bool:
 def create_crosslink(
     peptide_a: str,
     xl_position_peptide_a: int,
-    proteins_a: List[str] | None,
-    xl_position_proteins_a: List[int] | None,
-    decoy_a: bool | None,
+    proteins_a: Optional[List[str]],
+    xl_position_proteins_a: Optional[List[int]],
+    decoy_a: Optional[bool],
     peptide_b: str,
     xl_position_peptide_b: int,
-    proteins_b: List[str] | None,
-    xl_position_proteins_b: List[int] | None,
-    decoy_b: bool | None,
-    score: float | None,
-    additional_information: Dict[str, Any] | None = None,
+    proteins_b: Optional[List[str]],
+    xl_position_proteins_b: Optional[List[int]],
+    decoy_b: Optional[bool],
+    score: Optional[float],
+    additional_information: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Creates a crosslink data structure.
 
@@ -218,7 +219,7 @@ def create_crosslink(
     dict
         The dictionary representing the crosslink with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_peptide_crosslink_position``,
         ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
-        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink-type``, ``score``, and ``additional_information``.
+        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink_type``, ``score``, and ``additional_information``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
 
     Raises
@@ -339,7 +340,7 @@ def create_crosslink(
         "beta_proteins": beta_proteins if len(beta_proteins) > 0 else None,
         "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
         "beta_decoy": crosslink[keys[1]]["decoy"],
-        "crosslink-type": "intra"
+        "crosslink_type": "intra"
         if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0
         else "inter",
         "score": score,
@@ -349,28 +350,28 @@ def create_crosslink(
 
 def create_csm(
     peptide_a: str,
-    modifications_a: Dict[int, Tuple[str, float]] | None,
+    modifications_a: Optional[Dict[int, Tuple[str, float]]],
     xl_position_peptide_a: int,
-    proteins_a: List[str] | None,
-    xl_position_proteins_a: List[int] | None,
-    pep_position_proteins_a: List[int] | None,
-    score_a: float | None,
-    decoy_a: bool | None,
+    proteins_a: Optional[List[str]],
+    xl_position_proteins_a: Optional[List[int]],
+    pep_position_proteins_a: Optional[List[int]],
+    score_a: Optional[float],
+    decoy_a: Optional[bool],
     peptide_b: str,
-    modifications_b: Dict[int, Tuple[str, float]] | None,
+    modifications_b: Optional[Dict[int, Tuple[str, float]]],
     xl_position_peptide_b: int,
-    proteins_b: List[str] | None,
-    xl_position_proteins_b: List[int] | None,
-    pep_position_proteins_b: List[int] | None,
-    score_b: float | None,
-    decoy_b: bool | None,
-    score: float | None,
+    proteins_b: Optional[List[str]],
+    xl_position_proteins_b: Optional[List[int]],
+    pep_position_proteins_b: Optional[List[int]],
+    score_b: Optional[float],
+    decoy_b: Optional[bool],
+    score: Optional[float],
     spectrum_file: str,
     scan_nr: int,
-    charge: int | None,
-    rt: float | None,
-    im_cv: float | None,
-    additional_information: Dict[str, Any] | None = None,
+    charge: Optional[int],
+    rt: Optional[float],
+    im_cv: Optional[float],
+    additional_information: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Creates a crosslink-spectrum-match data structure.
 
@@ -436,7 +437,7 @@ def create_csm(
         The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_modifications``,
         ``alpha_peptide_crosslink_position``, ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_proteins_peptide_positions``,
         ``alpha_score``, ``alpha_decoy``, ``beta_peptide``, ``beta_modifications``, ``beta_peptide_crosslink_position``, ``beta_proteins``,
-        ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink-type``, ``score``,
+        ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink_type``, ``score``,
         ``spectrum_file``, ``scan_nr``, ``retention_time``, ``ion_mobility``, and ``additional_information``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
 
@@ -643,7 +644,7 @@ def create_csm(
         "beta_proteins_peptide_positions": crosslink[keys[1]]["pep_position_proteins"],
         "beta_score": crosslink[keys[1]]["score"],
         "beta_decoy": crosslink[keys[1]]["decoy"],
-        "crosslink-type": "intra"
+        "crosslink_type": "intra"
         if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0
         else "inter",
         "score": score,
@@ -658,8 +659,8 @@ def create_csm(
 
 def create_parser_result(
     search_engine: str,
-    csms: List[Dict[str, Any]] | None,
-    crosslinks: List[Dict[str, Any]] | None,
+    csms: Optional[List[Dict[str, Any]]],
+    crosslinks: Optional[List[Dict[str, Any]]],
 ) -> Dict[str, Any]:
     """Creates a parser result data structure.
 

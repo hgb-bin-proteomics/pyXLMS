@@ -70,7 +70,7 @@ def test1():
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
-    assert csm["crosslink-type"] == "intra"
+    assert csm["crosslink_type"] == "intra"
     assert csm["score"] == pytest.approx(170.3)
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
@@ -141,7 +141,7 @@ def test2():
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
-    assert csm["crosslink-type"] == "inter"
+    assert csm["crosslink_type"] == "inter"
     assert csm["score"] == pytest.approx(170.3)
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
@@ -212,7 +212,7 @@ def test3():
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
-    assert csm["crosslink-type"] == "intra"
+    assert csm["crosslink_type"] == "intra"
     assert csm["score"] == pytest.approx(170.3)
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
@@ -283,7 +283,7 @@ def test4():
     # assert csm["beta_decoy"] == False
     assert not csm["beta_decoy"]
     # csm
-    assert csm["crosslink-type"] == "intra"
+    assert csm["crosslink_type"] == "intra"
     assert csm["score"] == pytest.approx(170.3)
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
@@ -340,7 +340,7 @@ def test5():
     assert csm["beta_score"] is None
     assert csm["beta_decoy"] is None
     # csm
-    assert csm["crosslink-type"] == "inter"
+    assert csm["crosslink_type"] == "inter"
     assert csm["score"] is None
     assert csm["spectrum_file"] == "RUN_1"
     assert csm["scan_nr"] == 1
