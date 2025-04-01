@@ -39,7 +39,11 @@ def modifications_to_str(
     '(1:[Oxidation|15.994915]);(5:[Carbamidomethyl|57.021464])'
     """
     ## check input
-    _ok = check_input(modifications, "modifcations", dict, tuple) if modifications is not None else True
+    _ok = (
+        check_input(modifications, "modifcations", dict, tuple)
+        if modifications is not None
+        else True
+    )
 
     modifications_str = ""
     if modifications is None:

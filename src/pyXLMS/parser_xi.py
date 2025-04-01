@@ -204,7 +204,7 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
     """
     ## check input
     _ok = check_input(sequence, "sequence", str)
-    
+
     modifications = dict()
     pos = 0
     current_mod = ""
@@ -645,7 +645,9 @@ def __read_xisearch(
             ),
             xl_position_peptide_a=int(row["Link1"]),
             proteins_a=[
-                p.strip() if p.strip()[:len(decoy_prefix)] != decoy_prefix else p.strip()[len(decoy_prefix):]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein1"]).split(";")
             ],
             xl_position_proteins_a=[
@@ -662,7 +664,9 @@ def __read_xisearch(
             ),
             xl_position_peptide_b=int(row["Link2"]),
             proteins_b=[
-                p.strip() if p.strip()[:len(decoy_prefix)] != decoy_prefix else p.strip()[len(decoy_prefix):]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein2"]).split(";")
             ],
             xl_position_proteins_b=[
@@ -862,7 +866,9 @@ def __read_xifdr_csms(
             ),
             xl_position_peptide_a=int(row["LinkPos1"]),
             proteins_a=[
-                p.strip() if p.strip()[:len(decoy_prefix)] != decoy_prefix else p.strip()[len(decoy_prefix):]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein1"]).split(";")
             ],
             xl_position_proteins_a=[
@@ -877,7 +883,9 @@ def __read_xifdr_csms(
             ),
             xl_position_peptide_b=int(row["LinkPos2"]),
             proteins_b=[
-                p.strip() if p.strip()[:len(decoy_prefix)] != decoy_prefix else p.strip()[len(decoy_prefix):]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein2"]).split(";")
             ],
             xl_position_proteins_b=[
@@ -898,8 +906,9 @@ def __read_xifdr_csms(
     return csms
 
 
-def __read_xifdr_crosslinks(data: pd.DataFrame,
-                            decoy_prefix: str = "decoy:") -> List[Dict[str, Any]]:
+def __read_xifdr_crosslinks(
+    data: pd.DataFrame, decoy_prefix: str = "decoy:"
+) -> List[Dict[str, Any]]:
     """Reads a xiFDR Links pandas dataframe and returns a list of crosslinks.
 
     Parameters
@@ -935,7 +944,9 @@ def __read_xifdr_crosslinks(data: pd.DataFrame,
             peptide_a=format_sequence(p1),
             xl_position_peptide_a=pos1,
             proteins_a=[
-                p.strip() if p.strip()[:len(decoy_prefix)] != decoy_prefix else p.strip()[len(decoy_prefix):]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein1"]).split(";")
             ],
             xl_position_proteins_a=[int(p) for p in str(row["fromSite"]).split(";")],
@@ -943,7 +954,9 @@ def __read_xifdr_crosslinks(data: pd.DataFrame,
             peptide_b=format_sequence(p2),
             xl_position_peptide_b=pos2,
             proteins_b=[
-                p.strip() if p.strip()[:len(decoy_prefix)] != decoy_prefix else p.strip()[len(decoy_prefix):]
+                p.strip()
+                if p.strip()[: len(decoy_prefix)] != decoy_prefix
+                else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein2"]).split(";")
             ],
             xl_position_proteins_b=[int(p) for p in str(row["ToSite"]).split(";")],
@@ -1010,7 +1023,11 @@ def read_xi(
     >>> crosslinks_from_xiFDR = read_xi("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv")
     """
     ## check input
-    _ok = check_input(decoy_prefix, "decoy_prefix", str) if decoy_prefix is not None else True
+    _ok = (
+        check_input(decoy_prefix, "decoy_prefix", str)
+        if decoy_prefix is not None
+        else True
+    )
     _ok = check_input(modifications, "modifications", dict, tuple)
     _ok = check_input(ignore_errors, "ignore_errors", bool)
     _ok = check_input(verbose, "verbose", int)
@@ -1037,11 +1054,15 @@ def read_xi(
             decoy_prefix = "REV_" if xi_file_type == "xisearch" else "decoy:"
         ## process data
         if xi_file_type == "xifdr_csms":
-            csms += __read_xifdr_csms(data, decoy_prefix, modifications, ignore_errors, verbose)
+            csms += __read_xifdr_csms(
+                data, decoy_prefix, modifications, ignore_errors, verbose
+            )
         elif xi_file_type == "xifdr_crosslinks":
             crosslinks += __read_xifdr_crosslinks(data, decoy_prefix)
         else:
-            csms += __read_xisearch(data, decoy_prefix, modifications, ignore_errors, verbose)
+            csms += __read_xisearch(
+                data, decoy_prefix, modifications, ignore_errors, verbose
+            )
 
     ## check results
     if len(crosslinks) + len(csms) == 0:
