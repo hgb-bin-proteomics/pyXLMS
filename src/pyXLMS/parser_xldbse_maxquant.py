@@ -34,17 +34,17 @@ def __parse_maxquant_modification_str(
     """
     Examples
     --------
-    >>> from pyXLMS.parser_maxquant import __parse_maxquant_modification_str
+    >>> from pyXLMS.parser_xldbse_maxquant import __parse_maxquant_modification_str
     >>> seq = "_VVDELVKVM(Oxidation (M))GR_"
     >>> __parse_maxquant_modification_str(seq, 2, "DSS", 138.06808)
     {2: ('DSS', 3.0), 9: ('Oxidation', 15.994915)}
 
-    >>> from pyXLMS.parser_maxquant import __parse_maxquant_modification_str
+    >>> from pyXLMS.parser_xldbse_maxquant import __parse_maxquant_modification_str
     >>> seq = "_VVDELVKVM(Oxidation (M))GRM(Oxidation (M))_"
     >>> __parse_maxquant_modification_str(seq, 2, "DSS", 138.06808)
     {2: ('DSS', 3.0), 9: ('Oxidation', 15.994915), 12: ('Oxidation', 15.994915)}
 
-    >>> from pyXLMS.parser_maxquant import __parse_maxquant_modification_str
+    >>> from pyXLMS.parser_xldbse_maxquant import __parse_maxquant_modification_str
     >>> seq = "_M(Oxidation (M))VVDELVKVM(Oxidation (M))GRM(Oxidation (M))_"
     >>> __parse_maxquant_modification_str(seq, 2, "DSS", 138.06808)
     {2: ('DSS', 3.0), 1: ('Oxidation', 15.994915), 10: ('Oxidation', 15.994915), 13: ('Oxidation', 15.994915)}
