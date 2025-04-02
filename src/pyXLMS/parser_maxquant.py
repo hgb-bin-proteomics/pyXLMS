@@ -53,23 +53,49 @@ def read_maxquant(
     Raises
     ------
     RuntimeError
-        If the file(s) could not be read or if the file(s) contain no crosslinks or crosslink-spectrum-matches.
+        If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
     KeyError
         If one of the found post-translational-modifications could not be found/mapped.
 
     Examples
     --------
     >>> from pyXLMS.parser import read_maxquant
-    >>> csms_from_xlsx = read_maxquant("data/maxquant/crosslinkMsms.txt")
+    >>> csms_from_xlsx = read_maxquant("data/maxquant/run1/crosslinkMsms.txt")
     """
     ## check input
     _ok = check_input(decoy_prefix, "decoy_prefix", str)
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(sep, "sep", str)
 
-    ## TODO
+    ## data structures
+    csms = list()
 
-    return
+    ## handle input
+    if not isinstance(files, list):
+        inputs = [files]
+    else:
+        inputs = files
+
+    ## process data
+    for input in inputs:
+        data = pd.read_csv(input, sep=sep, low_memory=False)
+        xl = data.dropna(axis=0, subset=["Proteins2"])
+        for i, row in tqdm(xl.iterrows(), total=xl.shape[0], desc="Reading MaxQuant CSMs..."):
+            # create csm
+            csm = create_csm()
+            csms.append(csm)
+    ## check results
+    if len(csms) == 0:
+        raise RuntimeError(
+            "No crosslink-spectrum-matches were parsed! If this is unexpected, please file a bug report!"
+        )
+    ## return parser result
+    return create_parser_result(
+        search_engine="MaxQuant",
+        csms=csms,
+        crosslinks=None,
+    )
+
 
 def read_maxlynx(
     files: str | List[str] | BinaryIO,
@@ -101,13 +127,13 @@ def read_maxlynx(
     Raises
     ------
     RuntimeError
-        If the file(s) could not be read or if the file(s) contain no crosslinks or crosslink-spectrum-matches.
+        If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
     KeyError
         If one of the found post-translational-modifications could not be found/mapped.
 
     Examples
     --------
     >>> from pyXLMS.parser import read_maxlynx
-    >>> csms_from_xlsx = read_maxlynx("data/maxquant/crosslinkMsms.txt")
+    >>> csms_from_xlsx = read_maxlynx("data/maxquant/run1/crosslinkMsms.txt")
     """
     return read_maxquant(files, decoy_prefix, modifications, sep)
