@@ -24,8 +24,8 @@ from typing import Tuple
 from typing import List
 
 
-def __parse_maxquant_modification_str(
-    seq: str, 
+def parse_modifications_from_maxquant_sequence(
+    seq: str,
     crosslink_position: int,
     crosslinker: str,
     crosslinker_mass: float,
@@ -34,19 +34,19 @@ def __parse_maxquant_modification_str(
     """
     Examples
     --------
-    >>> from pyXLMS.parser_xldbse_maxquant import __parse_maxquant_modification_str
+    >>> from pyXLMS.parser import parse_modifications_from_maxquant_sequence
     >>> seq = "_VVDELVKVM(Oxidation (M))GR_"
-    >>> __parse_maxquant_modification_str(seq, 2, "DSS", 138.06808)
+    >>> parse_modifications_from_maxquant_sequence(seq, 2, "DSS", 138.06808)
     {2: ('DSS', 3.0), 9: ('Oxidation', 15.994915)}
 
-    >>> from pyXLMS.parser_xldbse_maxquant import __parse_maxquant_modification_str
+    >>> from pyXLMS.parser import parse_modifications_from_maxquant_sequence
     >>> seq = "_VVDELVKVM(Oxidation (M))GRM(Oxidation (M))_"
-    >>> __parse_maxquant_modification_str(seq, 2, "DSS", 138.06808)
+    >>> parse_modifications_from_maxquant_sequence(seq, 2, "DSS", 138.06808)
     {2: ('DSS', 3.0), 9: ('Oxidation', 15.994915), 12: ('Oxidation', 15.994915)}
 
-    >>> from pyXLMS.parser_xldbse_maxquant import __parse_maxquant_modification_str
+    >>> from pyXLMS.parser import parse_modifications_from_maxquant_sequence
     >>> seq = "_M(Oxidation (M))VVDELVKVM(Oxidation (M))GRM(Oxidation (M))_"
-    >>> __parse_maxquant_modification_str(seq, 2, "DSS", 138.06808)
+    >>> parse_modifications_from_maxquant_sequence(seq, 2, "DSS", 138.06808)
     {2: ('DSS', 3.0), 1: ('Oxidation', 15.994915), 10: ('Oxidation', 15.994915), 13: ('Oxidation', 15.994915)}
     """
     parsed_modifications = {crosslink_position: (crosslinker, crosslinker_mass)}
