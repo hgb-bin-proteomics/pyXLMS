@@ -4,8 +4,15 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
-from .parser_msannika import read_msannika
+
+# READERS
 from .parser_xi import read_xi
+from .parser_msannika import read_msannika
+from .parser_xldbse_maxquant import read_maxquant
+from .parser_xldbse_maxquant import read_maxlynx
+
+# UTILITY
+from .parser_xldbse_maxquant import parse_modifications_from_maxquant_sequence # noqa: F401
 
 
 ## TODO
@@ -14,4 +21,8 @@ def read(file: str, dbse: str):
         return read_msannika(file)
     if dbse == "Xi":
         return read_xi(file)
+    if dbse == "MaxQuant":
+        return read_maxquant(file, "DSSO")
+    if dbse == "MaxLynx":
+        return read_maxlynx(file, "DSSO")
     return
