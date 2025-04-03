@@ -130,7 +130,7 @@ def test2():
     assert csm["alpha_peptide"] == "MDGTEELLVKLNR"
     assert (
         mts(csm["alpha_modifications"])
-        == "(1:[Oxidation|15.994915];10:[DSS|138.06808])"
+        == "(1:[Oxidation|15.994915];(10:[DSS|138.06808])"
     )
     assert csm["alpha_peptide_crosslink_position"] == 10
     assert csm["alpha_proteins"] == ["Cas9"]
