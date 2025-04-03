@@ -229,7 +229,7 @@ def test3():
     assert csm["alpha_peptide"] == "DFLELKANMAGQADAGFDGPK"
     assert mts(csm["alpha_modifications"]) == "(6:[DSS|138.06808])"
     assert csm["alpha_peptide_crosslink_position"] == 6
-    assert csm["alpha_proteins"] == ["MYG_HUMAN|"]
+    assert csm["alpha_proteins"] == ["MYG_HUMAN"]
     assert csm["alpha_proteins_crosslink_positions"] == [20]
     assert csm["alpha_proteins_peptide_positions"] == [15]
     assert csm["alpha_score"] == pytest.approx(16.773198)
@@ -237,7 +237,7 @@ def test3():
     assert csm["beta_peptide"] == "YVPKIK"
     assert mts(csm["beta_modifications"]) == "(4:[DSS|138.06808])"
     assert csm["beta_peptide_crosslink_position"] == 4
-    assert csm["beta_proteins"] == ["MYG_HUMAN|"]
+    assert csm["beta_proteins"] == ["MYG_HUMAN"]
     assert csm["beta_proteins_crosslink_positions"] == [55]
     assert csm["beta_proteins_peptide_positions"] == [52]
     assert csm["beta_score"] == pytest.approx(22.066486)
@@ -267,7 +267,7 @@ def test3():
     assert csm["beta_peptide"] == "MDGTEELLVKLNR"
     assert mts(csm["beta_modifications"]) == "(10:[DSS|138.06808])"
     assert csm["beta_peptide_crosslink_position"] == 10
-    assert csm["beta_proteins"] == ["Cas9"]
+    assert csm["beta_proteins"] == ["Cas10"]
     assert csm["beta_proteins_crosslink_positions"] == [407]
     assert csm["beta_proteins_peptide_positions"] == [398]
     assert csm["beta_score"] == pytest.approx(140.526596)
@@ -286,7 +286,7 @@ def test3():
     assert csm["alpha_peptide"] == "MLLDIKTR"
     assert mts(csm["alpha_modifications"]) == "(6:[DSS|138.06808])"
     assert csm["alpha_peptide_crosslink_position"] == 6
-    assert csm["alpha_proteins"] == ["K1C15_SHEEP|"]
+    assert csm["alpha_proteins"] == ["K1C15_SHEEP"]
     assert csm["alpha_proteins_crosslink_positions"] == [394]
     assert csm["alpha_proteins_peptide_positions"] == [389]
     assert csm["alpha_score"] == pytest.approx(26.076371)
@@ -306,3 +306,26 @@ def test3():
     assert csm["charge"] == 3
     assert csm["retention_time"] is None
     assert csm["ion_mobility"] is None
+
+def test4():
+    from pyXLMS.parser import read_maxlynx
+
+    pr = read_maxlynx(MAXQUANT1, crosslinker="DSS")
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "partial"
+    assert pr["search_engine"] == "MaxQuant"
+    assert pr["crosslink-spectrum-matches"] is not None
+    assert pr["crosslinks"] is None
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert len(csms) == 730
+
+    pr = read_maxlynx(MAXQUANT2, crosslinker="DSS")
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "partial"
+    assert pr["search_engine"] == "MaxQuant"
+    assert pr["crosslink-spectrum-matches"] is not None
+    assert pr["crosslinks"] is None
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert len(csms) == 730
