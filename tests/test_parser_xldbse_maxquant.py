@@ -20,31 +20,45 @@ def test1():
     seq2 = "_VVDELVKVM(Oxidation (M))GRM(Oxidation (M))_"
     seq3 = "_M(Oxidation (M))VVDELVKVM(Oxidation (M))GRM(Oxidation (M))_"
 
-    assert parse_modifications_from_maxquant_sequence(seq1, 2, xl, xl_mass) == {2: ('DSS', 138.06808), 9: ('Oxidation', 15.994915)}
-    assert parse_modifications_from_maxquant_sequence(seq2, 2, xl, xl_mass) == {2: ('DSS', 138.06808), 9: ('Oxidation', 15.994915), 12: ('Oxidation', 15.994915)}
-    assert parse_modifications_from_maxquant_sequence(seq3, 2, xl, xl_mass) == {2: ('DSS', 138.06808), 1: ('Oxidation', 15.994915), 10: ('Oxidation', 15.994915), 13: ('Oxidation', 15.994915)}
+    assert parse_modifications_from_maxquant_sequence(seq1, 2, xl, xl_mass) == {
+        2: ("DSS", 138.06808),
+        9: ("Oxidation", 15.994915),
+    }
+    assert parse_modifications_from_maxquant_sequence(seq2, 2, xl, xl_mass) == {
+        2: ("DSS", 138.06808),
+        9: ("Oxidation", 15.994915),
+        12: ("Oxidation", 15.994915),
+    }
+    assert parse_modifications_from_maxquant_sequence(seq3, 2, xl, xl_mass) == {
+        2: ("DSS", 138.06808),
+        1: ("Oxidation", 15.994915),
+        10: ("Oxidation", 15.994915),
+        13: ("Oxidation", 15.994915),
+    }
 
     with pytest.raises(
         RuntimeError,
-        match="Could not parse sequence VVDEL. Is the sequence correctly formatted?"
+        match="Could not parse sequence VVDEL. Is the sequence correctly formatted?",
     ):
         _r = parse_modifications_from_maxquant_sequence("VVDEL", 2, xl, xl_mass)
 
     with pytest.raises(
-        RuntimeError,
-        match="Modification at position 9 already exists!"
+        RuntimeError, match="Modification at position 9 already exists!"
     ):
         _r = parse_modifications_from_maxquant_sequence(seq1, 9, xl, xl_mass)
 
     with pytest.raises(
         KeyError,
-        match="Key Oxi not found in parameter 'modifications'. Are you missing a modification?"
+        match="Key Oxi not found in parameter 'modifications'. Are you missing a modification?",
     ):
-        _r = parse_modifications_from_maxquant_sequence("_VVDELVKVM(Oxi (M))GR_", 2, xl, xl_mass)
+        _r = parse_modifications_from_maxquant_sequence(
+            "_VVDELVKVM(Oxi (M))GR_", 2, xl, xl_mass
+        )
 
 
 def test2():
     from pyXLMS.parser import read_maxquant
+    from pyXLMS.transform import modifications_to_str as mts
 
     pr = read_maxquant(MAXQUANT1, crosslinker="DSS")
     assert pr["data_type"] == "parser_result"
