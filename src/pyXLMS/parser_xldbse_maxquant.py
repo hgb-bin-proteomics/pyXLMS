@@ -341,4 +341,6 @@ def read_maxlynx(
     >>> from pyXLMS.parser import read_maxlynx
     >>> csms_from_xlsx = read_maxlynx("data/maxquant/run1/crosslinkMsms.txt")
     """
-    return read_maxquant(files, decoy_prefix, modifications, sep)
+    return read_maxquant(
+        files, crosslinker, crosslinker_mass, decoy_prefix, modifications, sep
+    )
