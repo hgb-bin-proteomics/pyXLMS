@@ -14,7 +14,6 @@ from .data import create_csm
 from .data import create_parser_result
 from .constants import MODIFICATIONS
 from .parser_util import format_sequence
-from .parser_util import get_bool_from_value
 
 from typing import Optional
 from typing import BinaryIO
@@ -196,8 +195,67 @@ def read_maxquant(
         data = pd.read_csv(input, sep=sep, low_memory=False)
         xl = data.dropna(axis=0, subset=["Proteins2"])
         for i, row in tqdm(xl.iterrows(), total=xl.shape[0], desc="Reading MaxQuant CSMs..."):
+            # preprocess proteins
+            protein_a = str(row["Proteins1"]).split("(")[0].strip() if "(" in str(row["Proteins1"]) else str(row["Proteins1"])
+            protein_b = str(row["Proteins2"]).split("(")[0].strip() if "(" in str(row["Proteins2"]) else str(row["Proteins2"])
             # create csm
-            csm = create_csm()
+            csm = create_csm(
+                peptide_a=format_sequence(str(row["Sequence1"])),
+                modifications_a=parse_modifications_from_maxquant_sequence(
+                    str(row["Modified sequence1"]),
+                    int(row["Peptide index of Crosslink 1"]),
+                    crosslinker,
+                    crosslinker_mass,
+                    modifications
+                ),
+                xl_position_peptide_a=int(row["Peptide index of Crosslink 1"]),
+                proteins_a=[
+                    protein_a.strip()
+                    if protein_a.strip()[: len(decoy_prefix)] != decoy_prefix
+                    else protein_a.strip()[len(decoy_prefix) :]
+                ],
+                xl_position_proteins_a=[
+                    int(row["Protein index of Crosslink 1"])
+                ],
+                pep_position_proteins_a=[
+                    int(row["Protein index of Crosslink 1"]) - int(row["Peptide index of Crosslink 1"]) + 1
+                ],
+                score_a=float(row["Partial score 1"]),
+                decoy_a=decoy_prefix in str(row["Proteins1"]),
+                peptide_b=format_sequence(str(row["Sequence2"])),
+                modifications_b=parse_modifications_from_maxquant_sequence(
+                    str(row["Modified sequence2"]),
+                    int(row["Peptide index of Crosslink 2"]),
+                    crosslinker,
+                    crosslinker_mass,
+                    modifications
+                ),
+                xl_position_peptide_b=int(row["Peptide index of Crosslink 2"]),
+                proteins_b=[
+                    protein_b.strip()
+                    if protein_b.strip()[: len(decoy_prefix)] != decoy_prefix
+                    else protein_b.strip()[len(decoy_prefix) :]
+                ],
+                xl_position_proteins_b=[
+                    int(row["Protein index of Crosslink 2"])
+                ],
+                pep_position_proteins_b=[
+                    int(row["Protein index of Crosslink 2"]) - int(row["Peptide index of Crosslink 2"]) + 1
+                ],
+                score_b=float(row["Partial score 1"]),
+                decoy_b=decoy_prefix in str(row["Proteins2"]),
+                score=float(row["Score"]),
+                spectrum_file=str(row["Raw file"]).strip(),
+                scan_nr=int(row["Scan number"]),
+                charge=int(row["Charge"]),
+                rt=None,
+                im_cv=None,
+                additional_information={
+                    "Proteins1": str(row["Proteins1"]).strip(),
+                    "Proteins2": str(row["Proteins2"]).strip(),
+                    "Delta Score": float(row["Delta Score"]),
+                },
+            )
             csms.append(csm)
     ## check results
     if len(csms) == 0:
