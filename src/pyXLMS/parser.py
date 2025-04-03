@@ -7,7 +7,7 @@
 
 # READERS
 from .parser_xi import read_xi
-from .parser_msannika import read_msannika
+from .parser_xldbse_msannika import read_msannika
 from .parser_xldbse_maxquant import read_maxquant
 from .parser_xldbse_maxquant import read_maxlynx
 
