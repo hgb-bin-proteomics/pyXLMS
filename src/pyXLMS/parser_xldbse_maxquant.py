@@ -278,7 +278,7 @@ def read_maxquant(
                 additional_information={
                     "Proteins1": str(row["Proteins1"]).strip(),
                     "Proteins2": str(row["Proteins2"]).strip(),
-                    "Delta Score": float(row["Delta Score"]),
+                    "Delta score": float(row["Delta score"]),
                 },
             )
             csms.append(csm)
