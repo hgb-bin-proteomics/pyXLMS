@@ -31,7 +31,39 @@ def parse_modifications_from_maxquant_sequence(
     crosslinker_mass: float,
     modifications: Dict[str, float] = MODIFICATIONS
 ) -> Dict[int, Tuple[str, float]]:
-    """
+    """Parse post-translational-modifications from a MaxQuant peptide sequence.
+
+    Parses post-translational-modifications (PTMs) from a MaxQuant peptide sequence,
+    for example "_VVDELVKVM(Oxidation (M))GR_".
+
+    Parameters
+    ----------
+    seq : str
+        The MaxQuant sequence string.
+    crosslink_position : int
+        Position of the crosslinker in the sequence (1-based).
+    crosslinker : str
+        Name of the used cross-linking reagent, for example "DSSO".
+    crosslinker_mass : float, or None, default = None
+        Monoisotopic delta mass of the crosslink modification. If the crosslinker is
+        defined in parameter "modifications" this can be omitted.
+    modifications: dict of str, float, default = ``constants.MODIFICATIONS``
+        Mapping of modification names to modification masses.
+
+    Returns
+    -------
+    dict of int, tuple
+        The ``pyXLMS`` specific modifications object, a dictionary that maps positions to their corresponding modifications and their
+        monoisotopic masses.
+
+    Raises
+    ------
+    RuntimeError
+        If the sequence could not be parsed because it is not in MaxQuant format.
+        If multiple modifications on the same residue are parsed.
+    KeyError
+        If an unknown modification is encountered.
+
     Examples
     --------
     >>> from pyXLMS.parser import parse_modifications_from_maxquant_sequence
@@ -78,11 +110,11 @@ def parse_modifications_from_maxquant_sequence(
                 current_mod += aa
             if is_mod == 0:
                 if current_pos in parsed_modifications:
-                    raise RuntimeError()
+                    raise RuntimeError(f"Modification at position {current_pos} already exists!")
                 else:
                     current_mod = current_mod.split()[0]
                     if current_mod not in modifications:
-                        raise KeyError()
+                        raise KeyError(f"Key {current_mod} not found in parameter 'modifications'. Are you missing a modification?"")
                     else:
                         parsed_modifications[current_pos] = (current_mod, modifications[current_mod])
                 current_mod = ""
@@ -128,7 +160,7 @@ def read_maxquant(
     RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
     KeyError
-        If one of the found post-translational-modifications could not be found/mapped.
+        If the specified crosslinker could not be found/mapped.
 
     Examples
     --------
@@ -219,7 +251,7 @@ def read_maxlynx(
     RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
     KeyError
-        If one of the found post-translational-modifications could not be found/mapped.
+        If the specified crosslinker could not be found/mapped.
 
     Examples
     --------
