@@ -68,17 +68,17 @@ def parse_modifications_from_maxquant_sequence(
     >>> from pyXLMS.parser import parse_modifications_from_maxquant_sequence
     >>> seq = "_VVDELVKVM(Oxidation (M))GR_"
     >>> parse_modifications_from_maxquant_sequence(seq, 2, "DSS", 138.06808)
-    {2: ('DSS', 3.0), 9: ('Oxidation', 15.994915)}
+    {2: ('DSS', 138.06808), 9: ('Oxidation', 15.994915)}
 
     >>> from pyXLMS.parser import parse_modifications_from_maxquant_sequence
     >>> seq = "_VVDELVKVM(Oxidation (M))GRM(Oxidation (M))_"
     >>> parse_modifications_from_maxquant_sequence(seq, 2, "DSS", 138.06808)
-    {2: ('DSS', 3.0), 9: ('Oxidation', 15.994915), 12: ('Oxidation', 15.994915)}
+    {2: ('DSS', 138.06808), 9: ('Oxidation', 15.994915), 12: ('Oxidation', 15.994915)}
 
     >>> from pyXLMS.parser import parse_modifications_from_maxquant_sequence
     >>> seq = "_M(Oxidation (M))VVDELVKVM(Oxidation (M))GRM(Oxidation (M))_"
     >>> parse_modifications_from_maxquant_sequence(seq, 2, "DSS", 138.06808)
-    {2: ('DSS', 3.0), 1: ('Oxidation', 15.994915), 10: ('Oxidation', 15.994915), 13: ('Oxidation', 15.994915)}
+    {2: ('DSS', 138.06808), 1: ('Oxidation', 15.994915), 10: ('Oxidation', 15.994915), 13: ('Oxidation', 15.994915)}
     """
     parsed_modifications = {crosslink_position: (crosslinker, crosslinker_mass)}
     ## start parse seq
