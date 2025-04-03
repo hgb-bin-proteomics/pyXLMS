@@ -58,19 +58,19 @@ def detect_xi_filetype(
 
     Examples
     --------
-    >>> from pyXLMS.parser_xi import detect_xi_filetype
+    >>> from pyXLMS.parser import detect_xi_filetype
     >>> import pandas as pd
     >>> df1 = pd.read_csv("data/xi/r1_Xi1.7.6.7.csv")
     >>> detect_xi_filetype(df1)
     'xisearch'
 
-    >>> from pyXLMS.parser_xi import detect_xi_filetype
+    >>> from pyXLMS.parser import detect_xi_filetype
     >>> import pandas as pd
     >>> df2 = pd.read_csv("data/xi/1perc_xl_boost_CSM_xiFDR2.2.1.csv")
     >>> detect_xi_filetype(df2)
     'xifdr_csms'
 
-    >>> from pyXLMS.parser_xi import detect_xi_filetype
+    >>> from pyXLMS.parser import detect_xi_filetype
     >>> import pandas as pd
     >>> df3 = pd.read_csv("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv")
     >>> detect_xi_filetype(df3)
@@ -117,15 +117,15 @@ def parse_peptide(sequence: str) -> str:
 
     Examples
     --------
-    >>> from pyXLMS.parser_xi import parse_peptide
+    >>> from pyXLMS.parser import parse_peptide
     >>> parse_peptide("K.KKMoxKLS.S")
     'KKMoxKLS'
 
-    >>> from pyXLMS.parser_xi import parse_peptide
+    >>> from pyXLMS.parser import parse_peptide
     >>> parse_peptide("-.CcmCcmPSR.T")
     'CcmCcmPSR'
 
-    >>> from pyXLMS.parser_xi import parse_peptide
+    >>> from pyXLMS.parser import parse_peptide
     >>> parse_peptide("CCPSR")
     'CCPSR'
     """
@@ -182,22 +182,22 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
 
     Examples
     --------
-    >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
+    >>> from pyXLMS.parser import parse_modifications_from_xi_sequence
     >>> seq1 = "KIECcmFDSVEISGVEDR"
     >>> parse_modifications_from_xi_sequence(seq1)
     {4: 'cm'}
 
-    >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
+    >>> from pyXLMS.parser import parse_modifications_from_xi_sequence
     >>> seq2 = "KIECcmFDSVEMoxISGVEDR"
     >>> parse_modifications_from_xi_sequence(seq2)
     {4: 'cm', 10: 'ox'}
 
-    >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
+    >>> from pyXLMS.parser import parse_modifications_from_xi_sequence
     >>> seq3 = "KIECcmFDSVEISGVEDRMox"
     >>> parse_modifications_from_xi_sequence(seq3)
     {4: 'cm', 17: 'ox'}
 
-    >>> from pyXLMS.parser_xi import parse_modifications_from_xi_sequence
+    >>> from pyXLMS.parser import parse_modifications_from_xi_sequence
     >>> seq4 = "CcmKIECcmFDSVEISGVEDRMox"
     >>> parse_modifications_from_xi_sequence(seq4)
     {1: 'cm', 5: 'cm', 18: 'ox'}
