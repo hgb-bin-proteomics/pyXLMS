@@ -13,7 +13,7 @@ XIFDR_LINKS = "data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv"
 
 
 def test1():
-    from pyXLMS.parser_xi import detect_xi_filetype
+    from pyXLMS.parser import detect_xi_filetype
     import pandas as pd
 
     xi = pd.read_csv(XISEARCH)
@@ -33,7 +33,7 @@ def test1():
 
 
 def test2():
-    from pyXLMS.parser_xi import parse_peptide as pp
+    from pyXLMS.parser import parse_peptide as pp
 
     assert pp("K.KKMoxKLS.S") == "KKMoxKLS"
     assert pp("-.CcmCcmPSR.T") == "CcmCcmPSR"
@@ -47,7 +47,7 @@ def test2():
 
 
 def test3():
-    from pyXLMS.parser_xi import parse_modifications_from_xi_sequence as pseq
+    from pyXLMS.parser import parse_modifications_from_xi_sequence as pseq
 
     assert pseq("KIECcmFDSVEISGVEDR") == {4: "cm"}
     assert pseq("KIECcmFDSVEMoxISGVEDR") == {4: "cm", 10: "ox"}
