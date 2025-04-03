@@ -267,7 +267,7 @@ def read_maxquant(
                     - int(row["Peptide index of Crosslink 2"])
                     + 1
                 ],
-                score_b=float(row["Partial score 1"]),
+                score_b=float(row["Partial score 2"]),
                 decoy_b=decoy_prefix in str(row["Proteins2"]),
                 score=float(row["Score"]),
                 spectrum_file=str(row["Raw file"]).strip(),
