@@ -28,7 +28,7 @@ def parse_modifications_from_maxquant_sequence(
     crosslink_position: int,
     crosslinker: str,
     crosslinker_mass: float,
-    modifications: Dict[str, float] = MODIFICATIONS
+    modifications: Dict[str, float] = MODIFICATIONS,
 ) -> Dict[int, Tuple[str, float]]:
     """Parse post-translational-modifications from a MaxQuant peptide sequence.
 
@@ -86,10 +86,14 @@ def parse_modifications_from_maxquant_sequence(
     if len(split_seq) != 3:
         raise RuntimeError(
             f"Could not parse sequence {seq}. Is the sequence correctly formatted?"
-            )
-    _n_term = split_seq[0].strip() # don't use nterm mods because I don't know how they are formatted
+        )
+    _n_term = split_seq[
+        0
+    ].strip()  # don't use nterm mods because I don't know how they are formatted
     internal = split_seq[1].strip()
-    _c_term = split_seq[2].strip() # don't use cterm mods because I don't know how they are formatted
+    _c_term = split_seq[
+        2
+    ].strip()  # don't use cterm mods because I don't know how they are formatted
     ## end parse seq
     is_mod = 0
     current_pos = 0
@@ -109,13 +113,20 @@ def parse_modifications_from_maxquant_sequence(
                 current_mod += aa
             if is_mod == 0:
                 if current_pos in parsed_modifications:
-                    raise RuntimeError(f"Modification at position {current_pos} already exists!")
+                    raise RuntimeError(
+                        f"Modification at position {current_pos} already exists!"
+                    )
                 else:
                     current_mod = current_mod.split()[0]
                     if current_mod not in modifications:
-                        raise KeyError(f"Key {current_mod} not found in parameter 'modifications'. Are you missing a modification?"")
+                        raise KeyError(
+                            f"Key {current_mod} not found in parameter 'modifications'. Are you missing a modification?"
+                        )
                     else:
-                        parsed_modifications[current_pos] = (current_mod, modifications[current_mod])
+                        parsed_modifications[current_pos] = (
+                            current_mod,
+                            modifications[current_mod],
+                        )
                 current_mod = ""
     return parsed_modifications
 
@@ -168,7 +179,11 @@ def read_maxquant(
     """
     ## check input
     _ok = check_input(crosslinker, "crosslinker", str)
-    _ok = check_input(crosslinker_mass, "crosslinker_mass", float) if crosslinker_mass is not None else True
+    _ok = (
+        check_input(crosslinker_mass, "crosslinker_mass", float)
+        if crosslinker_mass is not None
+        else True
+    )
     _ok = check_input(decoy_prefix, "decoy_prefix", str)
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(sep, "sep", str)
@@ -177,7 +192,7 @@ def read_maxquant(
             raise KeyError(
                 "Cannot infer crosslinker mass because crosslinker is not defined in "
                 "parameter 'modifications'. Please specify crosslinker mass manually!"
-                )
+            )
         else:
             crosslinker_mass = modifications[crosslinker]
 
@@ -194,10 +209,20 @@ def read_maxquant(
     for input in inputs:
         data = pd.read_csv(input, sep=sep, low_memory=False)
         xl = data.dropna(axis=0, subset=["Proteins2"])
-        for i, row in tqdm(xl.iterrows(), total=xl.shape[0], desc="Reading MaxQuant CSMs..."):
+        for i, row in tqdm(
+            xl.iterrows(), total=xl.shape[0], desc="Reading MaxQuant CSMs..."
+        ):
             # preprocess proteins
-            protein_a = str(row["Proteins1"]).split("(")[0].strip() if "(" in str(row["Proteins1"]) else str(row["Proteins1"])
-            protein_b = str(row["Proteins2"]).split("(")[0].strip() if "(" in str(row["Proteins2"]) else str(row["Proteins2"])
+            protein_a = (
+                str(row["Proteins1"]).split("(")[0].strip()
+                if "(" in str(row["Proteins1"])
+                else str(row["Proteins1"])
+            )
+            protein_b = (
+                str(row["Proteins2"]).split("(")[0].strip()
+                if "(" in str(row["Proteins2"])
+                else str(row["Proteins2"])
+            )
             # create csm
             csm = create_csm(
                 peptide_a=format_sequence(str(row["Sequence1"])),
@@ -206,7 +231,7 @@ def read_maxquant(
                     int(row["Peptide index of Crosslink 1"]),
                     crosslinker,
                     crosslinker_mass,
-                    modifications
+                    modifications,
                 ),
                 xl_position_peptide_a=int(row["Peptide index of Crosslink 1"]),
                 proteins_a=[
@@ -214,11 +239,11 @@ def read_maxquant(
                     if protein_a.strip()[: len(decoy_prefix)] != decoy_prefix
                     else protein_a.strip()[len(decoy_prefix) :]
                 ],
-                xl_position_proteins_a=[
-                    int(row["Protein index of Crosslink 1"])
-                ],
+                xl_position_proteins_a=[int(row["Protein index of Crosslink 1"])],
                 pep_position_proteins_a=[
-                    int(row["Protein index of Crosslink 1"]) - int(row["Peptide index of Crosslink 1"]) + 1
+                    int(row["Protein index of Crosslink 1"])
+                    - int(row["Peptide index of Crosslink 1"])
+                    + 1
                 ],
                 score_a=float(row["Partial score 1"]),
                 decoy_a=decoy_prefix in str(row["Proteins1"]),
@@ -228,7 +253,7 @@ def read_maxquant(
                     int(row["Peptide index of Crosslink 2"]),
                     crosslinker,
                     crosslinker_mass,
-                    modifications
+                    modifications,
                 ),
                 xl_position_peptide_b=int(row["Peptide index of Crosslink 2"]),
                 proteins_b=[
@@ -236,11 +261,11 @@ def read_maxquant(
                     if protein_b.strip()[: len(decoy_prefix)] != decoy_prefix
                     else protein_b.strip()[len(decoy_prefix) :]
                 ],
-                xl_position_proteins_b=[
-                    int(row["Protein index of Crosslink 2"])
-                ],
+                xl_position_proteins_b=[int(row["Protein index of Crosslink 2"])],
                 pep_position_proteins_b=[
-                    int(row["Protein index of Crosslink 2"]) - int(row["Peptide index of Crosslink 2"]) + 1
+                    int(row["Protein index of Crosslink 2"])
+                    - int(row["Peptide index of Crosslink 2"])
+                    + 1
                 ],
                 score_b=float(row["Partial score 1"]),
                 decoy_b=decoy_prefix in str(row["Proteins2"]),

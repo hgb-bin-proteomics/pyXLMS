@@ -12,7 +12,7 @@ from .parser_xldbse_maxquant import read_maxquant
 from .parser_xldbse_maxquant import read_maxlynx
 
 # UTILITY
-from .parser_xldbse_maxquant import parse_modifications_from_maxquant_sequence # noqa: F401
+from .parser_xldbse_maxquant import parse_modifications_from_maxquant_sequence  # noqa: F401
 
 
 ## TODO
