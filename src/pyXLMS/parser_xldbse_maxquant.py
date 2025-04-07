@@ -175,7 +175,7 @@ def read_maxquant(
     Examples
     --------
     >>> from pyXLMS.parser import read_maxquant
-    >>> csms_from_xlsx = read_maxquant("data/maxquant/run1/crosslinkMsms.txt")
+    >>> csms = read_maxquant("data/maxquant/run1/crosslinkMsms.txt")
     """
     ## check input
     _ok = check_input(crosslinker, "crosslinker", str)
