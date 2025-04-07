@@ -106,7 +106,7 @@ def __parse_modifications_from_plink_modifications_str(
                 if verbose == 2:
                     raise RuntimeError(f"Modification at position {mod_pos} already exists!")
                 if verbose == 1:
-                    warning.warn(RuntimeWarning(f"Modification at position {mod_pos} already exists!"))
+                    warnings.warn(RuntimeWarning(f"Modification at position {mod_pos} already exists!"))
                 t1 = modifications_b[mod_pos][0] + "," + mod_desc
                 t2 = modifications_b[mod_pos][1] + modifications[mod_desc]
                 modifications_b[mod_pos] = (t1, t2)
@@ -117,7 +117,7 @@ def __parse_modifications_from_plink_modifications_str(
                 if verbose == 2:
                     raise RuntimeError(f"Modification at position {mod_pos} already exists!")
                 if verbose == 1:
-                    warning.warn(RuntimeWarning(f"Modification at position {mod_pos} already exists!"))
+                    warnings.warn(RuntimeWarning(f"Modification at position {mod_pos} already exists!"))
                 t1 = modifications_a[mod_pos][0] + "," + mod_desc
                 t2 = modifications_a[mod_pos][1] + modifications[mod_desc]
                 modifications_a[mod_pos] = (t1, t2)
@@ -132,7 +132,7 @@ def __parse_proteins_and_position_from_plink(
 ) -> Dict[str, Any]:
     """
 
-    
+
     """
     xl_pos_a = int(seq.split("-")[0].split("(")[1].split(")")[0])
     xl_pos_b = int(seq.split("-")[1].split("(")[1].split(")")[0])
