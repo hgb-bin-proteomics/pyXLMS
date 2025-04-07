@@ -187,14 +187,14 @@ def __parse_proteins_and_position_from_plink(
         proteins_set_a.add(protein_a)
         proteins_set_b.add(protein_b)
     # get proteins a
-    for protein in proteins_set_a:
+    for protein in sorted(proteins_set_a):
         acc = protein.split("(")[0]
         pos = int(protein.split("(")[1].split(")")[0])
         proteins_a.append(acc)
         proteins_a_xl_positions.append(pos)
         proteins_a_pep_positions.append(pos - xl_pos_a + 1)
     # get proteins b
-    for protein in proteins_set_b:
+    for protein in sorted(proteins_set_b):
         acc = protein.split("(")[0]
         pos = int(protein.split("(")[1].split(")")[0])
         proteins_b.append(acc)
