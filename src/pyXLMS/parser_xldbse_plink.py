@@ -33,11 +33,11 @@ except ImportError:
 
 def __parse_modifications_from_plink_modifications_str(
     seq: str,
-    mod_str: Optional[str, float],
+    mod_str: Optional[str | float],
     crosslinker: str,
     modifications: Dict[str, float] = MODIFICATIONS,
     verbose: Literal[0, 1, 2] = 1
-) -> Tuple[Dict[int, Tuple[str, float]]]:
+) -> Tuple[Dict[int, Tuple[str, float]], Dict[int, Tuple[str, float]]]:
     """Parse post-translational-modifications from a pLink modification string.
 
     Parses post-translational-modifications (PTMs) from a pLink modification string,
@@ -262,7 +262,7 @@ def read_plink(
             # pre information
             parsed_modifications = __parse_modifications_from_plink_modifications_str(
                 seq = str(row["Peptide"]).strip(),
-                mod_str = row["Modifications"],
+                mod_str = row["Modifications"], # pyright: ignore [reportArgumentType]
                 crosslinker = str(row["Linker"]).strip(),
                 modifications = modifications,
                 verbose = verbose
