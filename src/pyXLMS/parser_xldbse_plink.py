@@ -61,7 +61,7 @@ def __parse_modifications_from_plink_modifications_str(
     Returns
     -------
     tuple of dict of int, tuple
-        The ``pyXLMS`` specific modifications objects, dictionaries that map positions to their corresponding modifications and their
+        The ``pyXLMS`` specific modification objects, dictionaries that map positions to their corresponding modifications and their
         monoisotopic masses. The first object (index 0) corresponds to the modifications of the first peptide, the second object (index 1)
         corresponds to the modifications of the second peptide.
 
@@ -144,7 +144,29 @@ def __parse_proteins_and_position_from_plink(
     seq: str,
     proteins: str,
 ) -> Dict[str, Any]:
-    """ """
+    """Parses proteins and positions from pLink results.
+
+    Parses proteins, as well as peptide and crosslink positions from a pLink crosslink sequence
+    and protein string.
+
+    Parameters
+    ----------
+    seq : str
+        The pLink crosslink sequence string.
+    proteins : str
+        The pLink proteins string.
+
+    Returns
+    -------
+    dict of str, Any
+        A dictionary with the following keys and information:
+        ``xl_pos_a``, ``proteins_a``, ``proteins_a_xl_positions``, ``proteins_a_pep_positions``,
+        ``xl_pos_b``, ``proteins_b``, ``proteins_b_xl_positions``, ``proteins_b_pep_positions``.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``read_plink()``.
+    """
     xl_pos_a = int(seq.split("-")[0].split("(")[1].split(")")[0])
     xl_pos_b = int(seq.split("-")[1].split("(")[1].split(")")[0])
     # proteins a
@@ -191,12 +213,46 @@ def __parse_proteins_and_position_from_plink(
 
 
 def parse_spectrum_file_from_plink(title: str) -> str:
-    """ """
+    """Parse the spectrum file name from a spectrum title.
+
+    Parameters
+    ----------
+    title : str
+        The spectrum title.
+
+    Returns
+    -------
+    str
+        The spectrum file name.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import parse_spectrum_file_from_plink
+    >>> parse_spectrum_file_from_plink("XLpeplib_Beveridge_QEx-HFX_DSS_R1.20588.20588.3.0.dta")
+    'XLpeplib_Beveridge_QEx-HFX_DSS_R1'
+    """
     return str(title).split(".")[0].strip()
 
 
 def parse_scan_nr_from_plink(title: str) -> int:
-    """ """
+    """Parse the scan number from a spectrum title.
+
+    Parameters
+    ----------
+    title : str
+        The spectrum title.
+
+    Returns
+    -------
+    int
+        The scan number.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import parse_scan_nr_from_plink
+    >>> parse_scan_nr_from_plink("XLpeplib_Beveridge_QEx-HFX_DSS_R1.20588.20588.3.0.dta")
+    20588
+    """
     return int(str(title).split(".")[1])
 
 
@@ -217,7 +273,7 @@ def read_plink(
     Parameters
     ----------
     files : str, list of str, or file stream
-        The name/path of the MaxQuant result file(s) or a file-like object/stream.
+        The name/path of the pLink result file(s) or a file-like object/stream.
     spectrum_file_parser: Callable, default = ``parse_spectrum_file_from_plink``
         A function that parses the spectrum file name from spectrum titles.
     scan_nr_parser : Callable, default = ``parse_scan_nr_from_plink()``
@@ -242,6 +298,8 @@ def read_plink(
     ------
     RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
+    TypeError
+        If parameter verbose was not set correctly.
 
     Examples
     --------
@@ -254,6 +312,9 @@ def read_plink(
     _ok = check_input(decoy_prefix, "decoy_prefix", str)
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(sep, "sep", str)
+    _ok = check_input(verbose, "verbose", int)
+    if verbose not in [0, 1, 2]:
+        raise TypeError("Verbose level has to be one of 0, 1, or 2!")
 
     ## data structures
     csms = list()
