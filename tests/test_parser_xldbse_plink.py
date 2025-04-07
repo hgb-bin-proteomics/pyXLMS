@@ -163,3 +163,48 @@ def test3():
     assert csm["charge"] == 3
     assert csm["retention_time"] is None
     assert csm["ion_mobility"] is None
+
+
+def test4():
+    from pyXLMS.parser import read_plink
+    from pyXLMS.transform import modifications_to_str as mts
+
+    pr = read_plink(PLINK3)
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "partial"
+    assert pr["search_engine"] == "pLink"
+    assert pr["crosslink-spectrum-matches"] is not None
+    assert pr["crosslinks"] is None
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert len(csms) == 3
+
+    csm = csms[-1]
+    assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "partial"
+    assert csm["alpha_peptide"] == "LFKGHPETLEK"
+    assert mts(csm["alpha_modifications"]) == "(3:[DSS|138.06808])"
+    assert csm["alpha_peptide_crosslink_position"] == 3
+    assert csm["alpha_proteins"] == ["sp|K1C15_SHEEP|", "sp|MYG_HUMAN|"]
+    assert csm["alpha_proteins_crosslink_positions"] == [192, 34]
+    assert csm["alpha_proteins_peptide_positions"] == [190, 32]
+    assert csm["alpha_score"] is None
+    assert not csm["alpha_decoy"]
+    assert csm["beta_peptide"] == "LKYENEMALR"
+    assert (
+        mts(csm["beta_modifications"])
+        == "(2:[DSS|138.06808]);(7:[Oxidation|15.994915])"
+    )
+    assert csm["beta_peptide_crosslink_position"] == 2
+    assert csm["beta_proteins"] == ["sp|K1C15_SHEEP|", "sp|MYG_HUMAN|"]
+    assert csm["beta_proteins_crosslink_positions"] == [192, 34]
+    assert csm["beta_proteins_peptide_positions"] == [191, 33]
+    assert csm["beta_score"] is None
+    assert not csm["beta_decoy"]
+    assert csm["crosslink_type"] == "inter"
+    assert csm["score"] == pytest.approx(float("0.332623"))
+    assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1"
+    assert csm["scan_nr"] == 14421
+    assert csm["charge"] == 3
+    assert csm["retention_time"] is None
+    assert csm["ion_mobility"] is None
