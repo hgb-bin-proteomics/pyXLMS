@@ -78,7 +78,10 @@ def test3():
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
-    assert mts(csm["alpha_modifications"]) == "(1:[DSS|138.06808]);(4:[Carbamidomethyl|57.021464])"
+    assert (
+        mts(csm["alpha_modifications"])
+        == "(1:[DSS|138.06808]);(4:[Carbamidomethyl|57.021464])"
+    )
     assert csm["alpha_peptide_crosslink_position"] == 1
     assert csm["alpha_proteins"] == ["Cas9"]
     assert csm["alpha_proteins_crosslink_positions"] == [575]
@@ -86,7 +89,10 @@ def test3():
     assert csm["alpha_score"] is None
     assert not csm["alpha_decoy"]
     assert csm["beta_peptide"] == "KIECFDSVEISGVEDR"
-    assert mts(csm["beta_modifications"]) == "(1:[DSS|138.06808]);(4:[Carbamidomethyl|57.021464])"
+    assert (
+        mts(csm["beta_modifications"])
+        == "(1:[DSS|138.06808]);(4:[Carbamidomethyl|57.021464])"
+    )
     assert csm["beta_peptide_crosslink_position"] == 1
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [575]
@@ -113,7 +119,10 @@ def test3():
     assert csm["alpha_score"] is None
     assert not csm["alpha_decoy"]
     assert csm["beta_peptide"] == "VKYVTEGMR"
-    assert mts(csm["beta_modifications"]) == "(2:[DSS|138.06808]);(8:[Oxidation|15.994915])"
+    assert (
+        mts(csm["beta_modifications"])
+        == "(2:[DSS|138.06808]);(8:[Oxidation|15.994915])"
+    )
     assert csm["beta_peptide_crosslink_position"] == 2
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [532]
@@ -140,7 +149,7 @@ def test3():
     assert csm["alpha_score"] is None
     assert not csm["alpha_decoy"]
     assert csm["beta_peptide"] == "TKYNALK"
-    assert mts(csm["beta_modifications"]) == "(2:[DSS|138.06808]);(8:[Oxidation|15.994915])"
+    assert mts(csm["beta_modifications"]) == "(2:[DSS|138.06808])"
     assert csm["beta_peptide_crosslink_position"] == 2
     assert csm["beta_proteins"] == ["sp|CTRB_BOVIN|"]
     assert csm["beta_proteins_crosslink_positions"] == [145]
