@@ -55,17 +55,17 @@ def check_input(
     >>> check_input([1, 2], "xl_position_proteins_a", list, int)
     True
     """
-    if type(parameter) is not supported_class:
+    if not isinstance(parameter, supported_class):
         raise TypeError(f"{parameter_name} must be {supported_class}!")
-    if type(parameter) is list and supported_subclass is not None:
+    if isinstance(parameter, list) and supported_subclass is not None:
         for value in parameter:
-            if type(value) is not supported_subclass:
+            if not isinstance(value, supported_subclass):
                 raise TypeError(
                     f"List values of {parameter_name} must be {supported_subclass}!"
                 )
-    if type(parameter) is dict and supported_subclass is not None:
+    if isinstance(parameter, dict) and supported_subclass is not None:
         for key in parameter:
-            if type(parameter[key]) is not supported_subclass:
+            if not isinstance(parameter[key], supported_subclass):
                 raise TypeError(
                     f"Dict values of {parameter_name} must be {supported_subclass}!"
                 )
@@ -110,19 +110,19 @@ def check_input_multi(
     >>> check_input_multi("PEPTIDE", "peptide_a", [str, list])
     True
     """
-    if type(parameter) not in supported_classes:
+    if not isinstance(parameter, tuple(supported_classes)):
         raise TypeError(
             f"{parameter_name} must be one of {','.join([str(c) for c in supported_classes])}!"
         )
-    if type(parameter) is list and supported_subclass is not None:
+    if isinstance(parameter, list) and supported_subclass is not None:
         for value in parameter:
-            if type(value) is not supported_subclass:
+            if not isinstance(value, supported_subclass):
                 raise TypeError(
                     f"List values of {parameter_name} must be {supported_subclass}!"
                 )
-    if type(parameter) is dict and supported_subclass is not None:
+    if isinstance(parameter, dict) and supported_subclass is not None:
         for key in parameter:
-            if type(parameter[key]) is not supported_subclass:
+            if not isinstance(parameter[key], supported_subclass):
                 raise TypeError(
                     f"Dict values of {parameter_name} must be {supported_subclass}!"
                 )
