@@ -1,0 +1,6 @@
+Peptide_Order,Peptide,Peptide_Mass,Modifications,Proteins,Protein_Type
+,Spectrum_Order,Title,Charge,Precursor_Mass,Evalue,Score,Precursor_Mass_Error(Da),Precursor_Mass_Error(ppm),Alpha_Evalue,Beta_Evalue
+1,LFKGHPETLEK(3)-LFKGHPETLEK(3),2734.481303,null,sp|MYG_HUMAN|(34)-sp|MYG_HUMAN|(34)/,Intra-Protein
+,1,XLpeplib_Beveridge_QEx-HFX_DSS_R1.20588.20588.3.0.dta,3,2734.475005,1.000000e+000,0.488417,-0.006298,-2.303179,1.000000e+000,1.000000e+000
+2,LKYENEMALR(2)-LKYENEMALR(2),2686.357760,Oxidation[M](7),sp|K1C15_SHEEP|(192)-sp|K1C15_SHEEP|(192)/,Intra-Protein
+,1,XLpeplib_Beveridge_QEx-HFX_DSS_R1.14420.14420.3.3.dta,3,2686.359187,1.000000e+000,0.332623,0.001427,0.531203,1.000000e+000,1.000000e+000
