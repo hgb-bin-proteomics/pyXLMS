@@ -36,7 +36,7 @@ def __parse_modifications_from_plink_modifications_str(
     mod_str: Optional[str | float],
     crosslinker: str,
     modifications: Dict[str, float] = MODIFICATIONS,
-    verbose: Literal[0, 1, 2] = 1
+    verbose: Literal[0, 1, 2] = 1,
 ) -> Tuple[Dict[int, Tuple[str, float]], Dict[int, Tuple[str, float]]]:
     """Parse post-translational-modifications from a pLink modification string.
 
@@ -98,15 +98,23 @@ def __parse_modifications_from_plink_modifications_str(
     for mod in mods:
         mod_desc = mod.split("[")[0].strip()
         if mod_desc not in modifications:
-            raise KeyError(f"Key {mod_desc} not found in parameter 'modifications'. Are you missing a modification?")
+            raise KeyError(
+                f"Key {mod_desc} not found in parameter 'modifications'. Are you missing a modification?"
+            )
         mod_pos = int(mod.split("(")[1].split(")")[0])
         if mod_pos > len(seq.split("-")[0]):
             mod_pos = mod_pos - len(seq.split("-")[0])
             if mod_pos in modifications_b:
                 if verbose == 2:
-                    raise RuntimeError(f"Modification at position {mod_pos} already exists!")
+                    raise RuntimeError(
+                        f"Modification at position {mod_pos} already exists!"
+                    )
                 if verbose == 1:
-                    warnings.warn(RuntimeWarning(f"Modification at position {mod_pos} already exists!"))
+                    warnings.warn(
+                        RuntimeWarning(
+                            f"Modification at position {mod_pos} already exists!"
+                        )
+                    )
                 t1 = modifications_b[mod_pos][0] + "," + mod_desc
                 t2 = modifications_b[mod_pos][1] + modifications[mod_desc]
                 modifications_b[mod_pos] = (t1, t2)
@@ -115,9 +123,15 @@ def __parse_modifications_from_plink_modifications_str(
         else:
             if mod_pos in modifications_a:
                 if verbose == 2:
-                    raise RuntimeError(f"Modification at position {mod_pos} already exists!")
+                    raise RuntimeError(
+                        f"Modification at position {mod_pos} already exists!"
+                    )
                 if verbose == 1:
-                    warnings.warn(RuntimeWarning(f"Modification at position {mod_pos} already exists!"))
+                    warnings.warn(
+                        RuntimeWarning(
+                            f"Modification at position {mod_pos} already exists!"
+                        )
+                    )
                 t1 = modifications_a[mod_pos][0] + "," + mod_desc
                 t2 = modifications_a[mod_pos][1] + modifications[mod_desc]
                 modifications_a[mod_pos] = (t1, t2)
@@ -130,10 +144,7 @@ def __parse_proteins_and_position_from_plink(
     seq: str,
     proteins: str,
 ) -> Dict[str, Any]:
-    """
-
-
-    """
+    """ """
     xl_pos_a = int(seq.split("-")[0].split("(")[1].split(")")[0])
     xl_pos_b = int(seq.split("-")[1].split("(")[1].split(")")[0])
     # proteins a
@@ -167,25 +178,25 @@ def __parse_proteins_and_position_from_plink(
         proteins_b.append(acc)
         proteins_b_xl_positions.append(pos)
         proteins_b_pep_positions.append(pos - xl_pos_b + 1)
-    return {"xl_pos_a": xl_pos_a,
-            "proteins_a": proteins_a,
-            "proteins_a_xl_positions": proteins_a_xl_positions,
-            "proteins_a_pep_positions": proteins_a_pep_positions,
-            "xl_pos_b": xl_pos_b,
-            "proteins_b": proteins_b,
-            "proteins_b_xl_positions": proteins_b_xl_positions,
-            "proteins_b_pep_positions": proteins_b_pep_positions}
+    return {
+        "xl_pos_a": xl_pos_a,
+        "proteins_a": proteins_a,
+        "proteins_a_xl_positions": proteins_a_xl_positions,
+        "proteins_a_pep_positions": proteins_a_pep_positions,
+        "xl_pos_b": xl_pos_b,
+        "proteins_b": proteins_b,
+        "proteins_b_xl_positions": proteins_b_xl_positions,
+        "proteins_b_pep_positions": proteins_b_pep_positions,
+    }
 
 
 def parse_spectrum_file_from_plink(title: str) -> str:
-    """
-    """
+    """ """
     return str(title).split(".")[0].strip()
 
 
 def parse_scan_nr_from_plink(title: str) -> int:
-    """
-    """
+    """ """
     return int(str(title).split(".")[1])
 
 
@@ -196,7 +207,7 @@ def read_plink(
     decoy_prefix: str = "REV_",
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = ",",
-    verbose: Literal[0, 1, 2] = 1
+    verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
     """Read a pLink result file.
 
@@ -261,19 +272,20 @@ def read_plink(
         ):
             # pre information
             parsed_modifications = __parse_modifications_from_plink_modifications_str(
-                seq = str(row["Peptide"]).strip(),
-                mod_str = row["Modifications"], # pyright: ignore [reportArgumentType]
-                crosslinker = str(row["Linker"]).strip(),
-                modifications = modifications,
-                verbose = verbose
+                seq=str(row["Peptide"]).strip(),
+                mod_str=row["Modifications"],  # pyright: ignore [reportArgumentType]
+                crosslinker=str(row["Linker"]).strip(),
+                modifications=modifications,
+                verbose=verbose,
             )
             parsed_positions = __parse_proteins_and_position_from_plink(
-                seq = str(row["Peptide"]).strip(),
-                proteins = str(row["Proteins"]).strip()
+                seq=str(row["Peptide"]).strip(), proteins=str(row["Proteins"]).strip()
             )
             # create csm
             csm = create_csm(
-                peptide_a=format_sequence(str(row["Peptide"]).split("-")[0].split("(")[0].strip()),
+                peptide_a=format_sequence(
+                    str(row["Peptide"]).split("-")[0].split("(")[0].strip()
+                ),
                 modifications_a=parsed_modifications[0],
                 xl_position_peptide_a=parsed_positions["xl_pos_a"],
                 proteins_a=[
@@ -286,7 +298,9 @@ def read_plink(
                 pep_position_proteins_a=parsed_positions["proteins_a_pep_positions"],
                 score_a=None,
                 decoy_a=decoy_prefix in " ".join(parsed_positions["proteins_a"]),
-                peptide_b=format_sequence(str(row["Peptide"]).split("-")[1].split("(")[0].strip()),
+                peptide_b=format_sequence(
+                    str(row["Peptide"]).split("-")[1].split("(")[0].strip()
+                ),
                 modifications_b=parsed_modifications[1],
                 xl_position_peptide_b=parsed_positions["xl_pos_b"],
                 proteins_b=[
