@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import warnings
 import pandas as pd
 from tqdm import tqdm
 
@@ -21,36 +22,205 @@ from typing import Dict
 from typing import Any
 from typing import Tuple
 from typing import List
+from typing import Callable
+
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
+
+def __parse_modifications_from_plink_modifications_str(
+    seq: str,
+    mod_str: Optional[str, float],
+    crosslinker: str,
+    modifications: Dict[str, float] = MODIFICATIONS,
+    verbose: Literal[0, 1, 2] = 1
+) -> Tuple[Dict[int, Tuple[str, float]]]:
+    """Parse post-translational-modifications from a pLink modification string.
+
+    Parses post-translational-modifications (PTMs) from a pLink modification string,
+    for example "Carbamidomethyl[C](4);Oxidation[M](23)".
+
+    Parameters
+    ----------
+    seq : str
+        The pLink crosslink sequence string.
+    mod_str : str, float, or None
+        The pLink modification value, as string or float. Can be None.
+    crosslinker : str
+        Name of the used cross-linking reagent, for example "DSSO".
+    modifications: dict of str, float, default = ``constants.MODIFICATIONS``
+        Mapping of modification names to modification masses.
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
+
+    Returns
+    -------
+    tuple of dict of int, tuple
+        The ``pyXLMS`` specific modifications objects, dictionaries that map positions to their corresponding modifications and their
+        monoisotopic masses. The first object (index 0) corresponds to the modifications of the first peptide, the second object (index 1)
+        corresponds to the modifications of the second peptide.
+
+    Raises
+    ------
+    RuntimeError
+        If multiple modifications on the same residue are parsed (only for ``verbose = 2``).
+    KeyError
+        If an unknown modification is encountered.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``read_plink()``.
+    """
+    modifications_a = dict()
+    modifications_b = dict()
+    xl_pos_a = int(seq.split("-")[0].split("(")[1].split(")")[0])
+    xl_pos_b = int(seq.split("-")[1].split("(")[1].split(")")[0])
+    if crosslinker in modifications:
+        modifications_a[xl_pos_a] = (crosslinker, modifications[crosslinker])
+        modifications_b[xl_pos_b] = (crosslinker, modifications[crosslinker])
+    else:
+        raise KeyError(
+            f"Key {crosslinker} not found in parameter 'modifications'. Are you missing a modification?"
+        )
+    if mod_str is None:
+        return (modifications_a, modifications_b)
+    if isinstance(mod_str, float) and pd.isna(mod_str):
+        return (modifications_a, modifications_b)
+    mod_str = str(mod_str).strip()
+    if mod_str == "nan":
+        return (modifications_a, modifications_b)
+    mods = mod_str.split(";")
+    for mod in mods:
+        mod_desc = mod.split("[")[0].strip()
+        if mod_desc not in modifications:
+            raise KeyError(f"Key {mod_desc} not found in parameter 'modifications'. Are you missing a modification?")
+        mod_pos = int(mod.split("(")[1].split(")")[0])
+        if mod_pos > len(seq.split("-")[0]):
+            mod_pos = mod_pos - len(seq.split("-")[0])
+            if mod_pos in modifications_b:
+                if verbose == 2:
+                    raise RuntimeError(f"Modification at position {mod_pos} already exists!")
+                if verbose == 1:
+                    warning.warn(RuntimeWarning(f"Modification at position {mod_pos} already exists!"))
+                t1 = modifications_b[mod_pos][0] + "," + mod_desc
+                t2 = modifications_b[mod_pos][1] + modifications[mod_desc]
+                modifications_b[mod_pos] = (t1, t2)
+            else:
+                modifications_b[mod_pos] = (mod_desc, modifications[mod_desc])
+        else:
+            if mod_pos in modifications_a:
+                if verbose == 2:
+                    raise RuntimeError(f"Modification at position {mod_pos} already exists!")
+                if verbose == 1:
+                    warning.warn(RuntimeWarning(f"Modification at position {mod_pos} already exists!"))
+                t1 = modifications_a[mod_pos][0] + "," + mod_desc
+                t2 = modifications_a[mod_pos][1] + modifications[mod_desc]
+                modifications_a[mod_pos] = (t1, t2)
+            else:
+                modifications_a[mod_pos] = (mod_desc, modifications[mod_desc])
+    return (modifications_a, modifications_b)
+
+
+def __parse_proteins_and_position_from_plink(
+    seq: str,
+    proteins: str,
+) -> Dict[str, Any]:
+    """
+
+    
+    """
+    xl_pos_a = int(seq.split("-")[0].split("(")[1].split(")")[0])
+    xl_pos_b = int(seq.split("-")[1].split("(")[1].split(")")[0])
+    # proteins a
+    proteins_set_a = set()
+    proteins_a = list()
+    proteins_a_xl_positions = list()
+    proteins_a_pep_positions = list()
+    # proteins b
+    proteins_set_b = set()
+    proteins_b = list()
+    proteins_b_xl_positions = list()
+    proteins_b_pep_positions = list()
+    # find unique
+    proteins = proteins.strip().rstrip("/")
+    for protein_pair in proteins.split("/"):
+        protein_a = protein_pair.split("-")[0].strip()
+        protein_b = protein_pair.split("-")[1].strip()
+        proteins_set_a.add(protein_a)
+        proteins_set_b.add(protein_b)
+    # get proteins a
+    for protein in proteins_set_a:
+        acc = protein.split("(")[0]
+        pos = int(protein.split("(")[1].split(")")[0])
+        proteins_a.append(acc)
+        proteins_a_xl_positions.append(pos)
+        proteins_a_pep_positions.append(pos - xl_pos_a + 1)
+    # get proteins b
+    for protein in proteins_set_b:
+        acc = protein.split("(")[0]
+        pos = int(protein.split("(")[1].split(")")[0])
+        proteins_b.append(acc)
+        proteins_b_xl_positions.append(pos)
+        proteins_b_pep_positions.append(pos - xl_pos_b + 1)
+    return {"xl_pos_a": xl_pos_a,
+            "proteins_a": proteins_a,
+            "proteins_a_xl_positions": proteins_a_xl_positions,
+            "proteins_a_pep_positions": proteins_a_pep_positions,
+            "xl_pos_b": xl_pos_b,
+            "proteins_b": proteins_b,
+            "proteins_b_xl_positions": proteins_b_xl_positions,
+            "proteins_b_pep_positions": proteins_b_pep_positions}
+
+
+def parse_spectrum_file_from_plink(title: str) -> str:
+    """
+    """
+    return str(title).split(".")[0].strip()
+
+
+def parse_scan_nr_from_plink(title: str) -> int:
+    """
+    """
+    return int(str(title).split(".")[1])
 
 
 def read_plink(
     files: str | List[str] | BinaryIO,
-    crosslinker: str,
-    crosslinker_mass: Optional[float] = None,
-    decoy_prefix: str = "REV__",
+    spectrum_file_parser: Callable[[str], str] = parse_spectrum_file_from_plink,
+    scan_nr_parser: Callable[[str], int] = parse_scan_nr_from_plink,
+    decoy_prefix: str = "REV_",
     modifications: Dict[str, float] = MODIFICATIONS,
-    sep: str = "\t",
+    sep: str = ",",
+    verbose: Literal[0, 1, 2] = 1
 ) -> Dict[str, Any]:
-    """Read a pLink 2 result file.
+    """Read a pLink result file.
 
-    Reads a pLink 2 crosslink-spectrum-matches result file "*cross-linked_spectra.csv"
+    Reads a pLink crosslink-spectrum-matches result file "*cross-linked_spectra.csv"
     in ``.csv`` (comma delimited) format and returns a ``parser_result``.
 
     Parameters
     ----------
     files : str, list of str, or file stream
         The name/path of the MaxQuant result file(s) or a file-like object/stream.
-    crosslinker : str
-        Name of the used cross-linking reagent, for example "DSSO".
-    crosslinker_mass : float, or None, default = None
-        Monoisotopic delta mass of the crosslink modification. If the crosslinker is
-        defined in parameter "modifications" this can be omitted.
-    decoy_prefix : str, default = "REV__"
+    spectrum_file_parser: Callable, default = ``parse_spectrum_file_from_plink``
+        A function that parses the spectrum file name from spectrum titles.
+    scan_nr_parser : Callable, default = ``parse_scan_nr_from_plink()``
+        A function that parses the scan number from spectrum titles.
+    decoy_prefix : str, default = "REV_"
         The prefix that indicates that a protein is from the decoy database.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
-    sep : str, default = "\t"
-        Seperator used in the ``.txt`` file.
+    sep : str, default = ","
+        Seperator used in the ``.csv`` file.
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
 
     Returns
     -------
@@ -61,32 +231,18 @@ def read_plink(
     ------
     RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
-    KeyError
-        If the specified crosslinker could not be found/mapped.
 
     Examples
     --------
-    >>> from pyXLMS.parser import read_maxquant
-    >>> csms_from_xlsx = read_maxquant("data/maxquant/run1/crosslinkMsms.txt")
+    >>> from pyXLMS.parser import read_plink
+    >>> csms = read_plink("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv")
     """
     ## check input
-    _ok = check_input(crosslinker, "crosslinker", str)
-    _ok = (
-        check_input(crosslinker_mass, "crosslinker_mass", float)
-        if crosslinker_mass is not None
-        else True
-    )
+    _ok = check_input(spectrum_file_parser, "spectrum_file_parser", Callable)
+    _ok = check_input(scan_nr_parser, "scan_nr_parser", Callable)
     _ok = check_input(decoy_prefix, "decoy_prefix", str)
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(sep, "sep", str)
-    if crosslinker_mass is None:
-        if crosslinker not in modifications:
-            raise KeyError(
-                "Cannot infer crosslinker mass because crosslinker is not defined in "
-                "parameter 'modifications'. Please specify crosslinker mass manually!"
-            )
-        else:
-            crosslinker_mass = modifications[crosslinker]
 
     ## data structures
     csms = list()
@@ -100,77 +256,59 @@ def read_plink(
     ## process data
     for input in inputs:
         data = pd.read_csv(input, sep=sep, low_memory=False)
-        xl = data.dropna(axis=0, subset=["Proteins2"])
         for i, row in tqdm(
-            xl.iterrows(), total=xl.shape[0], desc="Reading MaxQuant CSMs..."
+            data.iterrows(), total=data.shape[0], desc="Reading pLink CSMs..."
         ):
-            # preprocess proteins
-            protein_a = (
-                str(row["Proteins1"]).split("(")[0].strip()
-                if "(" in str(row["Proteins1"])
-                else str(row["Proteins1"])
+            # pre information
+            parsed_modifications = __parse_modifications_from_plink_modifications_str(
+                seq = str(row["Peptide"]).strip(),
+                mod_str = row["Modifications"],
+                crosslinker = str(row["Linker"]).strip(),
+                modifications = modifications,
+                verbose = verbose
             )
-            protein_b = (
-                str(row["Proteins2"]).split("(")[0].strip()
-                if "(" in str(row["Proteins2"])
-                else str(row["Proteins2"])
+            parsed_positions = __parse_proteins_and_position_from_plink(
+                seq = str(row["Peptide"]).strip(),
+                proteins = str(row["Proteins"]).strip()
             )
             # create csm
             csm = create_csm(
-                peptide_a=format_sequence(str(row["Sequence1"])),
-                modifications_a=parse_modifications_from_maxquant_sequence(
-                    str(row["Modified sequence1"]),
-                    int(row["Peptide index of Crosslink 1"]),
-                    crosslinker,
-                    crosslinker_mass,
-                    modifications,
-                ),
-                xl_position_peptide_a=int(row["Peptide index of Crosslink 1"]),
+                peptide_a=format_sequence(str(row["Peptide"]).split("-")[0].split("(")[0].strip()),
+                modifications_a=parsed_modifications[0],
+                xl_position_peptide_a=parsed_positions["xl_pos_a"],
                 proteins_a=[
                     protein_a.strip()
                     if protein_a.strip()[: len(decoy_prefix)] != decoy_prefix
                     else protein_a.strip()[len(decoy_prefix) :]
+                    for protein_a in parsed_positions["proteins_a"]
                 ],
-                xl_position_proteins_a=[int(row["Protein index of Crosslink 1"])],
-                pep_position_proteins_a=[
-                    int(row["Protein index of Crosslink 1"])
-                    - int(row["Peptide index of Crosslink 1"])
-                    + 1
-                ],
-                score_a=float(row["Partial score 1"]),
-                decoy_a=decoy_prefix in str(row["Proteins1"]),
-                peptide_b=format_sequence(str(row["Sequence2"])),
-                modifications_b=parse_modifications_from_maxquant_sequence(
-                    str(row["Modified sequence2"]),
-                    int(row["Peptide index of Crosslink 2"]),
-                    crosslinker,
-                    crosslinker_mass,
-                    modifications,
-                ),
-                xl_position_peptide_b=int(row["Peptide index of Crosslink 2"]),
+                xl_position_proteins_a=parsed_positions["proteins_a_xl_positions"],
+                pep_position_proteins_a=parsed_positions["proteins_a_pep_positions"],
+                score_a=None,
+                decoy_a=decoy_prefix in " ".join(parsed_positions["proteins_a"]),
+                peptide_b=format_sequence(str(row["Peptide"]).split("-")[1].split("(")[0].strip()),
+                modifications_b=parsed_modifications[1],
+                xl_position_peptide_b=parsed_positions["xl_pos_b"],
                 proteins_b=[
                     protein_b.strip()
                     if protein_b.strip()[: len(decoy_prefix)] != decoy_prefix
                     else protein_b.strip()[len(decoy_prefix) :]
+                    for protein_b in parsed_positions["proteins_b"]
                 ],
-                xl_position_proteins_b=[int(row["Protein index of Crosslink 2"])],
-                pep_position_proteins_b=[
-                    int(row["Protein index of Crosslink 2"])
-                    - int(row["Peptide index of Crosslink 2"])
-                    + 1
-                ],
-                score_b=float(row["Partial score 2"]),
-                decoy_b=decoy_prefix in str(row["Proteins2"]),
+                xl_position_proteins_b=parsed_positions["proteins_b_xl_positions"],
+                pep_position_proteins_b=parsed_positions["proteins_b_pep_positions"],
+                score_b=None,
+                decoy_b=decoy_prefix in " ".join(parsed_positions["proteins_b"]),
                 score=float(row["Score"]),
-                spectrum_file=str(row["Raw file"]).strip(),
-                scan_nr=int(row["Scan number"]),
+                spectrum_file=spectrum_file_parser(str(row["Title"]).strip()),
+                scan_nr=scan_nr_parser(str(row["Title"]).strip()),
                 charge=int(row["Charge"]),
                 rt=None,
                 im_cv=None,
                 additional_information={
-                    "Proteins1": str(row["Proteins1"]).strip(),
-                    "Proteins2": str(row["Proteins2"]).strip(),
-                    "Delta score": float(row["Delta score"]),
+                    "Evalue": float(row["Evalue"]),
+                    "Alpha_Evalue": float(row["Alpha_Evalue"]),
+                    "Beta_Evalue": float(row["Beta_Evalue"]),
                 },
             )
             csms.append(csm)
@@ -181,58 +319,7 @@ def read_plink(
         )
     ## return parser result
     return create_parser_result(
-        search_engine="MaxQuant",
+        search_engine="pLink",
         csms=csms,
         crosslinks=None,
-    )
-
-
-def read_maxlynx(
-    files: str | List[str] | BinaryIO,
-    crosslinker: str,
-    crosslinker_mass: Optional[float] = None,
-    decoy_prefix: str = "REV__",
-    modifications: Dict[str, float] = MODIFICATIONS,
-    sep: str = "\t",
-) -> Dict[str, Any]:
-    """Read a MaxLynx result file.
-
-    Reads a MaxLynx crosslink-spectrum-matches result file "crosslinkMsms.txt" in ``.txt`` (tab delimited) format
-    and returns a ``parser_result``. This is an alias for the MaxQuant reader.
-
-    Parameters
-    ----------
-    files : str, list of str, or file stream
-        The name/path of the MaxLynx result file(s) or a file-like object/stream.
-    crosslinker : str
-        Name of the used cross-linking reagent, for example "DSSO".
-    crosslinker_mass : float, or None, default = None
-        Monoisotopic delta mass of the crosslink modification. If the crosslinker is
-        defined in parameter "modifications" this can be omitted.
-    decoy_prefix : str, default = "REV__"
-        The prefix that indicates that a protein is from the decoy database.
-    modifications: dict of str, float, default = ``constants.MODIFICATIONS``
-        Mapping of modification names to modification masses.
-    sep : str, default = "\t"
-        Seperator used in the ``.txt`` file.
-
-    Returns
-    -------
-    dict
-        The ``parser_result`` object containing all parsed information.
-
-    Raises
-    ------
-    RuntimeError
-        If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
-    KeyError
-        If the specified crosslinker could not be found/mapped.
-
-    Examples
-    --------
-    >>> from pyXLMS.parser import read_maxlynx
-    >>> csms_from_xlsx = read_maxlynx("data/maxquant/run1/crosslinkMsms.txt")
-    """
-    return read_maxquant(
-        files, crosslinker, crosslinker_mass, decoy_prefix, modifications, sep
     )
