@@ -156,7 +156,7 @@ def test3():
     assert csm["beta_proteins_peptide_positions"] == [144]
     assert csm["beta_score"] is None
     assert not csm["beta_decoy"]
-    assert csm["crosslink_type"] == "intra"
+    assert csm["crosslink_type"] == "inter"
     assert csm["score"] == pytest.approx(float("4.868460e-001"))
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1"
     assert csm["scan_nr"] == 11341
