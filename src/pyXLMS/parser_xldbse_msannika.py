@@ -90,9 +90,12 @@ def __read_msannika_pdresult(filename: str) -> List[pd.DataFrame]:
         "Decoy": "Decoy",
         "BestCSMScore": "Best CSM Score",
     }
-    csms.rename(columns = column_mapping_csms, inplace = True)
-    xls.rename(columns = column_mapping_xls, inplace = True)
-    return [csms[list(column_mapping_csms.values())], xls[list(column_mapping_xls.values())]]
+    csms.rename(columns=column_mapping_csms, inplace=True)
+    xls.rename(columns=column_mapping_xls, inplace=True)
+    return [
+        csms[list(column_mapping_csms.values())],
+        xls[list(column_mapping_xls.values())],
+    ]
 
 
 def read_msannika(
@@ -220,7 +223,9 @@ def read_msannika(
                 data_objects = [pd.read_csv(input, sep=sep, low_memory=False)]
         elif format == "pdresult":
             if not isinstance(input, str):
-                raise TypeError("Can't read pdResult files from a file-like object/stream. Please provide the filename/path instead!")
+                raise TypeError(
+                    "Can't read pdResult files from a file-like object/stream. Please provide the filename/path instead!"
+                )
             data_objects = __read_msannika_pdresult(input)
         else:
             raise ValueError(
@@ -280,7 +285,9 @@ def read_msannika(
                     crosslinks.append(crosslink)
             else:
                 for i, row in tqdm(
-                    data.iterrows(), total=data.shape[0], desc="Reading MS Annika CSMs..."
+                    data.iterrows(),
+                    total=data.shape[0],
+                    desc="Reading MS Annika CSMs...",
                 ):
                     # create csm
                     csm = create_csm(
