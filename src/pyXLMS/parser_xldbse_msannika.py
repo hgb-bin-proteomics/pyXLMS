@@ -257,7 +257,7 @@ def read_msannika(
                 )
             ## detect input file type
             col_names = data.columns.values.tolist()
-            is_crosslink_dataframe = "# CSMs" in col_names
+            is_crosslink_dataframe = "Best CSM Score" in col_names
             ## process data
             if is_crosslink_dataframe:
                 for i, row in tqdm(
