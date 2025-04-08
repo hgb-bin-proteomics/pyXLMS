@@ -92,10 +92,19 @@ def __read_msannika_pdresult(filename: str) -> List[pd.DataFrame]:
     }
     csms.rename(columns=column_mapping_csms, inplace=True)
     xls.rename(columns=column_mapping_xls, inplace=True)
-    return [
-        csms[list(column_mapping_csms.values())],
-        xls[list(column_mapping_xls.values())],
-    ]
+    csms.drop(
+        columns=list(
+            set(csms.columns.values.tolist()) - set(list(column_mapping_csms.values()))
+        ),
+        inplace=True,
+    )
+    xls.drop(
+        columns=list(
+            set(xls.columns.values.tolist()) - set(list(column_mapping_xls.values()))
+        ),
+        inplace=True,
+    )
+    return [csms, xls]
 
 
 def read_msannika(
