@@ -28,7 +28,7 @@ def test1():
     crosslinks = parser_result["crosslinks"]
     assert len(crosslinks) == 300
 
-    csm = csms[823]
+    csm = csms[822]
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "full"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
