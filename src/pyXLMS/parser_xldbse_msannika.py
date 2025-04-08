@@ -58,7 +58,7 @@ def __read_msannika_pdresult(filename: str) -> List[pd.DataFrame]:
     conn.close()
     column_mapping_csms = {
         "SequenceA": "Sequence A",
-        "SequenceB": "Sequnece B",
+        "SequenceB": "Sequence B",
         "ModificationsA": "Modifications A",
         "ModificationsB": "Modifications B",
         "CrosslinkerPositionA": "Crosslinker Position A",
