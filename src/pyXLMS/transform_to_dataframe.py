@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pandas as pd
 from .data import check_input
-from .transform import modifications_to_str
+from .transform_util import modifications_to_str
 
 from typing import Optional
 from typing import List
