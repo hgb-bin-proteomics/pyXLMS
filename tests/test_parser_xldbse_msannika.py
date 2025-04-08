@@ -1285,11 +1285,11 @@ def test13():
 def test14():
     from pyXLMS import parser as p
 
-    file_extension = ".pdresult"
+    file_extension = ".tar.gz"
     unsupp_file = XL_XLSX + file_extension
     with pytest.raises(
         ValueError,
-        match=f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv' or '.xlsx'!",
+        match="Detected file extension .gz is not supported! Input file has to be a valid file with extension '.csv', '.tsv' or '.xlsx'!",
     ):
         _r = p.read_msannika(unsupp_file)
 
