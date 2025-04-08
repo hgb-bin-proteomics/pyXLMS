@@ -1,8 +1,9 @@
 name: Bug Report
 description: File a bug report.
 title: "[Bug]: "
-labels: ["bug"]
+labels: ["bug","triage"]
 type: "Bug"
+projects: ["hgb-bin-proteomics/5"]
 assignees:
   - michabirklbauer
 body:

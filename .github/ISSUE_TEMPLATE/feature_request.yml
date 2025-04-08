@@ -1,8 +1,9 @@
 name: Feature Request
 description: Request a new feature for pyXLMS.
 title: "[Feature Request]: "
-labels: ["enhancement"]
+labels: ["enhancement","feature request","triage"]
 type: "Feature"
+projects: ["hgb-bin-proteomics/5"]
 assignees:
   - michabirklbauer
 body:
