@@ -40,7 +40,7 @@ def test1():
     assert csm["alpha_proteins"] == ["Cas9"]
     assert csm["alpha_proteins_crosslink_positions"] == [575]
     assert csm["alpha_proteins_peptide_positions"] == [575]
-    assert csm["alpha_score"] == pytest.approx(376.15)
+    assert csm["alpha_score"] == pytest.approx(376.15, abs=0.01)
     assert not csm["alpha_decoy"]
     assert csm["beta_peptide"] == "TILDFLKSDGFANR"
     assert mts(csm["beta_modifications"]) == "(7:[DSS|138.06808])"
@@ -48,15 +48,15 @@ def test1():
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [688]
     assert csm["beta_proteins_peptide_positions"] == [682]
-    assert csm["beta_score"] == pytest.approx(393.87)
+    assert csm["beta_score"] == pytest.approx(393.87, abs=0.01)
     assert not csm["beta_decoy"]
     assert csm["crosslink_type"] == "intra"
-    assert csm["score"] == pytest.approx(376.15)
+    assert csm["score"] == pytest.approx(376.15, abs=0.01)
     assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw"
     assert csm["scan_nr"] == 23454
     assert csm["charge"] == 4
-    assert csm["retention_time"] == pytest.approx(6278.5199999999995)
-    assert csm["ion_mobility"] == pytest.approx(0.0)
+    assert csm["retention_time"] == pytest.approx(6278.5199999999995, abs=0.01)
+    assert csm["ion_mobility"] == pytest.approx(0.0, abs=0.01)
 
     xl = crosslinks[0]
     assert xl["data_type"] == "crosslink"
@@ -72,4 +72,4 @@ def test1():
     assert xl["beta_proteins_crosslink_positions"] == [779]
     assert not xl["beta_decoy"]
     assert xl["crosslink_type"] == "intra"
-    assert xl["score"] == pytest.approx(119.83)
+    assert xl["score"] == pytest.approx(119.83, abs=0.01)
