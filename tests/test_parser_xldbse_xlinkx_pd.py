@@ -105,12 +105,12 @@ def test1():
     assert xl["alpha_peptide_crosslink_position"] == 11
     assert xl["alpha_proteins"] == ["decoy_98"]
     assert xl["alpha_proteins_crosslink_positions"] == [235]
-    assert not xl["alpha_decoy"]
+    assert xl["alpha_decoy"]
     assert xl["beta_peptide"] == "NKDSR"
     assert xl["beta_peptide_crosslink_position"] == 2
     assert xl["beta_proteins"] == ["decoy_2"]
     assert xl["beta_proteins_crosslink_positions"] == [505]
-    assert not xl["beta_decoy"]
+    assert xl["beta_decoy"]
     assert xl["crosslink_type"] == "inter"
     assert xl["score"] == pytest.approx(119.059334966149)
 
@@ -209,11 +209,11 @@ def test2():
     assert xl["alpha_peptide_crosslink_position"] == 11
     assert xl["alpha_proteins"] == ["decoy_98"]
     assert xl["alpha_proteins_crosslink_positions"] == [235]
-    assert not xl["alpha_decoy"]
+    assert xl["alpha_decoy"]
     assert xl["beta_peptide"] == "NKDSR"
     assert xl["beta_peptide_crosslink_position"] == 2
     assert xl["beta_proteins"] == ["decoy_2"]
     assert xl["beta_proteins_crosslink_positions"] == [505]
-    assert not xl["beta_decoy"]
+    assert xl["beta_decoy"]
     assert xl["crosslink_type"] == "inter"
     assert xl["score"] == pytest.approx(119.059334966149)
