@@ -87,7 +87,7 @@ def __read_xlinkx_pdresult(filename: str) -> List[pd.DataFrame]:
         "PositionB": "Position B",
         "AccessionA": "Accession A",
         "AccessionB": "Accession B",
-        "IsDecoy": "IsDecoy",
+        "IsDecoy": "Is Decoy",
         "MaxXlinkXScore": "Max. XlinkX Score",
     }
     csms.rename(columns=column_mapping_csms, inplace=True)
