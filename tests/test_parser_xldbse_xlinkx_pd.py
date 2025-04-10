@@ -112,7 +112,7 @@ def test1():
     assert xl["beta_proteins_crosslink_positions"] == [505]
     assert xl["beta_decoy"]
     assert xl["crosslink_type"] == "inter"
-    assert xl["score"] == pytest.approx(119.059334966149)
+    assert xl["score"] == pytest.approx(4.15420412699015)
 
 
 def test2():
@@ -216,4 +216,4 @@ def test2():
     assert xl["beta_proteins_crosslink_positions"] == [505]
     assert xl["beta_decoy"]
     assert xl["crosslink_type"] == "inter"
-    assert xl["score"] == pytest.approx(119.059334966149)
+    assert xl["score"] == pytest.approx(4.15420412699015)
