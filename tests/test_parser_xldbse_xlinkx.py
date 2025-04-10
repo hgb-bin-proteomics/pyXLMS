@@ -57,7 +57,7 @@ def test1():
     assert last_crosslink["beta_proteins"] == ["Cas9"]
     assert last_crosslink["beta_proteins_crosslink_positions"] == [753]
     assert not last_crosslink["beta_decoy"]
-    assert last_crosslink["crosslink_type"] == "inter"
+    assert last_crosslink["crosslink_type"] == "intra"
     assert last_crosslink["score"] == pytest.approx(11.49)
 
 
@@ -104,7 +104,7 @@ def test2():
     assert last_crosslink["beta_proteins"] == ["Cas9"]
     assert last_crosslink["beta_proteins_crosslink_positions"] == [753]
     assert not last_crosslink["beta_decoy"]
-    assert last_crosslink["crosslink_type"] == "inter"
+    assert last_crosslink["crosslink_type"] == "intra"
     assert last_crosslink["score"] == pytest.approx(11.49)
 
 
@@ -151,7 +151,7 @@ def test3():
     assert last_crosslink["beta_proteins"] == ["Cas9"]
     assert last_crosslink["beta_proteins_crosslink_positions"] == [753]
     assert not last_crosslink["beta_decoy"]
-    assert last_crosslink["crosslink_type"] == "inter"
+    assert last_crosslink["crosslink_type"] == "intra"
     assert last_crosslink["score"] == pytest.approx(11.49)
 
 
@@ -198,7 +198,7 @@ def test4():
     assert last_crosslink["beta_proteins"] == ["Cas9"]
     assert last_crosslink["beta_proteins_crosslink_positions"] == [753]
     assert not last_crosslink["beta_decoy"]
-    assert last_crosslink["crosslink_type"] == "inter"
+    assert last_crosslink["crosslink_type"] == "intra"
     assert last_crosslink["score"] == pytest.approx(11.49)
 
 
@@ -299,7 +299,7 @@ def test5():
     assert last_csm["scan_nr"] == 13466
     assert last_csm["charge"] == 4
     assert last_csm["retention_time"] == pytest.approx(36.2167 * 60.0)
-    assert last_csm["ion_mobility"] == pytest.approx(0.0)
+    assert last_csm["ion_mobility"] is None
 
 
 def test6():
@@ -399,7 +399,7 @@ def test6():
     assert last_csm["scan_nr"] == 13466
     assert last_csm["charge"] == 4
     assert last_csm["retention_time"] == pytest.approx(36.2167 * 60.0)
-    assert last_csm["ion_mobility"] == pytest.approx(0.0)
+    assert last_csm["ion_mobility"] is None
 
 
 def test7():
@@ -499,7 +499,7 @@ def test7():
     assert last_csm["scan_nr"] == 13466
     assert last_csm["charge"] == 4
     assert last_csm["retention_time"] == pytest.approx(36.2167 * 60.0)
-    assert last_csm["ion_mobility"] == pytest.approx(0.0)
+    assert last_csm["ion_mobility"] is None
 
 
 def test8():
@@ -560,7 +560,7 @@ def test8():
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"] is None
     assert csm["beta_peptide"] == "TILDFLKSDGFANR"
-    assert mts(csm["beta_modifications"]) == "(7:[DSS|158.00376])"
+    assert mts(csm["beta_modifications"]) == "(7:[DSSO|158.00376])"
     assert csm["beta_peptide_crosslink_position"] == 7
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [688]
@@ -735,7 +735,7 @@ def test9():
     assert last_csm["scan_nr"] == 13466
     assert last_csm["charge"] == 4
     assert last_csm["retention_time"] == pytest.approx(36.2167 * 60.0)
-    assert last_csm["ion_mobility"] == pytest.approx(0.0)
+    assert last_csm["ion_mobility"] is None
 
 
 def test10():
@@ -871,7 +871,7 @@ def test10():
     assert last_csm["scan_nr"] == 13466
     assert last_csm["charge"] == 4
     assert last_csm["retention_time"] == pytest.approx(36.2167 * 60.0)
-    assert last_csm["ion_mobility"] == pytest.approx(0.0)
+    assert last_csm["ion_mobility"] is None
 
 
 def test11():
@@ -1007,7 +1007,7 @@ def test11():
     assert last_csm["scan_nr"] == 13466
     assert last_csm["charge"] == 4
     assert last_csm["retention_time"] == pytest.approx(36.2167 * 60.0)
-    assert last_csm["ion_mobility"] == pytest.approx(0.0)
+    assert last_csm["ion_mobility"] is None
 
 
 def test12():
@@ -1143,7 +1143,7 @@ def test12():
     assert last_csm["scan_nr"] == 13466
     assert last_csm["charge"] == 4
     assert last_csm["retention_time"] == pytest.approx(36.2167 * 60.0)
-    assert last_csm["ion_mobility"] == pytest.approx(0.0)
+    assert last_csm["ion_mobility"] is None
 
 
 def test13():
@@ -1279,7 +1279,7 @@ def test13():
     assert last_csm["scan_nr"] == 13466
     assert last_csm["charge"] == 4
     assert last_csm["retention_time"] == pytest.approx(36.2167 * 60.0)
-    assert last_csm["ion_mobility"] == pytest.approx(0.0)
+    assert last_csm["ion_mobility"] is None
 
 
 def test14():
