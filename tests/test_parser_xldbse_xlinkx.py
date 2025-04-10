@@ -10,8 +10,8 @@ import pytest
 
 XL_TSV = "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_Crosslinks.txt"
 XL_XLSX = "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_Crosslinks.xlsx"
-CSMS_TSV = "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_Crosslinks.txt"
-CSMS_XLSX = "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_Crosslinks.xlsx"
+CSMS_TSV = "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_CSMs.txt"
+CSMS_XLSX = "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_CSMs.xlsx"
 
 
 def test1():
