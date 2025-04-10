@@ -260,7 +260,7 @@ def test5():
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"] is None
     assert csm["beta_peptide"] == "TILDFLKSDGFANR"
-    assert mts(csm["beta_modifications"]) == "(7:[DSS|138.06808])"
+    assert mts(csm["beta_modifications"]) == "(7:[DSSO|158.00376])"
     assert csm["beta_peptide_crosslink_position"] == 7
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [688]
@@ -360,7 +360,7 @@ def test6():
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"] is None
     assert csm["beta_peptide"] == "TILDFLKSDGFANR"
-    assert mts(csm["beta_modifications"]) == "(7:[DSS|138.06808])"
+    assert mts(csm["beta_modifications"]) == "(7:[DSSO|158.00376])"
     assert csm["beta_peptide_crosslink_position"] == 7
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [688]
@@ -460,7 +460,7 @@ def test7():
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"] is None
     assert csm["beta_peptide"] == "TILDFLKSDGFANR"
-    assert mts(csm["beta_modifications"]) == "(7:[DSS|138.06808])"
+    assert mts(csm["beta_modifications"]) == "(7:[DSSO|158.00376])"
     assert csm["beta_peptide_crosslink_position"] == 7
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [688]
@@ -560,7 +560,7 @@ def test8():
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"] is None
     assert csm["beta_peptide"] == "TILDFLKSDGFANR"
-    assert mts(csm["beta_modifications"]) == "(7:[DSS|138.06808])"
+    assert mts(csm["beta_modifications"]) == "(7:[DSS|158.00376])"
     assert csm["beta_peptide_crosslink_position"] == 7
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [688]
@@ -646,7 +646,7 @@ def test9():
     assert last_crosslink["beta_proteins"] == ["Cas9"]
     assert last_crosslink["beta_proteins_crosslink_positions"] == [753]
     assert not last_crosslink["beta_decoy"]
-    assert last_crosslink["crosslink_type"] == "inter"
+    assert last_crosslink["crosslink_type"] == "intra"
     assert last_crosslink["score"] == pytest.approx(11.49)
 
     csms = parser_result["crosslink-spectrum-matches"]
@@ -696,7 +696,7 @@ def test9():
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"] is None
     assert csm["beta_peptide"] == "TILDFLKSDGFANR"
-    assert mts(csm["beta_modifications"]) == "(7:[DSS|138.06808])"
+    assert mts(csm["beta_modifications"]) == "(7:[DSSO|158.00376])"
     assert csm["beta_peptide_crosslink_position"] == 7
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [688]
@@ -782,7 +782,7 @@ def test10():
     assert last_crosslink["beta_proteins"] == ["Cas9"]
     assert last_crosslink["beta_proteins_crosslink_positions"] == [753]
     assert not last_crosslink["beta_decoy"]
-    assert last_crosslink["crosslink_type"] == "inter"
+    assert last_crosslink["crosslink_type"] == "intra"
     assert last_crosslink["score"] == pytest.approx(11.49)
 
     csms = parser_result["crosslink-spectrum-matches"]
@@ -832,7 +832,7 @@ def test10():
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"] is None
     assert csm["beta_peptide"] == "TILDFLKSDGFANR"
-    assert mts(csm["beta_modifications"]) == "(7:[DSS|138.06808])"
+    assert mts(csm["beta_modifications"]) == "(7:[DSSO|158.00376])"
     assert csm["beta_peptide_crosslink_position"] == 7
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [688]
@@ -918,7 +918,7 @@ def test11():
     assert last_crosslink["beta_proteins"] == ["Cas9"]
     assert last_crosslink["beta_proteins_crosslink_positions"] == [753]
     assert not last_crosslink["beta_decoy"]
-    assert last_crosslink["crosslink_type"] == "inter"
+    assert last_crosslink["crosslink_type"] == "intra"
     assert last_crosslink["score"] == pytest.approx(11.49)
 
     csms = parser_result["crosslink-spectrum-matches"]
@@ -968,7 +968,7 @@ def test11():
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"] is None
     assert csm["beta_peptide"] == "TILDFLKSDGFANR"
-    assert mts(csm["beta_modifications"]) == "(7:[DSS|138.06808])"
+    assert mts(csm["beta_modifications"]) == "(7:[DSSO|158.00376])"
     assert csm["beta_peptide_crosslink_position"] == 7
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [688]
@@ -1054,7 +1054,7 @@ def test12():
     assert last_crosslink["beta_proteins"] == ["Cas9"]
     assert last_crosslink["beta_proteins_crosslink_positions"] == [753]
     assert not last_crosslink["beta_decoy"]
-    assert last_crosslink["crosslink_type"] == "inter"
+    assert last_crosslink["crosslink_type"] == "intra"
     assert last_crosslink["score"] == pytest.approx(11.49)
 
     csms = parser_result["crosslink-spectrum-matches"]
@@ -1104,7 +1104,7 @@ def test12():
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"] is None
     assert csm["beta_peptide"] == "TILDFLKSDGFANR"
-    assert mts(csm["beta_modifications"]) == "(7:[DSS|138.06808])"
+    assert mts(csm["beta_modifications"]) == "(7:[DSSO|158.00376])"
     assert csm["beta_peptide_crosslink_position"] == 7
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [688]
@@ -1190,7 +1190,7 @@ def test13():
     assert last_crosslink["beta_proteins"] == ["Cas9"]
     assert last_crosslink["beta_proteins_crosslink_positions"] == [753]
     assert not last_crosslink["beta_decoy"]
-    assert last_crosslink["crosslink_type"] == "inter"
+    assert last_crosslink["crosslink_type"] == "intra"
     assert last_crosslink["score"] == pytest.approx(11.49)
 
     csms = parser_result["crosslink-spectrum-matches"]
@@ -1240,7 +1240,7 @@ def test13():
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"] is None
     assert csm["beta_peptide"] == "TILDFLKSDGFANR"
-    assert mts(csm["beta_modifications"]) == "(7:[DSS|138.06808])"
+    assert mts(csm["beta_modifications"]) == "(7:[DSSO|158.00376])"
     assert csm["beta_peptide_crosslink_position"] == 7
     assert csm["beta_proteins"] == ["Cas9"]
     assert csm["beta_proteins_crosslink_positions"] == [688]
