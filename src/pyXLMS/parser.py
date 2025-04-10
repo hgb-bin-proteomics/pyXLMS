@@ -34,6 +34,6 @@ def read(file: str, dbse: str):
         return read_maxlynx(file, "DSSO")
     if dbse == "pLink":
         return read_plink(file)
-    if dbse = "XlinkX":
+    if dbse == "XlinkX":
         return read_xlinkx(file)
     return
