@@ -203,7 +203,7 @@ def read_xlinkx(
         seq = str(sequence).strip()
         for i, aa in enumerate(seq):
             if aa == "[":
-                return i+1
+                return i + 1
         raise RuntimeError(f"Could not parse crosslink position from sequence: {seq}!")
         return 0
 
@@ -284,7 +284,9 @@ def read_xlinkx(
                     # create crosslink
                     crosslink = create_crosslink(
                         peptide_a=format_sequence(str(row["Sequence A"])),
-                        xl_position_peptide_a=get_crosslink_position_from_peptide_seq(str(row["Sequence A"])),
+                        xl_position_peptide_a=get_crosslink_position_from_peptide_seq(
+                            str(row["Sequence A"])
+                        ),
                         proteins_a=[
                             protein.strip()
                             for protein in str(row["Accession A"]).split(";")
@@ -295,7 +297,9 @@ def read_xlinkx(
                         ],
                         decoy_a=get_bool_from_value(row["Is Decoy"]),
                         peptide_b=format_sequence(str(row["Sequence B"])),
-                        xl_position_peptide_b=get_crosslink_position_from_peptide_seq(str(row["Sequence B"])),
+                        xl_position_peptide_b=get_crosslink_position_from_peptide_seq(
+                            str(row["Sequence B"])
+                        ),
                         proteins_b=[
                             protein.strip()
                             for protein in str(row["Accession B"]).split(";")
@@ -328,14 +332,20 @@ def read_xlinkx(
                         ],
                         xl_position_proteins_a=[
                             int(position)
-                            for position in str(row["Leading Protein Position A"]).split(";")
+                            for position in str(
+                                row["Leading Protein Position A"]
+                            ).split(";")
                         ],
                         pep_position_proteins_a=[
                             int(position) - int(row["Crosslinker Position A"]) + 1
-                            for position in str(row["Leading Protein Position A"]).split(";")
+                            for position in str(
+                                row["Leading Protein Position A"]
+                            ).split(";")
                         ],
                         score_a=None,
-                        decoy_a=not get_bool_from_value(row["Is Decoy"]) if "Is Decoy" in col_names else decoy,
+                        decoy_a=not get_bool_from_value(row["Is Decoy"])
+                        if "Is Decoy" in col_names
+                        else decoy,
                         peptide_b=format_sequence(str(row["Sequence B"])),
                         modifications_b=parse_modification_str(
                             format_sequence(str(row["Sequence B"]).strip()),
@@ -348,14 +358,20 @@ def read_xlinkx(
                         ],
                         xl_position_proteins_b=[
                             int(position)
-                            for position in str(row["Leading Protein Position B"]).split(";")
+                            for position in str(
+                                row["Leading Protein Position B"]
+                            ).split(";")
                         ],
                         pep_position_proteins_b=[
                             int(position) - int(row["Crosslinker Position B"]) + 1
-                            for position in str(row["Leading Protein Position B"]).split(";")
+                            for position in str(
+                                row["Leading Protein Position B"]
+                            ).split(";")
                         ],
                         score_b=None,
-                        decoy_b=not get_bool_from_value(row["Is Decoy"]) if "Is Decoy" in col_names else decoy,
+                        decoy_b=not get_bool_from_value(row["Is Decoy"])
+                        if "Is Decoy" in col_names
+                        else decoy,
                         score=float(row["XlinkX Score"]),
                         spectrum_file=str(row["Spectrum File"]).strip(),
                         scan_nr=int(row["First Scan"]),
