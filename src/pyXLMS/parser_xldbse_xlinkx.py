@@ -219,6 +219,16 @@ def read_xlinkx(
         )
         return 0
 
+    def adjust_crosslink_position(
+        position: int,
+        sequence: str,
+    ) -> int:
+        if position == 0:
+            return 1
+        if position > len(sequence.strip()):
+            return len(sequence.strip())
+        return position
+
     ## data structures
     crosslinks = list()
     csms = list()
@@ -341,7 +351,10 @@ def read_xlinkx(
                             format_sequence(str(row["Sequence A"]).strip()),
                             str(row["Modifications A"]).strip(),
                         ),
-                        xl_position_peptide_a=int(row["Crosslinker Position A"]),
+                        xl_position_peptide_a=adjust_crosslink_position(
+                            int(row["Crosslinker Position A"]),
+                            format_sequence(str(row["Sequence A"]).strip())
+                        ),
                         proteins_a=[
                             protein.strip()
                             for protein in str(row["Protein Accession A"]).split(";")
@@ -367,7 +380,10 @@ def read_xlinkx(
                             format_sequence(str(row["Sequence B"]).strip()),
                             str(row["Modifications B"]).strip(),
                         ),
-                        xl_position_peptide_b=int(row["Crosslinker Position B"]),
+                        xl_position_peptide_b=adjust_crosslink_position(
+                            int(row["Crosslinker Position B"]),
+                            format_sequence(str(row["Sequence B"]))
+                        ),
                         proteins_b=[
                             protein.strip()
                             for protein in str(row["Protein Accession B"]).split(";")
