@@ -403,7 +403,7 @@ def read_xlinkx(
                             ).split(";")
                         ],
                         score_a=None,
-                        decoy_a=not get_bool_from_value(row["Is Decoy"])
+                        decoy_a=get_bool_from_value(row["Is Decoy"])
                         if "Is Decoy" in col_names
                         else decoy,
                         peptide_b=format_sequence(str(row["Sequence B"])),
@@ -432,7 +432,7 @@ def read_xlinkx(
                             ).split(";")
                         ],
                         score_b=None,
-                        decoy_b=not get_bool_from_value(row["Is Decoy"])
+                        decoy_b=get_bool_from_value(row["Is Decoy"])
                         if "Is Decoy" in col_names
                         else decoy,
                         score=float(row["XlinkX Score"]),
