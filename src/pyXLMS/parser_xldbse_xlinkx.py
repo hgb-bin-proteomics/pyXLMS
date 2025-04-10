@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import sqlite3
+import warnings
 import pandas as pd
 from tqdm import tqdm
 from os.path import splitext
@@ -119,6 +120,8 @@ def read_xlinkx(
     modifications: Dict[str, float] = MODIFICATIONS,
     format: Literal["auto", "csv", "txt", "tsv", "xlsx", "pdresult"] = "auto",
     sep: str = "\t",
+    ignore_errors: bool = False,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
     """Read an XlinkX result file.
 
@@ -138,6 +141,14 @@ def read_xlinkx(
         The format of the result file. ``"auto"`` is only available if the name/path to the XlinkX result file is given.
     sep : str, default = "\t"
         Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` format.
+    ignore_errors : bool, default = False
+        If missing crosslink positions should raise an error or not. Setting this to True will suppress the ``RuntimeError``
+        for the crosslink position not being able to be parsed for at least one of the crosslinks. For these cases the crosslink
+        position will be set to 100 000.
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
 
     Returns
     -------
@@ -149,9 +160,10 @@ def read_xlinkx(
     ValueError
         If the input format is not supported or cannot be inferred.
     TypeError
+        If parameter verbose was not set correctly.
         If the pdResult file is provided in the wrong format.
     RuntimeError
-        If the crosslink position could not be parsed for one of the crosslinks.
+        If the crosslink position could not be parsed for at least one of the crosslinks.
         If the file(s) could not be read or if the file(s) contain no crosslinks or crosslink-spectrum-matches.
     KeyError
         If one of the found post-translational-modifications could not be found/mapped.
@@ -177,6 +189,10 @@ def read_xlinkx(
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(format, "format", str)
     _ok = check_input(sep, "sep", str)
+    _ok = check_input(ignore_errors, "ignore_errors", bool)
+    _ok = check_input(verbose, "verbose", int)
+    if verbose not in [0, 1, 2]:
+        raise TypeError("Verbose level has to be one of 0, 1, or 2!")
 
     ## helper functions
     def parse_modification_str(
@@ -203,7 +219,7 @@ def read_xlinkx(
         return parsed_mods
 
     def get_crosslink_position_from_peptide_seq(
-        sequence: str, crosslinker: str, modifications: str
+        sequence: str, crosslinker: str, modifications: str, ignore_errors: bool = False, verbose: Literal[0, 1, 2] = 1
     ) -> int:
         seq = str(sequence).strip()
         xl = str(crosslinker).strip()
@@ -214,10 +230,13 @@ def read_xlinkx(
         for mod in mods:
             if xl in mod:
                 return int(mod.split("[")[1].split("]")[0][1:])
-        raise RuntimeError(
-            f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!"
-        )
-        return 0
+        if verbose == 2 or not ignore_errors:
+            raise RuntimeError(
+                f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!"
+            )
+        if verbose == 1:
+            warnings.warn(RuntimeWarning(f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!"))
+        return 100000
 
     def adjust_crosslink_position(
         position: int,
@@ -310,6 +329,8 @@ def read_xlinkx(
                             str(row["Sequence A"]),
                             str(row["Crosslinker"]),
                             str(row["Modifications A"]),
+                            ignore_errors,
+                            verbose
                         ),
                         proteins_a=[
                             protein.strip()
@@ -325,6 +346,8 @@ def read_xlinkx(
                             str(row["Sequence B"]),
                             str(row["Crosslinker"]),
                             str(row["Modifications B"]),
+                            ignore_errors,
+                            verbose
                         ),
                         proteins_b=[
                             protein.strip()
