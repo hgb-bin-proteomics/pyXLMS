@@ -599,7 +599,7 @@ def test8():
     assert last_csm["scan_nr"] == 13466
     assert last_csm["charge"] == 4
     assert last_csm["retention_time"] == pytest.approx(36.2167 * 60.0)
-    assert last_csm["ion_mobility"] == pytest.approx(0.0)
+    assert last_csm["ion_mobility"] is None
 
 
 def test9():
