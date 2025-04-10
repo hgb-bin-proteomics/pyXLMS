@@ -19,6 +19,7 @@ from .constants import MODIFICATIONS
 from .parser_util import format_sequence
 from .parser_util import get_bool_from_value
 
+from typing import Optional
 from typing import BinaryIO
 from typing import Dict
 from typing import Any
