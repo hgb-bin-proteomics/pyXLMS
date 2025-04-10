@@ -219,7 +219,11 @@ def read_xlinkx(
         return parsed_mods
 
     def get_crosslink_position_from_peptide_seq(
-        sequence: str, crosslinker: str, modifications: str, ignore_errors: bool = False, verbose: Literal[0, 1, 2] = 1
+        sequence: str,
+        crosslinker: str,
+        modifications: str,
+        ignore_errors: bool = False,
+        verbose: Literal[0, 1, 2] = 1,
     ) -> int:
         seq = str(sequence).strip()
         xl = str(crosslinker).strip()
@@ -235,7 +239,11 @@ def read_xlinkx(
                 f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!"
             )
         if verbose == 1:
-            warnings.warn(RuntimeWarning(f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!"))
+            warnings.warn(
+                RuntimeWarning(
+                    f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!"
+                )
+            )
         return 100000
 
     def adjust_crosslink_position(
@@ -330,7 +338,7 @@ def read_xlinkx(
                             str(row["Crosslinker"]),
                             str(row["Modifications A"]),
                             ignore_errors,
-                            verbose
+                            verbose,
                         ),
                         proteins_a=[
                             protein.strip()
@@ -347,7 +355,7 @@ def read_xlinkx(
                             str(row["Crosslinker"]),
                             str(row["Modifications B"]),
                             ignore_errors,
-                            verbose
+                            verbose,
                         ),
                         proteins_b=[
                             protein.strip()
