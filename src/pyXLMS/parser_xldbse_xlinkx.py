@@ -203,9 +203,7 @@ def read_xlinkx(
         return parsed_mods
 
     def get_crosslink_position_from_peptide_seq(
-        sequence: str,
-        crosslinker: str,
-        modifications: str
+        sequence: str, crosslinker: str, modifications: str
     ) -> int:
         seq = str(sequence).strip()
         xl = str(crosslinker).strip()
@@ -214,9 +212,11 @@ def read_xlinkx(
             if aa == "[":
                 return i + 1
         for mod in mods:
-            if crosslinker in mod:
+            if xl in mod:
                 return int(mod.split("[")[1].split("]")[0][1:])
-        raise RuntimeError(f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!")
+        raise RuntimeError(
+            f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!"
+        )
         return 0
 
     ## data structures
@@ -299,7 +299,7 @@ def read_xlinkx(
                         xl_position_peptide_a=get_crosslink_position_from_peptide_seq(
                             str(row["Sequence A"]),
                             str(row["Crosslinker"]),
-                            str(row["Modifications A"])
+                            str(row["Modifications A"]),
                         ),
                         proteins_a=[
                             protein.strip()
@@ -314,7 +314,7 @@ def read_xlinkx(
                         xl_position_peptide_b=get_crosslink_position_from_peptide_seq(
                             str(row["Sequence B"]),
                             str(row["Crosslinker"]),
-                            str(row["Modifications B"])
+                            str(row["Modifications B"]),
                         ),
                         proteins_b=[
                             protein.strip()
