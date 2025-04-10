@@ -353,7 +353,7 @@ def read_xlinkx(
                         ),
                         xl_position_peptide_a=adjust_crosslink_position(
                             int(row["Crosslinker Position A"]),
-                            format_sequence(str(row["Sequence A"]).strip())
+                            format_sequence(str(row["Sequence A"]).strip()),
                         ),
                         proteins_a=[
                             protein.strip()
@@ -382,7 +382,7 @@ def read_xlinkx(
                         ),
                         xl_position_peptide_b=adjust_crosslink_position(
                             int(row["Crosslinker Position B"]),
-                            format_sequence(str(row["Sequence B"]))
+                            format_sequence(str(row["Sequence B"])),
                         ),
                         proteins_b=[
                             protein.strip()
