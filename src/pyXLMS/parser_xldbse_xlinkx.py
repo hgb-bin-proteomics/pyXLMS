@@ -79,6 +79,9 @@ def __read_xlinkx_pdresult(filename: str) -> List[pd.DataFrame]:
     column_mapping_xls = {
         "SequenceA": "Sequence A",
         "SequenceB": "Sequence B",
+        "ModificationsA": "Modifications A",
+        "ModificationsB": "Modifications B",
+        "Crosslinker": "Crosslinker",
         "PositionA": "Position A",
         "PositionB": "Position B",
         "AccessionA": "Accession A",
@@ -191,20 +194,29 @@ def read_xlinkx(
                     f"Unable to find modification {mod_type} in the set of provided modifications. "
                     + "Please pass the full set of expected modifications to the parser."
                 )
-            if "Nterm" in mod_pos:
+            if "Nterm" in mod_pos or "N-Term" in mod_pos:
                 parsed_mods[0] = (mod_type, modifications[mod_type])
-            elif "Cterm" in mod_pos:
+            elif "Cterm" in mod_pos or "C-Term" in mod_pos:
                 parsed_mods[len(sequence)] = (mod_type, modifications[mod_type])
             else:
                 parsed_mods[int(mod_pos[1:])] = (mod_type, modifications[mod_type])
         return parsed_mods
 
-    def get_crosslink_position_from_peptide_seq(sequence: str) -> int:
+    def get_crosslink_position_from_peptide_seq(
+        sequence: str,
+        crosslinker: str,
+        modifications: str
+    ) -> int:
         seq = str(sequence).strip()
+        xl = str(crosslinker).strip()
+        mods = [mod.strip() for mod in str(modifications).split(";")]
         for i, aa in enumerate(seq):
             if aa == "[":
                 return i + 1
-        raise RuntimeError(f"Could not parse crosslink position from sequence: {seq}!")
+        for mod in mods:
+            if crosslinker in mod:
+                return int(mod.split("[")[1].split("]")[0][1:])
+        raise RuntimeError(f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!")
         return 0
 
     ## data structures
@@ -285,7 +297,9 @@ def read_xlinkx(
                     crosslink = create_crosslink(
                         peptide_a=format_sequence(str(row["Sequence A"])),
                         xl_position_peptide_a=get_crosslink_position_from_peptide_seq(
-                            str(row["Sequence A"])
+                            str(row["Sequence A"]),
+                            str(row["Crosslinker"]),
+                            str(row["Modifications A"])
                         ),
                         proteins_a=[
                             protein.strip()
@@ -298,7 +312,9 @@ def read_xlinkx(
                         decoy_a=get_bool_from_value(row["Is Decoy"]),
                         peptide_b=format_sequence(str(row["Sequence B"])),
                         xl_position_peptide_b=get_crosslink_position_from_peptide_seq(
-                            str(row["Sequence B"])
+                            str(row["Sequence B"]),
+                            str(row["Crosslinker"]),
+                            str(row["Modifications B"])
                         ),
                         proteins_b=[
                             protein.strip()
