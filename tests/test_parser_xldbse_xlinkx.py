@@ -49,7 +49,7 @@ def test1():
     assert last_crosslink["completeness"] == "full"
     assert last_crosslink["alpha_peptide"] == "LESEFVYGDYKVYDVR"
     assert last_crosslink["alpha_peptide_crosslink_position"] == 11
-    assert last_crosslink["alpha_proteins"] == ["sp"]
+    assert last_crosslink["alpha_proteins"] == ["Cas9"]
     assert last_crosslink["alpha_proteins_crosslink_positions"] == [1018]
     assert not last_crosslink["alpha_decoy"]
     assert last_crosslink["beta_peptide"] == "VVDELVKVMGR"
@@ -96,7 +96,7 @@ def test2():
     assert last_crosslink["completeness"] == "full"
     assert last_crosslink["alpha_peptide"] == "LESEFVYGDYKVYDVR"
     assert last_crosslink["alpha_peptide_crosslink_position"] == 11
-    assert last_crosslink["alpha_proteins"] == ["sp"]
+    assert last_crosslink["alpha_proteins"] == ["Cas9"]
     assert last_crosslink["alpha_proteins_crosslink_positions"] == [1018]
     assert not last_crosslink["alpha_decoy"]
     assert last_crosslink["beta_peptide"] == "VVDELVKVMGR"
@@ -143,7 +143,7 @@ def test3():
     assert last_crosslink["completeness"] == "full"
     assert last_crosslink["alpha_peptide"] == "LESEFVYGDYKVYDVR"
     assert last_crosslink["alpha_peptide_crosslink_position"] == 11
-    assert last_crosslink["alpha_proteins"] == ["sp"]
+    assert last_crosslink["alpha_proteins"] == ["Cas9"]
     assert last_crosslink["alpha_proteins_crosslink_positions"] == [1018]
     assert not last_crosslink["alpha_decoy"]
     assert last_crosslink["beta_peptide"] == "VVDELVKVMGR"
@@ -190,7 +190,7 @@ def test4():
     assert last_crosslink["completeness"] == "full"
     assert last_crosslink["alpha_peptide"] == "LESEFVYGDYKVYDVR"
     assert last_crosslink["alpha_peptide_crosslink_position"] == 11
-    assert last_crosslink["alpha_proteins"] == ["sp"]
+    assert last_crosslink["alpha_proteins"] == ["Cas9"]
     assert last_crosslink["alpha_proteins_crosslink_positions"] == [1018]
     assert not last_crosslink["alpha_decoy"]
     assert last_crosslink["beta_peptide"] == "VVDELVKVMGR"
@@ -638,7 +638,7 @@ def test9():
     assert last_crosslink["completeness"] == "full"
     assert last_crosslink["alpha_peptide"] == "LESEFVYGDYKVYDVR"
     assert last_crosslink["alpha_peptide_crosslink_position"] == 11
-    assert last_crosslink["alpha_proteins"] == ["sp"]
+    assert last_crosslink["alpha_proteins"] == ["Cas9"]
     assert last_crosslink["alpha_proteins_crosslink_positions"] == [1018]
     assert not last_crosslink["alpha_decoy"]
     assert last_crosslink["beta_peptide"] == "VVDELVKVMGR"
@@ -774,7 +774,7 @@ def test10():
     assert last_crosslink["completeness"] == "full"
     assert last_crosslink["alpha_peptide"] == "LESEFVYGDYKVYDVR"
     assert last_crosslink["alpha_peptide_crosslink_position"] == 11
-    assert last_crosslink["alpha_proteins"] == ["sp"]
+    assert last_crosslink["alpha_proteins"] == ["Cas9"]
     assert last_crosslink["alpha_proteins_crosslink_positions"] == [1018]
     assert not last_crosslink["alpha_decoy"]
     assert last_crosslink["beta_peptide"] == "VVDELVKVMGR"
@@ -910,7 +910,7 @@ def test11():
     assert last_crosslink["completeness"] == "full"
     assert last_crosslink["alpha_peptide"] == "LESEFVYGDYKVYDVR"
     assert last_crosslink["alpha_peptide_crosslink_position"] == 11
-    assert last_crosslink["alpha_proteins"] == ["sp"]
+    assert last_crosslink["alpha_proteins"] == ["Cas9"]
     assert last_crosslink["alpha_proteins_crosslink_positions"] == [1018]
     assert not last_crosslink["alpha_decoy"]
     assert last_crosslink["beta_peptide"] == "VVDELVKVMGR"
@@ -1046,7 +1046,7 @@ def test12():
     assert last_crosslink["completeness"] == "full"
     assert last_crosslink["alpha_peptide"] == "LESEFVYGDYKVYDVR"
     assert last_crosslink["alpha_peptide_crosslink_position"] == 11
-    assert last_crosslink["alpha_proteins"] == ["sp"]
+    assert last_crosslink["alpha_proteins"] == ["Cas9"]
     assert last_crosslink["alpha_proteins_crosslink_positions"] == [1018]
     assert not last_crosslink["alpha_decoy"]
     assert last_crosslink["beta_peptide"] == "VVDELVKVMGR"
@@ -1182,7 +1182,7 @@ def test13():
     assert last_crosslink["completeness"] == "full"
     assert last_crosslink["alpha_peptide"] == "LESEFVYGDYKVYDVR"
     assert last_crosslink["alpha_peptide_crosslink_position"] == 11
-    assert last_crosslink["alpha_proteins"] == ["sp"]
+    assert last_crosslink["alpha_proteins"] == ["Cas9"]
     assert last_crosslink["alpha_proteins_crosslink_positions"] == [1018]
     assert not last_crosslink["alpha_decoy"]
     assert last_crosslink["beta_peptide"] == "VVDELVKVMGR"
