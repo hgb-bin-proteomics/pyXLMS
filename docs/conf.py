@@ -32,6 +32,7 @@ exclude_patterns = ["build"]
 root_doc = "index"
 autosummary_generate = True
 autodoc_default_options = {"members": True, "inherited-members": True}
+python_maximum_signature_line_length = 88
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
