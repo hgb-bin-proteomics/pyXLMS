@@ -328,7 +328,7 @@ def read_plink(
 
     ## set default parsers
     if spectrum_file_parser is None:
-        specturm_file_parser = parse_spectrum_file_from_plink
+        spectrum_file_parser = parse_spectrum_file_from_plink
     if scan_nr_parser is None:
         scan_nr_parser = parse_scan_nr_from_plink
 
