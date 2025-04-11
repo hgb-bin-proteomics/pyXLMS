@@ -229,6 +229,14 @@ def create_crosslink(
     ValueError
         If the length of crosslink positions is not equal to the length of proteins.
 
+    Notes
+    -----
+    The minimum required data for creating a crosslink is:
+    * ``peptide_a``: The unmodified amino acid sequence of the first peptide.
+    * ``peptide_b``: The unmodified amino acid sequence of the second peptide.
+    * ``xl_position_peptide_a``: The position of the crosslinker in the sequence of the first peptide (1-based).
+    * ``xl_position_peptide_b``: The position of the crosslinker in the sequence of the second peptide (1-based).
+
     Examples
     --------
     >>> from pyXLMS.data import create_crosslink
@@ -447,6 +455,16 @@ def create_csm(
         If the parameter is not of the given class.
     ValueError
         If the length of crosslink positions or peptide positions is not equal to the length of proteins.
+
+    Notes
+    -----
+    The minimum required data for creating a crosslink-spectrum-match is:
+    * ``peptide_a``: The unmodified amino acid sequence of the first peptide.
+    * ``peptide_b``: The unmodified amino acid sequence of the second peptide.
+    * ``xl_position_peptide_a``: The position of the crosslinker in the sequence of the first peptide (1-based).
+    * ``xl_position_peptide_b``: The position of the crosslinker in the sequence of the second peptide (1-based).
+    * ``spectrum_file``: Name of the spectrum file the crosslink-spectrum-match was identified in.
+    * ``scan_nr``: The corresponding scan number of the crosslink-spectrum-match.
 
     Examples
     --------
