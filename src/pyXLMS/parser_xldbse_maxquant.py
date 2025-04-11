@@ -153,7 +153,7 @@ def read_maxquant(
     crosslinker_mass : float, or None, default = None
         Monoisotopic delta mass of the crosslink modification. If the crosslinker is
         defined in parameter "modifications" this can be omitted.
-    decoy_prefix : str, default = "REV__"
+    decoy_prefix : str, default = "REV\_\_"
         The prefix that indicates that a protein is from the decoy database.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
@@ -317,7 +317,7 @@ def read_maxlynx(
     crosslinker_mass : float, or None, default = None
         Monoisotopic delta mass of the crosslink modification. If the crosslinker is
         defined in parameter "modifications" this can be omitted.
-    decoy_prefix : str, default = "REV__"
+    decoy_prefix : str, default = "REV\_\_"
         The prefix that indicates that a protein is from the decoy database.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
