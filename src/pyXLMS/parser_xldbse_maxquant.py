@@ -30,7 +30,7 @@ def parse_modifications_from_maxquant_sequence(
     crosslinker_mass: float,
     modifications: Dict[str, float] = MODIFICATIONS,
 ) -> Dict[int, Tuple[str, float]]:
-    """Parse post-translational-modifications from a MaxQuant peptide sequence.
+    r"""Parse post-translational-modifications from a MaxQuant peptide sequence.
 
     Parses post-translational-modifications (PTMs) from a MaxQuant peptide sequence,
     for example "_VVDELVKVM(Oxidation (M))GR_".
@@ -139,7 +139,7 @@ def read_maxquant(
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = "\t",
 ) -> Dict[str, Any]:
-    """Read a MaxQuant result file.
+    r"""Read a MaxQuant result file.
 
     Reads a MaxQuant crosslink-spectrum-matches result file "crosslinkMsms.txt" in ``.txt`` (tab delimited) format
     and returns a ``parser_result``.
@@ -153,7 +153,7 @@ def read_maxquant(
     crosslinker_mass : float, or None, default = None
         Monoisotopic delta mass of the crosslink modification. If the crosslinker is
         defined in parameter "modifications" this can be omitted.
-    decoy_prefix : str, default = "REV__"
+    decoy_prefix : str, default = "REV\_\_"
         The prefix that indicates that a protein is from the decoy database.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
@@ -303,7 +303,7 @@ def read_maxlynx(
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = "\t",
 ) -> Dict[str, Any]:
-    """Read a MaxLynx result file.
+    r"""Read a MaxLynx result file.
 
     Reads a MaxLynx crosslink-spectrum-matches result file "crosslinkMsms.txt" in ``.txt`` (tab delimited) format
     and returns a ``parser_result``. This is an alias for the MaxQuant reader.
@@ -317,7 +317,7 @@ def read_maxlynx(
     crosslinker_mass : float, or None, default = None
         Monoisotopic delta mass of the crosslink modification. If the crosslinker is
         defined in parameter "modifications" this can be omitted.
-    decoy_prefix : str, default = "REV__"
+    decoy_prefix : str, default = "REV\_\_"
         The prefix that indicates that a protein is from the decoy database.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.

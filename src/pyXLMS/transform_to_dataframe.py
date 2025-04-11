@@ -17,7 +17,7 @@ from typing import Any
 
 
 def __cc(input_list: Optional[List[Any]], sep: str = ";") -> str | None:
-    """Concatenates list elements to a string using the defined seperator.
+    r"""Concatenates list elements to a string using the defined seperator.
 
     Parameters
     ----------
@@ -40,7 +40,7 @@ def __cc(input_list: Optional[List[Any]], sep: str = ";") -> str | None:
 
 
 def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
-    """Returns a pandas DataFrame of the given crosslinks.
+    r"""Returns a pandas DataFrame of the given crosslinks.
 
     Parameters
     ----------
@@ -120,7 +120,7 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
 
 
 def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
-    """Returns a pandas DataFrame of the given crosslink-spectrum-matches.
+    r"""Returns a pandas DataFrame of the given crosslink-spectrum-matches.
 
     Parameters
     ----------
@@ -233,7 +233,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
 
 
 def to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
-    """Returns a pandas DataFrame of the given crosslinks or crosslink-spectrum-matches.
+    r"""Returns a pandas DataFrame of the given crosslinks or crosslink-spectrum-matches.
 
     Parameters
     ----------

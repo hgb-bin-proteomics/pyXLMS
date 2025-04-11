@@ -38,7 +38,7 @@ def __parse_modifications_from_plink_modifications_str(
     modifications: Dict[str, float] = MODIFICATIONS,
     verbose: Literal[0, 1, 2] = 1,
 ) -> Tuple[Dict[int, Tuple[str, float]], Dict[int, Tuple[str, float]]]:
-    """Parse post-translational-modifications from a pLink modification string.
+    r"""Parse post-translational-modifications from a pLink modification string.
 
     Parses post-translational-modifications (PTMs) from a pLink modification string,
     for example "Carbamidomethyl[C](4);Oxidation[M](23)".
@@ -144,7 +144,7 @@ def __parse_proteins_and_position_from_plink(
     seq: str,
     proteins: str,
 ) -> Dict[str, Any]:
-    """Parses proteins and positions from pLink results.
+    r"""Parses proteins and positions from pLink results.
 
     Parses proteins, as well as peptide and crosslink positions from a pLink crosslink sequence
     and protein string.
@@ -213,7 +213,7 @@ def __parse_proteins_and_position_from_plink(
 
 
 def parse_spectrum_file_from_plink(title: str) -> str:
-    """Parse the spectrum file name from a spectrum title.
+    r"""Parse the spectrum file name from a spectrum title.
 
     Parameters
     ----------
@@ -235,7 +235,7 @@ def parse_spectrum_file_from_plink(title: str) -> str:
 
 
 def parse_scan_nr_from_plink(title: str) -> int:
-    """Parse the scan number from a spectrum title.
+    r"""Parse the scan number from a spectrum title.
 
     Parameters
     ----------
@@ -258,27 +258,29 @@ def parse_scan_nr_from_plink(title: str) -> int:
 
 def read_plink(
     files: str | List[str] | BinaryIO,
-    spectrum_file_parser: Callable[[str], str] = parse_spectrum_file_from_plink,
-    scan_nr_parser: Callable[[str], int] = parse_scan_nr_from_plink,
+    spectrum_file_parser: Optional[Callable[[str], str]] = None,
+    scan_nr_parser: Optional[Callable[[str], int]] = None,
     decoy_prefix: str = "REV_",
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = ",",
     verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
-    """Read a pLink result file.
+    r"""Read a pLink result file.
 
-    Reads a pLink crosslink-spectrum-matches result file "*cross-linked_spectra.csv"
+    Reads a pLink crosslink-spectrum-matches result file "\*cross-linked_spectra.csv"
     in ``.csv`` (comma delimited) format and returns a ``parser_result``.
 
     Parameters
     ----------
     files : str, list of str, or file stream
         The name/path of the pLink result file(s) or a file-like object/stream.
-    spectrum_file_parser: Callable, default = ``parse_spectrum_file_from_plink``
-        A function that parses the spectrum file name from spectrum titles.
-    scan_nr_parser : Callable, default = ``parse_scan_nr_from_plink()``
-        A function that parses the scan number from spectrum titles.
-    decoy_prefix : str, default = "REV_"
+    spectrum_file_parser: callable, or None, default = None
+        A function that parses the spectrum file name from spectrum titles. If None (default)
+        the function ``parse_spectrum_file_from_plink()`` is used.
+    scan_nr_parser : callable, or None, default = None
+        A function that parses the scan number from spectrum titles. If None (default)
+        the function ``parse_scan_nr_from_plink()`` is used.
+    decoy_prefix : str, default = "REV\_"
         The prefix that indicates that a protein is from the decoy database.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
@@ -307,14 +309,28 @@ def read_plink(
     >>> csms = read_plink("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv")
     """
     ## check input
-    _ok = check_input(spectrum_file_parser, "spectrum_file_parser", Callable)
-    _ok = check_input(scan_nr_parser, "scan_nr_parser", Callable)
+    _ok = (
+        check_input(spectrum_file_parser, "spectrum_file_parser", Callable)
+        if spectrum_file_parser is not None
+        else True
+    )
+    _ok = (
+        check_input(scan_nr_parser, "scan_nr_parser", Callable)
+        if scan_nr_parser is not None
+        else True
+    )
     _ok = check_input(decoy_prefix, "decoy_prefix", str)
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(sep, "sep", str)
     _ok = check_input(verbose, "verbose", int)
     if verbose not in [0, 1, 2]:
         raise TypeError("Verbose level has to be one of 0, 1, or 2!")
+
+    ## set default parsers
+    if spectrum_file_parser is None:
+        spectrum_file_parser = parse_spectrum_file_from_plink
+    if scan_nr_parser is None:
+        scan_nr_parser = parse_scan_nr_from_plink
 
     ## data structures
     csms = list()
