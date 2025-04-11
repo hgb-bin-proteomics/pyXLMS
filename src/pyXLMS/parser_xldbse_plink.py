@@ -309,8 +309,16 @@ def read_plink(
     >>> csms = read_plink("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv")
     """
     ## check input
-    _ok = check_input(spectrum_file_parser, "spectrum_file_parser", Callable) if spectrum_file_parser is not None else True
-    _ok = check_input(scan_nr_parser, "scan_nr_parser", Callable) if scan_nr_parser is not None else True
+    _ok = (
+        check_input(spectrum_file_parser, "spectrum_file_parser", Callable)
+        if spectrum_file_parser is not None
+        else True
+    )
+    _ok = (
+        check_input(scan_nr_parser, "scan_nr_parser", Callable)
+        if scan_nr_parser is not None
+        else True
+    )
     _ok = check_input(decoy_prefix, "decoy_prefix", str)
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(sep, "sep", str)
