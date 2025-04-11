@@ -8,6 +8,7 @@
 # READERS
 from .parser_xldbse_xi import read_xi
 from .parser_xldbse_plink import read_plink
+from .parser_xldbse_xlinkx import read_xlinkx
 from .parser_xldbse_msannika import read_msannika
 from .parser_xldbse_maxquant import read_maxquant
 from .parser_xldbse_maxquant import read_maxlynx
@@ -33,4 +34,6 @@ def read(file: str, dbse: str):
         return read_maxlynx(file, "DSSO")
     if dbse == "pLink":
         return read_plink(file)
+    if dbse == "XlinkX":
+        return read_xlinkx(file)
     return

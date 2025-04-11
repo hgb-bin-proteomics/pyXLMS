@@ -183,9 +183,9 @@ def read_msannika(
                     f"Unable to find modification {mod_type} in the set of provided modifications. "
                     + "Please pass the full set of expected modifications to the parser."
                 )
-            if "Nterm" in mod_pos:
+            if "Nterm" in mod_pos or "N-Term" in mod_pos:
                 parsed_mods[0] = (mod_type, modifications[mod_type])
-            elif "Cterm" in mod_pos:
+            elif "Cterm" in mod_pos or "C-Term" in mod_pos:
                 parsed_mods[len(sequence)] = (mod_type, modifications[mod_type])
             else:
                 parsed_mods[int(mod_pos[1:])] = (mod_type, modifications[mod_type])
