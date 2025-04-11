@@ -232,10 +232,11 @@ def create_crosslink(
     Notes
     -----
     The minimum required data for creating a crosslink is:
-    * ``peptide_a``: The unmodified amino acid sequence of the first peptide.
-    * ``peptide_b``: The unmodified amino acid sequence of the second peptide.
-    * ``xl_position_peptide_a``: The position of the crosslinker in the sequence of the first peptide (1-based).
-    * ``xl_position_peptide_b``: The position of the crosslinker in the sequence of the second peptide (1-based).
+
+    - ``peptide_a``: The unmodified amino acid sequence of the first peptide.
+    - ``peptide_b``: The unmodified amino acid sequence of the second peptide.
+    - ``xl_position_peptide_a``: The position of the crosslinker in the sequence of the first peptide (1-based).
+    - ``xl_position_peptide_b``: The position of the crosslinker in the sequence of the second peptide (1-based).
 
     Examples
     --------
@@ -459,12 +460,13 @@ def create_csm(
     Notes
     -----
     The minimum required data for creating a crosslink-spectrum-match is:
-    * ``peptide_a``: The unmodified amino acid sequence of the first peptide.
-    * ``peptide_b``: The unmodified amino acid sequence of the second peptide.
-    * ``xl_position_peptide_a``: The position of the crosslinker in the sequence of the first peptide (1-based).
-    * ``xl_position_peptide_b``: The position of the crosslinker in the sequence of the second peptide (1-based).
-    * ``spectrum_file``: Name of the spectrum file the crosslink-spectrum-match was identified in.
-    * ``scan_nr``: The corresponding scan number of the crosslink-spectrum-match.
+
+    - ``peptide_a``: The unmodified amino acid sequence of the first peptide.
+    - ``peptide_b``: The unmodified amino acid sequence of the second peptide.
+    - ``xl_position_peptide_a``: The position of the crosslinker in the sequence of the first peptide (1-based).
+    - ``xl_position_peptide_b``: The position of the crosslinker in the sequence of the second peptide (1-based).
+    - ``spectrum_file``: Name of the spectrum file the crosslink-spectrum-match was identified in.
+    - ``scan_nr``: The corresponding scan number of the crosslink-spectrum-match.
 
     Examples
     --------
