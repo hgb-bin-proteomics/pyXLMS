@@ -19,7 +19,7 @@ def check_input(
     supported_class: Any,
     supported_subclass: Optional[Any] = None,
 ) -> bool:
-    """Checks if the given parameter is of the specified type.
+    r"""Checks if the given parameter is of the specified type.
 
     Function that checks if a given parameter is of the specified type and if iterable, all elements are of the specified element type.
     This is mostly an input check function to catch any errors arising from not supported inputs early.
@@ -78,7 +78,7 @@ def check_input_multi(
     supported_classes: List[Any],
     supported_subclass: Optional[Any] = None,
 ) -> bool:
-    """Checks if the given parameter is of one of the specified types.
+    r"""Checks if the given parameter is of one of the specified types.
 
     Function that checks if a given parameter is of one of the specified types and if iterable, all elements are of the specified element type.
     This is mostly an input check function to catch any errors arising from not supported inputs early.
@@ -130,7 +130,7 @@ def check_input_multi(
 
 
 def check_indexing(value: int | List[int]) -> bool:
-    """Checks that the given value is not 0-based.
+    r"""Checks that the given value is not 0-based.
 
     Parameters
     ----------
@@ -182,7 +182,7 @@ def create_crosslink(
     score: Optional[float],
     additional_information: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Creates a crosslink data structure.
+    r"""Creates a crosslink data structure.
 
     Contains minimal data necessary for representing a single crosslink. The returned crosslink data structure is a dictionary with keys
     as detailed in the return section.
@@ -382,7 +382,7 @@ def create_csm(
     im_cv: Optional[float],
     additional_information: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Creates a crosslink-spectrum-match data structure.
+    r"""Creates a crosslink-spectrum-match data structure.
 
     Contains minimal data necessary for representing a single crosslink-spectrum-match. The returned crosslink-spectrum-match data structure
     is a dictionary with keys as detailed in the return section.
@@ -682,7 +682,7 @@ def create_parser_result(
     csms: Optional[List[Dict[str, Any]]],
     crosslinks: Optional[List[Dict[str, Any]]],
 ) -> Dict[str, Any]:
-    """Creates a parser result data structure.
+    r"""Creates a parser result data structure.
 
     Contains all necessary data elements that should be contained in a result returned by a crosslink search engine result parser.
 

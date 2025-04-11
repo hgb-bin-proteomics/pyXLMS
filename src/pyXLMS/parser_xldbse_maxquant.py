@@ -30,7 +30,7 @@ def parse_modifications_from_maxquant_sequence(
     crosslinker_mass: float,
     modifications: Dict[str, float] = MODIFICATIONS,
 ) -> Dict[int, Tuple[str, float]]:
-    """Parse post-translational-modifications from a MaxQuant peptide sequence.
+    r"""Parse post-translational-modifications from a MaxQuant peptide sequence.
 
     Parses post-translational-modifications (PTMs) from a MaxQuant peptide sequence,
     for example "_VVDELVKVM(Oxidation (M))GR_".
@@ -139,7 +139,7 @@ def read_maxquant(
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = "\t",
 ) -> Dict[str, Any]:
-    """Read a MaxQuant result file.
+    r"""Read a MaxQuant result file.
 
     Reads a MaxQuant crosslink-spectrum-matches result file "crosslinkMsms.txt" in ``.txt`` (tab delimited) format
     and returns a ``parser_result``.
@@ -303,7 +303,7 @@ def read_maxlynx(
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = "\t",
 ) -> Dict[str, Any]:
-    """Read a MaxLynx result file.
+    r"""Read a MaxLynx result file.
 
     Reads a MaxLynx crosslink-spectrum-matches result file "crosslinkMsms.txt" in ``.txt`` (tab delimited) format
     and returns a ``parser_result``. This is an alias for the MaxQuant reader.

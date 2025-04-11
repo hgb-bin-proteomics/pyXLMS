@@ -16,7 +16,7 @@ from typing import Any
 def format_sequence(
     sequence: str, remove_non_aa: bool = True, remove_lower: bool = True
 ) -> str:
-    """Formats the given amino acid sequence into common represenation.
+    r"""Formats the given amino acid sequence into common represenation.
 
     The given amino acid sequence is re-formatted by converting all amino acids to upper case and optionally removing non-encoding and
     lower case characters.
@@ -79,7 +79,7 @@ def format_sequence(
 
 
 def get_bool_from_value(value: Any) -> bool:
-    """Parse a bool value from the given input.
+    r"""Parse a bool value from the given input.
 
     Tries to parse a boolean value from the given input object. If the object is of instance ``bool`` it will return the object, if it is of
     instance ``int`` it will return ``True`` if the object is ``1`` or ``False`` if the object is ``0``, any other number will raise a

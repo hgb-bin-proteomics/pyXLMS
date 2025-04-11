@@ -35,7 +35,7 @@ except ImportError:
 
 
 def __read_xlinkx_pdresult(filename: str) -> List[pd.DataFrame]:
-    """Read an XlinkX pdResult file and convert it to standard XlinkX result tables.
+    r"""Read an XlinkX pdResult file and convert it to standard XlinkX result tables.
 
     Reads an XlinkX pdResult file and converts it to standard XlinkX CSM and crosslink
     tables as pandas DataFrame objects.
@@ -123,7 +123,7 @@ def read_xlinkx(
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
-    """Read an XlinkX result file.
+    r"""Read an XlinkX result file.
 
     Reads an XlinkX crosslink-spectrum-matches result file or crosslink result file in ``.csv`` or ``.xlsx`` format,
     or both from a ``.pdResult`` file from Proteome Discover, and returns a ``parser_result``.

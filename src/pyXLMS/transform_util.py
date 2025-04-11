@@ -16,7 +16,7 @@ from typing import Tuple
 def modifications_to_str(
     modifications: Optional[Dict[int, Tuple[str, float]]],
 ) -> str | None:
-    """Returns the string representation of a modifications dictionary.
+    r"""Returns the string representation of a modifications dictionary.
 
     Parameters
     ----------

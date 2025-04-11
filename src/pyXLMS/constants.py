@@ -29,7 +29,7 @@ AMINO_ACIDS = {
     "J",
     "O",
 }
-"""List of valid amino acids.
+r"""List of valid amino acids.
 
 List of one-letter codes for all valid amino acids.
 
@@ -51,7 +51,7 @@ CROSSLINKERS = {
     "DSBSO": 308.03883,
     "PhoX": 209.97181,
 }
-"""Dictionary of crosslinkers.
+r"""Dictionary of crosslinkers.
 
 Dictionary of pre-defined crosslinkers that maps crosslinker names to crosslinker delta masses.
 Currently contains `"BS3"`, `"DSS"`, `"DSSO"`, `"ADH"`, `"DSBSO"`, `"PhoX"`.
@@ -69,7 +69,7 @@ MODIFICATIONS = {
     "Phospho": 79.966331,
     "Acetyl": 42.010565,
 }
-"""Dictionary of post-translational-modifications.
+r"""Dictionary of post-translational-modifications.
 
 Dictionary of pre-defined post-translational-modifications that maps modification names to modification delta masses.
 Currently contains `"Carbamidomethyl"`, `"Oxidation"`, `"Phospho"`, `"Acetyl"` and all crosslinkers.
@@ -106,7 +106,7 @@ XI_MODIFICATION_MAPPING = {
     "dsbu_ami": ("DSBU Amidated", 213.111341),
     "dsbu_tris": ("DSBU Tris", 317.158685),
 }
-"""Dictionary that maps sequence elements from xiSearch and xiFDR to their corresponding amino acids and post-translational-modifications.
+r"""Dictionary that maps sequence elements from xiSearch and xiFDR to their corresponding amino acids and post-translational-modifications.
 
 Dictionary that maps sequence elements (e.g. `"cm"`) from xiSearch and xiFDR to their corresponding amino acids and
 post-translational-modifications (e.g. `("Carbamidomethyl", 57.021464)`).

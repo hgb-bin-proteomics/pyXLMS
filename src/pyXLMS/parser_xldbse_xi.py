@@ -35,7 +35,7 @@ except ImportError:
 def detect_xi_filetype(
     data: pd.DataFrame,
 ) -> Literal["xisearch", "xifdr_csms", "xifdr_crosslinks"]:
-    """Detects the source application of the data.
+    r"""Detects the source application of the data.
 
     Detects whether the input data is originating from xiSearch or xiFDR, and if xiFDR which type of data is
     being read (crosslink-spectrum-matches or crosslinks).
@@ -95,7 +95,7 @@ def detect_xi_filetype(
 
 
 def parse_peptide(sequence: str) -> str:
-    """Parses the peptide sequence from a sequence string including flanking amino acids.
+    r"""Parses the peptide sequence from a sequence string including flanking amino acids.
 
     Parses the peptide sequence from a sequence string including flanking amino acids, for example ``"K.KKMoxKLS.S"``.
     The returned peptide sequence for this example would be ``"KKMoxKLS"``.
@@ -156,7 +156,7 @@ def parse_peptide(sequence: str) -> str:
 
 
 def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
-    """Parses all post-translational-modifications from a peptide sequence as reported by xiFDR.
+    r"""Parses all post-translational-modifications from a peptide sequence as reported by xiFDR.
 
     Parses all post-translational-modifications from a peptide sequence as reported by xiFDR. This assumes
     that amino acids are given in upper case letters and post-translational-modifications in lower case letters.
@@ -236,7 +236,7 @@ def __parse_xisearch_modifications(
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[int, Tuple[str, float]]:
-    """Returns the corresponding modifications object for a crosslink-spectrum-match from xiSearch.
+    r"""Returns the corresponding modifications object for a crosslink-spectrum-match from xiSearch.
 
     Parameters
     ----------
@@ -602,7 +602,7 @@ def __read_xisearch(
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
 ) -> List[Dict[str, Any]]:
-    """Reads a xiSearch pandas dataframe and returns a list of crosslink-spectrum-matches.
+    r"""Reads a xiSearch pandas dataframe and returns a list of crosslink-spectrum-matches.
 
     Parameters
     ----------
@@ -698,7 +698,7 @@ def __parse_xifdr_modifications(
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[int, Tuple[str, float]]:
-    """Returns the corresponding modifications object for a crosslink-spectrum-match from xiFDR.
+    r"""Returns the corresponding modifications object for a crosslink-spectrum-match from xiFDR.
 
     Parameters
     ----------
@@ -825,7 +825,7 @@ def __read_xifdr_csms(
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
 ) -> List[Dict[str, Any]]:
-    """Reads a xiFDR CSM pandas dataframe and returns a list of crosslink-spectrum-matches.
+    r"""Reads a xiFDR CSM pandas dataframe and returns a list of crosslink-spectrum-matches.
 
     Parameters
     ----------
@@ -909,7 +909,7 @@ def __read_xifdr_csms(
 def __read_xifdr_crosslinks(
     data: pd.DataFrame, decoy_prefix: str = "decoy:"
 ) -> List[Dict[str, Any]]:
-    """Reads a xiFDR Links pandas dataframe and returns a list of crosslinks.
+    r"""Reads a xiFDR Links pandas dataframe and returns a list of crosslinks.
 
     Parameters
     ----------
@@ -975,7 +975,7 @@ def read_xi(
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
-    """Read a xiSearch/xiFDR result file.
+    r"""Read a xiSearch/xiFDR result file.
 
     Reads a xiSearch crosslink-spectrum-matches result file or a xiFDR crosslink-spectrum-matches
     result file or crosslink result file in ``.csv`` format and returns a ``parser_result``.

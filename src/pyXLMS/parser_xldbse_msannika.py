@@ -33,7 +33,7 @@ except ImportError:
 
 
 def __read_msannika_pdresult(filename: str) -> List[pd.DataFrame]:
-    """Read an MS Annika pdResult file and convert it to standard MS Annika result tables.
+    r"""Read an MS Annika pdResult file and convert it to standard MS Annika result tables.
 
     Reads an MS Annika pdResult file and converts it to standard MS Annika CSM and crosslink
     tables as pandas DataFrame objects.
@@ -113,7 +113,7 @@ def read_msannika(
     format: Literal["auto", "csv", "txt", "tsv", "xlsx", "pdresult"] = "auto",
     sep: str = "\t",
 ) -> Dict[str, Any]:
-    """Read an MS Annika result file.
+    r"""Read an MS Annika result file.
 
     Reads an MS Annika crosslink-spectrum-matches result file or crosslink result file in ``.csv`` or ``.xlsx`` format,
     or both from a ``.pdResult`` file from Proteome Discover, and returns a ``parser_result``.

@@ -38,7 +38,7 @@ def __parse_modifications_from_plink_modifications_str(
     modifications: Dict[str, float] = MODIFICATIONS,
     verbose: Literal[0, 1, 2] = 1,
 ) -> Tuple[Dict[int, Tuple[str, float]], Dict[int, Tuple[str, float]]]:
-    """Parse post-translational-modifications from a pLink modification string.
+    r"""Parse post-translational-modifications from a pLink modification string.
 
     Parses post-translational-modifications (PTMs) from a pLink modification string,
     for example "Carbamidomethyl[C](4);Oxidation[M](23)".
@@ -144,7 +144,7 @@ def __parse_proteins_and_position_from_plink(
     seq: str,
     proteins: str,
 ) -> Dict[str, Any]:
-    """Parses proteins and positions from pLink results.
+    r"""Parses proteins and positions from pLink results.
 
     Parses proteins, as well as peptide and crosslink positions from a pLink crosslink sequence
     and protein string.
@@ -213,7 +213,7 @@ def __parse_proteins_and_position_from_plink(
 
 
 def parse_spectrum_file_from_plink(title: str) -> str:
-    """Parse the spectrum file name from a spectrum title.
+    r"""Parse the spectrum file name from a spectrum title.
 
     Parameters
     ----------
@@ -235,7 +235,7 @@ def parse_spectrum_file_from_plink(title: str) -> str:
 
 
 def parse_scan_nr_from_plink(title: str) -> int:
-    """Parse the scan number from a spectrum title.
+    r"""Parse the scan number from a spectrum title.
 
     Parameters
     ----------
@@ -265,7 +265,7 @@ def read_plink(
     sep: str = ",",
     verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
-    """Read a pLink result file.
+    r"""Read a pLink result file.
 
     Reads a pLink crosslink-spectrum-matches result file "\*cross-linked_spectra.csv"
     in ``.csv`` (comma delimited) format and returns a ``parser_result``.
