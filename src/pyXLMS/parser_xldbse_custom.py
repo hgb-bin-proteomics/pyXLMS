@@ -193,14 +193,24 @@ def read_custom(
     >>> csms_and_crosslinks_from_pdresult = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult")
     """
     ## check input
-    _ok = check_input(column_mapping, "column_mapping", dict, str) if column_mapping is not None else True
-    _ok = check_input(modification_parser, "modification_parser", Callable) if modification_parser is not None else True
+    _ok = (
+        check_input(column_mapping, "column_mapping", dict, str)
+        if column_mapping is not None
+        else True
+    )
+    _ok = (
+        check_input(modification_parser, "modification_parser", Callable)
+        if modification_parser is not None
+        else True
+    )
     _ok = check_input(decoy_prefix, "decoy_prefix", str)
     _ok = check_input(format, "format", str)
     _ok = check_input(sep, "sep", str)
     ## helper functions
 
-    def get_is_decoy_value(row: pd.Series, decoy_prefix: str, alpha: bool) -> bool | None:
+    def get_is_decoy_value(
+        row: pd.Series, decoy_prefix: str, alpha: bool
+    ) -> bool | None:
         if alpha:
             if __get_value(row, "Alpha Decoy") is not None:
                 return get_bool_from_value(__get_value(row, "Alpha Decoy"))
@@ -218,7 +228,7 @@ def read_custom(
             return None
         try:
             return int(value)
-        except:
+        except Exception as _e:
             pass
         raise TypeError(f"Could not parse int from value {value}!")
         return None
@@ -228,7 +238,7 @@ def read_custom(
             return None
         try:
             return float(value)
-        except:
+        except Exception as _e:
             pass
         raise TypeError(f"Could not parse float from value {value}!")
         return None
@@ -307,14 +317,21 @@ def read_custom(
                         protein.strip()
                         if protein.strip()[: len(decoy_prefix)] != decoy_prefix
                         else protein.strip()[len(decoy_prefix) :]
-                        for protein in str(__get_value(row, "Alpha Proteins")).split(";")
+                        for protein in str(__get_value(row, "Alpha Proteins")).split(
+                            ";"
+                        )
                     ]
-                    if __get_value(row, "Alpha Proteins") is not None else None,
+                    if __get_value(row, "Alpha Proteins") is not None
+                    else None,
                     xl_position_proteins_a=[
                         int(position)
-                        for position in str(__get_value(row, "Alpha Proteins Crosslink Positions")).split(";")
+                        for position in str(
+                            __get_value(row, "Alpha Proteins Crosslink Positions")
+                        ).split(";")
                     ]
-                    if __get_value(row, "Alpha Proteins Crosslink Positions") is not None else None,
+                    if __get_value(row, "Alpha Proteins Crosslink Positions")
+                    is not None
+                    else None,
                     decoy_a=get_is_decoy_value(row, decoy_prefix, True),
                     peptide_b=format_sequence(str(row["Beta Peptide"])),
                     xl_position_peptide_b=int(row["Beta Peptide Crosslink Position"]),
@@ -324,12 +341,16 @@ def read_custom(
                         else protein.strip()[len(decoy_prefix) :]
                         for protein in str(__get_value(row, "Beta Proteins")).split(";")
                     ]
-                    if __get_value(row, "Beta Proteins") is not None else None,
+                    if __get_value(row, "Beta Proteins") is not None
+                    else None,
                     xl_position_proteins_b=[
                         int(position)
-                        for position in str(__get_value(row, "Beta Proteins Crosslink Positions")).split(";")
+                        for position in str(
+                            __get_value(row, "Beta Proteins Crosslink Positions")
+                        ).split(";")
                     ]
-                    if __get_value(row, "Beta Proteins Crosslink Positions") is not None else None,
+                    if __get_value(row, "Beta Proteins Crosslink Positions") is not None
+                    else None,
                     decoy_b=get_is_decoy_value(row, decoy_prefix, False),
                     score=get_float(__get_value(row, "Crosslink Score")),
                 )
@@ -343,31 +364,47 @@ def read_custom(
                 # create csm
                 csm = create_csm(
                     peptide_a=format_sequence(str(row["Alpha Peptide"])),
-                    modifications_a=modification_parser(str(__get_value(row, "Alpha Peptide Modifications")))
-                    if __get_value(row, "Alpha Peptide Modifications") is not None else None,
+                    modifications_a=modification_parser(
+                        str(__get_value(row, "Alpha Peptide Modifications"))
+                    )
+                    if __get_value(row, "Alpha Peptide Modifications") is not None
+                    else None,
                     xl_position_peptide_a=int(row["Alpha Peptide Crosslink Position"]),
                     proteins_a=[
                         protein.strip()
                         if protein.strip()[: len(decoy_prefix)] != decoy_prefix
                         else protein.strip()[len(decoy_prefix) :]
-                        for protein in str(__get_value(row, "Alpha Proteins")).split(";")
+                        for protein in str(__get_value(row, "Alpha Proteins")).split(
+                            ";"
+                        )
                     ]
-                    if __get_value(row, "Alpha Proteins") is not None else None,
+                    if __get_value(row, "Alpha Proteins") is not None
+                    else None,
                     xl_position_proteins_a=[
                         int(position)
-                        for position in str(__get_value(row, "Alpha Proteins Crosslink Positions")).split(";")
+                        for position in str(
+                            __get_value(row, "Alpha Proteins Crosslink Positions")
+                        ).split(";")
                     ]
-                    if __get_value(row, "Alpha Proteins Crosslink Positions") is not None else None,
+                    if __get_value(row, "Alpha Proteins Crosslink Positions")
+                    is not None
+                    else None,
                     pep_position_proteins_a=[
                         int(position)
-                        for position in str(__get_value(row, "Alpha Proteins Peptide Positions")).split(";")
+                        for position in str(
+                            __get_value(row, "Alpha Proteins Peptide Positions")
+                        ).split(";")
                     ]
-                    if __get_value(row, "Alpha Proteins Peptide Positions") is not None else None,
+                    if __get_value(row, "Alpha Proteins Peptide Positions") is not None
+                    else None,
                     score_a=get_float(__get_value(row, "Alpha Score")),
                     decoy_a=get_is_decoy_value(row, decoy_prefix, True),
                     peptide_b=format_sequence(str(row["Beta Peptide"])),
-                    modifications_b=modification_parser(str(__get_value(row, "Beta Peptide Modifications")))
-                    if __get_value(row, "Beta Peptide Modifications") is not None else None,
+                    modifications_b=modification_parser(
+                        str(__get_value(row, "Beta Peptide Modifications"))
+                    )
+                    if __get_value(row, "Beta Peptide Modifications") is not None
+                    else None,
                     xl_position_peptide_b=int(row["Beta Peptide Crosslink Position"]),
                     proteins_b=[
                         protein.strip()
@@ -375,17 +412,24 @@ def read_custom(
                         else protein.strip()[len(decoy_prefix) :]
                         for protein in str(__get_value(row, "Beta Proteins")).split(";")
                     ]
-                    if __get_value(row, "Beta Proteins") is not None else None,
+                    if __get_value(row, "Beta Proteins") is not None
+                    else None,
                     xl_position_proteins_b=[
                         int(position)
-                        for position in str(__get_value(row, "Beta Proteins Crosslink Positions")).split(";")
+                        for position in str(
+                            __get_value(row, "Beta Proteins Crosslink Positions")
+                        ).split(";")
                     ]
-                    if __get_value(row, "Beta Proteins Crosslink Positions") is not None else None,
+                    if __get_value(row, "Beta Proteins Crosslink Positions") is not None
+                    else None,
                     pep_position_proteins_b=[
                         int(position)
-                        for position in str(__get_value(row, "Beta Proteins Peptide Positions")).split(";")
+                        for position in str(
+                            __get_value(row, "Beta Proteins Peptide Positions")
+                        ).split(";")
                     ]
-                    if __get_value(row, "Beta Proteins Peptide Positions") is not None else None,
+                    if __get_value(row, "Beta Proteins Peptide Positions") is not None
+                    else None,
                     score_b=get_float(__get_value(row, "Beta Score")),
                     decoy_b=get_is_decoy_value(row, decoy_prefix, False),
                     score=get_float(__get_value(row, "CSM Score")),
