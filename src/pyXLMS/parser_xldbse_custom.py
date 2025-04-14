@@ -35,11 +35,39 @@ except ImportError:
 
 
 def pyxlms_modification_str_parser(modifications: str) -> Dict[int, Tuple[str, float]]:
-    """
+    r"""Parse a pyXLMS modification string.
+
+    Parses a pyXLMS modification string and returns the pyXLMS specific modification object,
+    a dictionary that maps positions to their modififications.
+
+    Parameters
+    ----------
+    modifications : str
+        The pyXLMS modification string.
+
+    Returns
+    -------
+    dict of int, tuple
+        The pyXLMS specific modification object, a dictionary that maps positions (1-based)
+        to their respective modifications given as tuples of modification name and modification
+        delta mass.
+
     Raises
     ------
     RuntimeError
         If multiple modifications on the same residue are parsed.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import pyxlms_modification_str_parser
+    >>> modification_str = "(1:[DSS|138.06808])"
+    >>> pyxlms_modification_str_parser(modification_str)
+    {1: ("DSS", 138.06808)}
+
+    >>> from pyXLMS.parser import pyxlms_modification_str_parser
+    >>> modification_str = "(1:[DSS|138.06808]);(7:[Oxidation|15.994915])"
+    >>> pyxlms_modification_str_parser(modification_str)
+    {1: ("DSS", 138.06808), 7: ("Oxidation", 15.994915)}
     """
     parsed_modifications = dict()
     for mod in modifications.split(";"):
