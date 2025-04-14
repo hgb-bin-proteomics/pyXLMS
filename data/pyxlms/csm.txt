@@ -1,0 +1,3 @@
+Completeness,Spectrum File,Scan Nr,Alpha Peptide,Alpha Peptide Modifications,Alpha Peptide Crosslink Position,Alpha Proteins,Alpha Proteins Crosslink Positions,Alpha Proteins Peptide Positions,Alpha Score,Alpha Decoy,Beta Peptide,Beta Peptide Modifications,Beta Peptide Crosslink Position,Beta Proteins,Beta Proteins Crosslink Positions,Beta Proteins Peptide Positions,Beta Score,Beta Decoy,Crosslink Type,CSM Score,Precursor Charge,Retention Time,Ion Mobility
+full,S1.raw,1,PEPKTIDE,"(4:[DSS|138.06808])",4,KPEPTIDE,1
+full,S1.raw,2,PEKPIDE,3,EKTIDEM,(2:[DSS|138.06808]);(7:[Oxidation|15.994915]),2
