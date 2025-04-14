@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-import sqlite3
 import pandas as pd
 from tqdm import tqdm
 from os.path import splitext
@@ -15,7 +14,6 @@ from .data import check_input
 from .data import create_crosslink
 from .data import create_csm
 from .data import create_parser_result
-from .constants import MODIFICATIONS
 from .parser_util import format_sequence
 from .parser_util import get_bool_from_value
 
