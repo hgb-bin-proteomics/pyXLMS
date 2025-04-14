@@ -85,7 +85,20 @@ def pyxlms_modification_str_parser(modifications: str) -> Dict[int, Tuple[str, f
 
 
 def __get_value(row: pd.Series, column: str) -> Any | None:
-    """
+    r"""Get value from column if it exists and is not None.
+
+    Parameters
+    ----------
+    row : pd.Series
+        A row from a pandas DataFrame.
+    column : str
+        The column name to be accessed.
+
+    Returns
+    -------
+    any, or None
+        The column value if it exists and is not None.
+    
     Notes
     -----
     This function should not be called directly, it is called from ``read_custom()``.
