@@ -95,7 +95,7 @@ def __get_value(row: pd.Series, column: str) -> Any | None:
     if (
         pd.isna(row[column])
         or row[column] is None
-        or str(row[column]).lower() in ["", "nan", "null", "none"]
+        or str(row[column]).lower().strip() in ["", "nan", "null", "none"]
     ):
         return None
     return row[column]
