@@ -1,0 +1,3 @@
+Spectrum File,Scan Nr,Alpha Peptide,Alpha Peptide Crosslink Position,Beta Peptide,Beta Peptide Crosslink Position
+S1.raw,1,PEPKTIDE,4,KPEPTIDE,1
+S1.raw,2,PEKPIDE,3,EKTIDE,2
