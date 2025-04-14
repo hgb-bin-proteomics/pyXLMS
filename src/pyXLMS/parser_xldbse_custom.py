@@ -107,7 +107,7 @@ def __get_value(row: pd.Series, column: str) -> Any | None:
         pd.isna(row[column])
         or row[column] is None
         or str(row[column]).lower().strip() in ["", "nan", "null", "none"]
-    ):
+    ):  # pyright: ignore [reportGeneralTypeIssues]
         return None
     return row[column]
 
@@ -170,6 +170,8 @@ def read_custom(
     ------
     ValueError
         If the input format is not supported or cannot be inferred.
+    TypeError
+        If one of the values could not be parsed.
     RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslinks or crosslink-spectrum-matches.
 
@@ -209,6 +211,26 @@ def read_custom(
             return get_bool_from_value(__get_value(row, "Beta Decoy"))
         if __get_value(row, "Beta Proteins") is not None:
             return decoy_prefix in str(__get_value(row, "Beta Proteins"))
+        return None
+
+    def get_int(value: Any) -> int | None:
+        if value is None:
+            return None
+        try:
+            return int(value)
+        except:
+            pass
+        raise TypeError(f"Could not parse int from value {value}!")
+        return None
+
+    def get_float(value: Any) -> float | None:
+        if value is None:
+            return None
+        try:
+            return float(value)
+        except:
+            pass
+        raise TypeError(f"Could not parse float from value {value}!")
         return None
 
     ## set default parser
@@ -309,7 +331,7 @@ def read_custom(
                     ]
                     if __get_value(row, "Beta Proteins Crosslink Positions") is not None else None,
                     decoy_b=get_is_decoy_value(row, decoy_prefix, False),
-                    score=float(__get_value(row, "Crosslink Score")) if __get_value(row, "Crosslink Score") is not None else None,
+                    score=get_float(__get_value(row, "Crosslink Score")),
                 )
                 crosslinks.append(crosslink)
         else:
@@ -321,7 +343,7 @@ def read_custom(
                 # create csm
                 csm = create_csm(
                     peptide_a=format_sequence(str(row["Alpha Peptide"])),
-                    modifications_a=modification_parser(__get_value(row, "Alpha Peptide Modifications"))
+                    modifications_a=modification_parser(str(__get_value(row, "Alpha Peptide Modifications")))
                     if __get_value(row, "Alpha Peptide Modifications") is not None else None,
                     xl_position_peptide_a=int(row["Alpha Peptide Crosslink Position"]),
                     proteins_a=[
@@ -341,10 +363,10 @@ def read_custom(
                         for position in str(__get_value(row, "Alpha Proteins Peptide Positions")).split(";")
                     ]
                     if __get_value(row, "Alpha Proteins Peptide Positions") is not None else None,
-                    score_a=float(__get_value(row, "Alpha Score")) if __get_value(row, "Alpha Score") is not None else None,
+                    score_a=get_float(__get_value(row, "Alpha Score")),
                     decoy_a=get_is_decoy_value(row, decoy_prefix, True),
                     peptide_b=format_sequence(str(row["Beta Peptide"])),
-                    modifications_b=modification_parser(__get_value(row, "Beta Peptide Modifications"))
+                    modifications_b=modification_parser(str(__get_value(row, "Beta Peptide Modifications")))
                     if __get_value(row, "Beta Peptide Modifications") is not None else None,
                     xl_position_peptide_b=int(row["Beta Peptide Crosslink Position"]),
                     proteins_b=[
@@ -364,14 +386,14 @@ def read_custom(
                         for position in str(__get_value(row, "Beta Proteins Peptide Positions")).split(";")
                     ]
                     if __get_value(row, "Beta Proteins Peptide Positions") is not None else None,
-                    score_b=float(__get_value(row, "Beta Score")) if __get_value(row, "Beta Score") is not None else None,
+                    score_b=get_float(__get_value(row, "Beta Score")),
                     decoy_b=get_is_decoy_value(row, decoy_prefix, False),
-                    score=float(__get_value(row, "CSM Score")) if __get_value(row, "CSM Score") is not None else None,
+                    score=get_float(__get_value(row, "CSM Score")),
                     spectrum_file=str(row["Spectrum File"]).strip(),
                     scan_nr=int(row["Scan Nr"]),
-                    charge=int(__get_value(row, "Precursor Charge")) if __get_value(row, "Precursor Charge") is not None else None,
-                    rt=float(__get_value(row, "Retention Time")) if __get_value(row, "Retention Time") is not None else None,
-                    im_cv=float(__get_value(row, "Ion Mobility")) if __get_value(row, "Ion Mobility") is not None else None,
+                    charge=get_int(__get_value(row, "Precursor Charge")),
+                    rt=get_float(__get_value(row, "Retention Time")),
+                    im_cv=get_float(__get_value(row, "Ion Mobility")),
                 )
                 csms.append(csm)
     ## check results
