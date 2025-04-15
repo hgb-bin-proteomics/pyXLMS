@@ -118,7 +118,7 @@ def read_custom(
     modification_parser: Optional[Callable[[str], Dict[int, Tuple[str, float]]]] = None,
     decoy_prefix: str = "REV_",
     format: Literal["auto", "csv", "txt", "tsv", "xlsx"] = "auto",
-    sep: str = "\t",
+    sep: str = ",",
 ) -> Dict[str, Any]:
     r"""Read a custom or pyXLMS result file.
 
@@ -158,7 +158,7 @@ def read_custom(
         The prefix that indicates that a protein is from the decoy database.
     format : "auto", "csv", "tsv", "txt", or "xlsx", default = "auto"
         The format of the result file. ``"auto"`` is only available if the name/path to the result file is given.
-    sep : str, default = "\t"
+    sep : str, default = ","
         Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` format.
 
     Returns
