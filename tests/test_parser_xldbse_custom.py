@@ -759,7 +759,7 @@ def test14():
 
     parser_result = p.read_custom([CSM, XL])
     assert parser_result["data_type"] == "parser_result"
-    assert parser_result["completeness"] == "partial"
+    assert parser_result["completeness"] == "full"
     assert parser_result["search_engine"] == "Custom"
     assert parser_result["crosslink-spectrum-matches"] is not None
     assert parser_result["crosslinks"] is not None
