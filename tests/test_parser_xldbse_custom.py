@@ -150,7 +150,7 @@ def test4():
     assert first_crosslink["beta_proteins"] is None
     assert first_crosslink["beta_proteins_crosslink_positions"] is None
     assert not first_crosslink["beta_decoy"]
-    assert first_crosslink["crosslink_type"] == "intra"
+    assert first_crosslink["crosslink_type"] == "inter"
     assert first_crosslink["score"] == pytest.approx(100.3)
 
     assert last_crosslink["data_type"] == "crosslink"
