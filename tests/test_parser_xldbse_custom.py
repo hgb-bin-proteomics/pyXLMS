@@ -361,7 +361,7 @@ def test8():
 
     assert last_csm["data_type"] == "crosslink-spectrum-match"
     assert last_csm["completeness"] == "partial"
-    assert last_csm["alpha_peptide"] == "EKTIDEM"
+    assert last_csm["alpha_peptide"] == "EKTIDE"
     assert mts(last_csm["alpha_modifications"]) is None
     assert last_csm["alpha_peptide_crosslink_position"] == 2
     assert last_csm["alpha_proteins"] is None
