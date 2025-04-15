@@ -127,7 +127,7 @@ def read_msannika(
     format : "auto", "csv", "tsv", "txt", "xlsx", or "pdresult", default = "auto"
         The format of the result file. ``"auto"`` is only available if the name/path to the MS Annika result file is given.
     sep : str, default = "\t"
-        Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` format.
+        Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` or ``.pdResult`` format.
 
     Returns
     -------
@@ -223,7 +223,7 @@ def read_msannika(
                 data_objects = __read_msannika_pdresult(input)
             else:
                 raise ValueError(
-                    f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv' or '.xlsx'!"
+                    f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv', '.xlsx', or '.pdResult'!"
                 )
         elif format in ["csv", "tsv", "txt", "xlsx"]:
             if format == "xlsx":
@@ -238,7 +238,7 @@ def read_msannika(
             data_objects = __read_msannika_pdresult(input)
         else:
             raise ValueError(
-                f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv' or 'xlsx'!"
+                f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv', 'xlsx', or 'pdresult'!"
             )
         if data_objects is None:
             raise RuntimeError(

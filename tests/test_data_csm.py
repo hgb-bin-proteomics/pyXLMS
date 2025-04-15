@@ -24,7 +24,7 @@ def test1():
         {2: ("Oxidation", 15.994915)},
         3,
         ["NIETORP", "PROTEIN"],
-        [5, 2],
+        [7, 4],
         [5, 2],
         170.3,
         False,
@@ -47,7 +47,7 @@ def test1():
     assert len(csm["alpha_proteins"]) == 2
     assert csm["alpha_proteins"][0] == "NIETORP"
     assert len(csm["alpha_proteins_crosslink_positions"]) == 2
-    assert csm["alpha_proteins_crosslink_positions"][0] == 5
+    assert csm["alpha_proteins_crosslink_positions"][0] == 7
     assert len(csm["alpha_proteins_peptide_positions"]) == 2
     assert csm["alpha_proteins_peptide_positions"][0] == 5
     assert csm["alpha_score"] == pytest.approx(170.3)
@@ -95,7 +95,7 @@ def test2():
         {2: ("Oxidation", 15.994915)},
         3,
         ["NIETORP"],
-        [5],
+        [7],
         [5],
         170.3,
         False,
@@ -118,7 +118,7 @@ def test2():
     assert len(csm["alpha_proteins"]) == 1
     assert csm["alpha_proteins"][0] == "NIETORP"
     assert len(csm["alpha_proteins_crosslink_positions"]) == 1
-    assert csm["alpha_proteins_crosslink_positions"][0] == 5
+    assert csm["alpha_proteins_crosslink_positions"][0] == 7
     assert len(csm["alpha_proteins_peptide_positions"]) == 1
     assert csm["alpha_proteins_peptide_positions"][0] == 5
     assert csm["alpha_score"] == pytest.approx(170.3)
@@ -158,7 +158,7 @@ def test3():
         {2: ("Oxidation", 15.994915)},
         3,
         ["NIETORP", "PROTEIN"],
-        [5, 2],
+        [7, 4],
         [5, 2],
         170.3,
         False,
@@ -189,7 +189,7 @@ def test3():
     assert len(csm["alpha_proteins"]) == 2
     assert csm["alpha_proteins"][0] == "NIETORP"
     assert len(csm["alpha_proteins_crosslink_positions"]) == 2
-    assert csm["alpha_proteins_crosslink_positions"][0] == 5
+    assert csm["alpha_proteins_crosslink_positions"][0] == 7
     assert len(csm["alpha_proteins_peptide_positions"]) == 2
     assert csm["alpha_proteins_peptide_positions"][0] == 5
     assert csm["alpha_score"] == pytest.approx(170.3)
@@ -229,7 +229,7 @@ def test4():
         {1: ("    Oxidation ", 15.994915)},
         3,
         ["   PROTEIN"],
-        [3],
+        [5],
         [3],
         50.3,
         False,
@@ -276,7 +276,7 @@ def test4():
     assert len(csm["beta_proteins"]) == 1
     assert csm["beta_proteins"][0] == "PROTEIN"
     assert len(csm["beta_proteins_crosslink_positions"]) == 1
-    assert csm["beta_proteins_crosslink_positions"][0] == 3
+    assert csm["beta_proteins_crosslink_positions"][0] == 5
     assert len(csm["beta_proteins_peptide_positions"]) == 1
     assert csm["beta_proteins_peptide_positions"][0] == 3
     assert csm["beta_score"] == pytest.approx(50.3)
@@ -366,7 +366,7 @@ def test6():
             {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
-            [5, 2],
+            [7, 4],
             [5, 2],
             170.3,
             False,
@@ -398,7 +398,7 @@ def test7():
             {2: {"Oxidation": 15.994915}},
             3,
             ["NIETORP", "PROTEIN"],
-            [5, 2],
+            [7, 4],
             [5, 2],
             170.3,
             False,
@@ -428,7 +428,7 @@ def test8():
             {2: ("Oxidation", 15.994915)},
             "3",
             ["NIETORP", "PROTEIN"],
-            [5, 2],
+            [7, 4],
             [5, 2],
             170.3,
             False,
@@ -460,7 +460,7 @@ def test9():
             {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
-            [5, "2"],
+            [7, "2"],
             [5, 2],
             170.3,
             False,
@@ -493,7 +493,7 @@ def test10():
             {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
-            [5, 2],
+            [7, 4],
             [5, 2],
             170.3,
             False,
@@ -526,7 +526,7 @@ def test11():
             {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
-            [5],
+            [7],
             [5, 2],
             170.3,
             False,
@@ -559,7 +559,7 @@ def test12():
             {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
-            [5, 2],
+            [7, 4],
             [5, 2],
             170.3,
             False,
@@ -592,8 +592,41 @@ def test13():
             {2: ("Oxidation", 15.994915)},
             3,
             ["NIETORP", "PROTEIN"],
-            [5, 2],
+            [7, 4],
             [5],
+            170.3,
+            False,
+            170.3,
+            "RUN_1",
+            1,
+            3,
+            23.4,
+            -50.0,
+        )
+
+
+def test14():
+    from pyXLMS import data
+
+    with pytest.raises(
+        ValueError,
+        match="0-based value found! All positions must use 1-based indexing!",
+    ):
+        _csm = data.create_csm(
+            "PEPTIDE",
+            {1: (" Oxidation ", 15.994915)},
+            1,
+            ["PROTEIN"],
+            [1],
+            [1],
+            50.3,
+            False,
+            "EDITPEP",
+            {2: ("Oxidation", 15.994915)},
+            3,
+            ["NIETORP", "PROTEIN"],
+            [7, 4],
+            [5, 4],
             170.3,
             False,
             170.3,

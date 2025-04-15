@@ -1289,7 +1289,7 @@ def test14():
     unsupp_file = XL_XLSX + file_extension
     with pytest.raises(
         ValueError,
-        match="Detected file extension .gz is not supported! Input file has to be a valid file with extension '.csv', '.tsv' or '.xlsx'!",
+        match="Detected file extension .gz is not supported! Input file has to be a valid file with extension '.csv', '.tsv', '.xlsx', or '.pdResult'!",
     ):
         _r = p.read_msannika(unsupp_file)
 
@@ -1300,7 +1300,7 @@ def test15():
     format = "sqlite"
     with pytest.raises(
         ValueError,
-        match=f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv' or 'xlsx'!",
+        match=f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv', 'xlsx', or 'pdresult'!",
     ):
         _r = p.read_msannika(XL_XLSX, format=format)
 
