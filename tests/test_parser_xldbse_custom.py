@@ -10,7 +10,7 @@ import pytest
 
 XL = "data/pyxlms/xl.txt"
 CSM = "data/pyxlms/csm.txt"
-XL_MIN = "data/pyxlms/xl_min.xl"
+XL_MIN = "data/pyxlms/xl_min.txt"
 CSM_MIN = "data/pyxlms/csm_min.txt"
 XL_NULL = "data/pyxlms/xl_null.txt"
 CSM_NULL = "data/pyxlms/csm_null.txt"
