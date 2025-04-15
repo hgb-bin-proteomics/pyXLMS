@@ -9,6 +9,7 @@
 from .parser_xldbse_xi import read_xi
 from .parser_xldbse_plink import read_plink
 from .parser_xldbse_xlinkx import read_xlinkx
+from .parser_xldbse_custom import read_custom
 from .parser_xldbse_msannika import read_msannika
 from .parser_xldbse_maxquant import read_maxquant
 from .parser_xldbse_maxquant import read_maxlynx
@@ -19,6 +20,7 @@ from .parser_xldbse_xi import parse_peptide  # noqa: F401
 from .parser_xldbse_xi import parse_modifications_from_xi_sequence  # noqa: F401
 from .parser_xldbse_plink import parse_scan_nr_from_plink  # noqa: F401
 from .parser_xldbse_plink import parse_spectrum_file_from_plink  # noqa: F401
+from .parser_xldbse_custom import pyxlms_modification_str_parser  # noqa: F401
 from .parser_xldbse_maxquant import parse_modifications_from_maxquant_sequence  # noqa: F401
 
 
@@ -36,4 +38,6 @@ def read(file: str, dbse: str):
         return read_plink(file)
     if dbse == "XlinkX":
         return read_xlinkx(file)
+    if dbse == "Custom":
+        return read_custom(file)
     return
