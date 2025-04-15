@@ -603,3 +603,36 @@ def test13():
             23.4,
             -50.0,
         )
+
+
+def test14():
+    from pyXLMS import data
+
+    with pytest.raises(
+        ValueError,
+        match="0-based value found! All positions must use 1-based indexing!",
+    ):
+        _csm = data.create_csm(
+            "PEPTIDE",
+            {1: (" Oxidation ", 15.994915)},
+            1,
+            ["PROTEIN"],
+            [1],
+            [1],
+            50.3,
+            False,
+            "EDITPEP",
+            {2: ("Oxidation", 15.994915)},
+            3,
+            ["NIETORP", "PROTEIN"],
+            [7, 4],
+            [5, 4],
+            170.3,
+            False,
+            170.3,
+            "RUN_1",
+            1,
+            3,
+            23.4,
+            -50.0,
+        )
