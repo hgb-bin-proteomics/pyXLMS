@@ -178,19 +178,10 @@ def read_custom(
     Examples
     --------
     >>> from pyXLMS.parser import read_custom
-    >>> csms_from_xlsx = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx")
+    >>> csms_from_pyxlms = read_custom("data/pyxlms/csm.txt")
 
-    >>> from pyXLMS.parser import read_msannika
-    >>> crosslinks_from_xlsx = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx")
-
-    >>> from pyXLMS.parser import read_msannika
-    >>> csms_from_tsv = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt")
-
-    >>> from pyXLMS.parser import read_msannika
-    >>> crosslinks_from_tsv = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.txt")
-
-    >>> from pyXLMS.parser import read_msannika
-    >>> csms_and_crosslinks_from_pdresult = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult")
+    >>> from pyXLMS.parser import read_custom
+    >>> crosslinks_from_pyxlms = read_custom("data/pyxlms/xl.txt")
     """
     ## check input
     _ok = (
