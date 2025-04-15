@@ -156,7 +156,7 @@ def test4():
     assert first_crosslink["score"] == pytest.approx(100.3)
 
     assert last_crosslink["data_type"] == "crosslink"
-    assert last_crosslink["completeness"] == "full"
+    assert last_crosslink["completeness"] == "partial"
     assert last_crosslink["alpha_peptide"] == "EKTIDE"
     assert last_crosslink["alpha_peptide_crosslink_position"] == 2
     assert last_crosslink["alpha_proteins"] == ["Cas10", "Cas11"]
