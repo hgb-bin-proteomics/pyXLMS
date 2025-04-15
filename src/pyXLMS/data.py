@@ -587,6 +587,21 @@ def create_csm(
         if pep_position_proteins_b is not None
         else True
     )
+    ## validity
+    if xl_position_proteins_a is not None and pep_position_proteins_a is not None:
+        for i in range(len(xl_position_proteins_a)):
+            if (
+                xl_position_proteins_a[i] - pep_position_proteins_a[i] + 1
+                != xl_position_peptide_a
+            ):
+                _ok = check_indexing(0)
+    if xl_position_proteins_b is not None and pep_position_proteins_b is not None:
+        for i in range(len(xl_position_proteins_b)):
+            if (
+                xl_position_proteins_b[i] - pep_position_proteins_b[i] + 1
+                != xl_position_peptide_b
+            ):
+                _ok = check_indexing(0)
     ## processing
     key_a = f"{peptide_a.strip()}{xl_position_peptide_a}"
     key_b = f"{peptide_b.strip()}{xl_position_peptide_b}"
