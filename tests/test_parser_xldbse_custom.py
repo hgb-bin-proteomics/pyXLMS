@@ -882,7 +882,7 @@ def test15():
     assert len(csms) == 826
     to_dataframe(csms).to_csv("CSM.csv", index=False)
 
-    parser_result = p.read_msannika(["XL.csv", "CSM.csv"])
+    parser_result = p.read_custom(["XL.csv", "CSM.csv"])
     assert parser_result["data_type"] == "parser_result"
     assert parser_result["completeness"] == "full"
     assert parser_result["search_engine"] == "Custom"
