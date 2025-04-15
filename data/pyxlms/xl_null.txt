@@ -1,0 +1,3 @@
+Completeness,Alpha Peptide,Alpha Peptide Crosslink Position,Alpha Proteins,Alpha Proteins Crosslink Positions,Alpha Decoy,Beta Peptide,Beta Peptide Crosslink Position,Beta Proteins,Beta Proteins Crosslink Positions,Beta Decoy,Crosslink Type,Crosslink Score
+partial,PEPKTIDE,4,null,null,False,KPEPTIDE,1,Cas9,11,False,intra,100.3
+partial,PEKPIDE,3,null,null,False,EKTIDE,2,"Cas10;Cas11","11;13",True,inter,3.14159
