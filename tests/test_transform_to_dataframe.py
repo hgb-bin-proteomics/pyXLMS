@@ -235,7 +235,7 @@ def test12():
         {1: ("Oxidation", 15.994915), 5: ("Carbamidomethyl", 57.021464)},
         3,
         ["PROTEINA"],
-        [5],
+        [3],
         [1],
         70.3,
         False,
@@ -243,7 +243,7 @@ def test12():
         {1: ("Oxidation", 15.994915)},
         5,
         ["PROTEINA"],
-        [4],
+        [6],
         [2],
         20.4,
         True,
@@ -259,7 +259,7 @@ def test12():
         {1: ("Oxidation", 15.994915), 5: ("Carbamidomethyl", 57.021464)},
         3,
         ["PROTEINB", "PROTEINC"],
-        [5, 3],
+        [3, 4],
         [1, 2],
         71.3,
         False,
@@ -267,7 +267,7 @@ def test12():
         {},
         5,
         ["PROTEINA"],
-        [4],
+        [6],
         [2],
         21.4,
         False,
@@ -288,7 +288,7 @@ def test12():
     assert df.loc[0, "Alpha Peptide Modifications"] == "(1:[Oxidation|15.994915])"
     assert df.loc[0, "Alpha Peptide Crosslink Position"] == 5
     assert df.loc[0, "Alpha Proteins"] == "PROTEINA"
-    assert df.loc[0, "Alpha Proteins Crosslink Positions"] == "4"
+    assert df.loc[0, "Alpha Proteins Crosslink Positions"] == "6"
     assert df.loc[0, "Alpha Proteins Peptide Positions"] == "2"
     assert df.loc[0, "Alpha Score"] == pytest.approx(20.4)
     # assert df.loc[0, "Alpha Decoy"] == True
@@ -300,7 +300,7 @@ def test12():
     )
     assert df.loc[0, "Beta Peptide Crosslink Position"] == 3
     assert df.loc[0, "Beta Proteins"] == "PROTEINA"
-    assert df.loc[0, "Beta Proteins Crosslink Positions"] == "5"
+    assert df.loc[0, "Beta Proteins Crosslink Positions"] == "3"
     assert df.loc[0, "Beta Proteins Peptide Positions"] == "1"
     assert df.loc[0, "Beta Score"] == pytest.approx(70.3)
     # assert df.loc[0, "Beta Decoy"] == False
@@ -317,7 +317,7 @@ def test12():
     assert df.loc[1, "Alpha Peptide Modifications"] == ""
     assert df.loc[1, "Alpha Peptide Crosslink Position"] == 5
     assert df.loc[1, "Alpha Proteins"] == "PROTEINA"
-    assert df.loc[1, "Alpha Proteins Crosslink Positions"] == "4"
+    assert df.loc[1, "Alpha Proteins Crosslink Positions"] == "6"
     assert df.loc[1, "Alpha Proteins Peptide Positions"] == "2"
     assert df.loc[1, "Alpha Score"] == pytest.approx(21.4)
     # assert df.loc[1, "Alpha Decoy"] == False
@@ -329,7 +329,7 @@ def test12():
     )
     assert df.loc[1, "Beta Peptide Crosslink Position"] == 3
     assert df.loc[1, "Beta Proteins"] == "PROTEINB;PROTEINC"
-    assert df.loc[1, "Beta Proteins Crosslink Positions"] == "5;3"
+    assert df.loc[1, "Beta Proteins Crosslink Positions"] == "3;4"
     assert df.loc[1, "Beta Proteins Peptide Positions"] == "1;2"
     assert df.loc[1, "Beta Score"] == pytest.approx(71.3)
     # assert df.loc[1, "Beta Decoy"] == False
@@ -351,7 +351,7 @@ def test13():
         {1: ("Oxidation", 15.994915), 5: ("Carbamidomethyl", 57.021464)},
         3,
         ["PROTEINA"],
-        [5],
+        [3],
         [1],
         70.3,
         False,
@@ -359,7 +359,7 @@ def test13():
         {1: ("Oxidation", 15.994915)},
         5,
         ["PROTEINA"],
-        [4],
+        [6],
         [2],
         20.4,
         True,
@@ -375,7 +375,7 @@ def test13():
         {1: ("Oxidation", 15.994915), 5: ("Carbamidomethyl", 57.021464)},
         3,
         ["PROTEINB", "PROTEINC"],
-        [5, 3],
+        [3, 4],
         [1, 2],
         71.3,
         False,
@@ -404,7 +404,7 @@ def test13():
     assert df.loc[0, "Alpha Peptide Modifications"] == "(1:[Oxidation|15.994915])"
     assert df.loc[0, "Alpha Peptide Crosslink Position"] == 5
     assert df.loc[0, "Alpha Proteins"] == "PROTEINA"
-    assert df.loc[0, "Alpha Proteins Crosslink Positions"] == "4"
+    assert df.loc[0, "Alpha Proteins Crosslink Positions"] == "6"
     assert df.loc[0, "Alpha Proteins Peptide Positions"] == "2"
     assert df.loc[0, "Alpha Score"] == pytest.approx(20.4)
     # assert df.loc[0, "Alpha Decoy"] == True
@@ -416,7 +416,7 @@ def test13():
     )
     assert df.loc[0, "Beta Peptide Crosslink Position"] == 3
     assert df.loc[0, "Beta Proteins"] == "PROTEINA"
-    assert df.loc[0, "Beta Proteins Crosslink Positions"] == "5"
+    assert df.loc[0, "Beta Proteins Crosslink Positions"] == "3"
     assert df.loc[0, "Beta Proteins Peptide Positions"] == "1"
     assert df.loc[0, "Beta Score"] == pytest.approx(70.3)
     # assert df.loc[0, "Beta Decoy"] == False
@@ -433,7 +433,7 @@ def test13():
     assert df.loc[1, "Alpha Peptide Modifications"] == ""
     assert df.loc[1, "Alpha Peptide Crosslink Position"] == 5
     assert df.loc[1, "Alpha Proteins"] == "PROTEINA"
-    assert df.loc[1, "Alpha Proteins Crosslink Positions"] == "4"
+    assert df.loc[1, "Alpha Proteins Crosslink Positions"] == "6"
     assert df.loc[1, "Alpha Proteins Peptide Positions"] == "2"
     assert df.loc[1, "Alpha Score"] == pytest.approx(21.4)
     # assert df.loc[1, "Alpha Decoy"] == False
@@ -445,7 +445,7 @@ def test13():
     )
     assert df.loc[1, "Beta Peptide Crosslink Position"] == 3
     assert df.loc[1, "Beta Proteins"] == "PROTEINB;PROTEINC"
-    assert df.loc[1, "Beta Proteins Crosslink Positions"] == "5;3"
+    assert df.loc[1, "Beta Proteins Crosslink Positions"] == "3;4"
     assert df.loc[1, "Beta Proteins Peptide Positions"] == "1;2"
     assert df.loc[1, "Beta Score"] == pytest.approx(71.3)
     # assert df.loc[1, "Beta Decoy"] == False
