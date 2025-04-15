@@ -397,7 +397,7 @@ def read_xlinkx(
                             ).split(";")
                         ],
                         pep_position_proteins_a=[
-                            int(position) - int(row["Crosslinker Position A"]) + 1
+                            int(position) - adjust_crosslink_position(int(row["Crosslinker Position A"]),format_sequence(str(row["Sequence A"]).strip()) + 1
                             for position in str(
                                 row["Leading Protein Position A"]
                             ).split(";")
@@ -426,7 +426,7 @@ def read_xlinkx(
                             ).split(";")
                         ],
                         pep_position_proteins_b=[
-                            int(position) - int(row["Crosslinker Position B"]) + 1
+                            int(position) - adjust_crosslink_position(int(row["Crosslinker Position B"]), format_sequence(str(row["Sequence B"])) + 1
                             for position in str(
                                 row["Leading Protein Position B"]
                             ).split(";")
