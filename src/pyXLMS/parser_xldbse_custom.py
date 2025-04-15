@@ -60,12 +60,12 @@ def pyxlms_modification_str_parser(modifications: str) -> Dict[int, Tuple[str, f
     >>> from pyXLMS.parser import pyxlms_modification_str_parser
     >>> modification_str = "(1:[DSS|138.06808])"
     >>> pyxlms_modification_str_parser(modification_str)
-    {1: ("DSS", 138.06808)}
+    {1: ('DSS', 138.06808)}
 
     >>> from pyXLMS.parser import pyxlms_modification_str_parser
     >>> modification_str = "(1:[DSS|138.06808]);(7:[Oxidation|15.994915])"
     >>> pyxlms_modification_str_parser(modification_str)
-    {1: ("DSS", 138.06808), 7: ("Oxidation", 15.994915)}
+    {1: ('DSS', 138.06808), 7: ('Oxidation', 15.994915)}
     """
     parsed_modifications = dict()
     for mod in modifications.split(";"):
