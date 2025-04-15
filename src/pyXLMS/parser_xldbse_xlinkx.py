@@ -288,7 +288,7 @@ def read_xlinkx(
                 data_objects = __read_xlinkx_pdresult(input)
             else:
                 raise ValueError(
-                    f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv', '.xlsx', or 'pdResult'!"
+                    f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv', '.xlsx', or '.pdResult'!"
                 )
         elif format in ["csv", "tsv", "txt", "xlsx"]:
             if format == "xlsx":
