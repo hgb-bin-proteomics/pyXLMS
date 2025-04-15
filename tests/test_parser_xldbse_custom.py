@@ -16,6 +16,10 @@ XL_NULL = "data/pyxlms/xl_null.txt"
 CSM_NULL = "data/pyxlms/csm_null.txt"
 XL_FORMAT = "data/pyxlms/xl_format.txt"
 CSM_FORMAT = "data/pyxlms/csm_format.txt"
+XL_REV1 = "data/pyxlms/xl_rev1.txt"
+CSM_REV1 = "data/pyxlms/csm_rev1.txt"
+XL_REV2 = "data/pyxlms/xl_rev2.txt"
+CSM_REV2 = "data/pyxlms/csm_rev2.txt"
 ANNIKA_XL = "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.txt"
 ANNIKA_CSM = "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx"
 
@@ -194,6 +198,100 @@ def test5():
     assert first_crosslink["alpha_proteins"] == ["Cas9"]
     assert first_crosslink["alpha_proteins_crosslink_positions"] == [11]
     assert not first_crosslink["alpha_decoy"]
+    assert first_crosslink["beta_peptide"] == "PEPKTIDE"
+    assert first_crosslink["beta_peptide_crosslink_position"] == 4
+    assert first_crosslink["beta_proteins"] == ["Cas9"]
+    assert first_crosslink["beta_proteins_crosslink_positions"] == [15]
+    assert not first_crosslink["beta_decoy"]
+    assert first_crosslink["crosslink_type"] == "intra"
+    assert first_crosslink["score"] == pytest.approx(100.3)
+
+    assert last_crosslink["data_type"] == "crosslink"
+    assert last_crosslink["completeness"] == "full"
+    assert last_crosslink["alpha_peptide"] == "EKTIDE"
+    assert last_crosslink["alpha_peptide_crosslink_position"] == 2
+    assert last_crosslink["alpha_proteins"] == ["Cas10", "Cas11"]
+    assert last_crosslink["alpha_proteins_crosslink_positions"] == [11, 13]
+    assert last_crosslink["alpha_decoy"]
+    assert last_crosslink["beta_peptide"] == "PEKPIDE"
+    assert last_crosslink["beta_peptide_crosslink_position"] == 3
+    assert last_crosslink["beta_proteins"] == ["Cas9"]
+    assert last_crosslink["beta_proteins_crosslink_positions"] == [3]
+    assert not last_crosslink["beta_decoy"]
+    assert last_crosslink["crosslink_type"] == "inter"
+    assert last_crosslink["score"] == pytest.approx(3.14159)
+
+
+def test6():
+    from pyXLMS import parser as p
+
+    parser_result = p.read_custom(XL_REV1)
+    assert parser_result["data_type"] == "parser_result"
+    assert parser_result["completeness"] == "partial"
+    assert parser_result["search_engine"] == "Custom"
+    assert parser_result["crosslink-spectrum-matches"] is None
+    assert parser_result["crosslinks"] is not None
+
+    crosslinks = parser_result["crosslinks"]
+    assert len(crosslinks) == 2
+
+    first_crosslink = crosslinks[0]
+    last_crosslink = crosslinks[-1]
+
+    assert first_crosslink["data_type"] == "crosslink"
+    assert first_crosslink["completeness"] == "full"
+    assert first_crosslink["alpha_peptide"] == "KPEPTIDE"
+    assert first_crosslink["alpha_peptide_crosslink_position"] == 1
+    assert first_crosslink["alpha_proteins"] == ["Cas9"]
+    assert first_crosslink["alpha_proteins_crosslink_positions"] == [11]
+    assert not first_crosslink["alpha_decoy"]
+    assert first_crosslink["beta_peptide"] == "PEPKTIDE"
+    assert first_crosslink["beta_peptide_crosslink_position"] == 4
+    assert first_crosslink["beta_proteins"] == ["Cas9"]
+    assert first_crosslink["beta_proteins_crosslink_positions"] == [15]
+    assert not first_crosslink["beta_decoy"]
+    assert first_crosslink["crosslink_type"] == "intra"
+    assert first_crosslink["score"] == pytest.approx(100.3)
+
+    assert last_crosslink["data_type"] == "crosslink"
+    assert last_crosslink["completeness"] == "full"
+    assert last_crosslink["alpha_peptide"] == "EKTIDE"
+    assert last_crosslink["alpha_peptide_crosslink_position"] == 2
+    assert last_crosslink["alpha_proteins"] == ["Cas10", "Cas11"]
+    assert last_crosslink["alpha_proteins_crosslink_positions"] == [11, 13]
+    assert last_crosslink["alpha_decoy"]
+    assert last_crosslink["beta_peptide"] == "PEKPIDE"
+    assert last_crosslink["beta_peptide_crosslink_position"] == 3
+    assert last_crosslink["beta_proteins"] == ["Cas9"]
+    assert last_crosslink["beta_proteins_crosslink_positions"] == [3]
+    assert not last_crosslink["beta_decoy"]
+    assert last_crosslink["crosslink_type"] == "inter"
+    assert last_crosslink["score"] == pytest.approx(3.14159)
+
+
+def test7():
+    from pyXLMS import parser as p
+
+    parser_result = p.read_custom(XL_REV2)
+    assert parser_result["data_type"] == "parser_result"
+    assert parser_result["completeness"] == "partial"
+    assert parser_result["search_engine"] == "Custom"
+    assert parser_result["crosslink-spectrum-matches"] is None
+    assert parser_result["crosslinks"] is not None
+
+    crosslinks = parser_result["crosslinks"]
+    assert len(crosslinks) == 2
+
+    first_crosslink = crosslinks[0]
+    last_crosslink = crosslinks[-1]
+
+    assert first_crosslink["data_type"] == "crosslink"
+    assert first_crosslink["completeness"] == "full"
+    assert first_crosslink["alpha_peptide"] == "KPEPTIDE"
+    assert first_crosslink["alpha_peptide_crosslink_position"] == 1
+    assert first_crosslink["alpha_proteins"] == ["Cas9"]
+    assert first_crosslink["alpha_proteins_crosslink_positions"] == [11]
+    assert first_crosslink["alpha_decoy"]
     assert first_crosslink["beta_peptide"] == "PEPKTIDE"
     assert first_crosslink["beta_peptide_crosslink_position"] == 4
     assert first_crosslink["beta_proteins"] == ["Cas9"]
