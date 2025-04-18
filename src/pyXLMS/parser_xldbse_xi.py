@@ -35,7 +35,7 @@ except ImportError:
 def detect_xi_filetype(
     data: pd.DataFrame,
 ) -> Literal["xisearch", "xifdr_csms", "xifdr_crosslinks"]:
-    r"""Detects the source application of the data.
+    r"""Detects the xi-related source (application) of the data.
 
     Detects whether the input data is originating from xiSearch or xiFDR, and if xiFDR which type of data is
     being read (crosslink-spectrum-matches or crosslinks).
