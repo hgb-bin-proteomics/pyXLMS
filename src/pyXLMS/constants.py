@@ -106,9 +106,9 @@ XI_MODIFICATION_MAPPING = {
     "dsbu_ami": ("DSBU Amidated", 213.111341),
     "dsbu_tris": ("DSBU Tris", 317.158685),
 }
-r"""Dictionary that maps sequence elements from xiSearch and xiFDR to their corresponding amino acids and post-translational-modifications.
+r"""Dictionary that maps sequence elements from xiSearch and xiFDR to their corresponding post-translational-modifications.
 
-Dictionary that maps sequence elements (e.g. `"cm"`) from xiSearch and xiFDR to their corresponding amino acids and
+Dictionary that maps sequence elements (e.g. `"cm"`) from xiSearch and xiFDR to their corresponding
 post-translational-modifications (e.g. `("Carbamidomethyl", 57.021464)`).
 
 Examples
