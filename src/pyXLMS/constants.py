@@ -119,3 +119,25 @@ Examples
 >>> XI_MODIFICATION_MAPPING["ox"]
 ('Oxidation', 15.994915)
 """
+
+SCOUT_MODIFICATION_MAPPING = {
+    "+57.021460": ("Carbamidomethyl", 57.021464),
+    "+15.994900": ("Oxidation", 15.994915),
+    "Oxidation of Methionine": ("Oxidation", 15.994915),
+    "Carbamidomethyl": ("Carbamidomethyl", 57.021464),
+}
+r"""Dictionary that maps sequence elements and modifications from Scout to their corresponding post-translational-modifications.
+
+Dictionary that maps sequence elements (e.g. `"+57.021460"`) and modifications (e.g. `"Carbamidomethyl"`) from Scout to their
+corresponding post-translational-modifications (e.g. `("Carbamidomethyl", 57.021464)`).
+
+Examples
+--------
+>>> from pyXLMS.constants import SCOUT_MODIFICATION_MAPPING
+>>> SCOUT_MODIFICATION_MAPPING["+57.021460"]
+('Carbamidomethyl', 57.021464)
+>>> SCOUT_MODIFICATION_MAPPING["Carbamidomethyl"]
+('Carbamidomethyl', 57.021464)
+>>> SCOUT_MODIFICATION_MAPPING["Oxidation of Methionine"]
+('Oxidation', 15.994915)
+"""
