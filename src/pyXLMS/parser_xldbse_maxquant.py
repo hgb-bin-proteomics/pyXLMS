@@ -43,9 +43,8 @@ def parse_modifications_from_maxquant_sequence(
         Position of the crosslinker in the sequence (1-based).
     crosslinker : str
         Name of the used cross-linking reagent, for example "DSSO".
-    crosslinker_mass : float, or None, default = None
-        Monoisotopic delta mass of the crosslink modification. If the crosslinker is
-        defined in parameter "modifications" this can be omitted.
+    crosslinker_mass : float
+        Monoisotopic delta mass of the crosslink modification.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
 
