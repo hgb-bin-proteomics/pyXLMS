@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 
-import sqlite3
+import warnings
 import pandas as pd
 from tqdm import tqdm
 from os.path import splitext
@@ -92,6 +92,94 @@ def detect_scout_filetype(
     )
 
     return "err"
+
+
+def parse_modifications_from_scout_sequence(
+    seq: str,
+    crosslink_position: int,
+    crosslinker: str,
+    crosslinker_mass: float,
+    modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING,
+    verbose: Literal[0, 1, 2] = 1,
+) -> Dict[int, Tuple[str, float]]:
+    r"""Parse post-translational-modifications from a Scout peptide sequence.
+
+    Parses post-translational-modifications (PTMs) from a Scout peptide sequence,
+    for example "M(+15.994900)LASAGELQKGNELALPSK".
+
+    Parameters
+    ----------
+    seq : str
+        The Scout sequence string.
+    crosslink_position : int
+        Position of the crosslinker in the sequence (1-based).
+    crosslinker : str
+        Name of the used cross-linking reagent, for example "DSSO".
+    crosslinker_mass : float
+        Monoisotopic delta mass of the crosslink modification.
+    modifications: dict of str, float, default = ``constants.SCOUT_MODIFICATION_MAPPING``
+        Mapping of modification names to modification masses.
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
+
+    Returns
+    -------
+    dict of int, tuple
+        The ``pyXLMS`` specific modifications object, a dictionary that maps positions to their corresponding modifications and their
+        monoisotopic masses.
+
+    Raises
+    ------
+    RuntimeError
+        If multiple modifications on the same residue are parsed (only if ``verbose = 2``).
+    KeyError
+        If an unknown modification is encountered.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import parse_modifications_from_scout_sequence
+    >>> seq = "M(+15.994900)LASAGELQKGNELALPSK"
+    >>> parse_modifications_from_scout_sequence(seq, 10, "DSS", 138.06808)
+    {10: ('DSS', 138.06808), 1: ('Oxidation', 15.994915)}
+
+    >>> from pyXLMS.parser import parse_modifications_from_maxquant_sequence
+    >>> seq = "KIEC(+57.021460)FDSVEISGVEDR"
+    >>> parse_modifications_from_scout_sequence(seq, 1, "DSS", 138.06808)
+    {1: ('DSS', 138.06808), 4: ('Carbamidomethyl', 57.021464)}
+    """
+    # init parsed modifiations dict
+    parsed_modifications = {crosslink_position: (crosslinker, crosslinker_mass)}
+    # parse modifications from sequence
+    pos = 0
+    current_mod = ""
+    for i, aa in enumerate(sequence):
+        if aa.isupper():
+            pos += 1
+            current_mod = ""
+        else:
+            current_mod += aa
+            if (i + 1 >= len(sequence)) or (sequence[i + 1].isupper()):
+                mod_key = current_mod.strip("()").strip()
+                if mod_key not in modifiations:
+                    raise KeyError(f"Key {mod_key} not found in parameter 'modifications'. Are you missing a modification?\n")
+                if pos in parsed_modifications:
+                    err_str = (
+                        f"Modification at position {pos} already exists!\n"
+                        f"CSM Scan Number: {int(row['ScanNumber'])}!\n"
+                        f"Sequence: {sequence}, Crosslink position: {xl_pos}"
+                    )
+                    if verbose == 1:
+                        warnings.warn(RuntimeWarning(err_str))
+                    elif verbose == 2:
+                        raise RuntimeError(err_str)
+                    t1 = parsed_modifications[pos][0] + "," + modifications[mod_key][0]
+                    t2 = parsed_modifications[pos][1] + modifications[mod_key][1]
+                    parsed_modifications[pos] = (t1, t2)
+                else:
+                    parsed_modifications[pos] = modifications[mod_key]
+    return parsed_modifications
 
 
 def __read_scout_csms_unfiltered(
