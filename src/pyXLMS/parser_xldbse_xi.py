@@ -214,13 +214,7 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
             current_mod = ""
         else:
             current_mod += aa
-            if i + 1 >= len(sequence):
-                if pos in modifications:
-                    raise RuntimeError(
-                        f"Modification at position {pos} already exists!"
-                    )
-                modifications[pos] = current_mod
-            elif sequence[i + 1].isupper():
+            if (i + 1 >= len(sequence)) or (sequence[i + 1].isupper()):
                 if pos in modifications:
                     raise RuntimeError(
                         f"Modification at position {pos} already exists!"
