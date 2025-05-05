@@ -186,7 +186,10 @@ def parse_modifications_from_scout_sequence(
 
 def __read_scout_csms_unfiltered(
     data: pd.DataFrame,
-    modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING
+    crosslinker: str,
+    crosslinker_mass: float,
+    modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> List[Dict[str, Any]]:
     r"""Reads crosslink-spectrum-matches from a Scout unfiltered CSMs result.
 
@@ -194,9 +197,17 @@ def __read_scout_csms_unfiltered(
     ----------
     data : pandas.DataFrame
         The Scout unfiltered CSMs result data.
+    crosslinker : str
+        Name of the used cross-linking reagent, for example "DSSO".
+    crosslinker_mass : float
+        Monoisotopic delta mass of the crosslink modification.
     modifications : dict of str, tuple, default = ``constants.SCOUT_MODIFICATION_MAPPING``
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
 
     Returns
     -------
@@ -207,7 +218,63 @@ def __read_scout_csms_unfiltered(
     -----
     This function should not be called directly, it is called from ``read_scout()``.
     """
-    return
+    csms = list()
+    xl = data.dropna(axis=0, subset=["AlphaPeptide", "BetaPeptide"])
+    for i, row in tqdm(
+        xl.iterrows(), total=xl.shape[0], desc="Reading Scout unfiltered CSMs..."
+    ):
+        csm = create_csm(
+            peptide_a=format_sequence(str(row["AlphaPeptide"])),
+            modifications_a=parse_modifications_from_scout_sequence(
+                str(row["AlphaPeptide"]),
+                int(row["AlphaPos"]) + 1,
+                crosslinker,
+                crosslinker_mass,
+                modifications,
+                verbose,
+            ),
+            xl_position_peptide_a=int(row["AlphaPos"]) + 1,
+            proteins_a=[
+                protein.strip()
+                for protein in str(row["AlphaMappings"]).split(";")
+            ],
+            xl_position_proteins_a=None,
+            pep_position_proteins_a=None,
+            score_a=float(row["AlphaScore"]),
+            decoy_a=str(row["Class"]).strip() in ["FullDecoy", "BetaTarget"],
+            peptide_b=format_sequence(str(row["BetaPeptide"])),
+            modifications_b=parse_modifications_from_scout_sequence(
+                str(row["BetaPeptide"]),
+                int(row["BetaPos"]) + 1,
+                crosslinker,
+                crosslinker_mass,
+                modifications,
+            ),
+            xl_position_peptide_b=int(row["BetaPos"]) + 1,
+            proteins_b=[
+                protein.strip()
+                for protein in str(row["BetaMappings"]).split(";")
+            ],
+            xl_position_proteins_b=None,
+            pep_position_proteins_b=None,
+            score_b=float(row["BetaScore"]),
+            decoy_b=str(row["Class"]) in ["FullDecoy", "AlphaTarget"],
+            score=float(row["XLScore"]),
+            spectrum_file=str(row["FileName"]).strip(),
+            scan_nr=int(row["ScanNumber"]),
+            charge=int(row["Charge"]),
+            rt=None,
+            im_cv=None,
+            additional_information={
+                "ClassificationScore": float(row["ClassificationScore"]),
+                "XlinkxAlpha": float(row["XlinkxAlpha"]),
+                "XlinkxBeta": float(row["XlinkxBeta"]),
+                "XlinkxScore": float(row["XlinkxScore"]),
+                "PoissonScore": float(row["PoissonScore"])
+            },
+        )
+        csms.append(csm)
+    return csms
 
 
 def __read_scout_csms_filtered(
