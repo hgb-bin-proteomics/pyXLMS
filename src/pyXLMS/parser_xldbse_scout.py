@@ -51,7 +51,6 @@ def detect_scout_filetype(
         "scout_csms_unfiltered" if a Scout unfiltered CSMs file was read, "scout_csms_filtered" if a Scout filtered CSMs file was read,
         "scout_xl" if a Scout crosslink/residue pair result file was read.
 
-
     Raises
     ------
     ValueError
