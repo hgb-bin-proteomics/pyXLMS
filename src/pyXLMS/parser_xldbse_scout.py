@@ -149,6 +149,8 @@ def parse_modifications_from_scout_sequence(
     >>> parse_modifications_from_scout_sequence(seq, 1, "DSS", 138.06808)
     {1: ('DSS', 138.06808), 4: ('Carbamidomethyl', 57.021464)}
     """
+    # clean seq
+    sequence = seq.strip()
     # init parsed modifiations dict
     parsed_modifications = {crosslink_position: (crosslinker, crosslinker_mass)}
     # parse modifications from sequence
