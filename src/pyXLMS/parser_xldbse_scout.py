@@ -92,7 +92,7 @@ def __read_scout_csms_unfiltered(
     modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING
 ) -> List[Dict[str, Any]]:
     r"""Reads crosslink-spectrum-matches from a Scout unfiltered CSMs result.
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
@@ -100,12 +100,12 @@ def __read_scout_csms_unfiltered(
     modifications : dict of str, tuple, default = ``constants.SCOUT_MODIFICATION_MAPPING``
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
-        
+
     Returns
     -------
     list of dict
         The read crosslink-spectrum-matches.
-        
+
     Notes
     -----
     This function should not be called directly, it is called from ``read_scout()``.
@@ -118,7 +118,7 @@ def __read_scout_csms_filtered(
     modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING
 ) -> List[Dict[str, Any]]:
     r"""Reads crosslink-spectrum-matches from a Scout filtered CSMs result.
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
@@ -126,12 +126,12 @@ def __read_scout_csms_filtered(
     modifications : dict of str, tuple, default = ``constants.SCOUT_MODIFICATION_MAPPING``
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
-        
+
     Returns
     -------
     list of dict
         The read crosslink-spectrum-matches.
-        
+
     Notes
     -----
     This function should not be called directly, it is called from ``read_scout()``.
@@ -143,17 +143,17 @@ def __read_scout_crosslinks(
     data: pd.DataFrame
 ) -> List[Dict[str, Any]]:
     r"""Reads crosslinks from a Scout crosslink/residue pair result.
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
         The Scout crosslink/residue pair result data.
-        
+
     Returns
     -------
     list of dict
         The read crosslinks.
-        
+
     Notes
     -----
     This function should not be called directly, it is called from ``read_scout()``.
