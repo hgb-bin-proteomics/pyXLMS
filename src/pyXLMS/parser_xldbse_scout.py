@@ -80,6 +80,14 @@ def detect_scout_filetype(
     ## check input
     _ok = check_input(data, "data", pd.DataFrame)
 
+    col_names = data.columns.values.tolist()
+    if "ScanNumber" in col_names:
+        return "scout_csms_unfiltered"
+    if "Scan" in col_names:
+        return "scout_csms_filtered"
+    if "CSM count" in col_names:
+        return "scout_xl"
+
     raise ValueError(
         "Could not infer data source, are you sure you read a Scout result file?"
     )
