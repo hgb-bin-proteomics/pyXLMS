@@ -327,7 +327,10 @@ def __read_scout_crosslinks(
 
 def read_scout(
     files: str | List[str] | BinaryIO,
-    modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING
+    crosslinker: str,
+    crosslinker_mass: Optional[float] = None,
+    modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
     r"""Read a Scout result file.
 
@@ -338,9 +341,18 @@ def read_scout(
     ----------
     files : str, list of str, or file stream
         The name/path of the Scout result file(s) or a file-like object/stream.
+    crosslinker : str
+        Name of the used cross-linking reagent, for example "DSSO".
+    crosslinker_mass : float, or None, default = None
+        Monoisotopic delta mass of the crosslink modification. If the crosslinker is
+        defined in parameter "modifications" this can be omitted.
     modifications : dict of str, tuple, default = ``constants.SCOUT_MODIFICATION_MAPPING``
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
 
     Returns
     -------
@@ -352,7 +364,9 @@ def read_scout(
     RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslinks or crosslink-spectrum-matches.
     KeyError
-        If one of the found post-translational-modifications could not be found/mapped.
+        If the specified crosslinker could not be found/mapped.
+    TypeError
+        If parameter verbose was not set correctly.
 
     Examples
     --------
@@ -366,7 +380,24 @@ def read_scout(
     >>> crosslinks = read_scout("data/scout/Cas9_Residue_Pairs.csv")
     """
     ## check input
+    _ok = check_input(crosslinker, "crosslinker", str)
+    _ok = (
+        check_input(crosslinker_mass, "crosslinker_mass", float)
+        if crosslinker_mass is not None
+        else True
+    )
     _ok = check_input(modifications, "modifications", dict, tuple)
+    _ok = check_input(verbose, "verbose", int)
+    if crosslinker_mass is None:
+        if crosslinker not in modifications:
+            raise KeyError(
+                "Cannot infer crosslinker mass because crosslinker is not defined in "
+                "parameter 'modifications'. Please specify crosslinker mass manually!"
+            )
+        else:
+            crosslinker_mass = modifications[crosslinker][1]
+    if verbose not in [0, 1, 2]:
+        raise TypeError("Verbose level has to be one of 0, 1, or 2!")
 
     ## helper functions
 
@@ -388,7 +419,7 @@ def read_scout(
         ## process data
         if scout_file_type == "scout_csms_unfiltered":
             csms += __read_scout_csms_unfiltered(
-                data, modifications
+                data, crosslinker, crosslinker_mass, modifications, verbose
             )
         elif xi_file_type == "scout_csms_filtered":
             csms += __read_scout_csms_filtered(
