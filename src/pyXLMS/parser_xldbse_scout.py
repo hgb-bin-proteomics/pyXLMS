@@ -570,7 +570,7 @@ def read_scout(
             )
         elif xi_file_type == "scout_csms_filtered":
             csms += __read_scout_csms_filtered(
-                data, modifications
+                data, crosslinker, crosslinker_mass, modifications, verbose
             )
         else:
             crosslinks += __read_scout_crosslinks(
