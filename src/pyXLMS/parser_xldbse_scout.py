@@ -165,7 +165,9 @@ def parse_modifications_from_scout_sequence(
             if (i + 1 >= len(sequence)) or (sequence[i + 1].isupper()):
                 mod_key = current_mod.strip("()").strip()
                 if mod_key not in modifications:
-                    raise KeyError(f"Key {mod_key} not found in parameter 'modifications'. Are you missing a modification?")
+                    raise KeyError(
+                        f"Key {mod_key} not found in parameter 'modifications'. Are you missing a modification?"
+                    )
                 if pos in parsed_modifications:
                     err_str = (
                         f"Modification at position {pos} already exists!\n"
@@ -234,8 +236,7 @@ def __read_scout_csms_unfiltered(
             ),
             xl_position_peptide_a=int(row["AlphaPos"]) + 1,
             proteins_a=[
-                protein.strip()
-                for protein in str(row["AlphaMappings"]).split(";")
+                protein.strip() for protein in str(row["AlphaMappings"]).split(";")
             ],
             xl_position_proteins_a=None,
             pep_position_proteins_a=None,
@@ -252,8 +253,7 @@ def __read_scout_csms_unfiltered(
             ),
             xl_position_peptide_b=int(row["BetaPos"]) + 1,
             proteins_b=[
-                protein.strip()
-                for protein in str(row["BetaMappings"]).split(";")
+                protein.strip() for protein in str(row["BetaMappings"]).split(";")
             ],
             xl_position_proteins_b=None,
             pep_position_proteins_b=None,
@@ -270,7 +270,7 @@ def __read_scout_csms_unfiltered(
                 "XlinkxAlpha": float(row["XlinkxAlpha"]),
                 "XlinkxBeta": float(row["XlinkxBeta"]),
                 "XlinkxScore": float(row["XlinkxScore"]),
-                "PoissonScore": float(row["PoissonScore"])
+                "PoissonScore": float(row["PoissonScore"]),
             },
         )
         csms.append(csm)
@@ -318,6 +318,7 @@ def __read_scout_csms_filtered(
     -----
     This function should not be called directly, it is called from ``read_scout()``.
     """
+
     ## helper functions
     def str_contains(s: str, contains: List[str]) -> bool:
         for subs in contains:
@@ -333,26 +334,60 @@ def __read_scout_csms_filtered(
         modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING,
         verbose: Literal[0, 1, 2] = 1,
     ) -> Dict[int, Tuple[str, float]]:
-        sequence = str(row["Alpha peptide"]).strip() if alpha else str(row["Beta peptide"]).strip()
-        crosslink_position = int(row["Alpha peptide position"]) if alpha else int(row["Beta peptide position"])
+        sequence = (
+            str(row["Alpha peptide"]).strip()
+            if alpha
+            else str(row["Beta peptide"]).strip()
+        )
+        crosslink_position = (
+            int(row["Alpha peptide position"])
+            if alpha
+            else int(row["Beta peptide position"])
+        )
         parsed_modifications = {crosslink_position: (crosslinker, crosslinker_mass)}
         if alpha and pd.isna(row["Alpha modification(s)"]):
             return parsed_modifications
         if not alpha and pd.isna(row["Beta modification(s)"]):
             return parsed_modifications
-        mods = str(row["Alpha modification(s)"]).split(";") if alpha else str(row["Beta modification(s)"]).split(";")
+        mods = (
+            str(row["Alpha modification(s)"]).split(";")
+            if alpha
+            else str(row["Beta modification(s)"]).split(";")
+        )
         for mod in mods:
             rpos = mod.split("(")[0].strip()
             mod_key = mod.split("(")[1].rstrip(")").strip()
             pos = -1
-            if str_contains(rpos.lower(), ["nterm", "nterminal", "nterminus", "n-term", "n-terminal", "n-terminus"]):
+            if str_contains(
+                rpos.lower(),
+                [
+                    "nterm",
+                    "nterminal",
+                    "nterminus",
+                    "n-term",
+                    "n-terminal",
+                    "n-terminus",
+                ],
+            ):
                 pos = 0
-            elif str_contains(rpos.lower(), ["cterm", "cterminal", "cterminus", "c-term", "c-terminal", "c-terminus"]):
+            elif str_contains(
+                rpos.lower(),
+                [
+                    "cterm",
+                    "cterminal",
+                    "cterminus",
+                    "c-term",
+                    "c-terminal",
+                    "c-terminus",
+                ],
+            ):
                 pos = len(sequence)
             else:
                 pos = int(rpos[1:])
             if mod_key not in modifications:
-                raise KeyError(f"Key {mod_key} not found in parameter 'modifications'. Are you missing a modification?")
+                raise KeyError(
+                    f"Key {mod_key} not found in parameter 'modifications'. Are you missing a modification?"
+                )
             if pos in parsed_modifications:
                 err_str = (
                     f"Modification at position {pos} already exists!\n"
@@ -391,8 +426,13 @@ def __read_scout_csms_filtered(
                 protein.strip()
                 for protein in str(row["Alpha protein mapping(s)"]).split(";")
             ],
-            xl_position_proteins_a=[int(pos) for pos in str(row["Alpha protein(s) position(s)"]).split(";")],
-            pep_position_proteins_a=[int(pos) - int(row["Alpha peptide position"]) + 1 for pos in str(row["Alpha protein(s) position(s)"]).split(";")],
+            xl_position_proteins_a=[
+                int(pos) for pos in str(row["Alpha protein(s) position(s)"]).split(";")
+            ],
+            pep_position_proteins_a=[
+                int(pos) - int(row["Alpha peptide position"]) + 1
+                for pos in str(row["Alpha protein(s) position(s)"]).split(";")
+            ],
             score_a=None,
             decoy_a=get_bool_from_value(row["IsDecoy"]),
             peptide_b=format_sequence(str(row["Beta peptide"])),
@@ -409,8 +449,13 @@ def __read_scout_csms_filtered(
                 protein.strip()
                 for protein in str(row["Beta protein mapping(s)"]).split(";")
             ],
-            xl_position_proteins_b=[int(pos) for pos in str(row["Beta protein(s) position(s)"]).split(";")],
-            pep_position_proteins_b=[int(pos) - int(row["Beta peptide position"]) + 1 for pos in str(row["Beta protein(s) position(s)"]).split(";")],
+            xl_position_proteins_b=[
+                int(pos) for pos in str(row["Beta protein(s) position(s)"]).split(";")
+            ],
+            pep_position_proteins_b=[
+                int(pos) - int(row["Beta peptide position"]) + 1
+                for pos in str(row["Beta protein(s) position(s)"]).split(";")
+            ],
             score_b=None,
             decoy_b=get_bool_from_value(row["IsDecoy"]),
             score=float(row["Score"]),
@@ -424,9 +469,7 @@ def __read_scout_csms_filtered(
     return csms
 
 
-def __read_scout_crosslinks(
-    data: pd.DataFrame
-) -> List[Dict[str, Any]]:
+def __read_scout_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
     r"""Reads crosslinks from a Scout crosslink/residue pair result.
 
     Parameters
@@ -455,7 +498,9 @@ def __read_scout_crosslinks(
                 protein.strip()
                 for protein in str(row["Alpha protein mapping(s)"]).split(";")
             ],
-            xl_position_proteins_a=[int(pos) for pos in str(row["Alpha protein(s) position(s)"]).split(";")],
+            xl_position_proteins_a=[
+                int(pos) for pos in str(row["Alpha protein(s) position(s)"]).split(";")
+            ],
             decoy_a=get_bool_from_value(row["IsDecoy"]),
             peptide_b=format_sequence(str(row["Beta peptide"])),
             xl_position_peptide_b=int(row["Beta peptide position"]),
@@ -463,9 +508,11 @@ def __read_scout_crosslinks(
                 protein.strip()
                 for protein in str(row["Beta protein mapping(s)"]).split(";")
             ],
-            xl_position_proteins_b=[int(pos) for pos in str(row["Beta protein(s) position(s)"]).split(";")],
+            xl_position_proteins_b=[
+                int(pos) for pos in str(row["Beta protein(s) position(s)"]).split(";")
+            ],
             decoy_b=get_bool_from_value(row["IsDecoy"]),
-            score=float(row["Score"])
+            score=float(row["Score"]),
         )
         crosslinks.append(crosslink)
     return crosslinks
@@ -572,9 +619,7 @@ def read_scout(
                 data, crosslinker, crosslinker_mass, modifications, verbose
             )
         else:
-            crosslinks += __read_scout_crosslinks(
-                data
-            )
+            crosslinks += __read_scout_crosslinks(data)
 
     ## check results
     if len(crosslinks) + len(csms) == 0:
