@@ -592,8 +592,6 @@ def read_scout(
     if verbose not in [0, 1, 2]:
         raise TypeError("Verbose level has to be one of 0, 1, or 2!")
 
-    ## helper functions
-
     ## data structures
     crosslinks = list()
     csms = list()
