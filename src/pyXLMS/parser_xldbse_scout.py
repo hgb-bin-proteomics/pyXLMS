@@ -280,7 +280,10 @@ def __read_scout_csms_unfiltered(
 
 def __read_scout_csms_filtered(
     data: pd.DataFrame,
-    modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING
+    crosslinker: str,
+    crosslinker_mass: float,
+    modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> List[Dict[str, Any]]:
     r"""Reads crosslink-spectrum-matches from a Scout filtered CSMs result.
 
@@ -288,20 +291,137 @@ def __read_scout_csms_filtered(
     ----------
     data : pandas.DataFrame
         The Scout filtered CSMs result data.
+    crosslinker : str
+        Name of the used cross-linking reagent, for example "DSSO".
+    crosslinker_mass : float
+        Monoisotopic delta mass of the crosslink modification.
     modifications : dict of str, tuple, default = ``constants.SCOUT_MODIFICATION_MAPPING``
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
 
     Returns
     -------
     list of dict
         The read crosslink-spectrum-matches.
 
+    Raises
+    ------
+    RuntimeError
+        If multiple modifications on the same residue are parsed (only if ``verbose = 2``).
+    KeyError
+        If an unknown modification is encountered.
+
     Notes
     -----
     This function should not be called directly, it is called from ``read_scout()``.
     """
-    return
+    ## helper functions
+    def str_contains(s: str, contains: List[str]) -> bool:
+        for subs in contains:
+            if subs in s:
+                return True
+        return False
+
+    def parse_modifications(
+        row: pd.Series,
+        alpha: bool,
+        crosslinker: str,
+        crosslinker_mass: float,
+        modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING,
+        verbose: Literal[0, 1, 2] = 1,
+    ) -> Dict[int, Tuple[str, float]]:
+        sequence = str(row["Alpha peptide"]).strip() if alpha else str(row["Beta peptide"]).strip()
+        crosslink_position = int(row["Alpha peptide position"]) if alpha else int(row["Beta peptide position"])
+        parsed_modifications = {crosslink_position: (crosslinker, crosslinker_mass)}
+        if alpha and pd.isna(row["Alpha modification(s)"]):
+            return parsed_modifications
+        if beta and pd.isna(row["Beta modification(s)"]):
+            return parsed_modifications
+        mods = str(row["Alpha modification(s)"]).split(";") if alpha else str(row["Beta modification(s)"]).split(";")
+        for mod in mods:
+            rpos = mod.split("(")[0].strip()
+            mod_key = mod.split("(")[1].rstrip(")").strip()
+            pos = -1
+            if str_contains(rpos.lower(), ["nterm", "nterminal", "nterminus", "n-term", "n-terminal", "n-terminus"]):
+                pos = 0
+            elif str_contains(rpos.lower(), ["cterm", "cterminal", "cterminus", "c-term", "c-terminal", "c-terminus"]):
+                pos = len(sequence)
+            else:
+                pos = int(rpos[1:])
+            if mod_key not in modifiations:
+                raise KeyError(f"Key {mod_key} not found in parameter 'modifications'. Are you missing a modification?")
+            if pos in parsed_modifications:
+                err_str = (
+                    f"Modification at position {pos} already exists!\n"
+                    f"CSM Scan Number: {int(row['Scan'])}!\n"
+                    f"Sequence: {sequence}, Crosslink position: {crosslink_position}, Modifications: {';'.join(mods)}"
+                )
+                if verbose == 1:
+                    warnings.warn(RuntimeWarning(err_str))
+                elif verbose == 2:
+                    raise RuntimeError(err_str)
+                t1 = parsed_modifications[pos][0] + "," + modifications[mod_key][0]
+                t2 = parsed_modifications[pos][1] + modifications[mod_key][1]
+                parsed_modifications[pos] = (t1, t2)
+            else:
+                parsed_modifications[pos] = modifications[mod_key]
+        return parsed_modifications
+    ## create csms
+    csms = list()
+    xl = data.dropna(axis=0, subset=["Alpha peptide", "Beta peptide"])
+    for i, row in tqdm(
+        xl.iterrows(), total=xl.shape[0], desc="Reading Scout filtered CSMs..."
+    ):
+        csm = create_csm(
+            peptide_a=format_sequence(str(row["Alpha peptide"])),
+            modifications_a=parse_modifications(
+                row,
+                True,
+                crosslinker,
+                crosslinker_mass,
+                modifications,
+                verbose,
+            ),
+            xl_position_peptide_a=int(row["Alpha peptide position"]),
+            proteins_a=[
+                protein.strip()
+                for protein in str(row["Alpha protein mapping(s)"]).split(";")
+            ],
+            xl_position_proteins_a=[int(pos) for pos in str(row["Alpha protein(s) position(s)"]).split(";")],
+            pep_position_proteins_a=[int(pos) - int(row["Alpha peptide position"]) + 1 for pos in str(row["Alpha protein(s) position(s)"]).split(";")],
+            score_a=None,
+            decoy_a=get_bool_from_value(row["IsDecoy"]),
+            peptide_b=format_sequence(str(row["Beta peptide"])),
+            modifications_b=parse_modifications(
+                row,
+                False,
+                crosslinker,
+                crosslinker_mass,
+                modifications,
+                verbose,
+            ),
+            xl_position_peptide_b=int(row["Beta peptide position"]) + 1,
+            proteins_b=[
+                protein.strip()
+                for protein in str(row["Beta protein mapping(s)"]).split(";")
+            ],
+            xl_position_proteins_b=[int(pos) for pos in str(row["Beta protein(s) position(s)"]).split(";")],
+            pep_position_proteins_b=[int(pos) - int(row["Beta peptide position"]) + 1 for pos in str(row["Beta protein(s) position(s)"]).split(";")],
+            score_b=None,
+            decoy_b=get_bool_from_value(row["IsDecoy"]),
+            score=float(row["Score"]),
+            spectrum_file=str(row["File"]).strip(),
+            scan_nr=int(row["Scan"]),
+            charge=int(row["Precursor charge"]),
+            rt=None,
+            im_cv=None,
+        )
+        csms.append(csm)
+    return csms
 
 
 def __read_scout_crosslinks(
