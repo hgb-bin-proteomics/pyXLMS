@@ -65,3 +65,50 @@ def test4():
 
     csms = pr["crosslink-spectrum-matches"]
     assert len(csms) == 1697
+
+
+def test5():
+    from pyXLMS import parser as p
+    from pyXLMS.transform import modifications_to_str as mts
+
+    pr = p.read_scout(SCOUT_CSMS_10, crosslinker="DSSO", verbose=0)
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "partial"
+    assert pr["search_engine"] == "Scout"
+    assert pr["crosslink-spectrum-matches"] is not None
+    assert pr["crosslinks"] is None
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert len(csms) == 1696
+
+    csm = csms[0]
+    assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "partial"
+    assert csm["alpha_peptide"] == "MLASAGELQKGNELALPSK"
+    assert mts(csm["alpha_modifications"]) == "(1:[Oxidation|15.994915]);(10:[DSSO|158.00376])"
+    assert csm["alpha_peptide_crosslink_position"] == 10
+    assert csm["alpha_proteins"] == ["Cas10", "Cas9"]
+    assert csm["alpha_proteins_crosslink_positions"] is None
+    assert csm["alpha_proteins_peptide_positions"] is None
+    assert csm["alpha_score"] == pytest.approx(0.405408)
+    assert not csm["alpha_decoy"]
+    assert csm["beta_peptide"] == "MLASAGELQKGNELALPSK"
+    assert mts(csm["beta_modifications"]) == "(10:[DSSO|158.00376])"
+    assert csm["beta_peptide_crosslink_position"] == 10
+    assert csm["beta_proteins"] == ["Cas10", "Cas9"]
+    assert csm["beta_proteins_crosslink_positions"] is None
+    assert csm["beta_proteins_peptide_positions"] is None
+    assert csm["beta_score"] == pytest.approx(0.390379)
+    assert not csm["beta_decoy"]
+    assert csm["crosslink_type"] == "intra"
+    assert csm["score"] == pytest.approx(0.390379)
+    assert csm["spectrum_file"] == "C:\\Users\\P42587\\Downloads\\scout\\XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw"
+    assert csm["scan_nr"] == 21781
+    assert csm["charge"] == 3
+    assert csm["retention_time"] is None
+    assert csm["ion_mobility"] is None
+
+    csm = csms[1668]
+    csm = csms[1685]
+    csm = csms[1689]
+    csm = csms[-1]
