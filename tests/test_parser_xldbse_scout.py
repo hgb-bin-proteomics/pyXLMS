@@ -51,3 +51,17 @@ def test3():
 
     with pytest.raises(TypeError, match="Verbose level has to be one of 0, 1, or 2!"):
         _r = p.read_scout(SCOUT_CSMS_9, verbose=3)
+
+
+def test4():
+    from pyXLMS import parser as p
+
+    pr = p.read_scout(SCOUT_CSMS_9, crosslinker="DSSO", verbose=0)
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "partial"
+    assert pr["search_engine"] == "Scout"
+    assert pr["crosslink-spectrum-matches"] is not None
+    assert pr["crosslinks"] is None
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert len(csms) == 1697
