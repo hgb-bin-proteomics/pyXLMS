@@ -249,6 +249,7 @@ def __read_scout_csms_unfiltered(
                 crosslinker,
                 crosslinker_mass,
                 modifications,
+                verbose,
             ),
             xl_position_peptide_b=int(row["BetaPos"]) + 1,
             proteins_b=[
