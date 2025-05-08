@@ -144,7 +144,7 @@ def parse_modifications_from_scout_sequence(
     >>> parse_modifications_from_scout_sequence(seq, 10, "DSS", 138.06808)
     {10: ('DSS', 138.06808), 1: ('Oxidation', 15.994915)}
 
-    >>> from pyXLMS.parser import parse_modifications_from_maxquant_sequence
+    >>> from pyXLMS.parser import parse_modifications_from_scout_sequence
     >>> seq = "KIEC(+57.021460)FDSVEISGVEDR"
     >>> parse_modifications_from_scout_sequence(seq, 1, "DSS", 138.06808)
     {1: ('DSS', 138.06808), 4: ('Carbamidomethyl', 57.021464)}
