@@ -165,7 +165,7 @@ def parse_modifications_from_scout_sequence(
             if (i + 1 >= len(sequence)) or (sequence[i + 1].isupper()):
                 mod_key = current_mod.strip("()").strip()
                 if mod_key not in modifiations:
-                    raise KeyError(f"Key {mod_key} not found in parameter 'modifications'. Are you missing a modification?\n")
+                    raise KeyError(f"Key {mod_key} not found in parameter 'modifications'. Are you missing a modification?")
                 if pos in parsed_modifications:
                     err_str = (
                         f"Modification at position {pos} already exists!\n"
