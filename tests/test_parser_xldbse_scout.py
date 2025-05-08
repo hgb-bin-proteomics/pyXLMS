@@ -34,3 +34,13 @@ def test1():
         match="Could not infer data source, are you sure you read a Scout result file?",
     ):
         _r = detect_scout_filetype(err)
+
+
+def test2():
+    from pyXLMS.parser import parse_modifications_from_scout_sequence as pms
+
+    seq = "M(+15.994900)LASAGELQKGNELALPSK"
+    assert pms(seq, 10, "DSS", 138.06808) == {10: ('DSS', 138.06808), 1: ('Oxidation', 15.994915)}
+
+    seq = "KIEC(+57.021460)FDSVEISGVEDR"
+    assert pms(seq, 1, "DSS", 138.06808) == {1: ('DSS', 138.06808), 4: ('Carbamidomethyl', 57.021464)}
