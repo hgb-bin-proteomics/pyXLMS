@@ -56,7 +56,7 @@ def test3():
     from pyXLMS import parser as p
 
     with pytest.raises(TypeError, match="Verbose level has to be one of 0, 1, or 2!"):
-        _r = p.read_scout(SCOUT_CSMS_9, verbose=3)
+        _r = p.read_scout(SCOUT_CSMS_9, crosslinker="DSSO", verbose=3)
 
 
 def test4():
