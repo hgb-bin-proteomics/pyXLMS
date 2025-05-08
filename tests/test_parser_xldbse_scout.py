@@ -190,3 +190,28 @@ def test5():
     assert csm["ion_mobility"] is None
 
     csm = csms[-1]
+    assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "partial"
+    assert csm["alpha_peptide"] == "AKIQDKEGIPPDQQR"
+    assert mts(csm["alpha_modifications"]) == "(6:[DSSO|158.00376])"
+    assert csm["alpha_peptide_crosslink_position"] == 6
+    assert csm["alpha_proteins"] == ["spRS27A_HUMAN_"]
+    assert csm["alpha_proteins_crosslink_positions"] is None
+    assert csm["alpha_proteins_peptide_positions"] is None
+    assert csm["alpha_score"] == pytest.approx(0.005108)
+    assert not csm["alpha_decoy"]
+    assert csm["beta_peptide"] == "ICSVPPGRVKRMNR"
+    assert mts(csm["beta_modifications"]) == "(2:[Carbamidomethyl|57.021464]);(10:[DSSO|158.00376]);(12:[Oxidation|15.994915])"
+    assert csm["beta_peptide_crosslink_position"] == 10
+    assert csm["beta_proteins"] == ["spTRFL_HUMAN_"]
+    assert csm["beta_proteins_crosslink_positions"] is None
+    assert csm["beta_proteins_peptide_positions"] is None
+    assert csm["beta_score"] == pytest.approx(0.024458)
+    assert csm["beta_decoy"]
+    assert csm["crosslink_type"] == "inter"
+    assert csm["score"] == pytest.approx(0.005108)
+    assert csm["spectrum_file"] == "C:\\Users\\P42587\\Downloads\\scout\\XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw"
+    assert csm["scan_nr"] == 36420
+    assert csm["charge"] == 3
+    assert csm["retention_time"] is None
+    assert csm["ion_mobility"] is None
