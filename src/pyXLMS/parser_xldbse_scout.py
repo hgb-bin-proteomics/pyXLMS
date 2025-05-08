@@ -370,6 +370,7 @@ def __read_scout_csms_filtered(
             else:
                 parsed_modifications[pos] = modifications[mod_key]
         return parsed_modifications
+
     ## create csms
     csms = list()
     xl = data.dropna(axis=0, subset=["Alpha peptide", "Beta peptide"])
