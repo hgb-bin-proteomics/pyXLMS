@@ -15,7 +15,7 @@ from .data import check_input
 from .data import create_crosslink
 from .data import create_csm
 from .data import create_parser_result
-from .constants import MODIFICATIONS
+from .constants import SCOUT_MODIFICATION_MAPPING
 from .parser_util import format_sequence
 from .parser_util import get_bool_from_value
 
