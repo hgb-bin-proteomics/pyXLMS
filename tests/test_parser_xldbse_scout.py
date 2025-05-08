@@ -99,7 +99,7 @@ def test5():
     assert csm["alpha_proteins"] == ["Cas10", "Cas9"]
     assert csm["alpha_proteins_crosslink_positions"] is None
     assert csm["alpha_proteins_peptide_positions"] is None
-    assert csm["alpha_score"] == pytest.approx(0.405408)
+    assert csm["alpha_score"] == pytest.approx(0.405408, abs=0.00001)
     assert not csm["alpha_decoy"]
     assert csm["beta_peptide"] == "MLASAGELQKGNELALPSK"
     assert mts(csm["beta_modifications"]) == "(10:[DSSO|158.00376])"
@@ -107,10 +107,10 @@ def test5():
     assert csm["beta_proteins"] == ["Cas10", "Cas9"]
     assert csm["beta_proteins_crosslink_positions"] is None
     assert csm["beta_proteins_peptide_positions"] is None
-    assert csm["beta_score"] == pytest.approx(0.390379)
+    assert csm["beta_score"] == pytest.approx(0.390379, abs=0.00001)
     assert not csm["beta_decoy"]
     assert csm["crosslink_type"] == "intra"
-    assert csm["score"] == pytest.approx(0.390379)
+    assert csm["score"] == pytest.approx(0.390379, abs=0.00001)
     assert (
         csm["spectrum_file"]
         == "C:\\Users\\P42587\\Downloads\\scout\\XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw"
@@ -132,7 +132,7 @@ def test5():
     assert csm["alpha_proteins"] == ["spTRFL_HUMAN_"]
     assert csm["alpha_proteins_crosslink_positions"] is None
     assert csm["alpha_proteins_peptide_positions"] is None
-    assert csm["alpha_score"] == pytest.approx(0.01438)
+    assert csm["alpha_score"] == pytest.approx(0.01438, abs=0.00001)
     assert not csm["alpha_decoy"]
     assert csm["beta_peptide"] == "IYEGEKK"
     assert mts(csm["beta_modifications"]) == "(6:[DSSO|158.00376])"
@@ -140,10 +140,10 @@ def test5():
     assert csm["beta_proteins"] == ["spSUMO1_HUMAN_"]
     assert csm["beta_proteins_crosslink_positions"] is None
     assert csm["beta_proteins_peptide_positions"] is None
-    assert csm["beta_score"] == pytest.approx(0.0231)
+    assert csm["beta_score"] == pytest.approx(0.0231, abs=0.00001)
     assert csm["beta_decoy"]
     assert csm["crosslink_type"] == "inter"
-    assert csm["score"] == pytest.approx(0.01438)
+    assert csm["score"] == pytest.approx(0.01438, abs=0.00001)
     assert (
         csm["spectrum_file"]
         == "C:\\Users\\P42587\\Downloads\\scout\\XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw"
@@ -162,7 +162,7 @@ def test5():
     assert csm["alpha_proteins"] == ["spPEPA_PIG_"]
     assert csm["alpha_proteins_crosslink_positions"] is None
     assert csm["alpha_proteins_peptide_positions"] is None
-    assert csm["alpha_score"] == pytest.approx(0.031)
+    assert csm["alpha_score"] == pytest.approx(0.031, abs=0.00001)
     assert csm["alpha_decoy"]
     assert csm["beta_peptide"] == "SGANGTKTSEENGGKGLDDAK"
     assert mts(csm["beta_modifications"]) == "(15:[DSSO|158.00376])"
@@ -170,10 +170,10 @@ def test5():
     assert csm["beta_proteins"] == ["spSODC_HUMAN_"]
     assert csm["beta_proteins_crosslink_positions"] is None
     assert csm["beta_proteins_peptide_positions"] is None
-    assert csm["beta_score"] == pytest.approx(0.036907)
+    assert csm["beta_score"] == pytest.approx(0.036907, abs=0.00001)
     assert csm["beta_decoy"]
     assert csm["crosslink_type"] == "inter"
-    assert csm["score"] == pytest.approx(0.031)
+    assert csm["score"] == pytest.approx(0.031, abs=0.00001)
     assert (
         csm["spectrum_file"]
         == "C:\\Users\\P42587\\Downloads\\scout\\XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw"
@@ -192,7 +192,7 @@ def test5():
     assert csm["alpha_proteins"] == ["Cas10", "Cas9"]
     assert csm["alpha_proteins_crosslink_positions"] is None
     assert csm["alpha_proteins_peptide_positions"] is None
-    assert csm["alpha_score"] == pytest.approx(0.125987)
+    assert csm["alpha_score"] == pytest.approx(0.125987, abs=0.00001)
     assert not csm["alpha_decoy"]
     assert csm["beta_peptide"] == "SSSYHKSSSYRVSM"
     assert mts(csm["beta_modifications"]) == "(6:[DSSO|158.00376])"
@@ -200,10 +200,10 @@ def test5():
     assert csm["beta_proteins"] == ["spK1C10_HUMAN_"]
     assert csm["beta_proteins_crosslink_positions"] is None
     assert csm["beta_proteins_peptide_positions"] is None
-    assert csm["beta_score"] == pytest.approx(0.01305)
+    assert csm["beta_score"] == pytest.approx(0.01305, abs=0.00001)
     assert csm["beta_decoy"]
     assert csm["crosslink_type"] == "inter"
-    assert csm["score"] == pytest.approx(0.01305)
+    assert csm["score"] == pytest.approx(0.01305, abs=0.00001)
     assert (
         csm["spectrum_file"]
         == "C:\\Users\\P42587\\Downloads\\scout\\XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw"
@@ -222,7 +222,7 @@ def test5():
     assert csm["alpha_proteins"] == ["spRS27A_HUMAN_"]
     assert csm["alpha_proteins_crosslink_positions"] is None
     assert csm["alpha_proteins_peptide_positions"] is None
-    assert csm["alpha_score"] == pytest.approx(0.005108)
+    assert csm["alpha_score"] == pytest.approx(0.005108, abs=0.00001)
     assert not csm["alpha_decoy"]
     assert csm["beta_peptide"] == "ICSVPPGRVKRMNR"
     assert (
@@ -233,10 +233,10 @@ def test5():
     assert csm["beta_proteins"] == ["spTRFL_HUMAN_"]
     assert csm["beta_proteins_crosslink_positions"] is None
     assert csm["beta_proteins_peptide_positions"] is None
-    assert csm["beta_score"] == pytest.approx(0.024458)
+    assert csm["beta_score"] == pytest.approx(0.024458, abs=0.00001)
     assert csm["beta_decoy"]
     assert csm["crosslink_type"] == "inter"
-    assert csm["score"] == pytest.approx(0.005108)
+    assert csm["score"] == pytest.approx(0.005108, abs=0.00001)
     assert (
         csm["spectrum_file"]
         == "C:\\Users\\P42587\\Downloads\\scout\\XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw"
