@@ -44,3 +44,10 @@ def test2():
 
     seq = "KIEC(+57.021460)FDSVEISGVEDR"
     assert pms(seq, 1, "DSS", 138.06808) == {1: ('DSS', 138.06808), 4: ('Carbamidomethyl', 57.021464)}
+
+
+def test3():
+    from pyXLMS import parser as p
+
+    with pytest.raises(TypeError, match="Verbose level has to be one of 0, 1, or 2!"):
+        _r = p.read_scout(SCOUT_CSMS_9, verbose=3)
