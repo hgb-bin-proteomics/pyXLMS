@@ -444,7 +444,32 @@ def __read_scout_crosslinks(
     -----
     This function should not be called directly, it is called from ``read_scout()``.
     """
-    return
+    crosslinks = list()
+    xl = data.dropna(axis=0, subset=["Alpha peptide", "Beta peptide"])
+    for i, row in tqdm(
+        xl.iterrows(), total=xl.shape[0], desc="Reading Scout crosslinks..."
+    ):
+        crosslink = create_crosslink(
+            peptide_a=format_sequence(str(row["Alpha peptide"])),
+            xl_position_peptide_a=int(row["Alpha peptide position"]),
+            proteins_a=[
+                protein.strip()
+                for protein in str(row["Alpha protein mapping(s)"]).split(";")
+            ],
+            xl_position_proteins_a=[int(pos) for pos in str(row["Alpha protein(s) position(s)"]).split(";")],
+            decoy_a=get_bool_from_value(row["IsDecoy"]),
+            peptide_b=format_sequence(str(row["Beta peptide"])),
+            xl_position_peptide_b=int(row["Beta peptide position"]),
+            proteins_b=[
+                protein.strip()
+                for protein in str(row["Beta protein mapping(s)"]).split(";")
+            ],
+            xl_position_proteins_b=[int(pos) for pos in str(row["Beta protein(s) position(s)"]).split(";")],
+            decoy_b=get_bool_from_value(row["IsDecoy"]),
+            score=float(row["Score"])
+        )
+        crosslinks.append(crosslink)
+    return crosslinks
 
 
 def read_scout(
