@@ -9,7 +9,6 @@ from __future__ import annotations
 import warnings
 import pandas as pd
 from tqdm import tqdm
-from os.path import splitext
 
 from .data import check_input
 from .data import create_crosslink
@@ -19,6 +18,7 @@ from .constants import SCOUT_MODIFICATION_MAPPING
 from .parser_util import format_sequence
 from .parser_util import get_bool_from_value
 
+from typing import Optional
 from typing import BinaryIO
 from typing import Dict
 from typing import Any
@@ -164,13 +164,12 @@ def parse_modifications_from_scout_sequence(
             current_mod += aa
             if (i + 1 >= len(sequence)) or (sequence[i + 1].isupper()):
                 mod_key = current_mod.strip("()").strip()
-                if mod_key not in modifiations:
+                if mod_key not in modifications:
                     raise KeyError(f"Key {mod_key} not found in parameter 'modifications'. Are you missing a modification?")
                 if pos in parsed_modifications:
                     err_str = (
                         f"Modification at position {pos} already exists!\n"
-                        f"CSM Scan Number: {int(row['ScanNumber'])}!\n"
-                        f"Sequence: {sequence}, Crosslink position: {xl_pos}"
+                        f"Sequence: {sequence}, Crosslink position: {crosslink_position}"
                     )
                     if verbose == 1:
                         warnings.warn(RuntimeWarning(err_str))
@@ -339,7 +338,7 @@ def __read_scout_csms_filtered(
         parsed_modifications = {crosslink_position: (crosslinker, crosslinker_mass)}
         if alpha and pd.isna(row["Alpha modification(s)"]):
             return parsed_modifications
-        if beta and pd.isna(row["Beta modification(s)"]):
+        if not alpha and pd.isna(row["Beta modification(s)"]):
             return parsed_modifications
         mods = str(row["Alpha modification(s)"]).split(";") if alpha else str(row["Beta modification(s)"]).split(";")
         for mod in mods:
@@ -352,7 +351,7 @@ def __read_scout_csms_filtered(
                 pos = len(sequence)
             else:
                 pos = int(rpos[1:])
-            if mod_key not in modifiations:
+            if mod_key not in modifications:
                 raise KeyError(f"Key {mod_key} not found in parameter 'modifications'. Are you missing a modification?")
             if pos in parsed_modifications:
                 err_str = (
@@ -568,7 +567,7 @@ def read_scout(
             csms += __read_scout_csms_unfiltered(
                 data, crosslinker, crosslinker_mass, modifications, verbose
             )
-        elif xi_file_type == "scout_csms_filtered":
+        elif scout_file_type == "scout_csms_filtered":
             csms += __read_scout_csms_filtered(
                 data, crosslinker, crosslinker_mass, modifications, verbose
             )
