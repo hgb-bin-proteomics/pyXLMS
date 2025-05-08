@@ -405,7 +405,7 @@ def __read_scout_csms_filtered(
                 modifications,
                 verbose,
             ),
-            xl_position_peptide_b=int(row["Beta peptide position"]) + 1,
+            xl_position_peptide_b=int(row["Beta peptide position"]),
             proteins_b=[
                 protein.strip()
                 for protein in str(row["Beta protein mapping(s)"]).split(";")
