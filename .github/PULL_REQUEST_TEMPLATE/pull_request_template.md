@@ -1,7 +1,5 @@
 # [PR]: (Please provide a short and descriptive title here)
 
-******
-
 ## Pull Request Type
 - [ ] New parser
 - [ ] New exporter
