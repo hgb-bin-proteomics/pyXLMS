@@ -345,9 +345,9 @@ def __read_scout_csms_filtered(
             else int(row["Beta peptide position"])
         )
         parsed_modifications = {crosslink_position: (crosslinker, crosslinker_mass)}
-        if alpha and pd.isna(row["Alpha modification(s)"]):
+        if alpha and bool(pd.isna(row["Alpha modification(s)"])):
             return parsed_modifications
-        if not alpha and pd.isna(row["Beta modification(s)"]):
+        if not alpha and bool(pd.isna(row["Beta modification(s)"])):
             return parsed_modifications
         mods = (
             str(row["Alpha modification(s)"]).split(";")
