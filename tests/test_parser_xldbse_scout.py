@@ -245,3 +245,17 @@ def test5():
     assert csm["charge"] == 3
     assert csm["retention_time"] is None
     assert csm["ion_mobility"] is None
+
+
+def test6():
+    from pyXLMS import parser as p
+
+    pr = p.read_scout(SCOUT_CSMS_F_9, crosslinker="DSSO", verbose=0)
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "partial"
+    assert pr["search_engine"] == "Scout"
+    assert pr["crosslink-spectrum-matches"] is not None
+    assert pr["crosslinks"] is None
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert len(csms) == 1306
