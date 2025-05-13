@@ -408,3 +408,19 @@ def test9():
     assert not xl["beta_decoy"]
     assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(0.999998, abs=0.00001)
+
+    xl = crosslinks[-1]
+    assert xl["data_type"] == "crosslink"
+    assert xl["completeness"] == "full"
+    assert xl["alpha_peptide"] == "LPKYSLFELENGR"
+    assert xl["alpha_peptide_crosslink_position"] == 3
+    assert xl["alpha_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
+    assert xl["alpha_proteins_crosslink_positions"] == [1215, 1204]
+    assert not xl["alpha_decoy"]
+    assert xl["beta_peptide"] == "NPIDFLEAKGYK"
+    assert xl["beta_peptide_crosslink_position"] == 9
+    assert xl["beta_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
+    assert xl["beta_proteins_crosslink_positions"] == [1200, 1189]
+    assert not xl["beta_decoy"]
+    assert xl["crosslink_type"] == "intra"
+    assert xl["score"] == pytest.approx(0.999892, abs=0.00001)
