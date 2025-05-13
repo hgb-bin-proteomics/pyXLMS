@@ -304,3 +304,63 @@ def test7():
     assert csm["charge"] == 3
     assert csm["retention_time"] is None
     assert csm["ion_mobility"] is None
+
+    csm = csms[91]
+    assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "partial"
+    assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
+    assert (
+        mts(csm["alpha_modifications"])
+        == "(1:[DSSO|158.00376]);(4:[Carbamidomethyl|57.021464])"
+    )
+    assert csm["alpha_peptide_crosslink_position"] == 1
+    assert csm["alpha_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
+    assert csm["alpha_proteins_crosslink_positions"] == [586, 575]
+    assert csm["alpha_proteins_peptide_positions"] == [586, 575]
+    assert csm["alpha_score"] is None
+    assert not csm["alpha_decoy"]
+    assert csm["beta_peptide"] == "TILDFLKSDGFANR"
+    assert mts(csm["beta_modifications"]) == "(7:[DSSO|158.00376])"
+    assert csm["beta_peptide_crosslink_position"] == 7
+    assert csm["beta_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
+    assert csm["beta_proteins_crosslink_positions"] == [699, 688]
+    assert csm["beta_proteins_peptide_positions"] == [693, 682]
+    assert csm["beta_score"] is None
+    assert not csm["beta_decoy"]
+    assert csm["crosslink_type"] == "intra"
+    assert csm["score"] == pytest.approx(0.278628, abs=0.00001)
+    assert csm["spectrum_file"] == "XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw"
+    assert csm["scan_nr"] == 29092
+    assert csm["charge"] == 3
+    assert csm["retention_time"] is None
+    assert csm["ion_mobility"] is None
+
+    csm = csms[-1]
+    assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "partial"
+    assert csm["alpha_peptide"] == "DKQSGK"
+    assert mts(csm["alpha_modifications"]) == "(2:[DSSO|158.00376])"
+    assert csm["alpha_peptide_crosslink_position"] == 2
+    assert csm["alpha_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
+    assert csm["alpha_proteins_crosslink_positions"] == [688, 677]
+    assert csm["alpha_proteins_peptide_positions"] == [687, 676]
+    assert csm["alpha_score"] is None
+    assert not csm["alpha_decoy"]
+    assert csm["beta_peptide"] == "SVKELLGITIMER"
+    assert (
+        mts(csm["beta_modifications"])
+        == "(3:[DSSO|158.00376]);(11:[Oxidation|15.994915])"
+    )
+    assert csm["beta_peptide_crosslink_position"] == 3
+    assert csm["beta_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
+    assert csm["beta_proteins_crosslink_positions"] == [1176, 1165]
+    assert csm["beta_proteins_peptide_positions"] == [1174, 1163]
+    assert csm["beta_score"] is None
+    assert not csm["beta_decoy"]
+    assert csm["crosslink_type"] == "intra"
+    assert csm["score"] == pytest.approx(0.097123, abs=0.00001)
+    assert csm["spectrum_file"] == "XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw"
+    assert csm["scan_nr"] == 20401
+    assert csm["charge"] == 4
+    assert csm["retention_time"] is None
+    assert csm["ion_mobility"] is None
