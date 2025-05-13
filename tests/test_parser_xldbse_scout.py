@@ -448,7 +448,7 @@ def test10():
     assert csm["alpha_peptide_crosslink_position"] == 6
     assert csm["alpha_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
     assert csm["alpha_proteins_crosslink_positions"] == [1128, 1117]
-    assert csm["alpha_proteins_peptide_positions"] == [1223, 1112]
+    assert csm["alpha_proteins_peptide_positions"] == [1123, 1112]
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"]
     assert csm["beta_peptide"] == "ICSVPPGRVKRMNR"
