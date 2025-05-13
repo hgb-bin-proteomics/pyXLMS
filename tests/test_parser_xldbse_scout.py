@@ -259,3 +259,48 @@ def test6():
 
     csms = pr["crosslink-spectrum-matches"]
     assert len(csms) == 1306
+
+
+def test7():
+    from pyXLMS import parser as p
+    from pyXLMS.transform import modifications_to_str as mts
+
+    pr = p.read_scout(SCOUT_CSMS_F_10, crosslinker="DSSO", verbose=0)
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "partial"
+    assert pr["search_engine"] == "Scout"
+    assert pr["crosslink-spectrum-matches"] is not None
+    assert pr["crosslinks"] is None
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert len(csms) == 1305
+
+    csm = csms[0]
+    assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "partial"
+    assert csm["alpha_peptide"] == "MLASAGELQKGNELALPSK"
+    assert (
+        mts(csm["alpha_modifications"])
+        == "(1:[Oxidation|15.994915]);(10:[DSSO|158.00376])"
+    )
+    assert csm["alpha_peptide_crosslink_position"] == 10
+    assert csm["alpha_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
+    assert csm["alpha_proteins_crosslink_positions"] == [1237, 1226]
+    assert csm["alpha_proteins_peptide_positions"] == [1228, 1217]
+    assert csm["alpha_score"] is None
+    assert not csm["alpha_decoy"]
+    assert csm["beta_peptide"] == "MLASAGELQKGNELALPSK"
+    assert mts(csm["beta_modifications"]) == "(10:[DSSO|158.00376])"
+    assert csm["beta_peptide_crosslink_position"] == 10
+    assert csm["beta_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
+    assert csm["beta_proteins_crosslink_positions"] == [1237, 1226]
+    assert csm["beta_proteins_peptide_positions"] == [1228, 1217]
+    assert csm["beta_score"] is None
+    assert not csm["beta_decoy"]
+    assert csm["crosslink_type"] == "intra"
+    assert csm["score"] == pytest.approx(0.390379, abs=0.00001)
+    assert csm["spectrum_file"] == "XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw"
+    assert csm["scan_nr"] == 21781
+    assert csm["charge"] == 3
+    assert csm["retention_time"] is None
+    assert csm["ion_mobility"] is None
