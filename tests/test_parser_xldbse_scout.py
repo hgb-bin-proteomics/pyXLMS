@@ -444,10 +444,7 @@ def test10():
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "ESILPKR"
-    assert (
-        mts(csm["alpha_modifications"])
-        == "(6:[DSSO|158.00376])"
-    )
+    assert mts(csm["alpha_modifications"]) == "(6:[DSSO|158.00376])"
     assert csm["alpha_peptide_crosslink_position"] == 6
     assert csm["alpha_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
     assert csm["alpha_proteins_crosslink_positions"] == [1128, 1117]
@@ -455,7 +452,10 @@ def test10():
     assert csm["alpha_score"] is None
     assert csm["alpha_decoy"]
     assert csm["beta_peptide"] == "ICSVPPGRVKRMNR"
-    assert mts(csm["beta_modifications"]) == "(2:[Carbamidomethyl|57.021464]);(10:[DSSO|158.00376]);(12:[Oxidation|15.994915])"
+    assert (
+        mts(csm["beta_modifications"])
+        == "(2:[Carbamidomethyl|57.021464]);(10:[DSSO|158.00376]);(12:[Oxidation|15.994915])"
+    )
     assert csm["beta_peptide_crosslink_position"] == 10
     assert csm["beta_proteins"] == ["sp|spTRFL_HUMAN_|spTRFL_HUMAN_"]
     assert csm["beta_proteins_crosslink_positions"] == [1374]
@@ -474,7 +474,11 @@ def test10():
 def test11():
     from pyXLMS import parser as p
 
-    pr = p.read_scout([SCOUT_MM, SCOUT_XL_9, SCOUT_XL_10, SCOUT_CSMS_10], crosslinker="DSSO", verbose=0)
+    pr = p.read_scout(
+        [SCOUT_MM, SCOUT_XL_9, SCOUT_XL_10, SCOUT_CSMS_10],
+        crosslinker="DSSO",
+        verbose=0,
+    )
     assert pr["data_type"] == "parser_result"
     assert pr["completeness"] == "full"
     assert pr["search_engine"] == "Scout"
