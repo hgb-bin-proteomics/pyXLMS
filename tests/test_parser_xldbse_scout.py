@@ -424,3 +424,48 @@ def test9():
     assert not xl["beta_decoy"]
     assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(0.999892, abs=0.00001)
+
+
+def test10():
+    from pyXLMS import parser as p
+    from pyXLMS.transform import modifications_to_str as mts
+
+    pr = p.read_scout(SCOUT_MM, crosslinker="DSSO", verbose=0)
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "partial"
+    assert pr["search_engine"] == "Scout"
+    assert pr["crosslink-spectrum-matches"] is not None
+    assert pr["crosslinks"] is None
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert len(csms) == 2266
+
+    csm = csms[2241]
+    assert csm["data_type"] == "crosslink-spectrum-match"
+    assert csm["completeness"] == "partial"
+    assert csm["alpha_peptide"] == "ESILPKR"
+    assert (
+        mts(csm["alpha_modifications"])
+        == "(6:[DSSO|158.00376])"
+    )
+    assert csm["alpha_peptide_crosslink_position"] == 6
+    assert csm["alpha_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
+    assert csm["alpha_proteins_crosslink_positions"] == [1128, 1117]
+    assert csm["alpha_proteins_peptide_positions"] == [1223, 1112]
+    assert csm["alpha_score"] is None
+    assert csm["alpha_decoy"]
+    assert csm["beta_peptide"] == "ICSVPPGRVKRMNR"
+    assert mts(csm["beta_modifications"]) == "(2:[Carbamidomethyl|57.021464]);(10:[DSSO|158.00376]);(12:[Oxidation|15.994915])"
+    assert csm["beta_peptide_crosslink_position"] == 10
+    assert csm["beta_proteins"] == ["sp|spTRFL_HUMAN_|spTRFL_HUMAN_"]
+    assert csm["beta_proteins_crosslink_positions"] == [1374]
+    assert csm["beta_proteins_peptide_positions"] == [1365]
+    assert csm["beta_score"] is None
+    assert csm["beta_decoy"]
+    assert csm["crosslink_type"] == "inter"
+    assert csm["score"] == pytest.approx(0.037393, abs=0.00001)
+    assert csm["spectrum_file"] == "XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw"
+    assert csm["scan_nr"] == 17503
+    assert csm["charge"] == 3
+    assert csm["retention_time"] is None
+    assert csm["ion_mobility"] is None
