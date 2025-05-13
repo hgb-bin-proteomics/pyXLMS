@@ -395,7 +395,7 @@ def test9():
 
     xl = crosslinks[0]
     assert xl["data_type"] == "crosslink"
-    assert first_crosslink["completeness"] == "full"
+    assert xl["completeness"] == "full"
     assert xl["alpha_peptide"] == "MLASAGELQKGNELALPSK"
     assert xl["alpha_peptide_crosslink_position"] == 10
     assert xl["alpha_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
