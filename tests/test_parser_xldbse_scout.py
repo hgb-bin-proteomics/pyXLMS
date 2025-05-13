@@ -378,3 +378,33 @@ def test8():
 
     crosslinks = pr["crosslinks"]
     assert len(crosslinks) == 200
+
+
+def test9():
+    from pyXLMS import parser as p
+
+    pr = p.read_scout(SCOUT_XL_10, crosslinker="DSSO", verbose=0)
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "partial"
+    assert pr["search_engine"] == "Scout"
+    assert pr["crosslink-spectrum-matches"] is None
+    assert pr["crosslinks"] is not None
+
+    crosslinks = pr["crosslinks"]
+    assert len(crosslinks) == 200
+
+    xl = crosslinks[0]
+    assert xl["data_type"] == "crosslink"
+    assert first_crosslink["completeness"] == "full"
+    assert xl["alpha_peptide"] == "MLASAGELQKGNELALPSK"
+    assert xl["alpha_peptide_crosslink_position"] == 10
+    assert xl["alpha_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
+    assert xl["alpha_proteins_crosslink_positions"] == [1237, 1226]
+    assert not xl["alpha_decoy"]
+    assert xl["beta_peptide"] == "MLASAGELQKGNELALPSK"
+    assert xl["beta_peptide_crosslink_position"] == 10
+    assert xl["beta_proteins"] == ["sp|Cas10|Cas10", "sp|Cas9|Cas9"]
+    assert xl["beta_proteins_crosslink_positions"] == [1237, 1226]
+    assert not xl["beta_decoy"]
+    assert xl["crosslink_type"] == "intra"
+    assert xl["score"] == pytest.approx(0.999998, abs=0.00001)
