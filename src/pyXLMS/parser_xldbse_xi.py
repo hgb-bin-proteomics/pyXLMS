@@ -35,7 +35,7 @@ except ImportError:
 def detect_xi_filetype(
     data: pd.DataFrame,
 ) -> Literal["xisearch", "xifdr_csms", "xifdr_crosslinks"]:
-    r"""Detects the source application of the data.
+    r"""Detects the xi-related source (application) of the data.
 
     Detects whether the input data is originating from xiSearch or xiFDR, and if xiFDR which type of data is
     being read (crosslink-spectrum-matches or crosslinks).
@@ -214,13 +214,7 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
             current_mod = ""
         else:
             current_mod += aa
-            if i + 1 >= len(sequence):
-                if pos in modifications:
-                    raise RuntimeError(
-                        f"Modification at position {pos} already exists!"
-                    )
-                modifications[pos] = current_mod
-            elif sequence[i + 1].isupper():
+            if (i + 1 >= len(sequence)) or (sequence[i + 1].isupper()):
                 if pos in modifications:
                     raise RuntimeError(
                         f"Modification at position {pos} already exists!"

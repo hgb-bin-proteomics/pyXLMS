@@ -106,9 +106,9 @@ XI_MODIFICATION_MAPPING = {
     "dsbu_ami": ("DSBU Amidated", 213.111341),
     "dsbu_tris": ("DSBU Tris", 317.158685),
 }
-r"""Dictionary that maps sequence elements from xiSearch and xiFDR to their corresponding amino acids and post-translational-modifications.
+r"""Dictionary that maps sequence elements from xiSearch and xiFDR to their corresponding post-translational-modifications.
 
-Dictionary that maps sequence elements (e.g. `"cm"`) from xiSearch and xiFDR to their corresponding amino acids and
+Dictionary that maps sequence elements (e.g. `"cm"`) from xiSearch and xiFDR to their corresponding
 post-translational-modifications (e.g. `("Carbamidomethyl", 57.021464)`).
 
 Examples
@@ -117,5 +117,34 @@ Examples
 >>> XI_MODIFICATION_MAPPING["cm"]
 ('Carbamidomethyl', 57.021464)
 >>> XI_MODIFICATION_MAPPING["ox"]
+('Oxidation', 15.994915)
+"""
+
+SCOUT_MODIFICATION_MAPPING = {
+    "+57.021460": ("Carbamidomethyl", 57.021464),
+    "+15.994900": ("Oxidation", 15.994915),
+    "Oxidation of Methionine": ("Oxidation", 15.994915),
+    "Carbamidomethyl": ("Carbamidomethyl", 57.021464),
+    "BS3": ("BS3", 138.06808),
+    "DSS": ("DSS", 138.06808),
+    "DSSO": ("DSSO", 158.00376),
+    "DSBU": ("DSBU", 196.08479231),
+    "ADH": ("ADH", 138.09054635),
+    "DSBSO": ("DSBSO", 308.03883),
+    "PhoX": ("PhoX", 209.97181),
+}
+r"""Dictionary that maps sequence elements and modifications from Scout to their corresponding post-translational-modifications.
+
+Dictionary that maps sequence elements (e.g. `"+57.021460"`) and modifications (e.g. `"Carbamidomethyl"`) from Scout to their
+corresponding post-translational-modifications (e.g. `("Carbamidomethyl", 57.021464)`).
+
+Examples
+--------
+>>> from pyXLMS.constants import SCOUT_MODIFICATION_MAPPING
+>>> SCOUT_MODIFICATION_MAPPING["+57.021460"]
+('Carbamidomethyl', 57.021464)
+>>> SCOUT_MODIFICATION_MAPPING["Carbamidomethyl"]
+('Carbamidomethyl', 57.021464)
+>>> SCOUT_MODIFICATION_MAPPING["Oxidation of Methionine"]
 ('Oxidation', 15.994915)
 """
