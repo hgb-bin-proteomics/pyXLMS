@@ -244,6 +244,8 @@ def to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     -------
     pandas.DataFrame
         The pandas DataFrame created from the list of input crosslinks or crosslink-spectrum-matches.
+        A full specification of the returned DataFrame can be found in the
+        `docs <https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/format.md>`_.
 
     Raises
     ------
