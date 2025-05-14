@@ -1,2 +1,2 @@
-sphinx-apidoc -f -o docs src/pyXLMS
-sphinx-build -b html docs html
+sphinx-apidoc -f -o sphinx src/pyXLMS
+sphinx-build -b html sphinx html

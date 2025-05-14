@@ -142,7 +142,7 @@ def read_custom(
     - "Beta Peptide Crosslink Position": The position of the crosslinker in the sequence of the second peptide (1-based).
 
     A full specification of columns that can be parsed can be found in the
-    `docs <https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/md/format.md>`_.
+    `docs <https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/format.md>`_.
 
     Parameters
     ----------
