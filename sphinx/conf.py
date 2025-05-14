@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath("../src/"))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "pyXLMS"
-copyright = "2024, Micha Johannes Birklbauer"
+copyright = "2025, Micha Johannes Birklbauer"
 author = "Micha Johannes Birklbauer"
 version = "0.2"
 release = "0.2.0"
@@ -25,6 +25,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
+    "myst_parser",
 ]
 
 templates_path = ["_templates"]
@@ -48,12 +49,14 @@ html_favicon = (
 html_theme = "pydata_sphinx_theme"
 html_theme_options = {
     "logo": {
-        "alt_text": "pyXLMS - Home",
-        "text": "Python Crosslink Analysis",
+        "alt_text": "pyXLMS",
+        "text": "pyXLMS",
         "image_light": "https://github.com/hgb-bin-proteomics/MSAnnika/raw/master/logo/icons/icon.png",
         "image_dark": "https://github.com/hgb-bin-proteomics/MSAnnika/raw/master/logo/icons/icon.png",
     },
     "external_links": [
+        {"name": "Documentation", "url": "https://hgb-bin-proteomics.github.io/pyXLMS-docs"},
+        {"name": "Contact", "url": "https://github.com/hgb-bin-proteomics/pyXLMS?tab=readme-ov-file#contact"},
         {"name": "MS Annika", "url": "https://github.com/hgb-bin-proteomics/MSAnnika"}
     ],
     "icon_links": [
@@ -64,4 +67,13 @@ html_theme_options = {
             "type": "fontawesome",
         }
     ],
+    "use_edit_page_button": True,
+    "primary_sidebar_end": ["indices.html"],
+}
+html_context = {
+    "github_url": "https://github.com",
+    "github_user": "hgb-bin-proteomics",
+    "github_repo": "pyXLMS",
+    "github_version": "master",
+    "doc_path": "sphinx",
 }
