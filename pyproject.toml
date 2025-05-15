@@ -28,7 +28,7 @@ dependencies = [
   "pandas",
   "openpyxl",
   "tqdm",
-  "pyteomics"
+  "pyteomics[XML]"
 ]
 
 [project.optional-dependencies]

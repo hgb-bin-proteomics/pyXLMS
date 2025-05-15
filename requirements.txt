@@ -1,4 +1,4 @@
 pandas
 openpyxl
 tqdm
-pyteomics
+pyteomics[XML]
