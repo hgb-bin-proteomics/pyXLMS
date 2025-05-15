@@ -55,9 +55,15 @@ html_theme_options = {
         "image_dark": "https://github.com/hgb-bin-proteomics/MSAnnika/raw/master/logo/icons/icon.png",
     },
     "external_links": [
-        {"name": "Documentation", "url": "https://hgb-bin-proteomics.github.io/pyXLMS-docs"},
-        {"name": "Contact", "url": "https://github.com/hgb-bin-proteomics/pyXLMS?tab=readme-ov-file#contact"},
-        {"name": "MS Annika", "url": "https://github.com/hgb-bin-proteomics/MSAnnika"}
+        {
+            "name": "Documentation",
+            "url": "https://hgb-bin-proteomics.github.io/pyXLMS-docs",
+        },
+        {
+            "name": "Contact",
+            "url": "https://github.com/hgb-bin-proteomics/pyXLMS?tab=readme-ov-file#contact",
+        },
+        {"name": "MS Annika", "url": "https://github.com/hgb-bin-proteomics/MSAnnika"},
     ],
     "icon_links": [
         {

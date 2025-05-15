@@ -172,52 +172,64 @@ def read_mzid(
                     if "cross-link spectrum identification item" in subitem:
                         # if csm_id is not set yet, we parse item as alpha peptide
                         if csm_id is None:
-                            csm_id = int(float(subitem["cross-link spectrum identification item"]))
+                            csm_id = int(
+                                float(
+                                    subitem["cross-link spectrum identification item"]
+                                )
+                            )
                             if "PeptideSequence" in subitem:
                                 peptide_a = format_sequence(subitem["PeptideSequence"])
                             # we only parse crosslink position from modifications
                             if "Modification" in subitem:
                                 for mod in subitem["Modification"]:
                                     if "name" in mod:
-                                        if str(mod["name"]).strip().upper() in crosslinkers:
+                                        if (
+                                            str(mod["name"]).strip().upper()
+                                            in crosslinkers
+                                        ):
                                             if "location" in mod:
                                                 pos_a = int(mod["location"])
                         # if csm_id is already set, we check if csm_ids of items are equal,
                         # if yes we parse the item as the beta peptide
-                        elif csm_id == int(float(subitem["cross-link spectrum identification item"])):
+                        elif csm_id == int(
+                            float(subitem["cross-link spectrum identification item"])
+                        ):
                             if "PeptideSequence" in subitem:
                                 peptide_b = format_sequence(subitem["PeptideSequence"])
                             if "Modification" in subitem:
                                 for mod in subitem["Modification"]:
                                     if "name" in mod:
-                                        if str(mod["name"]).strip().upper() in crosslinkers:
+                                        if (
+                                            str(mod["name"]).strip().upper()
+                                            in crosslinkers
+                                        ):
                                             if "location" in mod:
                                                 pos_b = int(mod["location"])
             # if and only if all minimal CSM values are parsed, we create a CSM
             if None not in [csm_id, scan, filename, peptide_a, pos_a, peptide_b, pos_b]:
                 csm = create_csm(
-                    peptide_a = check_str(peptide_a),
-                    modifications_a = None,
-                    xl_position_peptide_a = check_int(pos_a),
-                    proteins_a = None,
-                    xl_position_proteins_a = None,
-                    pep_position_proteins_a = None,
-                    score_a = None,
-                    decoy_a = decoy,
-                    peptide_b = check_str(peptide_b),
-                    modifications_b = None,
-                    xl_position_peptide_b = check_int(pos_b),
-                    proteins_b = None,
-                    xl_position_proteins_b = None,
-                    pep_position_proteins_b = None,
-                    score_b = None,
-                    decoy_b = decoy,
-                    score = None,
-                    spectrum_file = check_str(filename),
-                    scan_nr = check_int(scan),
-                    charge = None,
-                    rt = None,
-                    im_cv = None
+                    peptide_a=check_str(peptide_a),
+                    modifications_a=None,
+                    xl_position_peptide_a=check_int(pos_a),
+                    proteins_a=None,
+                    xl_position_proteins_a=None,
+                    pep_position_proteins_a=None,
+                    score_a=None,
+                    decoy_a=decoy,
+                    peptide_b=check_str(peptide_b),
+                    modifications_b=None,
+                    xl_position_peptide_b=check_int(pos_b),
+                    proteins_b=None,
+                    xl_position_proteins_b=None,
+                    pep_position_proteins_b=None,
+                    score_b=None,
+                    decoy_b=decoy,
+                    score=None,
+                    spectrum_file=check_str(filename),
+                    scan_nr=check_int(scan),
+                    charge=None,
+                    rt=None,
+                    im_cv=None,
                 )
                 csms.append(csm)
     ## check results
