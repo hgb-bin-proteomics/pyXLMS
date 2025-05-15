@@ -23,6 +23,12 @@ from typing import Any
 from typing import List
 from typing import Callable
 
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
 
 def parse_scan_nr_from_mzid(spectrum_id: str) -> int:
     r"""Parse the scan number from a 'spectrumID' of a mzIdentML file.
@@ -43,7 +49,7 @@ def parse_scan_nr_from_mzid(spectrum_id: str) -> int:
     >>> parse_scan_nr_from_mzid("scan=5321")
     5321
     """
-    return int(str(spectrum_id).split("scan=")[1])
+    return int(str(spectrum_id).split("scan=")[1].split(",")[0])
 
 
 def read_mzid(
@@ -51,6 +57,7 @@ def read_mzid(
     scan_nr_parser: Optional[Callable[[str], int]] = None,
     decoy: Optional[bool] = None,
     crosslinkers: Dict[str, float] = CROSSLINKERS,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
     r"""Read a mzIdentML (mzid) file.
 
@@ -68,6 +75,10 @@ def read_mzid(
         Whether the mzid file contains decoy CSMs (``True``) or target CSMs (``False``).
     crosslinkers: dict of str, float, default = ``constants.CROSSLINKERS``
         Mapping of crosslinker names to crosslinker delta masses.
+    verbose : 0, 1, or 2, default = 1
+        0: All warnings are ignored.
+        1: Warnings are printed to stdout.
+        2: Warnings are treated as errors.
 
     Returns
     -------
@@ -78,6 +89,8 @@ def read_mzid(
     ------
     RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
+        If parser is used with ``verbose = 2``.
+        If there are warnings while reading the mzIdentML file (only for ``verbose = 2``).
     TypeError
         If one of the values necessary to create a crosslink-spectrum-match could not be parsed
         correctly.
@@ -92,14 +105,6 @@ def read_mzid(
     >>> from pyXLMS.parser import read_mzid
     >>> csms = read_mzid("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.mzid")
     """
-    ## warning message
-    warnings.warn(
-        UserWarning(
-            "Please be aware that mzIdentML parsing is currently an experimental feature!\n"
-            "Please check the documentation for parser.read_mzid for more information!"
-        )
-    )
-
     ## check input
     _ok = (
         check_input(scan_nr_parser, "scan_nr_parser", Callable)
@@ -108,10 +113,27 @@ def read_mzid(
     )
     _ok = check_input(decoy, "decoy", bool) if decoy is not None else True
     _ok = check_input(crosslinkers, "crosslinkers", dict, float)
+    _ok = check_input(verbose, "verbose", int)
+    if verbose not in [0, 1, 2]:
+        raise TypeError("Verbose level has to be one of 0, 1, or 2!")
 
     ## set default parsers
     if scan_nr_parser is None:
         scan_nr_parser = parse_scan_nr_from_mzid
+
+    ## warning message
+    if verbose == 1:
+        warnings.warn(
+            UserWarning(
+                "Please be aware that mzIdentML parsing is currently an experimental feature!\n"
+                "Please check the documentation for parser.read_mzid for more information!"
+            )
+        )
+    if verbose == 2:
+        raise RuntimeError(
+            "Please be aware that mzIdentML parsing is currently an experimental feature!\n"
+            "Please check the documentation for parser.read_mzid for more information!"
+        )
 
     ## helper functions
     def check_str(value: str | None) -> str:
@@ -142,9 +164,16 @@ def read_mzid(
     ## process data
     for input in inputs:
         # read all items with pyteomics
-        pyteomics_mzid = mzid.MzIdentML(input)
-        items = [item for item in pyteomics_mzid]
-        pyteomics_mzid.close()
+        with warnings.catch_warnings(record=True) as wl:
+            warnings.simplefilter("always")
+            pyteomics_mzid = mzid.MzIdentML(input)
+            items = [item for item in pyteomics_mzid]
+            pyteomics_mzid.close()
+        if verbose > 0 and len(wl) > 0:
+            for w in wl:
+                warnings.warn(w.message)
+        if verbose == 2 and len(wl) > 0:
+            raise RuntimeError("Reading mzIdentML file raised warnings!")
         # iterate over all items
         for item in tqdm(items):
             # set up empty variables that are needed for a minimal CSM

@@ -19,7 +19,7 @@ def test1():
 def test2():
     from pyXLMS import parser as p
 
-    pr = p.read_mzid(F1)
+    pr = p.read_mzid(F1, verbose=0)
     assert pr["data_type"] == "parser_result"
     assert pr["completeness"] == "partial"
     assert pr["search_engine"] == "mzIdentML"
@@ -33,7 +33,7 @@ def test2():
 def test3():
     from pyXLMS import parser as p
 
-    pr = p.read_mzid(F2)
+    pr = p.read_mzid(F2, verbose=0)
     assert pr["data_type"] == "parser_result"
     assert pr["completeness"] == "partial"
     assert pr["search_engine"] == "mzIdentML"
