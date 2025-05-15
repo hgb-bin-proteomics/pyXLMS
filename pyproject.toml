@@ -17,9 +17,12 @@ description = "A python package to process protein cross-linking data."
 keywords = ["crosslink", "crosslinker", "crosslinking", "mass spectrometry", "proteomics"]
 requires-python = ">=3.7"
 classifiers = [
-  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+  "Development Status :: 5 - Production/Stable"
 ]
 dependencies = [
   "pandas",
@@ -34,5 +37,5 @@ gui = [
 
 [project.urls]
 Homepage = "https://github.com/hgb-bin-proteomics/pyXLMS"
-Documentation = "https://hgb-bin-proteomics.github.io/pyXLMS"
+Documentation = "https://hgb-bin-proteomics.github.io/pyXLMS-docs"
 Issues = "https://github.com/hgb-bin-proteomics/pyXLMS/issues"
