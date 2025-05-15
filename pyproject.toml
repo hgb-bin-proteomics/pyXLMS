@@ -27,7 +27,8 @@ classifiers = [
 dependencies = [
   "pandas",
   "openpyxl",
-  "tqdm"
+  "tqdm",
+  "pyteomics"
 ]
 
 [project.optional-dependencies]
