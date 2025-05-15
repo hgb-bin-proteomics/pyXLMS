@@ -76,9 +76,9 @@ def read_mzid(
     crosslinkers: dict of str, float, default = ``constants.CROSSLINKERS``
         Mapping of crosslinker names to crosslinker delta masses.
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -89,8 +89,12 @@ def read_mzid(
     ------
     RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
+    RuntimeError
         If parser is used with ``verbose = 2``.
+    RuntimeError
         If there are warnings while reading the mzIdentML file (only for ``verbose = 2``).
+    TypeError
+        If parameter verbose was not set correctly.
     TypeError
         If one of the values necessary to create a crosslink-spectrum-match could not be parsed
         correctly.

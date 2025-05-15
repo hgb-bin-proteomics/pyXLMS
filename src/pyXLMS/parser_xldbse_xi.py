@@ -247,9 +247,9 @@ def __parse_xisearch_modifications(
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -261,6 +261,7 @@ def __parse_xisearch_modifications(
     ------
     RuntimeError
         If the parsed modifications and positions are not of the same length.
+    RuntimeError
         If multiple modifications on the same residue are parsed (only for ``verbose = 2``).
     KeyError
         If an unknown modification is encountered.
@@ -613,9 +614,9 @@ def __read_xisearch(
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -709,9 +710,9 @@ def __parse_xifdr_modifications(
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -836,9 +837,9 @@ def __read_xifdr_csms(
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -991,9 +992,9 @@ def read_xi(
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------

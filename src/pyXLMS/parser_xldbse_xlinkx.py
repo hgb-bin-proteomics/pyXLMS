@@ -146,9 +146,9 @@ def read_xlinkx(
         for the crosslink position not being able to be parsed for at least one of the crosslinks. For these cases the crosslink
         position will be set to 100 000.
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -161,9 +161,11 @@ def read_xlinkx(
         If the input format is not supported or cannot be inferred.
     TypeError
         If parameter verbose was not set correctly.
+    TypeError
         If the pdResult file is provided in the wrong format.
     RuntimeError
         If the crosslink position could not be parsed for at least one of the crosslinks.
+    RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslinks or crosslink-spectrum-matches.
     KeyError
         If one of the found post-translational-modifications could not be found/mapped.
