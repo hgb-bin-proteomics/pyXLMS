@@ -80,6 +80,9 @@ def read_mzid(
     ------
     RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
+    TypeError
+        If one of the values necessary to create a crosslink-spectrum-match could not be parsed
+        correctly.
 
     Notes
     -----
@@ -111,6 +114,23 @@ def read_mzid(
     ## set default parsers
     if scan_nr_parser is None:
         scan_nr_parser = parse_scan_nr_from_mzid
+
+    ## helper functions
+    def check_str(value: str | None) -> str:
+        if value is None:
+            raise TypeError("Expected str value but None was given!")
+        if type(value) == str:
+            return value
+        raise TypeError(f"Expected str value but {type(value)} was given!")
+        return "err"
+
+    def check_int(value: int | None) -> int:
+        if value is None:
+            raise TypeError("Expected int value but None was given!")
+        if type(value) == int:
+            return value
+        raise TypeError(f"Expected int value but {type(value)} was given!")
+        return -1
 
     ## data structures
     csms = list()
@@ -161,7 +181,7 @@ def read_mzid(
                             if "Modification" in subitem:
                                 for mod in subitem["Modification"]:
                                     if "name" in mod:
-                                        if str(mod["name"]).strip().upper() in crosslinkers
+                                        if str(mod["name"]).strip().upper() in crosslinkers:
                                             if "location" in mod:
                                                 pos_a = int(mod["location"])
                         # if csm_id is already set, we check if csm_ids of items are equal,
@@ -177,26 +197,26 @@ def read_mzid(
                                                 pos_b = int(mod["location"])
             # if and only if all minimal CSM values are parsed, we create a CSM
             if None not in [csm_id, scan, filename, peptide_a, pos_a, peptide_b, pos_b]:
-                cms = create_csm(
-                    peptide_a = peptide_a,
+                csm = create_csm(
+                    peptide_a = check_str(peptide_a),
                     modifications_a = None,
-                    xl_position_peptide_a = pos_a,
+                    xl_position_peptide_a = check_int(pos_a),
                     proteins_a = None,
                     xl_position_proteins_a = None,
                     pep_position_proteins_a = None,
                     score_a = None,
                     decoy_a = decoy,
-                    peptide_b = peptide_b,
+                    peptide_b = check_str(peptide_b),
                     modifications_b = None,
-                    xl_position_peptide_b = pos_b,
+                    xl_position_peptide_b = check_int(pos_b),
                     proteins_b = None,
                     xl_position_proteins_b = None,
                     pep_position_proteins_b = None,
                     score_b = None,
                     decoy_b = decoy,
                     score = None,
-                    spectrum_file = filename,
-                    scan_nr = scan,
+                    spectrum_file = check_str(filename),
+                    scan_nr = check_int(scan),
                     charge = None,
                     rt = None,
                     im_cv = None
