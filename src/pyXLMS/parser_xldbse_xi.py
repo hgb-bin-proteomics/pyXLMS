@@ -94,7 +94,7 @@ def detect_xi_filetype(
     return "err"
 
 
-def parse_peptide(sequence: str) -> str:
+def parse_peptide(sequence: str, term_char: str = ".") -> str:
     r"""Parses the peptide sequence from a sequence string including flanking amino acids.
 
     Parses the peptide sequence from a sequence string including flanking amino acids, for example ``"K.KKMoxKLS.S"``.
@@ -104,6 +104,8 @@ def parse_peptide(sequence: str) -> str:
     ----------
     sequence : str
         The sequence string containing the peptide sequence and flanking amino acids.
+    term_char : str (single character), default = "."
+        The character used to denote N-terminal and C-terminal.
 
     Returns
     -------
@@ -133,10 +135,10 @@ def parse_peptide(sequence: str) -> str:
     _ok = check_input(sequence, "sequence", str)
 
     # PEPTIDE
-    if "." not in sequence and len(sequence.strip()) > 1:
+    if term_char not in sequence and len(sequence.strip()) > 1:
         return sequence.strip()
-    if "." in sequence:
-        parts = [part.strip() for part in sequence.split(".")]
+    if term_char in sequence:
+        parts = [part.strip() for part in sequence.split(term_char)]
         # K.PEPTPIDE.P.EP <- wrong format
         if len(parts) > 3:
             raise RuntimeError(f"Could not parse peptide from sequence {sequence}!")

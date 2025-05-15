@@ -1,19 +1,9 @@
-.. Doc(rst): https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
-
-pyXLMS
-======
-
-A python package to process protein cross-linking data.
+.. include:: ../README.md
+   :parser: myst_parser.sphinx_
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
    :caption: Contents:
 
    modules
-
-Site
-----
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
