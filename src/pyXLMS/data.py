@@ -357,6 +357,65 @@ def create_crosslink(
     }
 
 
+def create_crosslink_min(
+    peptide_a: str,
+    xl_position_peptide_a: int,
+    peptide_b: str,
+    xl_position_peptide_b: int,
+    **kwargs
+) -> Dict[str, Any]:
+    r"""Creates a crosslink data structure from minimal input.
+
+    Contains minimal data necessary for representing a single crosslink. This is an alias that sets all optional
+    parameters to ``None`` for convenience. The returned crosslink data structure is a dictionary with keys
+    as detailed in the return section.
+
+    Parameters
+    ----------
+    peptide_a : str
+        The unmodified amino acid sequence of the first peptide.
+    xl_position_peptide_a : int
+        The position of the crosslinker in the sequence of the first peptide (1-based).
+    peptide_b : str
+        The unmodified amino acid sequence of the second peptide.
+    xl_position_peptide_b : int
+        The position of the crosslinker in the sequence of the second peptide (1-based).
+    **kwargs
+        Any additional parameters will be passed to ``data.create_crosslink()``.
+
+    Returns
+    -------
+    dict
+        The dictionary representing the crosslink with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_peptide_crosslink_position``,
+        ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
+        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink_type``, ``score``, and ``additional_information``.
+        Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
+
+    Notes
+    -----
+    See also ``data.create_crosslink()``.
+
+    Examples
+    --------
+    >>> from pyXLMS.data import create_crosslink_min
+    >>> minimal_crosslink = create_crosslink_min("PEPTIDEA", 1, "PEPTIDEB", 5)
+    """
+    return create_crosslink(
+        peptide_a=peptide_a,
+        xl_position_peptide_a=xl_position_peptide_a,
+        proteins_a=kwargs["proteins_a"] if "proteins_a" in kwargs else None,
+        xl_position_proteins_a=kwargs["xl_position_proteins_a"] if "xl_position_proteins_a" in kwargs else None,
+        decoy_a=kwargs["decoy_a"] if "decoy_a" in kwargs else None,
+        peptide_b=peptide_b,
+        xl_position_peptide_b=xl_position_peptide_b,
+        proteins_b=kwargs["proteins_b"] if "proteins_b" in kwargs else None,
+        xl_position_proteins_b=kwargs["xl_position_proteins_b"] if "xl_position_proteins_b" in kwargs else None,
+        decoy_b=kwargs["decoy_b"] if "decoy_b" in kwargs else None,
+        score=kwargs["score"] if "score" in kwargs else None,
+        additional_information=kwargs["additional_information"] if "additional_information" in kwargs else None,
+    )
+
+
 def create_csm(
     peptide_a: str,
     modifications_a: Optional[Dict[int, Tuple[str, float]]],
