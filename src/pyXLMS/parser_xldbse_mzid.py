@@ -7,7 +7,6 @@
 from __future__ import annotations
 
 import warnings
-import pandas as pd
 from tqdm import tqdm
 from pyteomics import mzid
 
@@ -21,7 +20,6 @@ from typing import Optional
 from typing import BinaryIO
 from typing import Dict
 from typing import Any
-from typing import Tuple
 from typing import List
 from typing import Callable
 
@@ -119,7 +117,7 @@ def read_mzid(
     def check_str(value: str | None) -> str:
         if value is None:
             raise TypeError("Expected str value but None was given!")
-        if type(value) == str:
+        if type(value) is str:
             return value
         raise TypeError(f"Expected str value but {type(value)} was given!")
         return "err"
@@ -127,7 +125,7 @@ def read_mzid(
     def check_int(value: int | None) -> int:
         if value is None:
             raise TypeError("Expected int value but None was given!")
-        if type(value) == int:
+        if type(value) is int:
             return value
         raise TypeError(f"Expected int value but {type(value)} was given!")
         return -1
