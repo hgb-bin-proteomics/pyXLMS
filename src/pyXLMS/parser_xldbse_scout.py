@@ -120,9 +120,9 @@ def parse_modifications_from_scout_sequence(
     modifications: dict of str, float, default = ``constants.SCOUT_MODIFICATION_MAPPING``
         Mapping of modification names to modification masses.
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -206,9 +206,9 @@ def __read_scout_csms_unfiltered(
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -298,9 +298,9 @@ def __read_scout_csms_filtered(
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -543,9 +543,9 @@ def read_scout(
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------

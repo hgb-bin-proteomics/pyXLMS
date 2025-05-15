@@ -54,9 +54,9 @@ def __parse_modifications_from_plink_modifications_str(
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -287,9 +287,9 @@ def read_plink(
     sep : str, default = ","
         Seperator used in the ``.csv`` file.
     verbose : 0, 1, or 2, default = 1
-        0: All warnings are ignored.
-        1: Warnings are printed to stdout.
-        2: Warnings are treated as errors.
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------

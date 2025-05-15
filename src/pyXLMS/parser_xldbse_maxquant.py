@@ -58,6 +58,7 @@ def parse_modifications_from_maxquant_sequence(
     ------
     RuntimeError
         If the sequence could not be parsed because it is not in MaxQuant format.
+    RuntimeError
         If multiple modifications on the same residue are parsed.
     KeyError
         If an unknown modification is encountered.
