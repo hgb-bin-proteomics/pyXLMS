@@ -46,7 +46,7 @@ def read(
     engine: Literal["Custom", "MaxQuant", "MaxLynx", "MS Annika", "mzIdentML", "pLink", "Scout", "xiSearch/xiFDR", "XlinkX"],
     crosslinker: str,
     ignore_errors: bool = False,
-    verbose = Literal[0, 1, 2] = 1,
+    verbose: Literal[0, 1, 2] = 1,
     **kwargs
 ) -> Dict[str, Any]:
     r"""Read a crosslink result file.

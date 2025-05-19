@@ -25,7 +25,7 @@ def test1():
     assert csm["alpha_peptide"] == "EDITPEP"
     assert csm["alpha_modifications"] is None
     assert csm["alpha_peptide_crosslink_position"] == 3
-    assert csm["alpha_proteins"]) is None
+    assert csm["alpha_proteins"] is None
     assert csm["alpha_proteins_crosslink_positions"] is None
     assert csm["alpha_proteins_peptide_positions"] is None
     assert csm["alpha_score"] is None
@@ -67,7 +67,7 @@ def test2():
     assert csm["alpha_peptide"] == "EDITPEP"
     assert csm["alpha_modifications"] is None
     assert csm["alpha_peptide_crosslink_position"] == 3
-    assert csm["alpha_proteins"]) is None
+    assert csm["alpha_proteins"] is None
     assert csm["alpha_proteins_crosslink_positions"] is None
     assert csm["alpha_proteins_peptide_positions"] is None
     assert csm["alpha_score"] is None
@@ -117,7 +117,7 @@ def test3():
         charge=3,
         rt=23.4,
         im_cv=-50.0,
-        additional_information={"m/z"=1337.1}
+        additional_information={"m/z": 1337.1}
     )
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "full"
@@ -159,4 +159,4 @@ def test3():
     assert csm["charge"] == 3
     assert csm["retention_time"] == pytest.approx(23.4)
     assert csm["ion_mobility"] == pytest.approx(-50.0)
-    assert csm["additional_information"]["m/z"] = pytest.approx(1337.1)
+    assert csm["additional_information"]["m/z"] == pytest.approx(1337.1)

@@ -68,7 +68,7 @@ def test3():
         "EDITPEP",
         3,
         proteins_a=["Protein"],
-        xl_position_proteins_a=[15]
+        xl_position_proteins_a=[15],
         decoy_a=True,
         proteins_b=["Protein"],
         xl_position_proteins_b=[37],
