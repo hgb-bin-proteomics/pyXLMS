@@ -4,6 +4,7 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+from __future__ import annotations
 
 # READERS
 from .parser_xldbse_xi import read_xi
@@ -28,25 +29,115 @@ from .parser_xldbse_scout import parse_modifications_from_scout_sequence  # noqa
 from .parser_xldbse_custom import pyxlms_modification_str_parser  # noqa: F401
 from .parser_xldbse_maxquant import parse_modifications_from_maxquant_sequence  # noqa: F401
 
+from typing import BinaryIO
+from typing import Dict
+from typing import Any
+from typing import List
 
-## TODO
-def read(file: str, dbse: str):
-    if dbse == "MS Annika":
-        return read_msannika(file)
-    if dbse == "Xi":
-        return read_xi(file)
-    if dbse == "MaxQuant":
-        return read_maxquant(file, "DSSO")
-    if dbse == "MaxLynx":
-        return read_maxlynx(file, "DSSO")
-    if dbse == "pLink":
-        return read_plink(file)
-    if dbse == "XlinkX":
-        return read_xlinkx(file)
-    if dbse == "Scout":
-        return read_scout(file, "DSSO")
-    if dbse == "Custom":
-        return read_custom(file)
-    if dbse == "mzid":
-        return read_mzid(file)
-    return
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
+
+def read(
+    files: str | List[str] | BinaryIO,
+    engine: Literal[
+        "Custom",
+        "MaxQuant",
+        "MaxLynx",
+        "MS Annika",
+        "mzIdentML",
+        "pLink",
+        "Scout",
+        "xiSearch/xiFDR",
+        "XlinkX",
+    ],
+    crosslinker: str,
+    ignore_errors: bool = False,
+    verbose: Literal[0, 1, 2] = 1,
+    **kwargs,
+) -> Dict[str, Any]:
+    r"""Read a crosslink result file.
+
+    Reads a crosslink or crosslink-spectrum-match result file from any of the supported crosslink search engines or formats.
+    Currently supports results files from MaxLynx/MaxQuant, MS Annika, pLink 2 and pLink 3, Scout, xiSearch and xiFDR,
+    XlinkX, and the mzIdentML format. Additionally supports parsing from custom ``.csv`` files in pyXLMS format, see more
+    about the custom format in ``parser.read_custom()`` and in here:
+    `docs <https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/format.md>`_.
+
+    Parameters
+    ----------
+    files : str, list of str, or file stream
+        The name/path of the result file(s) or a file-like object/stream.
+    engine : "Custom", "MaxQuant", "MaxLynx", "MS Annika", "mzIdentML", "pLink", "Scout", "xiSearch/xiFDR", or "XlinkX"
+        Crosslink search engine or format of the result file.
+    crosslinker : str
+        Name of the used cross-linking reagent, for example "DSSO".
+    ignore_errors : bool, default = False
+        Ignore errors when mapping modifications. Used in ``parser.read_xi()`` and ``parser.read_xlinkx()``.
+    verbose : 0, 1, or 2, default = 1
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
+
+    Returns
+    -------
+    dict
+        The ``parser_result`` object containing all parsed information.
+
+    Raises
+    ------
+    ValueError
+        If the value entered for parameter ``engine`` is not supported.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import read
+    >>> csms_from_xiSearch = read("data/xi/r1_Xi1.7.6.7.csv", engine="xiSearch/xiFDR", crosslinker="DSS")
+
+    >>> from pyXLMS.parser import read
+    >>> csms_from_MaxQuant = read("data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS")
+    """
+    supported = [
+        "Custom",
+        "MaxQuant",
+        "MaxLynx",
+        "MS Annika",
+        "mzIdentML",
+        "pLink",
+        "Scout",
+        "xiSearch/xiFDR",
+        "XlinkX",
+    ]
+    ff = engine.lower().strip()
+
+    if ff in ["custom", "pyxlms"]:
+        return read_custom(files, **kwargs)
+    if ff in ["maxquant", "max quant"]:
+        return read_maxquant(files, crosslinker=crosslinker, **kwargs)
+    if ff in ["maxlynx", "max lynx"]:
+        return read_maxlynx(files, crosslinker=crosslinker, **kwargs)
+    if ff in ["ms annika", "msannika"]:
+        return read_msannika(files, **kwargs)
+    if ff in ["mzidentml", "mzid"]:
+        return read_mzid(files, verbose=verbose, **kwargs)
+    if ff in ["plink", "plink2", "plink3", "plink 2", "plink 3"]:
+        return read_plink(files, verbose=verbose, **kwargs)
+    if ff in ["scout"]:
+        return read_scout(files, crosslinker=crosslinker, verbose=verbose, **kwargs)
+    if ff in ["xisearch/xifdr", "xisearch", "xifdr", "xi search", "xi fdr", "xi"]:
+        return read_xi(files, ignore_errors=ignore_errors, verbose=verbose, **kwargs)
+    if ff in ["xlinkx", "x link x"]:
+        return read_xlinkx(
+            files, ignore_errors=ignore_errors, verbose=verbose, **kwargs
+        )
+
+    err_str = (
+        f"{engine} is not a supported crosslink search engine or format! Valid options are:\n"
+        + ", ".join(supported)
+    )
+    raise ValueError(err_str)
+
+    return {"err": err_str}
