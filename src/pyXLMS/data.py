@@ -366,9 +366,10 @@ def create_crosslink_min(
 ) -> Dict[str, Any]:
     r"""Creates a crosslink data structure from minimal input.
 
-    Contains minimal data necessary for representing a single crosslink. This is an alias that sets all optional
-    parameters to ``None`` for convenience. The returned crosslink data structure is a dictionary with keys
-    as detailed in the return section.
+    Contains minimal data necessary for representing a single crosslink. This is an alias for
+    ``data.create_crosslink()``that sets all optional parameters to ``None`` for convenience.
+    The returned crosslink data structure is a dictionary with keys as detailed in the return
+    section.
 
     Parameters
     ----------
@@ -749,6 +750,85 @@ def create_csm(
         "ion_mobility": im_cv,
         "additional_information": additional_information,
     }
+
+
+def create_csm_min(
+    peptide_a: str,
+    xl_position_peptide_a: int,
+    peptide_b: str,
+    xl_position_peptide_b: int,
+    spectrum_file: str,
+    scan_nr: int,
+    **kwargs
+) -> Dict[str, Any]:
+    r"""Creates a crosslink-spectrum-match data structure from minimal input.
+
+    Contains minimal data necessary for representing a single crosslink-spectrum-match. This
+    is an alias for ``data.create_csm()``that sets all optional parameters to ``None`` for convenience.
+    The returned crosslink-spectrum-match data structure is a dictionary with keys as detailed in the
+    return section.
+
+    Parameters
+    ----------
+    peptide_a : str
+        The unmodified amino acid sequence of the first peptide.
+    xl_position_peptide_a : int
+        The position of the crosslinker in the sequence of the first peptide (1-based).
+    peptide_b : str
+        The unmodified amino acid sequence of the second peptide.
+    xl_position_peptide_b : int
+        The position of the crosslinker in the sequence of the second peptide (1-based).
+    spectrum_file : str
+        Name of the spectrum file the crosslink-spectrum-match was identified in.
+    scan_nr : int
+        The corresponding scan number of the crosslink-spectrum-match.
+    **kwargs
+        Any additional parameters will be passed to ``data.create_csm()``.
+
+    Returns
+    -------
+    dict
+        The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_modifications``,
+        ``alpha_peptide_crosslink_position``, ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_proteins_peptide_positions``,
+        ``alpha_score``, ``alpha_decoy``, ``beta_peptide``, ``beta_modifications``, ``beta_peptide_crosslink_position``, ``beta_proteins``,
+        ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink_type``, ``score``,
+        ``spectrum_file``, ``scan_nr``, ``retention_time``, ``ion_mobility``, and ``additional_information``.
+        Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
+
+    Notes
+    -----
+    See also ``data.create_csm()``.
+
+    Examples
+    --------
+    >>> from pyXLMS.data import create_csm_min
+    >>> minimal_csm = create_csm("PEPTIDEA", 1, "PEPTIDEB", 5, "MS_EXP1", 1)
+    """
+    return create_csm(
+        peptide_a=peptide_a,
+        modifications_a=kwargs["modifications_a"] if "modifications_a" in kwargs else None,
+        xl_position_peptide_a=xl_position_peptide_a,
+        proteins_a=kwargs["proteins_a"] if "proteins_a" in kwargs else None,
+        xl_position_proteins_a=kwargs["xl_position_proteins_a"] if "xl_position_proteins_a" in kwargs else None,
+        pep_position_proteins_a=kwargs["pep_position_proteins_a"] if "pep_position_proteins_a" in kwargs else None,
+        score_a=kwargs["score_a"] if "score_a" in kwargs else None,
+        decoy_a=kwargs["decoy_a"] if "decoy_a" in kwargs else None,
+        peptide_b=peptide_b,
+        modifications_b=kwargs["modifications_b"] if "modifications_b" in kwargs else None,
+        xl_position_peptide_b=xl_position_peptide_b,
+        proteins_b=kwargs["proteins_b"] if "proteins_b" in kwargs else None,
+        xl_position_proteins_b=kwargs["xl_position_proteins_b"] if "xl_position_proteins_b" in kwargs else None,
+        pep_position_proteins_b=kwargs["pep_position_proteins_b"] if "pep_position_proteins_b" in kwargs else None,
+        score_b=kwargs["score_b"] if "score_b" in kwargs else None,
+        decoy_b=kwargs["decoy_b"] if "decoy_b" in kwargs else None,
+        score=kwargs["score"] if "score" in kwargs else None,
+        spectrum_file=spectrum_file,
+        scan_nr=scan_nr,
+        charge=kwargs["charge"] if "charge" in kwargs else None,
+        rt=kwargs["rt"] if "rt" in kwargs else None,
+        im_cv=kwargs["im_cv"] if "im_cv" in kwargs else None,
+        additional_information=kwargs["additional_information"] if "additional_information" in kwargs else None,
+    )
 
 
 def create_parser_result(
