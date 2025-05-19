@@ -423,6 +423,59 @@ def create_crosslink_min(
     )
 
 
+def create_crosslink_from_csm(csm: Dict[str, Any]) -> Dict[str, Any]:
+    r"""Creates a crosslink data structure from a crosslink-spectrum-match.
+
+    Creates a crosslink data structure from a crosslink-spectrum-match. The returned crosslink data structure is a dictionary with keys
+    as detailed in the return section.
+
+    Parameters
+    ----------
+    csm : dict of str
+        The crosslink-spectrum-match item to be converted to a crosslink item.
+
+    Returns
+    -------
+    dict
+        The dictionary representing the crosslink with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_peptide_crosslink_position``,
+        ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
+        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink_type``, ``score``, and ``additional_information``.
+        Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
+
+    Raises
+    ------
+    TypeError
+        If parameter ``csm`` is not a valid crosslink-spectrum-match.
+
+    Notes
+    -----
+    See also ``data.create_crosslink()``.
+
+    Examples
+    --------
+    >>> from pyXLMS.data import create_csm_min, create_crosslink_from_csm
+    >>> csm = create_csm_min("PEPTIDEA", 1, "PEPTIDEB", 5, "RUN_1", 1)
+    >>> crosslink = create_crosslink_from_csm(csm)
+    """
+    _ok = check_input(csm, "csm", dict)
+    if "data_type" not in csm or csm["data_type"] != "crosslink-spectrum-match":
+        raise TypeError("Parameter csm is not a valid crosslink-spectrum-match!")
+    return create_crosslink(
+        peptide_a=csm["peptide_a"],
+        xl_position_peptide_a=csm["xl_position_peptide_a"],
+        proteins_a=csm["proteins_a"],
+        xl_position_proteins_a=csm["xl_position_proteins_a"],
+        decoy_a=csm["decoy_a"],
+        peptide_b=csm["peptide_b"],
+        xl_position_peptide_b=csm["xl_position_peptide_b"],
+        proteins_b=csm["proteins_b"],
+        xl_position_proteins_b=csm["xl_position_proteins_b"],
+        decoy_b=csm["decoy_b"],
+        score=csm["score"],
+        additional_information=csm["additional_information"],
+    )
+
+
 def create_csm(
     peptide_a: str,
     modifications_a: Optional[Dict[int, Tuple[str, float]]],
