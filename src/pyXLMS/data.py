@@ -362,7 +362,7 @@ def create_crosslink_min(
     xl_position_peptide_a: int,
     peptide_b: str,
     xl_position_peptide_b: int,
-    **kwargs
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Creates a crosslink data structure from minimal input.
 
@@ -405,15 +405,21 @@ def create_crosslink_min(
         peptide_a=peptide_a,
         xl_position_peptide_a=xl_position_peptide_a,
         proteins_a=kwargs["proteins_a"] if "proteins_a" in kwargs else None,
-        xl_position_proteins_a=kwargs["xl_position_proteins_a"] if "xl_position_proteins_a" in kwargs else None,
+        xl_position_proteins_a=kwargs["xl_position_proteins_a"]
+        if "xl_position_proteins_a" in kwargs
+        else None,
         decoy_a=kwargs["decoy_a"] if "decoy_a" in kwargs else None,
         peptide_b=peptide_b,
         xl_position_peptide_b=xl_position_peptide_b,
         proteins_b=kwargs["proteins_b"] if "proteins_b" in kwargs else None,
-        xl_position_proteins_b=kwargs["xl_position_proteins_b"] if "xl_position_proteins_b" in kwargs else None,
+        xl_position_proteins_b=kwargs["xl_position_proteins_b"]
+        if "xl_position_proteins_b" in kwargs
+        else None,
         decoy_b=kwargs["decoy_b"] if "decoy_b" in kwargs else None,
         score=kwargs["score"] if "score" in kwargs else None,
-        additional_information=kwargs["additional_information"] if "additional_information" in kwargs else None,
+        additional_information=kwargs["additional_information"]
+        if "additional_information" in kwargs
+        else None,
     )
 
 
@@ -759,7 +765,7 @@ def create_csm_min(
     xl_position_peptide_b: int,
     spectrum_file: str,
     scan_nr: int,
-    **kwargs
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Creates a crosslink-spectrum-match data structure from minimal input.
 
@@ -806,19 +812,31 @@ def create_csm_min(
     """
     return create_csm(
         peptide_a=peptide_a,
-        modifications_a=kwargs["modifications_a"] if "modifications_a" in kwargs else None,
+        modifications_a=kwargs["modifications_a"]
+        if "modifications_a" in kwargs
+        else None,
         xl_position_peptide_a=xl_position_peptide_a,
         proteins_a=kwargs["proteins_a"] if "proteins_a" in kwargs else None,
-        xl_position_proteins_a=kwargs["xl_position_proteins_a"] if "xl_position_proteins_a" in kwargs else None,
-        pep_position_proteins_a=kwargs["pep_position_proteins_a"] if "pep_position_proteins_a" in kwargs else None,
+        xl_position_proteins_a=kwargs["xl_position_proteins_a"]
+        if "xl_position_proteins_a" in kwargs
+        else None,
+        pep_position_proteins_a=kwargs["pep_position_proteins_a"]
+        if "pep_position_proteins_a" in kwargs
+        else None,
         score_a=kwargs["score_a"] if "score_a" in kwargs else None,
         decoy_a=kwargs["decoy_a"] if "decoy_a" in kwargs else None,
         peptide_b=peptide_b,
-        modifications_b=kwargs["modifications_b"] if "modifications_b" in kwargs else None,
+        modifications_b=kwargs["modifications_b"]
+        if "modifications_b" in kwargs
+        else None,
         xl_position_peptide_b=xl_position_peptide_b,
         proteins_b=kwargs["proteins_b"] if "proteins_b" in kwargs else None,
-        xl_position_proteins_b=kwargs["xl_position_proteins_b"] if "xl_position_proteins_b" in kwargs else None,
-        pep_position_proteins_b=kwargs["pep_position_proteins_b"] if "pep_position_proteins_b" in kwargs else None,
+        xl_position_proteins_b=kwargs["xl_position_proteins_b"]
+        if "xl_position_proteins_b" in kwargs
+        else None,
+        pep_position_proteins_b=kwargs["pep_position_proteins_b"]
+        if "pep_position_proteins_b" in kwargs
+        else None,
         score_b=kwargs["score_b"] if "score_b" in kwargs else None,
         decoy_b=kwargs["decoy_b"] if "decoy_b" in kwargs else None,
         score=kwargs["score"] if "score" in kwargs else None,
@@ -827,7 +845,9 @@ def create_csm_min(
         charge=kwargs["charge"] if "charge" in kwargs else None,
         rt=kwargs["rt"] if "rt" in kwargs else None,
         im_cv=kwargs["im_cv"] if "im_cv" in kwargs else None,
-        additional_information=kwargs["additional_information"] if "additional_information" in kwargs else None,
+        additional_information=kwargs["additional_information"]
+        if "additional_information" in kwargs
+        else None,
     )
 
 

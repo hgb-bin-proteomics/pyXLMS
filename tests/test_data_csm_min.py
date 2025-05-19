@@ -52,15 +52,7 @@ def test1():
 def test2():
     from pyXLMS import data
 
-    csm = data.create_csm_min(
-        "PEPTIDE",
-        1,
-        "EDITPEP",
-        3,
-        "RUN_1",
-        1,
-        score=170.3
-    )
+    csm = data.create_csm_min("PEPTIDE", 1, "EDITPEP", 3, "RUN_1", 1, score=170.3)
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "partial"
     # alpha
@@ -117,7 +109,7 @@ def test3():
         charge=3,
         rt=23.4,
         im_cv=-50.0,
-        additional_information={"m/z": 1337.1}
+        additional_information={"m/z": 1337.1},
     )
     assert csm["data_type"] == "crosslink-spectrum-match"
     assert csm["completeness"] == "full"

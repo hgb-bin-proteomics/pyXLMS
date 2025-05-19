@@ -36,13 +36,7 @@ def test1():
 def test2():
     from pyXLMS import data
 
-    crosslink = data.create_crosslink_min(
-        "PEPTIDE",
-        1,
-        "EDITPEP",
-        3,
-        score=170.3
-    )
+    crosslink = data.create_crosslink_min("PEPTIDE", 1, "EDITPEP", 3, score=170.3)
     assert crosslink["data_type"] == "crosslink"
     assert crosslink["completeness"] == "partial"
     assert crosslink["alpha_peptide"] == "EDITPEP"
@@ -74,7 +68,7 @@ def test3():
         xl_position_proteins_b=[37],
         decoy_b=False,
         score=170.3,
-        additional_information={"charge": 3}
+        additional_information={"charge": 3},
     )
     assert crosslink["data_type"] == "crosslink"
     assert crosslink["completeness"] == "full"

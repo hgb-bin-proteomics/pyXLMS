@@ -43,11 +43,21 @@ except ImportError:
 
 def read(
     files: str | List[str] | BinaryIO,
-    engine: Literal["Custom", "MaxQuant", "MaxLynx", "MS Annika", "mzIdentML", "pLink", "Scout", "xiSearch/xiFDR", "XlinkX"],
+    engine: Literal[
+        "Custom",
+        "MaxQuant",
+        "MaxLynx",
+        "MS Annika",
+        "mzIdentML",
+        "pLink",
+        "Scout",
+        "xiSearch/xiFDR",
+        "XlinkX",
+    ],
     crosslinker: str,
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
-    **kwargs
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a crosslink result file.
 
@@ -90,7 +100,17 @@ def read(
     >>> from pyXLMS.parser import read
     >>> csms_from_MaxQuant = read("data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS")
     """
-    supported = ["Custom", "MaxQuant", "MaxLynx", "MS Annika", "mzIdentML", "pLink", "Scout", "xiSearch/xiFDR", "XlinkX"]
+    supported = [
+        "Custom",
+        "MaxQuant",
+        "MaxLynx",
+        "MS Annika",
+        "mzIdentML",
+        "pLink",
+        "Scout",
+        "xiSearch/xiFDR",
+        "XlinkX",
+    ]
     ff = engine.lower().strip()
 
     if ff in ["custom", "pyxlms"]:
@@ -110,11 +130,13 @@ def read(
     if ff in ["xisearch/xifdr", "xisearch", "xifdr", "xi search", "xi fdr", "xi"]:
         return read_xi(files, ignore_errors=ignore_errors, verbose=verbose, **kwargs)
     if ff in ["xlinkx", "x link x"]:
-        return read_xlinkx(files, ignore_errors=ignore_errors, verbose=verbose, **kwargs)
+        return read_xlinkx(
+            files, ignore_errors=ignore_errors, verbose=verbose, **kwargs
+        )
 
     err_str = (
-        f"{engine} is not a supported crosslink search engine or format! Valid options are:\n" +
-        ", ".join(supported)
+        f"{engine} is not a supported crosslink search engine or format! Valid options are:\n"
+        + ", ".join(supported)
     )
     raise ValueError(err_str)
 
