@@ -11,6 +11,8 @@ from .data import check_input
 from typing import Optional
 from typing import Dict
 from typing import Tuple
+from typing import List
+from typing import Any
 
 
 def modifications_to_str(
@@ -48,3 +50,48 @@ def modifications_to_str(
     for modification_pos in sorted(modifications.keys()):
         modifications_str += f"({modification_pos}:[{modifications[modification_pos][0]}|{modifications[modification_pos][1]}]);"
     return modifications_str.rstrip(";")
+
+
+def assert_data_type_same(data_list: List[Dict[str, Any]]) -> bool:
+    _ok = check_input(data_list, "data_list", list, dict)
+    data_type = l[0]["data_type"]
+    for item in data_list:
+        if item["data_type"] != data_type:
+            return False
+    return True
+
+
+def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
+    if not assert_data_type_same(data_list):
+        raise TypeError()
+    data_type = data_list[0]["data_type"]
+    # available keys
+    peptide_a = True,
+    modifications_a = True
+    xl_position_peptide_a = True,
+    proteins_a = True,
+    xl_position_proteins_a = True,
+    pep_position_proteins_a = True,
+    score_a = True,
+    decoy_a = True,
+    peptide_b = True,
+    modifications_b = True,
+    xl_position_peptide_b = True,
+    proteins_b = True,
+    xl_position_proteins_b = True,
+    pep_position_proteins_b = True,
+    score_b = True,
+    decoy_b = True,
+    score = True,
+    spectrum_file = True,
+    scan_nr = True,
+    charge = True,
+    rt = True,
+    im_cv = True
+    # parse available keys
+    if data_type == "crosslink":
+        pass
+    if data_type == "crosslink-spectrum-match":
+        pass
+    raise TypeError()
+    return {"err": True}
