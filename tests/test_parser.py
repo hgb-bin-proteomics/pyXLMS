@@ -89,7 +89,11 @@ def test1():
     from pyXLMS import parser as p
 
     with pytest.raises(ValueError):
-        _r = p.read("data/maxquant/run1/crosslinkMsms.txt", engine="MS Amanda")
+        _r = p.read(
+            "data/maxquant/run1/crosslinkMsms.txt",
+            engine="MS Amanda",
+            crosslinker="DSS",
+        )
 
 
 def test2():
