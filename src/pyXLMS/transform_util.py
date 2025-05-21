@@ -66,31 +66,60 @@ def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
         raise TypeError()
     data_type = data_list[0]["data_type"]
     # available keys
-    peptide_a = True,
     modifications_a = True
-    xl_position_peptide_a = True,
     proteins_a = True,
     xl_position_proteins_a = True,
     pep_position_proteins_a = True,
     score_a = True,
     decoy_a = True,
-    peptide_b = True,
     modifications_b = True,
-    xl_position_peptide_b = True,
     proteins_b = True,
     xl_position_proteins_b = True,
     pep_position_proteins_b = True,
     score_b = True,
     decoy_b = True,
     score = True,
-    spectrum_file = True,
-    scan_nr = True,
     charge = True,
     rt = True,
     im_cv = True
+    additional_information = True
     # parse available keys
     if data_type == "crosslink":
-        pass
+        for data in data_list:
+            if data["completeness"] != "full":
+                if data["alpha_proteins"] is None:
+                    proteins_a = False
+                if data["alpha_proteins_crosslink_positions"] is None:
+                    xl_position_proteins_a = False
+                if data["alpha_decoy"] is None:
+                    decoy_a = False
+                if data["beta_proteins"] is None:
+                    proteins_b = False
+                if data["beta_proteins_crosslink_positions"] is None:
+                    xl_position_proteins_b = False
+                if data["beta_decoy"] is None:
+                    decoy_b = False
+                if data["score"] is None:
+                    score = False
+                if data["additional_information"] is None:
+                    additional_information = False
+        return {
+            "data_type": True,
+            "completeness": True,
+            "alpha_peptide": True,
+            "alpha_peptide_crosslink_position": True,
+            "alpha_proteins": proteins_a,
+            "alpha_proteins_crosslink_positions": xl_position_proteins_a,
+            "alpha_decoy": decoy_a,
+            "beta_peptide": True,
+            "beta_peptide_crosslink_position": True,
+            "beta_proteins": proteins_b,
+            "beta_proteins_crosslink_positions": xl_position_proteins_b,
+            "beta_decoy": decoy_b,
+            "crosslink_type": True,
+            "score": score,
+            "additional_information": additional_information,
+        }
     if data_type == "crosslink-spectrum-match":
         pass
     raise TypeError()
