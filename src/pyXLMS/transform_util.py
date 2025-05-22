@@ -140,20 +140,20 @@ def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
     data_type = data_list[0]["data_type"]
     # available keys
     modifications_a = True
-    proteins_a = True,
-    xl_position_proteins_a = True,
-    pep_position_proteins_a = True,
-    score_a = True,
-    decoy_a = True,
-    modifications_b = True,
-    proteins_b = True,
-    xl_position_proteins_b = True,
-    pep_position_proteins_b = True,
-    score_b = True,
-    decoy_b = True,
-    score = True,
-    charge = True,
-    rt = True,
+    proteins_a = True
+    xl_position_proteins_a = True
+    pep_position_proteins_a = True
+    score_a = True
+    decoy_a = True
+    modifications_b = True
+    proteins_b = True
+    xl_position_proteins_b = True
+    pep_position_proteins_b = True
+    score_b = True
+    decoy_b = True
+    score = True
+    charge = True
+    rt = True
     im_cv = True
     additional_information = True
     # parse available keys
