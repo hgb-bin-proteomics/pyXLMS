@@ -5,4 +5,6 @@
 # micha.birklbauer@gmail.com
 
 from .transform_util import modifications_to_str  # noqa: F401
+from .transform_util import assert_data_type_same  # noqa: F401
+from .transform_util import get_available_keys  # noqa: F401
 from .transform_to_dataframe import to_dataframe  # noqa: F401
