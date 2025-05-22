@@ -54,8 +54,8 @@ def modifications_to_str(
 
 def assert_data_type_same(data_list: List[Dict[str, Any]]) -> bool:
     _ok = check_input(data_list, "data_list", list, dict)
-    data_type = l[0]["data_type"]
     for item in data_list:
+    data_type = data_list[0]["data_type"]
         if item["data_type"] != data_type:
             return False
     return True
