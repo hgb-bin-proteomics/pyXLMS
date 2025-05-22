@@ -12,7 +12,9 @@ def test1():
     from pyXLMS import data
 
     err = {"peptide": "PEPTIDE"}
-    with pytest.raises(TypeError, match="Parameter csm is not a valid crosslink-spectrum-match!"):
+    with pytest.raises(
+        TypeError, match="Parameter csm is not a valid crosslink-spectrum-match!"
+    ):
         _r = data.create_crosslink_from_csm(err)
 
 
@@ -20,21 +22,16 @@ def test2():
     from pyXLMS import data
 
     err = {"data_type": "peptide-spectrum-match", "peptide": "PEPTIDE", "scan": 1}
-    with pytest.raises(TypeError, match="Parameter csm is not a valid crosslink-spectrum-match!"):
+    with pytest.raises(
+        TypeError, match="Parameter csm is not a valid crosslink-spectrum-match!"
+    ):
         _r = data.create_crosslink_from_csm(err)
 
 
 def test3():
     from pyXLMS import data
 
-    csm = data.create_csm_min(
-        "PEPKTIDE",
-        4,
-        "PEPTIKDE",
-        6,
-        "RUN_1",
-        1
-    )
+    csm = data.create_csm_min("PEPKTIDE", 4, "PEPTIKDE", 6, "RUN_1", 1)
     crosslink = data.create_crosslink_from_csm(csm)
     assert crosslink["data_type"] == "crosslink"
     assert crosslink["completeness"] == "partial"
@@ -51,15 +48,7 @@ def test3():
 def test4():
     from pyXLMS import data
 
-    csm = data.create_csm_min(
-        "PEPKTIDE",
-        4,
-        "PEPTIKDE",
-        6,
-        "RUN_1",
-        1,
-        score=170.3
-    )
+    csm = data.create_csm_min("PEPKTIDE", 4, "PEPTIKDE", 6, "RUN_1", 1, score=170.3)
     crosslink = data.create_crosslink_from_csm(csm)
     assert crosslink["data_type"] == "crosslink"
     assert crosslink["completeness"] == "partial"

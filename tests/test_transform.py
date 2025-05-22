@@ -41,10 +41,16 @@ def test5():
     from pyXLMS import transform
     from pyXLMS import data
 
-    data_list = [data.create_crosslink_min("PEPK", 4, "PKEP", 2), data.create_crosslink_min("KPEP", 1, "PEKP", 3)]
+    data_list = [
+        data.create_crosslink_min("PEPK", 4, "PKEP", 2),
+        data.create_crosslink_min("KPEP", 1, "PEKP", 3),
+    ]
     assert transform.assert_data_type_same(data_list)
 
-    data_list = [data.create_crosslink_min("PEPK", 4, "PKEP", 2), data.create_csm_min("KPEP", 1, "PEKP", 3, "RUN_1", 1)]
+    data_list = [
+        data.create_crosslink_min("PEPK", 4, "PKEP", 2),
+        data.create_csm_min("KPEP", 1, "PEKP", 3, "RUN_1", 1),
+    ]
     assert not transform.assert_data_type_same(data_list)
 
 
@@ -52,7 +58,10 @@ def test6():
     from pyXLMS import transform
     from pyXLMS import data
 
-    data_list = [data.create_crosslink_min("PEPK", 4, "PKEP", 2), data.create_crosslink_min("KPEP", 1, "PEKP", 3)]
+    data_list = [
+        data.create_crosslink_min("PEPK", 4, "PKEP", 2),
+        data.create_crosslink_min("KPEP", 1, "PEKP", 3),
+    ]
     k = transform.get_available_keys(data_list)
 
     assert k["data_type"]
@@ -76,7 +85,10 @@ def test7():
     from pyXLMS import transform
     from pyXLMS import data
 
-    data_list = [data.create_crosslink_min("PEPK", 4, "PKEP", 2, score=170.3), data.create_crosslink_min("KPEP", 1, "PEKP", 3, score=13.5)]
+    data_list = [
+        data.create_crosslink_min("PEPK", 4, "PKEP", 2, score=170.3),
+        data.create_crosslink_min("KPEP", 1, "PEKP", 3, score=13.5),
+    ]
     k = transform.get_available_keys(data_list)
 
     assert k["data_type"]
@@ -113,22 +125,11 @@ def test8():
             [2],
             False,
             170.3,
-            {}
+            {},
         ),
         data.create_crosslink(
-            "KPEP",
-            1,
-            ["PROT3"],
-            [1],
-            False,
-            "PEKP",
-            3,
-            ["PROT4"],
-            [3],
-            True,
-            13.5,
-            {}
-        )
+            "KPEP", 1, ["PROT3"], [1], False, "PEKP", 3, ["PROT4"], [3], True, 13.5, {}
+        ),
     ]
     k = transform.get_available_keys(data_list)
 
@@ -153,7 +154,10 @@ def test9():
     from pyXLMS import transform
     from pyXLMS import data
 
-    data_list = [data.create_csm_min("PEPK", 4, "PKEP", 2, "RUN_1", 1), data.create_csm_min("KPEP", 1, "PEKP", 3, "RUN_1", 2)]
+    data_list = [
+        data.create_csm_min("PEPK", 4, "PKEP", 2, "RUN_1", 1),
+        data.create_csm_min("KPEP", 1, "PEKP", 3, "RUN_1", 2),
+    ]
     k = transform.get_available_keys(data_list)
 
     assert k["data_type"]
@@ -188,7 +192,10 @@ def test10():
     from pyXLMS import transform
     from pyXLMS import data
 
-    data_list = [data.create_csm_min("PEPK", 4, "PKEP", 2, "RUN_1", 1, score=170.3), data.create_csm_min("KPEP", 1, "PEKP", 3, "RUN_1", 2, score=13.5)]
+    data_list = [
+        data.create_csm_min("PEPK", 4, "PKEP", 2, "RUN_1", 1, score=170.3),
+        data.create_csm_min("KPEP", 1, "PEKP", 3, "RUN_1", 2, score=13.5),
+    ]
     k = transform.get_available_keys(data_list)
 
     assert k["data_type"]
@@ -247,7 +254,7 @@ def test11():
             4,
             213.123,
             -50.0,
-            {}
+            {},
         ),
         data.create_csm(
             "KPEP",
@@ -272,8 +279,8 @@ def test11():
             3,
             213.124,
             -70.0,
-            {}
-        )
+            {},
+        ),
     ]
     k = transform.get_available_keys(data_list)
 

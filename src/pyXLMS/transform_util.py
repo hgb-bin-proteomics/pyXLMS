@@ -258,5 +258,7 @@ def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
             "ion_mobility": im_cv,
             "additional_information": additional_information,
         }
-    raise TypeError(f"Unknown data type {data_type}. Data type must be 'crosslink' or 'crosslink-spectrum-match'!")
+    raise TypeError(
+        f"Unknown data type {data_type}. Data type must be 'crosslink' or 'crosslink-spectrum-match'!"
+    )
     return {"err": True}
