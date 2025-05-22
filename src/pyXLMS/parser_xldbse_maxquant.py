@@ -172,6 +172,14 @@ def read_maxquant(
     KeyError
         If the specified crosslinker could not be found/mapped.
 
+    Warnings
+    --------
+    MaxLynx/MaxQuant only reports a single protein crosslink position per peptide, for ambiguous peptides
+    only the crosslink position of the first matching protein is reported. All matching proteins can be
+    retrieved via ``additional_information``, however not their corresponding crosslink positions. For this
+    reason it is recommended to use ``transform.reannotate_positions()`` to correctly annotate all crosslink
+    positions for all peptides if that is important for downstream analysis.
+
     Examples
     --------
     >>> from pyXLMS.parser import read_maxquant
@@ -335,6 +343,14 @@ def read_maxlynx(
         If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
     KeyError
         If the specified crosslinker could not be found/mapped.
+
+    Warnings
+    --------
+    MaxLynx/MaxQuant only reports a single protein crosslink position per peptide, for ambiguous peptides
+    only the crosslink position of the first matching protein is reported. All matching proteins can be
+    retrieved via ``additional_information``, however not their corresponding crosslink positions. For this
+    reason it is recommended to use ``transform.reannotate_positions()`` to correctly annotate all crosslink
+    positions for all peptides if that is important for downstream analysis.
 
     Examples
     --------

@@ -170,6 +170,13 @@ def read_xlinkx(
     KeyError
         If one of the found post-translational-modifications could not be found/mapped.
 
+    Warnings
+    --------
+    XlinkX does not report if the individual peptides in a crosslink are from the target or decoy database.
+    The parser assumes that both peptides from a target crosslink are from the target database, and vice versa,
+    that both peptides are from the decoy database if it is a decoy crosslink. This leads to only TT and DD matches,
+    which needs to be considered for FDR estimation. This applies to both crosslinks **and** crosslink-spectrum-matches.
+
     Examples
     --------
     >>> from pyXLMS.parser import read_xlinkx

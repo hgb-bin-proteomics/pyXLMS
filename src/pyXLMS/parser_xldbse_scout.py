@@ -561,6 +561,19 @@ def read_scout(
     TypeError
         If parameter verbose was not set correctly.
 
+    Warnings
+    --------
+    - When reading unfiltered crosslink-spectrum-matches, no protein crosslink positions or protein peptide positions are
+      available, as these are not reported. If needed they should be annotated with ``transform.reannotate_positions()``.
+    - When reading filtered crosslink-spectrum-matches, Scout does not report if the individual peptides in a crosslink are
+      from the target or decoy database. The parser assumes that both peptides from a target crosslink-spectrum-match are
+      from the target database, and vice versa, that both peptides are from the decoy database if it is a decoy crosslink-spectrum-match.
+      This leads to only TT and DD matches, which needs to be considered for FDR estimation.
+    - When reading crosslinks / residue pairs, Scout does not report if the individual peptides in a crosslink are from the
+      target or decoy database. The parser assumes that both peptides from a target crosslink are from the target database,
+      and vice versa, that both peptides are from the decoy database if it is a decoy crosslink. This leads to only TT and DD
+      matches, which needs to be considered for FDR estimation.
+
     Examples
     --------
     >>> from pyXLMS.parser import read_scout
