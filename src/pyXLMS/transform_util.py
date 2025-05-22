@@ -62,6 +62,51 @@ def assert_data_type_same(data_list: List[Dict[str, Any]]) -> bool:
 
 
 def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
+    r"""Checks which data is available from a list of crosslinks or crosslink-spectrum-matches.
+
+    Verifies which data fields have been set for all crosslinks or crosslink-spectrum-matches in the
+    given list. Will return a dictionary structured the same as a crosslink or crosslink-spectrum-match,
+    but instead of the data it will return either True or False, depending if the field was set or not.
+
+    Parameters
+    ----------
+    data_list : list of dict of str, any
+        A list of crosslinks or crosslink-spectrum-matches.
+
+    Returns
+    -------
+    dict of str, bool
+        - If a list of crosslinks was provided, a dictionary with the following keys will be returned, where the value
+          of each key denotes if the data field is available for all crosslinks in ``data_list``.
+          Keys: ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
+          ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
+          ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink_type``, ``score``, and ``additional_information``.
+        - If a list of crosslink-spectrum-matches was provided, a dictionary with the following keys will be returned, where the value
+          of each key denotes if the data field is available for all crosslink-spectrum-matches in ``data_list``.
+          Keys: ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_modifications``,
+          ``alpha_peptide_crosslink_position``, ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_proteins_peptide_positions``,
+          ``alpha_score``, ``alpha_decoy``, ``beta_peptide``, ``beta_modifications``, ``beta_peptide_crosslink_position``, ``beta_proteins``,
+          ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink_type``, ``score``,
+          ``spectrum_file``, ``scan_nr``, ``retention_time``, ``ion_mobility``, and ``additional_information``.
+
+    Raises
+    ------
+    TypeError
+        If not all elements in ``data_list`` are of the same data type.
+    TypeError
+        If one or more elements in the list are of an unsupported data type.
+
+    Examples
+    --------
+    >>> from pyXLMS.transform import get_available_keys
+    >>> from pyXLMS import data
+    >>> data_list = [data.create_crosslink_min("PEPK", 4, "PKEP", 2), data.create_crosslink_min("KPEP", 1, "PEKP", 3)]
+    >>> available_keys = get_available_keys(data_list)
+    >>> available_keys["alpha_peptide"]
+    True
+    >>> available_keys["score"]
+    False
+    """
     if not assert_data_type_same(data_list):
         raise TypeError("Not all elements of the list have the same data type!")
     data_type = data_list[0]["data_type"]
