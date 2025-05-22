@@ -63,7 +63,7 @@ def assert_data_type_same(data_list: List[Dict[str, Any]]) -> bool:
 
 def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
     if not assert_data_type_same(data_list):
-        raise TypeError()
+        raise TypeError("Not all elements of the list have the same data type!")
     data_type = data_list[0]["data_type"]
     # available keys
     modifications_a = True
@@ -121,6 +121,69 @@ def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
             "additional_information": additional_information,
         }
     if data_type == "crosslink-spectrum-match":
-        pass
-    raise TypeError()
+        for data in data_list:
+            if data["completeness"] != "full":
+                if data["alpha_modifications"] is None:
+                    modifications_a = False
+                if data["alpha_proteins"] is None:
+                    proteins_a = False
+                if data["alpha_proteins_crosslink_positions"] is None:
+                    xl_position_proteins_a = False
+                if data["alpha_proteins_peptide_positions"] is None:
+                    pep_position_proteins_a = False
+                if data["alpha_score"] is None:
+                    score_a = False
+                if data["alpha_decoy"] is None:
+                    decoy_a = False
+                if data["beta_modifications"] is None:
+                    modifications_b = False
+                if data["beta_proteins"] is None:
+                    proteins_b = False
+                if data["beta_proteins_crosslink_positions"] is None:
+                    xl_position_proteins_b = False
+                if data["beta_proteins_peptide_positions"] is None:
+                    pep_position_proteins_b = False
+                if data["beta_score"] is None:
+                    score_b = False
+                if data["beta_decoy"] is None:
+                    decoy_b = False
+                if data["score"] is None:
+                    score = False
+                if data["charge"] is None:
+                    charge = False
+                if data["retention_time"] is None:
+                    rt = False
+                if data["ion_mobility"] is None:
+                    im_cv = False
+                if data["additional_information"] is None:
+                    additional_information = False
+        return {
+            "data_type": True,
+            "completeness": True,
+            "alpha_peptide": True,
+            "alpha_modifications": modifications_a,
+            "alpha_peptide_crosslink_position": True,
+            "alpha_proteins": proteins_a,
+            "alpha_proteins_crosslink_positions": xl_position_proteins_a,
+            "alpha_proteins_peptide_positions": pep_position_proteins_a,
+            "alpha_score": score_a,
+            "alpha_decoy": decoy_a,
+            "beta_peptide": True,
+            "beta_modifications": modifications_b,
+            "beta_peptide_crosslink_position": True,
+            "beta_proteins": proteins_b,
+            "beta_proteins_crosslink_positions": xl_position_proteins_b,
+            "beta_proteins_peptide_positions": pep_position_proteins_b,
+            "beta_score": score_b,
+            "beta_decoy": decoy_b,
+            "crosslink_type": True,
+            "score": score,
+            "spectrum_file": True,
+            "scan_nr": True,
+            "charge": charge,
+            "retention_time": rt,
+            "ion_mobility": im_cv,
+            "additional_information": additional_information,
+        }
+    raise TypeError(f"Unknown data type {data_type}. Data type must be 'crosslink' or 'crosslink-spectrum-match'!")
     return {"err": True}
