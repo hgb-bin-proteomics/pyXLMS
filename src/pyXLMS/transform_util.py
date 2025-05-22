@@ -53,6 +53,34 @@ def modifications_to_str(
 
 
 def assert_data_type_same(data_list: List[Dict[str, Any]]) -> bool:
+    r"""Checks that all data is of the same data type.
+
+    Verifies that all elements in the provided list are of the same data type.
+
+    Parameters
+    ----------
+    data_list : list of dict of str, any
+        A list of dictionaries with the ``data_type`` key.
+
+    Returns
+    -------
+    bool
+        If all elements are of the same data type.
+
+    Examples
+    --------
+    >>> from pyXLMS.transform import assert_data_type_same
+    >>> from pyXLMS import data
+    >>> data_list = [data.create_crosslink_min("PEPK", 4, "PKEP", 2), data.create_crosslink_min("KPEP", 1, "PEKP", 3)]
+    >>> assert_data_type_same(data_list)
+    True
+
+    >>> from pyXLMS.transform import assert_data_type_same
+    >>> from pyXLMS import data
+    >>> data_list = [data.create_crosslink_min("PEPK", 4, "PKEP", 2), data.create_csm_min("KPEP", 1, "PEKP", 3, "RUN_1", 1)]
+    >>> assert_data_type_same(data_list)
+    False
+    """
     _ok = check_input(data_list, "data_list", list, dict)
     data_type = data_list[0]["data_type"]
     for item in data_list[1:]:
