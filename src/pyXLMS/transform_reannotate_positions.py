@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import warnings
+from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
 from .data import check_input
@@ -67,7 +68,6 @@ def __get_proteins_and_positions(peptide: str, protein_db: Dict[str, str]) -> Tu
     return (proteins, positions)
 
 
-
 def fasta_title_to_accession(str: title) -> str:
     if "|" in title:
         return title.split("|")[1].strip()
@@ -107,7 +107,7 @@ def reannotate_positions(
                 )
         # annotate crosslinks
         if data[0]["data_type"] == "crosslink":
-            for xl in data:
+            for xl in tqdm(data, total=len(data), desc="Annotating crosslinks..."):
                 proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(xl["alpha_peptide"], protein_db)
                 proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(xl["beta_peptide"], protein_db)
                 reannoted.append(create_crosslink(
@@ -126,7 +126,7 @@ def reannotate_positions(
                 ))
         # annotate csms
         elif data[0]["data_type"] == "crosslink-spectrum-match":
-            for csm in data:
+            for csm in tqdm(data, total=len(data), desc="Annotation crosslink-spectrum-matches..."):
                 proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(xl["alpha_peptide"], protein_db)
                 proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(xl["beta_peptide"], protein_db)
                 reannoted.append(create_csm(
