@@ -24,7 +24,7 @@ from typing import List
 from typing import Any
 
 
-def __get_proteins_and_positions(peptide: str, protein_db: Dict[str, str]) -> Tuple[List[str], List[int]]:
+def get_proteins_and_positions(peptide: str, protein_db: Dict[str, str]) -> Tuple[List[str], List[int]]:
     proteins = list()
     positions = list()
     for id, seq in protein_db.items():
@@ -75,8 +75,8 @@ def reannotate_positions(
         # annotate crosslinks
         if data[0]["data_type"] == "crosslink":
             for xl in data:
-                proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(xl["alpha_peptide"], protein_db)
-                proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(xl["beta_peptide"], protein_db)
+                proteins_a, pep_position0_proteins_a = get_proteins_and_positions(xl["alpha_peptide"], protein_db)
+                proteins_b, pep_position0_proteins_b = get_proteins_and_positions(xl["beta_peptide"], protein_db)
                 reannoted.append(create_crosslink(
                     peptide_a=xl["alpha_peptide"],
                     xl_position_peptide_a=xl["alpha_peptide_crosslink_position"],
@@ -93,8 +93,34 @@ def reannotate_positions(
                 ))
         # annotate csms
         elif data[0]["data_type"] == "crosslink-spectrum-match":
-            # todo
-            pass
+            for csm in data:
+                proteins_a, pep_position0_proteins_a = get_proteins_and_positions(xl["alpha_peptide"], protein_db)
+                proteins_b, pep_position0_proteins_b = get_proteins_and_positions(xl["beta_peptide"], protein_db)
+                reannoted.append(create_csm(
+                    peptide_a=csm["alpha_peptide"]
+                    modifications_a=csm["alpha_modifications"]
+                    xl_position_peptide_a=csm["alpha_peptide_crosslink_position"]
+                    proteins_a=proteins_a,
+                    xl_position_proteins_a=[pos + csm["alpha_peptide_crosslink_position"] for pos in pep_position0_proteins_a],
+                    pep_position_proteins_a=[pos + 1 for pos in pep_position0_proteins_a],
+                    score_a=csm["alpha_score"],
+                    decoy_a=csm["alpha_decoy"],
+                    peptide_b=csm["beta_peptide"],
+                    modifications_b=csm["beta_modifications"],
+                    xl_position_peptide_b=csm["beta_peptide_crosslink_position"],
+                    proteins_b=proteins_b,
+                    xl_position_proteins_b=[pos + csm["beta_peptide_crosslink_position"] for pos in pep_position0_proteins_b],
+                    pep_position_proteins_b=[pos + 1 for pos in pep_position0_proteins_b],
+                    score_b=csm["beta_score"],
+                    decoy_b=csm["beta_decoy"],
+                    score=csm["score"],
+                    spectrum_file=csm["spectrum_file"],
+                    scan_nr=csm["scan_nr"],
+                    charge=csm["charge"]
+                    rt=csm["retention_time"],
+                    im_cv=csm["ion_mobility"],
+                    additional_information=csm["additional_information"],
+                ))
         else:
             raise TypeError()
         return reannoted
