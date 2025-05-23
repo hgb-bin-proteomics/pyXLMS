@@ -24,7 +24,7 @@ from typing import List
 from typing import Any
 
 
-def get_proteins_and_positions(peptide: str, protein_db: Dict[str, str]) -> Tuple[List[str], List[int]]:
+def __get_proteins_and_positions(peptide: str, protein_db: Dict[str, str]) -> Tuple[List[str], List[int]]:
     proteins = list()
     positions = list()
     for id, seq in protein_db.items():
@@ -75,8 +75,8 @@ def reannotate_positions(
         # annotate crosslinks
         if data[0]["data_type"] == "crosslink":
             for xl in data:
-                proteins_a, pep_position0_proteins_a = get_proteins_and_positions(xl["alpha_peptide"], protein_db)
-                proteins_b, pep_position0_proteins_b = get_proteins_and_positions(xl["beta_peptide"], protein_db)
+                proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(xl["alpha_peptide"], protein_db)
+                proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(xl["beta_peptide"], protein_db)
                 reannoted.append(create_crosslink(
                     peptide_a=xl["alpha_peptide"],
                     xl_position_peptide_a=xl["alpha_peptide_crosslink_position"],
@@ -94,8 +94,8 @@ def reannotate_positions(
         # annotate csms
         elif data[0]["data_type"] == "crosslink-spectrum-match":
             for csm in data:
-                proteins_a, pep_position0_proteins_a = get_proteins_and_positions(xl["alpha_peptide"], protein_db)
-                proteins_b, pep_position0_proteins_b = get_proteins_and_positions(xl["beta_peptide"], protein_db)
+                proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(xl["alpha_peptide"], protein_db)
+                proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(xl["beta_peptide"], protein_db)
                 reannoted.append(create_csm(
                     peptide_a=csm["alpha_peptide"]
                     modifications_a=csm["alpha_modifications"]
