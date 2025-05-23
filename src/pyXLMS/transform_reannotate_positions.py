@@ -31,6 +31,8 @@ def __get_proteins_and_positions(peptide: str, protein_db: Dict[str, str]) -> Tu
         if peptide in seq:
             proteins.append(id)
             positions.append(seq.index(peptide))
+    if len(proteins) == 0:
+        raise RuntimeError(f"No match found for peptide {peptide}!")
     return (proteins, positions)
 
 
