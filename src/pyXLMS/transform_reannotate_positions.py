@@ -69,6 +69,31 @@ def __get_proteins_and_positions(peptide: str, protein_db: Dict[str, str]) -> Tu
 
 
 def fasta_title_to_accession(title: str) -> str:
+    r"""Parses the protein accession from a UniProt-like title.
+
+    Parameters
+    ----------
+    title : str
+        Fasta title/header.
+
+    Returns
+    -------
+    str
+        The protein accession parsed from the title. If parsing was unsuccessful
+        the full title is returned.
+
+    Examples
+    --------
+    >>> from pyXLMS.transform import fasta_title_to_accession
+    >>> title = "sp|A0A087X1C5|CP2D7_HUMAN Putative cytochrome P450 2D7 OS=Homo sapiens OX=9606 GN=CYP2D7 PE=5 SV=1"
+    >>> fasta_title_to_accession(title)
+    'A0A087X1C5'
+
+    >>> from pyXLMS.transform import fasta_title_to_accession
+    >>> title = "Cas9"
+    >>> fasta_title_to_accession(title)
+    'Cas9'
+    """
     if "|" in title:
         return title.split("|")[1].strip()
     return title.strip()
