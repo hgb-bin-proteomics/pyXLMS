@@ -68,7 +68,7 @@ def __get_proteins_and_positions(peptide: str, protein_db: Dict[str, str]) -> Tu
     return (proteins, positions)
 
 
-def fasta_title_to_accession(str: title) -> str:
+def fasta_title_to_accession(title: str) -> str:
     if "|" in title:
         return title.split("|")[1].strip()
     return title.strip()
