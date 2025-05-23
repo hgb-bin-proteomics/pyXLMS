@@ -25,6 +25,37 @@ from typing import Any
 
 
 def __get_proteins_and_positions(peptide: str, protein_db: Dict[str, str]) -> Tuple[List[str], List[int]]:
+    r"""Retrieve matching proteins and peptide positions for a specific peptide.
+
+    Matches the specified peptide against the given protein database and returns all proteins
+    that contain the peptides, as well as the corresponding peptide positions in those proteins.
+    Uses 0-based indexing.
+
+    Parameters
+    ----------
+    peptide : str
+        Unmodified peptide sequence.
+    protein_db : dict of str, str
+        A dictionary that maps protein accessions to their sequences.
+
+    Returns
+    -------
+    tuple of list of str, list of int
+        List of protein accessions, and list of peptide positions.
+
+    Raises
+    ------
+    RuntimeError
+        If the peptide could not be matched to any protein.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``reannotate_positions()``.
+
+    Warnings
+    --------
+    Contrary to most functions in pyXLMS, this function uses 0-based indexing.
+    """
     proteins = list()
     positions = list()
     for id, seq in protein_db.items():
