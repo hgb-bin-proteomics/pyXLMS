@@ -85,12 +85,12 @@ def reannotate_positions(
         _ok = check_input(title_to_accession, "title_to_accession", Callable)
     else:
         title_to_accession = fasta_title_to_accession
-    if type(data) == list:
+    if isinstance(data, list):
         _ok = assert_data_type_same(data)
         protein_db = dict()
         reannoted = list()
         # read fasta file
-        if type(fasta) == str:
+        if isinstance(fasta, str):
             with open(fasta, "r", encoding = "utf-8") as f:
                 for i, item in enumerate(SimpleFastaParser(f)):
                     protein_db[title_to_accession(item[0])] = item[1]
