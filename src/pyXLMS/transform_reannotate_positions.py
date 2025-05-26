@@ -180,11 +180,16 @@ def reannotate_positions(
                     additional_information=csm["additional_information"],
                 ))
         else:
-            raise TypeError()
+            raise TypeError(
+                f"Can't annotate positions for data type {data[0]['data_type']}. Valid data types are:\n"
+                "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
+            )
         return reannoted
     _ok = check_input(data, "data", dict)
     if "data_type" not in data or data["data_type"] != "parser_result":
-        raise TypeError()
+        raise TypeError(
+            "Can't annotate positions for dict. Dict has to be a valid 'parser_result'!"
+        )
     return create_parser_result(
         search_engine = data["search_engine"],
         csms = reannotate_positions(data["crosslink-spectrum-matches"], fasta) if data["crosslink-spectrum-matches"] is not None else None,
