@@ -335,7 +335,6 @@ def test16():
 def test17():
     from pyXLMS.transform import reannotate_positions
     from pyXLMS.data import create_csm_min
-    from pyXLMS.data import create_crosslink_min
     from pyXLMS.data import create_parser_result
 
     # this is a performance test to see if it shows up in pytest --durations
