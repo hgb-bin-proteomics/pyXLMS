@@ -8,8 +8,8 @@
 import pytest
 
 
-FASTA_SMALL = "Cas9_plus10.fasta"
-FASTA_LARGE = "uniprotkb_proteome_UP000005640_AND_revi_2025_05_23.fasta"
+FASTA_SMALL = "data/_fasta/Cas9_plus10.fasta"
+FASTA_LARGE = "data/_fasta/uniprotkb_proteome_UP000005640_AND_revi_2025_05_23.fasta"
 
 
 def build_protein_db(fasta: str):
