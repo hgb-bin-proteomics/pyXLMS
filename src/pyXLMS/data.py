@@ -461,16 +461,16 @@ def create_crosslink_from_csm(csm: Dict[str, Any]) -> Dict[str, Any]:
     if "data_type" not in csm or csm["data_type"] != "crosslink-spectrum-match":
         raise TypeError("Parameter csm is not a valid crosslink-spectrum-match!")
     return create_crosslink(
-        peptide_a=csm["peptide_a"],
-        xl_position_peptide_a=csm["xl_position_peptide_a"],
-        proteins_a=csm["proteins_a"],
-        xl_position_proteins_a=csm["xl_position_proteins_a"],
-        decoy_a=csm["decoy_a"],
-        peptide_b=csm["peptide_b"],
-        xl_position_peptide_b=csm["xl_position_peptide_b"],
-        proteins_b=csm["proteins_b"],
-        xl_position_proteins_b=csm["xl_position_proteins_b"],
-        decoy_b=csm["decoy_b"],
+        peptide_a=csm["alpha_peptide"],
+        xl_position_peptide_a=csm["alpha_peptide_crosslink_position"],
+        proteins_a=csm["alpha_proteins"],
+        xl_position_proteins_a=csm["alpha_proteins_crosslink_positions"],
+        decoy_a=csm["alpha_decoy"],
+        peptide_b=csm["beta_peptide"],
+        xl_position_peptide_b=csm["beta_peptide_crosslink_position"],
+        proteins_b=csm["beta_proteins"],
+        xl_position_proteins_b=csm["beta_proteins_crosslink_positions"],
+        decoy_b=csm["beta_decoy"],
         score=csm["score"],
         additional_information=csm["additional_information"],
     )
