@@ -193,8 +193,22 @@ def reannotate_positions(
         raise TypeError(
             "Can't annotate positions for dict. Dict has to be a valid 'parser_result'!"
         )
+    new_csms = reannotate_positions(data["crosslink-spectrum-matches"], fasta, title_to_accession) if data["crosslink-spectrum-matches"] is not None else None
+    new_xls = reannotate_positions(data["crosslinks"], fasta, title_to_accession) if data["crosslinks"] is not None else None
+    if new_csms is not None:
+        if not isinstance(new_csms, list):
+            raise RuntimeError(
+                "Something went wrong while reannotating positions.\n"
+                f"Expected data type: list. Got: {type(new_csms)}."
+            )
+    if new_xls is not None:
+        if not isinstance(new_xls, list):
+            raise RuntimeError(
+                "Something went wrong while reannotating positions.\n"
+                f"Expected data type: list. Got: {type(new_xls)}."
+            )
     return create_parser_result(
         search_engine = data["search_engine"],
-        csms = reannotate_positions(data["crosslink-spectrum-matches"], fasta) if data["crosslink-spectrum-matches"] is not None else None,
-        crosslinks= reannotate_positions(data["crosslinks"], fasta) if data["crosslinks"] is not None else None
+        csms = new_csms,
+        crosslinks = new_xls
     )
