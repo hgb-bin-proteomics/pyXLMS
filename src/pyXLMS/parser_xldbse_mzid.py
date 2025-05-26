@@ -104,6 +104,18 @@ def read_mzid(
     This parser is experimental, as I don't know if the mzIdentML structure is consistent accross different
     crosslink search engines. This parser was tested with mzIdentML files from MS Annika and XlinkX.
 
+    Warnings
+    --------
+    This parser only parses minimal data because most information is not available from the mzIdentML file.
+    The available data is:
+
+    - ``alpha_peptide``
+    - ``alpha_peptide_crosslink_position``
+    - ``beta_peptide``
+    - ``beta_peptide_crosslink_position``
+    - ``spectrum_file``
+    - ``scan_nr``
+
     Examples
     --------
     >>> from pyXLMS.parser import read_mzid

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyXLMS"
-version = "0.0.3"
+version = "0.0.4"
 authors = [
   { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
 ]
@@ -28,7 +28,8 @@ dependencies = [
   "pandas",
   "openpyxl",
   "tqdm",
-  "pyteomics[XML]"
+  "pyteomics[XML]",
+  "biopython"
 ]
 
 [project.optional-dependencies]

@@ -303,6 +303,11 @@ def read_plink(
     TypeError
         If parameter verbose was not set correctly.
 
+    Warnings
+    --------
+    Target and decoy information is derived based off the protein accession and parameter ``decoy_prefix``.
+    By default, pLink only reports target matches that are above the desired FDR.
+
     Examples
     --------
     >>> from pyXLMS.parser import read_plink

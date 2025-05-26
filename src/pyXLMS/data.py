@@ -217,7 +217,7 @@ def create_crosslink(
     Returns
     -------
     dict
-        The dictionary representing the crosslink with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_peptide_crosslink_position``,
+        The dictionary representing the crosslink with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
         ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
         ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink_type``, ``score``, and ``additional_information``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
@@ -387,7 +387,7 @@ def create_crosslink_min(
     Returns
     -------
     dict
-        The dictionary representing the crosslink with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_peptide_crosslink_position``,
+        The dictionary representing the crosslink with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
         ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
         ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink_type``, ``score``, and ``additional_information``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
@@ -420,6 +420,59 @@ def create_crosslink_min(
         additional_information=kwargs["additional_information"]
         if "additional_information" in kwargs
         else None,
+    )
+
+
+def create_crosslink_from_csm(csm: Dict[str, Any]) -> Dict[str, Any]:
+    r"""Creates a crosslink data structure from a crosslink-spectrum-match.
+
+    Creates a crosslink data structure from a crosslink-spectrum-match. The returned crosslink data structure is a dictionary with keys
+    as detailed in the return section.
+
+    Parameters
+    ----------
+    csm : dict of str
+        The crosslink-spectrum-match item to be converted to a crosslink item.
+
+    Returns
+    -------
+    dict
+        The dictionary representing the crosslink with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
+        ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
+        ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink_type``, ``score``, and ``additional_information``.
+        Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
+
+    Raises
+    ------
+    TypeError
+        If parameter ``csm`` is not a valid crosslink-spectrum-match.
+
+    Notes
+    -----
+    See also ``data.create_crosslink()``.
+
+    Examples
+    --------
+    >>> from pyXLMS.data import create_csm_min, create_crosslink_from_csm
+    >>> csm = create_csm_min("PEPTIDEA", 1, "PEPTIDEB", 5, "RUN_1", 1)
+    >>> crosslink = create_crosslink_from_csm(csm)
+    """
+    _ok = check_input(csm, "csm", dict)
+    if "data_type" not in csm or csm["data_type"] != "crosslink-spectrum-match":
+        raise TypeError("Parameter csm is not a valid crosslink-spectrum-match!")
+    return create_crosslink(
+        peptide_a=csm["alpha_peptide"],
+        xl_position_peptide_a=csm["alpha_peptide_crosslink_position"],
+        proteins_a=csm["alpha_proteins"],
+        xl_position_proteins_a=csm["alpha_proteins_crosslink_positions"],
+        decoy_a=csm["alpha_decoy"],
+        peptide_b=csm["beta_peptide"],
+        xl_position_peptide_b=csm["beta_peptide_crosslink_position"],
+        proteins_b=csm["beta_proteins"],
+        xl_position_proteins_b=csm["beta_proteins_crosslink_positions"],
+        decoy_b=csm["beta_decoy"],
+        score=csm["score"],
+        additional_information=csm["additional_information"],
     )
 
 
@@ -509,7 +562,7 @@ def create_csm(
     Returns
     -------
     dict
-        The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_modifications``,
+        The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_modifications``,
         ``alpha_peptide_crosslink_position``, ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_proteins_peptide_positions``,
         ``alpha_score``, ``alpha_decoy``, ``beta_peptide``, ``beta_modifications``, ``beta_peptide_crosslink_position``, ``beta_proteins``,
         ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink_type``, ``score``,
@@ -794,7 +847,7 @@ def create_csm_min(
     Returns
     -------
     dict
-        The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``,``alpha_peptide``, ``alpha_modifications``,
+        The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_modifications``,
         ``alpha_peptide_crosslink_position``, ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_proteins_peptide_positions``,
         ``alpha_score``, ``alpha_decoy``, ``beta_peptide``, ``beta_modifications``, ``beta_peptide_crosslink_position``, ``beta_proteins``,
         ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink_type``, ``score``,
