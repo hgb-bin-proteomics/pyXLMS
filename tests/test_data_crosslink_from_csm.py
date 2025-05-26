@@ -35,11 +35,11 @@ def test3():
     crosslink = data.create_crosslink_from_csm(csm)
     assert crosslink["data_type"] == "crosslink"
     assert crosslink["completeness"] == "partial"
-    assert crosslink["peptide_a"] == "PEPKTIDE"
-    assert crosslink["xl_position_peptide_a"] == 4
-    assert crosslink["proteins_a"] is None
-    assert crosslink["xl_position_proteins_a"] is None
-    assert crosslink["decoy_a"] is None
+    assert crosslink["alpha_peptide"] == "PEPKTIDE"
+    assert crosslink["alpha_peptide_crosslink_position"] == 4
+    assert crosslink["alpha_proteins"] is None
+    assert crosslink["alpha_proteins_crosslink_positions"] is None
+    assert crosslink["alpha_decoy"] is None
     assert crosslink["crosslink_type"] == "inter"
     assert crosslink["score"] is None
     assert crosslink["additional_information"] is None
@@ -52,11 +52,11 @@ def test4():
     crosslink = data.create_crosslink_from_csm(csm)
     assert crosslink["data_type"] == "crosslink"
     assert crosslink["completeness"] == "partial"
-    assert crosslink["peptide_a"] == "PEPKTIDE"
-    assert crosslink["xl_position_peptide_a"] == 4
-    assert crosslink["proteins_a"] is None
-    assert crosslink["xl_position_proteins_a"] is None
-    assert crosslink["decoy_a"] is None
+    assert crosslink["alpha_peptide"] == "PEPKTIDE"
+    assert crosslink["alpha_peptide_crosslink_position"] == 4
+    assert crosslink["alpha_proteins"] is None
+    assert crosslink["alpha_proteins_crosslink_positions"] is None
+    assert crosslink["alpha_decoy"] is None
     assert crosslink["crosslink_type"] == "inter"
     assert crosslink["score"] == pytest.approx(170.3)
     assert crosslink["additional_information"] is None
