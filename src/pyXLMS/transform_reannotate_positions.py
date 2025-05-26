@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import re
 import warnings
 from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
@@ -61,8 +62,9 @@ def __get_proteins_and_positions(peptide: str, protein_db: Dict[str, str]) -> Tu
     positions = list()
     for id, seq in protein_db.items():
         if peptide in seq:
-            proteins.append(id)
-            positions.append(seq.index(peptide))
+            for match in re.finditer(peptide, seq):
+                proteins.append(id)
+                positions.append(match.start())
     if len(proteins) == 0:
         raise RuntimeError(f"No match found for peptide {peptide}!")
     return (proteins, positions)
