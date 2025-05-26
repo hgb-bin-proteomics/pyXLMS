@@ -40,6 +40,11 @@ def test3():
     assert crosslink["alpha_proteins"] is None
     assert crosslink["alpha_proteins_crosslink_positions"] is None
     assert crosslink["alpha_decoy"] is None
+    assert crosslink["beta_peptide"] == "PEPTIKDE"
+    assert crosslink["beta_peptide_crosslink_position"] == 6
+    assert crosslink["beta_proteins"] is None
+    assert crosslink["beta_proteins_crosslink_positions"] is None
+    assert crosslink["beta_decoy"] is None
     assert crosslink["crosslink_type"] == "inter"
     assert crosslink["score"] is None
     assert crosslink["additional_information"] is None
@@ -57,6 +62,11 @@ def test4():
     assert crosslink["alpha_proteins"] is None
     assert crosslink["alpha_proteins_crosslink_positions"] is None
     assert crosslink["alpha_decoy"] is None
+    assert crosslink["beta_peptide"] == "PEPTIKDE"
+    assert crosslink["beta_peptide_crosslink_position"] == 6
+    assert crosslink["beta_proteins"] is None
+    assert crosslink["beta_proteins_crosslink_positions"] is None
+    assert crosslink["beta_decoy"] is None
     assert crosslink["crosslink_type"] == "inter"
     assert crosslink["score"] == pytest.approx(170.3)
     assert crosslink["additional_information"] is None
