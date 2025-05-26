@@ -155,8 +155,8 @@ def reannotate_positions(
         # annotate csms
         elif data[0]["data_type"] == "crosslink-spectrum-match":
             for csm in tqdm(data, total=len(data), desc="Annotation crosslink-spectrum-matches..."):
-                proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(xl["alpha_peptide"], protein_db)
-                proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(xl["beta_peptide"], protein_db)
+                proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(csm["alpha_peptide"], protein_db)
+                proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(csm["beta_peptide"], protein_db)
                 reannoted.append(create_csm(
                     peptide_a=csm["alpha_peptide"]
                     modifications_a=csm["alpha_modifications"]
