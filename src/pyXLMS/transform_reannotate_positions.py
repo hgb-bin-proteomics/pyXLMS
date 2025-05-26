@@ -158,9 +158,9 @@ def reannotate_positions(
                 proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(csm["alpha_peptide"], protein_db)
                 proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(csm["beta_peptide"], protein_db)
                 reannoted.append(create_csm(
-                    peptide_a=csm["alpha_peptide"]
-                    modifications_a=csm["alpha_modifications"]
-                    xl_position_peptide_a=csm["alpha_peptide_crosslink_position"]
+                    peptide_a=csm["alpha_peptide"],
+                    modifications_a=csm["alpha_modifications"],
+                    xl_position_peptide_a=csm["alpha_peptide_crosslink_position"],
                     proteins_a=proteins_a,
                     xl_position_proteins_a=[pos + csm["alpha_peptide_crosslink_position"] for pos in pep_position0_proteins_a],
                     pep_position_proteins_a=[pos + 1 for pos in pep_position0_proteins_a],
@@ -177,7 +177,7 @@ def reannotate_positions(
                     score=csm["score"],
                     spectrum_file=csm["spectrum_file"],
                     scan_nr=csm["scan_nr"],
-                    charge=csm["charge"]
+                    charge=csm["charge"],
                     rt=csm["retention_time"],
                     im_cv=csm["ion_mobility"],
                     additional_information=csm["additional_information"],
