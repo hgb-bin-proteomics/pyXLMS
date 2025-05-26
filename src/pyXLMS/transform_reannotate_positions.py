@@ -117,6 +117,7 @@ def reannotate_positions(
         protein_db = dict()
         reannoted = list()
         # read fasta file
+        i = 0
         if isinstance(fasta, str):
             with open(fasta, "r", encoding = "utf-8") as f:
                 for i, item in enumerate(SimpleFastaParser(f)):
