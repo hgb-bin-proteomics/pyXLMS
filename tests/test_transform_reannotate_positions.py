@@ -14,12 +14,14 @@ FASTA_LARGE = "uniprotkb_proteome_UP000005640_AND_revi_2025_05_23.fasta"
 
 def build_protein_db(fasta: str):
     from Bio.SeqIO.FastaIO import SimpleFastaParser
+
     def fasta_title_to_accession(title: str):
         if "|" in title:
             return title.split("|")[1].strip()
         return title.strip()
+
     protein_db = dict()
-    with open(fasta, "r", encoding = "utf-8") as f:
+    with open(fasta, "r", encoding="utf-8") as f:
         for item in SimpleFastaParser(f):
             protein_db[fasta_title_to_accession(item[0])] = item[1]
     return protein_db
@@ -43,6 +45,7 @@ def test2():
 
 def test3():
     from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+
     protein_db = build_protein_db(FASTA_SMALL)
 
     peptide = "ADANLDK"
@@ -53,6 +56,7 @@ def test3():
 
 def test4():
     from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+
     protein_db = build_protein_db(FASTA_SMALL)
 
     peptide = "GNTDRHSIK"
@@ -63,6 +67,7 @@ def test4():
 
 def test5():
     from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+
     protein_db = build_protein_db(FASTA_SMALL)
 
     peptide = "YYRDPCCCRPVSCQTVSRPVTFVPRCTR"
@@ -73,6 +78,7 @@ def test5():
 
 def test6():
     from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+
     protein_db = build_protein_db(FASTA_LARGE)
 
     peptide = "KEESGF"
@@ -83,6 +89,7 @@ def test6():
 
 def test7():
     from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+
     protein_db = build_protein_db(FASTA_LARGE)
 
     peptide = "PGTKLCHGDSELTSGLLAT"
@@ -93,6 +100,7 @@ def test7():
 
 def test8():
     from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+
     protein_db = build_protein_db(FASTA_LARGE)
 
     peptide = "PGTKLCHGDSELTSGLLAT"
@@ -114,7 +122,10 @@ def test9():
 def test10():
     from pyXLMS.transform import reannotate_positions
 
-    with pytest.raises(TypeError, match="Can't annotate positions for dict. Dict has to be a valid 'parser_result'!"):
+    with pytest.raises(
+        TypeError,
+        match="Can't annotate positions for dict. Dict has to be a valid 'parser_result'!",
+    ):
         _r = reannotate_positions({"data_type": "error"}, FASTA_SMALL)
 
 
@@ -123,22 +134,8 @@ def test11():
     from pyXLMS.data import create_csm_min
 
     csms = [
-        create_csm_min(
-            "ADANLDK",
-            7,
-            "GNTDRHSIK",
-            9,
-            "RUN_1",
-            1
-        ),
-        create_csm_min(
-            "GNTDRHSIK",
-            9,
-            "YYRDPCCCRPVSCQTVSRPVTFVPRCTR",
-            1,
-            "RUN_1",
-            2
-        )
+        create_csm_min("ADANLDK", 7, "GNTDRHSIK", 9, "RUN_1", 1),
+        create_csm_min("GNTDRHSIK", 9, "YYRDPCCCRPVSCQTVSRPVTFVPRCTR", 1, "RUN_1", 2),
     ]
     new_csms = reannotate_positions(csms, FASTA_SMALL)
 
@@ -161,18 +158,8 @@ def test12():
     from pyXLMS.data import create_crosslink_min
 
     xls = [
-        create_crosslink_min(
-            "ADANLDK",
-            7,
-            "GNTDRHSIK",
-            9
-        ),
-        create_crosslink_min(
-            "GNTDRHSIK",
-            9,
-            "YYRDPCCCRPVSCQTVSRPVTFVPRCTR",
-            1
-        )
+        create_crosslink_min("ADANLDK", 7, "GNTDRHSIK", 9),
+        create_crosslink_min("GNTDRHSIK", 9, "YYRDPCCCRPVSCQTVSRPVTFVPRCTR", 1),
     ]
     new_xls = reannotate_positions(xls, FASTA_SMALL)
 
@@ -193,52 +180,44 @@ def test13():
     from pyXLMS.data import create_parser_result
 
     csms = [
-        create_csm_min(
-            "ADANLDK",
-            7,
-            "GNTDRHSIK",
-            9,
-            "RUN_1",
-            1
-        ),
-        create_csm_min(
-            "GNTDRHSIK",
-            9,
-            "YYRDPCCCRPVSCQTVSRPVTFVPRCTR",
-            1,
-            "RUN_1",
-            2
-        )
+        create_csm_min("ADANLDK", 7, "GNTDRHSIK", 9, "RUN_1", 1),
+        create_csm_min("GNTDRHSIK", 9, "YYRDPCCCRPVSCQTVSRPVTFVPRCTR", 1, "RUN_1", 2),
     ]
     xls = [
-        create_crosslink_min(
-            "ADANLDK",
-            7,
-            "GNTDRHSIK",
-            9
-        ),
-        create_crosslink_min(
-            "GNTDRHSIK",
-            9,
-            "YYRDPCCCRPVSCQTVSRPVTFVPRCTR",
-            1
-        )
+        create_crosslink_min("ADANLDK", 7, "GNTDRHSIK", 9),
+        create_crosslink_min("GNTDRHSIK", 9, "YYRDPCCCRPVSCQTVSRPVTFVPRCTR", 1),
     ]
     pr = create_parser_result("TEST", csms=csms, crosslinks=xls)
     new_pr = reannotate_positions(pr, FASTA_SMALL)
 
     assert new_pr["crosslink-spectrum-matches"][0]["alpha_proteins"] == ["Cas9"]
-    assert new_pr["crosslink-spectrum-matches"][0]["alpha_proteins_crosslink_positions"] == [1293]
-    assert new_pr["crosslink-spectrum-matches"][0]["alpha_proteins_peptide_positions"] == [1287]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "alpha_proteins_crosslink_positions"
+    ] == [1293]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "alpha_proteins_peptide_positions"
+    ] == [1287]
     assert new_pr["crosslink-spectrum-matches"][0]["beta_proteins"] == ["Cas9"]
-    assert new_pr["crosslink-spectrum-matches"][0]["beta_proteins_crosslink_positions"] == [48]
-    assert new_pr["crosslink-spectrum-matches"][0]["beta_proteins_peptide_positions"] == [40]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "beta_proteins_crosslink_positions"
+    ] == [48]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "beta_proteins_peptide_positions"
+    ] == [40]
     assert new_pr["crosslink-spectrum-matches"][1]["alpha_proteins"] == ["Cas9"]
-    assert new_pr["crosslink-spectrum-matches"][1]["alpha_proteins_crosslink_positions"] == [48]
-    assert new_pr["crosslink-spectrum-matches"][1]["alpha_proteins_peptide_positions"] == [40]
+    assert new_pr["crosslink-spectrum-matches"][1][
+        "alpha_proteins_crosslink_positions"
+    ] == [48]
+    assert new_pr["crosslink-spectrum-matches"][1][
+        "alpha_proteins_peptide_positions"
+    ] == [40]
     assert new_pr["crosslink-spectrum-matches"][1]["beta_proteins"] == ["KRA3_SHEEP"]
-    assert new_pr["crosslink-spectrum-matches"][1]["beta_proteins_crosslink_positions"] == [23]
-    assert new_pr["crosslink-spectrum-matches"][1]["beta_proteins_peptide_positions"] == [23]
+    assert new_pr["crosslink-spectrum-matches"][1][
+        "beta_proteins_crosslink_positions"
+    ] == [23]
+    assert new_pr["crosslink-spectrum-matches"][1][
+        "beta_proteins_peptide_positions"
+    ] == [23]
     assert new_pr["crosslinks"][0]["alpha_proteins"] == ["Cas9"]
     assert new_pr["crosslinks"][0]["alpha_proteins_crosslink_positions"] == [1293]
     assert new_pr["crosslinks"][0]["beta_proteins"] == ["Cas9"]
@@ -253,16 +232,7 @@ def test14():
     from pyXLMS.transform import reannotate_positions
     from pyXLMS.data import create_csm_min
 
-    csms = [
-        create_csm_min(
-            "KEESGF",
-            1,
-            "PGTKLCHGDSELTSGLLAT",
-            4,
-            "RUN_1",
-            1
-        )
-    ]
+    csms = [create_csm_min("KEESGF", 1, "PGTKLCHGDSELTSGLLAT", 4, "RUN_1", 1)]
     new_csms = reannotate_positions(csms, FASTA_LARGE)
 
     assert new_csms[0]["alpha_proteins"] == ["A0A087X1C5", "P10635"]
@@ -277,14 +247,7 @@ def test15():
     from pyXLMS.transform import reannotate_positions
     from pyXLMS.data import create_crosslink_min
 
-    xls = [
-        create_crosslink_min(
-            "KEESGF",
-            1,
-            "PGTKLCHGDSELTSGLLAT",
-            4
-        )
-    ]
+    xls = [create_crosslink_min("KEESGF", 1, "PGTKLCHGDSELTSGLLAT", 4)]
     new_xls = reannotate_positions(xls, FASTA_LARGE)
 
     assert new_xls[0]["alpha_proteins"] == ["A0A087X1C5", "P10635"]
@@ -299,33 +262,28 @@ def test16():
     from pyXLMS.data import create_crosslink_min
     from pyXLMS.data import create_parser_result
 
-    csms = [
-        create_csm_min(
-            "KEESGF",
-            1,
-            "PGTKLCHGDSELTSGLLAT",
-            4,
-            "RUN_1",
-            1
-        )
-    ]
-    xls = [
-        create_crosslink_min(
-            "KEESGF",
-            1,
-            "PGTKLCHGDSELTSGLLAT",
-            4
-        )
-    ]
+    csms = [create_csm_min("KEESGF", 1, "PGTKLCHGDSELTSGLLAT", 4, "RUN_1", 1)]
+    xls = [create_crosslink_min("KEESGF", 1, "PGTKLCHGDSELTSGLLAT", 4)]
     pr = create_parser_result("TEST", csms=csms, crosslinks=xls)
     new_pr = reannotate_positions(pr, FASTA_LARGE)
 
-    assert new_pr["crosslink-spectrum-matches"][0]["alpha_proteins"] == ["A0A087X1C5", "P10635"]
-    assert new_pr["crosslink-spectrum-matches"][0]["alpha_proteins_crosslink_positions"] == [214, 214]
-    assert new_pr["crosslink-spectrum-matches"][0]["alpha_proteins_peptide_positions"] == [214, 214]
+    assert new_pr["crosslink-spectrum-matches"][0]["alpha_proteins"] == [
+        "A0A087X1C5",
+        "P10635",
+    ]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "alpha_proteins_crosslink_positions"
+    ] == [214, 214]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "alpha_proteins_peptide_positions"
+    ] == [214, 214]
     assert new_pr["crosslink-spectrum-matches"][0]["beta_proteins"] == ["Q9Y6C7"]
-    assert new_pr["crosslink-spectrum-matches"][0]["beta_proteins_crosslink_positions"] == [79]
-    assert new_pr["crosslink-spectrum-matches"][0]["beta_proteins_peptide_positions"] == [76]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "beta_proteins_crosslink_positions"
+    ] == [79]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "beta_proteins_peptide_positions"
+    ] == [76]
     assert new_pr["crosslinks"][0]["alpha_proteins"] == ["A0A087X1C5", "P10635"]
     assert new_pr["crosslinks"][0]["alpha_proteins_crosslink_positions"] == [214, 214]
     assert new_pr["crosslinks"][0]["beta_proteins"] == ["Q9Y6C7"]
@@ -339,28 +297,44 @@ def test17():
 
     # this is a performance test to see if it shows up in pytest --durations
     csms = [
-        create_csm_min(
-            "KEESGF",
-            1,
-            "PGTKLCHGDSELTSGLLAT",
-            4,
-            "RUN_1",
-            i + 1
-        ) for i in range(1000)
+        create_csm_min("KEESGF", 1, "PGTKLCHGDSELTSGLLAT", 4, "RUN_1", i + 1)
+        for i in range(1000)
     ]
     pr = create_parser_result("TEST", csms=csms, crosslinks=None)
     new_pr = reannotate_positions(pr, FASTA_LARGE)
 
-    assert new_pr["crosslink-spectrum-matches"][0]["alpha_proteins"] == ["A0A087X1C5", "P10635"]
-    assert new_pr["crosslink-spectrum-matches"][0]["alpha_proteins_crosslink_positions"] == [214, 214]
-    assert new_pr["crosslink-spectrum-matches"][0]["alpha_proteins_peptide_positions"] == [214, 214]
+    assert new_pr["crosslink-spectrum-matches"][0]["alpha_proteins"] == [
+        "A0A087X1C5",
+        "P10635",
+    ]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "alpha_proteins_crosslink_positions"
+    ] == [214, 214]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "alpha_proteins_peptide_positions"
+    ] == [214, 214]
     assert new_pr["crosslink-spectrum-matches"][0]["beta_proteins"] == ["Q9Y6C7"]
-    assert new_pr["crosslink-spectrum-matches"][0]["beta_proteins_crosslink_positions"] == [79]
-    assert new_pr["crosslink-spectrum-matches"][0]["beta_proteins_peptide_positions"] == [76]
-    assert new_pr["crosslink-spectrum-matches"][-1]["alpha_proteins"] == ["A0A087X1C5", "P10635"]
-    assert new_pr["crosslink-spectrum-matches"][-1]["alpha_proteins_crosslink_positions"] == [214, 214]
-    assert new_pr["crosslink-spectrum-matches"][-1]["alpha_proteins_peptide_positions"] == [214, 214]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "beta_proteins_crosslink_positions"
+    ] == [79]
+    assert new_pr["crosslink-spectrum-matches"][0][
+        "beta_proteins_peptide_positions"
+    ] == [76]
+    assert new_pr["crosslink-spectrum-matches"][-1]["alpha_proteins"] == [
+        "A0A087X1C5",
+        "P10635",
+    ]
+    assert new_pr["crosslink-spectrum-matches"][-1][
+        "alpha_proteins_crosslink_positions"
+    ] == [214, 214]
+    assert new_pr["crosslink-spectrum-matches"][-1][
+        "alpha_proteins_peptide_positions"
+    ] == [214, 214]
     assert new_pr["crosslink-spectrum-matches"][-1]["beta_proteins"] == ["Q9Y6C7"]
-    assert new_pr["crosslink-spectrum-matches"][-1]["beta_proteins_crosslink_positions"] == [79]
-    assert new_pr["crosslink-spectrum-matches"][-1]["beta_proteins_peptide_positions"] == [76]
+    assert new_pr["crosslink-spectrum-matches"][-1][
+        "beta_proteins_crosslink_positions"
+    ] == [79]
+    assert new_pr["crosslink-spectrum-matches"][-1][
+        "beta_proteins_peptide_positions"
+    ] == [76]
     assert new_pr["crosslinks"] is None

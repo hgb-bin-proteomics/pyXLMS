@@ -26,7 +26,9 @@ from typing import List
 from typing import Any
 
 
-def __get_proteins_and_positions(peptide: str, protein_db: Dict[str, str]) -> Tuple[List[str], List[int]]:
+def __get_proteins_and_positions(
+    peptide: str, protein_db: Dict[str, str]
+) -> Tuple[List[str], List[int]]:
     r"""Retrieve matching proteins and peptide positions for a specific peptide.
 
     Matches the specified peptide against the given protein database and returns all proteins
@@ -104,7 +106,7 @@ def fasta_title_to_accession(title: str) -> str:
 def reannotate_positions(
     data: List[Dict[str, Any]] | Dict[str, Any],
     fasta: str | BinaryIO,
-    title_to_accession: Optional[Callable[[str], str]] = None
+    title_to_accession: Optional[Callable[[str], str]] = None,
 ) -> List[Dict[str, Any]] | Dict[str, Any]:
     r"""Reannotates protein crosslink positions for a given fasta file.
 
@@ -160,7 +162,7 @@ def reannotate_positions(
         # read fasta file
         i = 0
         if isinstance(fasta, str):
-            with open(fasta, "r", encoding = "utf-8") as f:
+            with open(fasta, "r", encoding="utf-8") as f:
                 for i, item in enumerate(SimpleFastaParser(f)):
                     protein_db[title_to_accession(item[0])] = item[1]
             if len(protein_db) != i + 1:
@@ -177,52 +179,82 @@ def reannotate_positions(
         # annotate crosslinks
         if data[0]["data_type"] == "crosslink":
             for xl in tqdm(data, total=len(data), desc="Annotating crosslinks..."):
-                proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(xl["alpha_peptide"], protein_db)
-                proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(xl["beta_peptide"], protein_db)
-                reannoted.append(create_crosslink(
-                    peptide_a=xl["alpha_peptide"],
-                    xl_position_peptide_a=xl["alpha_peptide_crosslink_position"],
-                    proteins_a=proteins_a,
-                    xl_position_proteins_a=[pos + xl["alpha_peptide_crosslink_position"] for pos in pep_position0_proteins_a],
-                    decoy_a=xl["alpha_decoy"],
-                    peptide_b=xl["beta_peptide"],
-                    xl_position_peptide_b=xl["beta_peptide_crosslink_position"],
-                    proteins_b=proteins_b,
-                    xl_position_proteins_b=[pos + xl["beta_peptide_crosslink_position"] for pos in pep_position0_proteins_b],
-                    decoy_b=xl["beta_decoy"],
-                    score=xl["score"],
-                    additional_information=xl["additional_information"],
-                ))
+                proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(
+                    xl["alpha_peptide"], protein_db
+                )
+                proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(
+                    xl["beta_peptide"], protein_db
+                )
+                reannoted.append(
+                    create_crosslink(
+                        peptide_a=xl["alpha_peptide"],
+                        xl_position_peptide_a=xl["alpha_peptide_crosslink_position"],
+                        proteins_a=proteins_a,
+                        xl_position_proteins_a=[
+                            pos + xl["alpha_peptide_crosslink_position"]
+                            for pos in pep_position0_proteins_a
+                        ],
+                        decoy_a=xl["alpha_decoy"],
+                        peptide_b=xl["beta_peptide"],
+                        xl_position_peptide_b=xl["beta_peptide_crosslink_position"],
+                        proteins_b=proteins_b,
+                        xl_position_proteins_b=[
+                            pos + xl["beta_peptide_crosslink_position"]
+                            for pos in pep_position0_proteins_b
+                        ],
+                        decoy_b=xl["beta_decoy"],
+                        score=xl["score"],
+                        additional_information=xl["additional_information"],
+                    )
+                )
         # annotate csms
         elif data[0]["data_type"] == "crosslink-spectrum-match":
-            for csm in tqdm(data, total=len(data), desc="Annotation crosslink-spectrum-matches..."):
-                proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(csm["alpha_peptide"], protein_db)
-                proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(csm["beta_peptide"], protein_db)
-                reannoted.append(create_csm(
-                    peptide_a=csm["alpha_peptide"],
-                    modifications_a=csm["alpha_modifications"],
-                    xl_position_peptide_a=csm["alpha_peptide_crosslink_position"],
-                    proteins_a=proteins_a,
-                    xl_position_proteins_a=[pos + csm["alpha_peptide_crosslink_position"] for pos in pep_position0_proteins_a],
-                    pep_position_proteins_a=[pos + 1 for pos in pep_position0_proteins_a],
-                    score_a=csm["alpha_score"],
-                    decoy_a=csm["alpha_decoy"],
-                    peptide_b=csm["beta_peptide"],
-                    modifications_b=csm["beta_modifications"],
-                    xl_position_peptide_b=csm["beta_peptide_crosslink_position"],
-                    proteins_b=proteins_b,
-                    xl_position_proteins_b=[pos + csm["beta_peptide_crosslink_position"] for pos in pep_position0_proteins_b],
-                    pep_position_proteins_b=[pos + 1 for pos in pep_position0_proteins_b],
-                    score_b=csm["beta_score"],
-                    decoy_b=csm["beta_decoy"],
-                    score=csm["score"],
-                    spectrum_file=csm["spectrum_file"],
-                    scan_nr=csm["scan_nr"],
-                    charge=csm["charge"],
-                    rt=csm["retention_time"],
-                    im_cv=csm["ion_mobility"],
-                    additional_information=csm["additional_information"],
-                ))
+            for csm in tqdm(
+                data, total=len(data), desc="Annotation crosslink-spectrum-matches..."
+            ):
+                proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(
+                    csm["alpha_peptide"], protein_db
+                )
+                proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(
+                    csm["beta_peptide"], protein_db
+                )
+                reannoted.append(
+                    create_csm(
+                        peptide_a=csm["alpha_peptide"],
+                        modifications_a=csm["alpha_modifications"],
+                        xl_position_peptide_a=csm["alpha_peptide_crosslink_position"],
+                        proteins_a=proteins_a,
+                        xl_position_proteins_a=[
+                            pos + csm["alpha_peptide_crosslink_position"]
+                            for pos in pep_position0_proteins_a
+                        ],
+                        pep_position_proteins_a=[
+                            pos + 1 for pos in pep_position0_proteins_a
+                        ],
+                        score_a=csm["alpha_score"],
+                        decoy_a=csm["alpha_decoy"],
+                        peptide_b=csm["beta_peptide"],
+                        modifications_b=csm["beta_modifications"],
+                        xl_position_peptide_b=csm["beta_peptide_crosslink_position"],
+                        proteins_b=proteins_b,
+                        xl_position_proteins_b=[
+                            pos + csm["beta_peptide_crosslink_position"]
+                            for pos in pep_position0_proteins_b
+                        ],
+                        pep_position_proteins_b=[
+                            pos + 1 for pos in pep_position0_proteins_b
+                        ],
+                        score_b=csm["beta_score"],
+                        decoy_b=csm["beta_decoy"],
+                        score=csm["score"],
+                        spectrum_file=csm["spectrum_file"],
+                        scan_nr=csm["scan_nr"],
+                        charge=csm["charge"],
+                        rt=csm["retention_time"],
+                        im_cv=csm["ion_mobility"],
+                        additional_information=csm["additional_information"],
+                    )
+                )
         else:
             raise TypeError(
                 f"Can't annotate positions for data type {data[0]['data_type']}. Valid data types are:\n"
@@ -234,8 +266,18 @@ def reannotate_positions(
         raise TypeError(
             "Can't annotate positions for dict. Dict has to be a valid 'parser_result'!"
         )
-    new_csms = reannotate_positions(data["crosslink-spectrum-matches"], fasta, title_to_accession) if data["crosslink-spectrum-matches"] is not None else None
-    new_xls = reannotate_positions(data["crosslinks"], fasta, title_to_accession) if data["crosslinks"] is not None else None
+    new_csms = (
+        reannotate_positions(
+            data["crosslink-spectrum-matches"], fasta, title_to_accession
+        )
+        if data["crosslink-spectrum-matches"] is not None
+        else None
+    )
+    new_xls = (
+        reannotate_positions(data["crosslinks"], fasta, title_to_accession)
+        if data["crosslinks"] is not None
+        else None
+    )
     if new_csms is not None:
         if not isinstance(new_csms, list):
             raise RuntimeError(
@@ -249,7 +291,5 @@ def reannotate_positions(
                 f"Expected data type: list. Got: {type(new_xls)}."
             )
     return create_parser_result(
-        search_engine = data["search_engine"],
-        csms = new_csms,
-        crosslinks = new_xls
+        search_engine=data["search_engine"], csms=new_csms, crosslinks=new_xls
     )
