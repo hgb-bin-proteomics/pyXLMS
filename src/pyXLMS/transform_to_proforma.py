@@ -22,6 +22,31 @@ def __get_modified_peptide(
     crosslink_position: int,
     crosslinker: Optional[str | float]
 ) -> str:
+    r"""Returns the Proforma string for a single peptide.
+    
+    Parameters
+    ----------
+    sequence : str
+        The unmodified peptide sequence.
+    modifications : dict of int, tuple of str and float
+        The pyXLMS specific modifications object. See ``data.create_csm()`` for reference.
+    crosslink_position : int
+        Crosslink position in the peptide sequence (1-based).
+    crosslinker : str, or float, or None
+        Optional name or mass of the crosslink reagent. If the name is given, it should be a valid
+        name from XLMOD.
+        
+    Returns
+    -------
+    str
+        The Proforma string of the peptidoform.
+
+    Notes
+    -----
+    - Modifications with unknown mass are skipped.
+    - If no modifications are given, only the crosslink modification will be encoded in the Proforma.
+    - If no modifications are given and no crosslinker is given, the unmodified peptide Proforma will be returned.
+    """
     if isinstance(crosslinker, float):
         crosslinker = f"+{crosslinker}"
     pep_len = len(sequence)
