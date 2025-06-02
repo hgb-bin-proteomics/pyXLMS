@@ -271,3 +271,28 @@ def test14():
         to_proforma(csm)
         == "M[+15.994915]KPM[+15.994915]EPTIDE-[+158.00376]//PEPK[+158.00376]TIDE/3"
     )
+
+
+def test15():
+    from pyXLMS.data import create_csm_min
+    from pyXLMS.transform import to_proforma
+
+    csm = create_csm_min(
+        "PEPKTIDE",
+        4,
+        "MKPMEPTIDE",
+        10,
+        "RUN_1",
+        1,
+        modifications_a={4: ("DSSO", 158.00376)},
+        modifications_b={
+            11: ("DSSO", 158.00376),
+            4: ("Oxidation", 15.994915),
+            1: ("Oxidation", float("nan")),
+        },
+        charge=3,
+    )
+    assert (
+        to_proforma(csm)
+        == "MKPM[+15.994915]EPTIDE-[+158.00376]//PEPK[+158.00376]TIDE/3"
+    )
