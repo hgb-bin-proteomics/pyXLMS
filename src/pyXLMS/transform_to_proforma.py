@@ -51,22 +51,24 @@ def __get_modified_peptide(
     - If no modifications are given and no crosslinker is given, the unmodified peptide Proforma will be returned.
     """
     if isinstance(crosslinker, float):
-        crosslinker = f"+{crosslinker}"
+        crosslinker = f"+{crosslinker}" if crosslinker > 0.0 else f"{crosslinker}"
     pep_len = len(sequence)
     if modifications is not None:
-        new_modifications = dict(modifications)
+        new_modifications = dict()
+        for pos, mod in modifications.items():
+            new_modifications[pos] = (mod[0], f"+{mod[1]}" if mod[1] > 0.0 else f"{mod[1]}")
         if crosslink_position not in new_modifications and crosslinker is not None:
-            new_modifications[crosslink_position] = ("", crosslinker)  # pyright: ignore[reportArgumentType]
+            new_modifications[crosslink_position] = ("", f"{crosslinker}")
         for pos in sorted(new_modifications.keys(), reverse=True):
             if not pd.isna(new_modifications[pos][1]):
                 if pos == 0:
-                    sequence = f"[+{new_modifications[pos][1]}]-" + sequence
+                    sequence = f"[{new_modifications[pos][1]}]-" + sequence
                 elif pos == pep_len + 1:
-                    sequence = sequence + f"-[+{new_modifications[pos][1]}]"
+                    sequence = sequence + f"-[{new_modifications[pos][1]}]"
                 else:
                     sequence = (
                         sequence[:pos]
-                        + f"[+{new_modifications[pos][1]}]"
+                        + f"[{new_modifications[pos][1]}]"
                         + sequence[pos:]
                     )
         return sequence
