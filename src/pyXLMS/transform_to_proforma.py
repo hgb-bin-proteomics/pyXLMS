@@ -22,7 +22,7 @@ def __get_modified_peptide(
     sequence: str,
     modifications: Optional[Dict[int, Tuple[str, float]]],
     crosslink_position: int,
-    crosslinker: Optional[str | float]
+    crosslinker: Optional[str | float],
 ) -> str:
     r"""Returns the Proforma string for a single peptide.
 
@@ -64,10 +64,18 @@ def __get_modified_peptide(
                 elif pos == pep_len + 1:
                     sequence = sequence + f"-[+{new_modifications[pos][1]}]"
                 else:
-                    sequence = sequence[:pos] + f"[+{new_modifications[pos][1]}]" + sequence[pos:]
+                    sequence = (
+                        sequence[:pos]
+                        + f"[+{new_modifications[pos][1]}]"
+                        + sequence[pos:]
+                    )
         return sequence
     if crosslinker is not None:
-        sequence = sequence[:crosslink_position] + f"[{crosslinker}]" + sequence[crosslink_position:]
+        sequence = (
+            sequence[:crosslink_position]
+            + f"[{crosslinker}]"
+            + sequence[crosslink_position:]
+        )
         return sequence
     return sequence
 
@@ -95,8 +103,18 @@ def __to_proforma_csm(csm: Dict[str, Any], crosslinker: Optional[str | float]) -
     - If no modifications are given, only the crosslink modification will be encoded in the Proforma.
     - If no modifications are given and no crosslinker is given, the unmodified peptide Proforma will be returned.
     """
-    peptide_a = __get_modified_peptide(csm["alpha_peptide"], csm["alpha_modifications"], csm["alpha_peptide_crosslink_position"], crosslinker)
-    peptide_b = __get_modified_peptide(csm["beta_peptide"], csm["beta_modifications"], csm["beta_peptide_crosslink_position"], crosslinker)
+    peptide_a = __get_modified_peptide(
+        csm["alpha_peptide"],
+        csm["alpha_modifications"],
+        csm["alpha_peptide_crosslink_position"],
+        crosslinker,
+    )
+    peptide_b = __get_modified_peptide(
+        csm["beta_peptide"],
+        csm["beta_modifications"],
+        csm["beta_peptide_crosslink_position"],
+        crosslinker,
+    )
     if csm["charge"] is not None:
         return f"{peptide_a}//{peptide_b}/{csm['charge']}"
     return f"{peptide_a}//{peptide_b}"
@@ -125,14 +143,17 @@ def __to_proforma_xl(xl: Dict[str, Any], crosslinker: Optional[str | float]) -> 
     - If no modifications are given, only the crosslink modification will be encoded in the Proforma.
     - If no modifications are given and no crosslinker is given, the unmodified peptide Proforma will be returned.
     """
-    peptide_a = __get_modified_peptide(xl["alpha_peptide"], None, xl["alpha_peptide_crosslink_position"], crosslinker)
-    peptide_b = __get_modified_peptide(xl["beta_peptide"], None, xl["beta_peptide_crosslink_position"], crosslinker)
+    peptide_a = __get_modified_peptide(
+        xl["alpha_peptide"], None, xl["alpha_peptide_crosslink_position"], crosslinker
+    )
+    peptide_b = __get_modified_peptide(
+        xl["beta_peptide"], None, xl["beta_peptide_crosslink_position"], crosslinker
+    )
     return f"{peptide_a}//{peptide_b}"
 
 
 def to_proforma(
-    data: Dict[str, Any] | List[Dict[str, Any]],
-    crosslinker: Optional[str | float]
+    data: Dict[str, Any] | List[Dict[str, Any]], crosslinker: Optional[str | float]
 ) -> str | List[str]:
     r"""Returns the Proforma string for a single crosslink or crosslink-spectrum-match, or for
     a list of crosslinks or crosslink-spectrum-matches.
@@ -215,12 +236,19 @@ def to_proforma(
     >>> to_proforma(csm, crosslinker="Xlink:DSSO")
     'K[+158.00376]PM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE/3'
     """
-    _ok = check_input_multi(crosslinker, "crosslinker", [str, float]) if crosslinker is not None else True
+    _ok = (
+        check_input_multi(crosslinker, "crosslinker", [str, float])
+        if crosslinker is not None
+        else True
+    )
     if isinstance(data, list):
         _ok = check_input(data, "data", list, dict)
         return [to_proforma(item, crosslinker) for item in data]  # pyright: ignore[reportReturnType]
     _ok = check_input(data, "data", dict)
-    if "data_type" not in data or data["data_type"] not in ["crosslink", "crosslink-spectrum-match"]:
+    if "data_type" not in data or data["data_type"] not in [
+        "crosslink",
+        "crosslink-spectrum-match",
+    ]:
         raise TypeError(
             "Unsupported data type for input data! Parameter data has to be a (list of) crosslink or crosslink-spectrum-match!"
         )
