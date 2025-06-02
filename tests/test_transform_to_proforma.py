@@ -87,3 +87,11 @@ def test11():
     proforma = to_proforma([csm_1, csm_2])
     assert proforma[0] == "K[+158.00376]PM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE/3"
     assert proforma[1] == "M[+15.994915]K[+158.00376]PM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE/3"
+
+
+def test12():
+    from pyXLMS.data import create_csm_min
+    from pyXLMS.transform import to_proforma
+    csm = create_csm_min("PEPKTIDE", 4, "KPMEPTIDE", 1, "RUN_1", 1, modifications_b={3:("Oxidation", 15.994915)}, charge=3)
+    assert to_proforma(csm, crosslinker="Xlink:DSSO") == "K[Xlink:DSSO]PM[+15.994915]EPTIDE//PEPK[Xlink:DSSO]TIDE/3"
+    assert csm["alpha_modifications"] == {3:("Oxidation", 15.994915)}
