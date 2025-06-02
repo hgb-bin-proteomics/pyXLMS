@@ -15,7 +15,7 @@ def test1():
 
     with pytest.raises(
         TypeError,
-        match="Unsupported data type for input data! Parameter data has to be a (list of) crosslink or crosslink-spectrum-match!",
+        match=r"Unsupported data type for input data! Parameter data has to be a (list of) crosslink or crosslink-spectrum-match!",
     ):
         _r = to_proforma(psm)
 
@@ -146,13 +146,13 @@ def test10():
         "PEPKTIDE",
         4,
         "MKPMEPTIDE",
-        1,
+        2,
         "RUN_1",
         1,
         modifications_a={4: ("DSSO", 158.00376)},
         modifications_b={
             2: ("DSSO", 158.00376),
-            3: ("Oxidation", 15.994915),
+            4: ("Oxidation", 15.994915),
             1: ("Oxidation", 15.994915),
         },
         charge=3,
@@ -182,13 +182,13 @@ def test11():
         "PEPKTIDE",
         4,
         "MKPMEPTIDE",
-        1,
+        2,
         "RUN_1",
         2,
         modifications_a={4: ("DSSO", 158.00376)},
         modifications_b={
             2: ("DSSO", 158.00376),
-            3: ("Oxidation", 15.994915),
+            4: ("Oxidation", 15.994915),
             1: ("Oxidation", 15.994915),
         },
         charge=3,
@@ -220,7 +220,7 @@ def test12():
         to_proforma(csm, crosslinker="Xlink:DSSO")
         == "K[Xlink:DSSO]PM[+15.994915]EPTIDE//PEPK[Xlink:DSSO]TIDE/3"
     )
-    assert mts(csm["alpha_modifications"]) == "(3:[Oxidation|15.994915)"
+    assert mts(csm["alpha_modifications"]) == "(3:[Oxidation|15.994915])"
 
 
 def test13():
@@ -237,7 +237,7 @@ def test13():
         modifications_a={4: ("DSSO", 158.00376)},
         modifications_b={
             0: ("DSSO", 158.00376),
-            3: ("Oxidation", 15.994915),
+            4: ("Oxidation", 15.994915),
             1: ("Oxidation", 15.994915),
         },
         charge=3,
@@ -256,18 +256,18 @@ def test14():
         "PEPKTIDE",
         4,
         "MKPMEPTIDE",
-        1,
+        10,
         "RUN_1",
         1,
         modifications_a={4: ("DSSO", 158.00376)},
         modifications_b={
             11: ("DSSO", 158.00376),
-            3: ("Oxidation", 15.994915),
+            4: ("Oxidation", 15.994915),
             1: ("Oxidation", 15.994915),
         },
         charge=3,
     )
     assert (
         to_proforma(csm)
-        == "M[+15.994915]KPM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE-[+158.00376]/3"
+        == "M[+15.994915]KPM[+15.994915]EPTIDE-[+158.00376]//PEPK[+158.00376]TIDE/3"
     )
