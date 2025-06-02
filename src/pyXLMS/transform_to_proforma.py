@@ -216,17 +216,7 @@ def to_proforma(
     _ok = check_input_multi(crosslinker, "crosslinker", [str, float]) if crosslinker is not None else True
     if isinstance(data, list):
         _ok = check_input(data, "data", list, dict)
-        proforma = list()
-        for item in data:
-            if "data_type" not in item or item["data_type"] not in ["crosslink", "crosslink-spectrum-match"]:
-                raise TypeError(
-                    "Unsupported data type for input data! Parameter data has to be a (list of) crosslink or crosslink-spectrum-match!"
-                    )
-            if item["data_type"] == "crosslink":
-                proforma.append(__to_proforma_xl(item, crosslinker))
-            else:
-                proforma.append(__to_proforma_csm(item, crosslinker))
-        return proforma
+        return [to_proforma(item) for item in data]
     _ok = check_input(data, "data", dict)
     if "data_type" not in data or data["data_type"] not in ["crosslink", "crosslink-spectrum-match"]:
         raise TypeError(
