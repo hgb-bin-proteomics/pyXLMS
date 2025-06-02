@@ -221,3 +221,53 @@ def test12():
         == "K[Xlink:DSSO]PM[+15.994915]EPTIDE//PEPK[Xlink:DSSO]TIDE/3"
     )
     assert mts(csm["alpha_modifications"]) == "(3:[Oxidation|15.994915)"
+
+
+def test13():
+    from pyXLMS.data import create_csm_min
+    from pyXLMS.transform import to_proforma
+
+    csm = create_csm_min(
+        "PEPKTIDE",
+        4,
+        "MKPMEPTIDE",
+        1,
+        "RUN_1",
+        1,
+        modifications_a={4: ("DSSO", 158.00376)},
+        modifications_b={
+            0: ("DSSO", 158.00376),
+            3: ("Oxidation", 15.994915),
+            1: ("Oxidation", 15.994915),
+        },
+        charge=3,
+    )
+    assert (
+        to_proforma(csm)
+        == "[+158.00376]-M[+15.994915]KPM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE/3"
+    )
+
+
+def test14():
+    from pyXLMS.data import create_csm_min
+    from pyXLMS.transform import to_proforma
+
+    csm = create_csm_min(
+        "PEPKTIDE",
+        4,
+        "MKPMEPTIDE",
+        1,
+        "RUN_1",
+        1,
+        modifications_a={4: ("DSSO", 158.00376)},
+        modifications_b={
+            11: ("DSSO", 158.00376),
+            3: ("Oxidation", 15.994915),
+            1: ("Oxidation", 15.994915),
+        },
+        charge=3,
+    )
+    assert (
+        to_proforma(csm)
+        == "M[+15.994915]KPM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE-[+158.00376]/3"
+    )
