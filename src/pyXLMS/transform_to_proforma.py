@@ -6,6 +6,8 @@
 
 from __future__ import annotations
 
+import pandas as pd
+
 from .data import check_input
 from .data import check_input_multi
 
@@ -52,17 +54,17 @@ def __get_modified_peptide(
         crosslinker = f"+{crosslinker}"
     pep_len = len(sequence)
     if modifications is not None:
-        modifications = dict(modifications)
-        if crosslink_position not in modifications and crosslinker is not None:
-            modifications[crosslink_position] = ("", crosslinker)
-        for pos in sorted(modifications.keys(), reverse=True):
-            if not pd.isna(modifications[pos][1]):
+        new_modifications = dict(modifications)
+        if crosslink_position not in new_modifications and crosslinker is not None:
+            new_modifications[crosslink_position] = ("", crosslinker)  # pyright: ignore[reportArgumentType]
+        for pos in sorted(new_modifications.keys(), reverse=True):
+            if not pd.isna(new_modifications[pos][1]):
                 if pos == 0:
-                    sequence = f"[+{modifications[pos][1]}]-" + sequence
+                    sequence = f"[+{new_modifications[pos][1]}]-" + sequence
                 elif pos == pep_len + 1:
-                    sequence = sequence + f"-[+{modifications[pos][1]}]"
+                    sequence = sequence + f"-[+{new_modifications[pos][1]}]"
                 else:
-                    sequence = sequence[:pos] + f"[+{modifications[pos][1]}]" + sequence[pos:]
+                    sequence = sequence[:pos] + f"[+{new_modifications[pos][1]}]" + sequence[pos:]
         return sequence
     if crosslinker is not None:
         sequence = sequence[:crosslink_position] + f"[{crosslinker}]" + sequence[crosslink_position:]
@@ -216,7 +218,7 @@ def to_proforma(
     _ok = check_input_multi(crosslinker, "crosslinker", [str, float]) if crosslinker is not None else True
     if isinstance(data, list):
         _ok = check_input(data, "data", list, dict)
-        return [to_proforma(item) for item in data]
+        return [to_proforma(item, crosslinker) for item in data]  # pyright: ignore[reportReturnType]
     _ok = check_input(data, "data", dict)
     if "data_type" not in data or data["data_type"] not in ["crosslink", "crosslink-spectrum-match"]:
         raise TypeError(
