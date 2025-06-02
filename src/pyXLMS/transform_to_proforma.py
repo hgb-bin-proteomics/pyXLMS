@@ -56,7 +56,10 @@ def __get_modified_peptide(
     if modifications is not None:
         new_modifications = dict()
         for pos, mod in modifications.items():
-            new_modifications[pos] = (mod[0], f"+{mod[1]}" if mod[1] > 0.0 else f"{mod[1]}")
+            new_modifications[pos] = (
+                mod[0],
+                f"+{mod[1]}" if mod[1] > 0.0 else f"{mod[1]}",
+            )
         if crosslink_position not in new_modifications and crosslinker is not None:
             new_modifications[crosslink_position] = ("", f"{crosslinker}")
         for pos in sorted(new_modifications.keys(), reverse=True):
@@ -155,7 +158,8 @@ def __to_proforma_xl(xl: Dict[str, Any], crosslinker: Optional[str | float]) -> 
 
 
 def to_proforma(
-    data: Dict[str, Any] | List[Dict[str, Any]], crosslinker: Optional[str | float] = None
+    data: Dict[str, Any] | List[Dict[str, Any]],
+    crosslinker: Optional[str | float] = None,
 ) -> str | List[str]:
     r"""Returns the Proforma string for a single crosslink or crosslink-spectrum-match, or for
     a list of crosslinks or crosslink-spectrum-matches.
