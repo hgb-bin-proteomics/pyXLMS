@@ -153,7 +153,7 @@ def __to_proforma_xl(xl: Dict[str, Any], crosslinker: Optional[str | float]) -> 
 
 
 def to_proforma(
-    data: Dict[str, Any] | List[Dict[str, Any]], crosslinker: Optional[str | float]
+    data: Dict[str, Any] | List[Dict[str, Any]], crosslinker: Optional[str | float] = None
 ) -> str | List[str]:
     r"""Returns the Proforma string for a single crosslink or crosslink-spectrum-match, or for
     a list of crosslinks or crosslink-spectrum-matches.
@@ -164,7 +164,7 @@ def to_proforma(
         A pyXLMS crosslink object, e.g. see ``data.create_crosslink()``. Or a pyXLMS crosslink-spectrum-match
         object, e.g. see ``data.create_csm()``. Alternatively, a list of crosslinks or crosslink-spectrum-matches
         can also be provided.
-    crosslinker : str, or float, or None
+    crosslinker : str, or float, or None, default = None
         Optional name or mass of the crosslink reagent. If the name is given, it should be a valid
         name from XLMOD. If the crosslink modification is contained in the crosslink-spectrum-match object
         this parameter has no effect.
