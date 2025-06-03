@@ -43,8 +43,8 @@ def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
     return {"Target-Target": tt, "Target-Decoy": td, "Decoy-Decoy": dd}
 
 
-def filter_protein(data: List[Dict[str, Any]], proteins: Set[str] | List[str]) -> Dict[str, List[Any]]:
-    r"""
+def filter_proteins(data: List[Dict[str, Any]], proteins: Set[str] | List[str]) -> Dict[str, List[Any]]:
+    r"""Get all crosslinks or crosslink-spectrum-matches originating from proteins of interest.
     """
     _ok = check_input(data, "data", list, dict)
     _ok = check_input_multi(proteins, "proteins", [set, list], str)
@@ -68,4 +68,4 @@ def filter_protein(data: List[Dict[str, Any]], proteins: Set[str] | List[str]) -
                 continue
             else:
                 inter.append(item)
-    return {"Proteins": list(proteins), "Intra": intra, "Inter": inter}
+    return {"Proteins": list(proteins), "Both": intra, "One": inter}
