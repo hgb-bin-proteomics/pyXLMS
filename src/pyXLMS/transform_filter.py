@@ -6,12 +6,10 @@
 
 from __future__ import annotations
 
-import pandas as pd
 
 from .data import check_input
 from .data import check_input_multi
 
-from typing import Optional
 from typing import Dict
 from typing import List
 from typing import Set
@@ -89,7 +87,9 @@ def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
     return {"Target-Target": tt, "Target-Decoy": td, "Decoy-Decoy": dd}
 
 
-def filter_proteins(data: List[Dict[str, Any]], proteins: Set[str] | List[str]) -> Dict[str, List[Any]]:
+def filter_proteins(
+    data: List[Dict[str, Any]], proteins: Set[str] | List[str]
+) -> Dict[str, List[Any]]:
     r"""Get all crosslinks or crosslink-spectrum-matches originating from proteins of interest.
 
     Gets all crosslinks or crosslink-spectrum-matches originating from a list of proteins of interest and
@@ -160,7 +160,10 @@ def filter_proteins(data: List[Dict[str, Any]], proteins: Set[str] | List[str]) 
             b = set(item["beta_proteins"])
             if len(proteins.intersection(a)) > 0 and len(proteins.intersection(b)) > 0:
                 intra.append(item)
-            elif len(proteins.intersection(a)) == 0 and len(proteins.intersection(b)) == 0:
+            elif (
+                len(proteins.intersection(a)) == 0
+                and len(proteins.intersection(b)) == 0
+            ):
                 continue
             else:
                 inter.append(item)
