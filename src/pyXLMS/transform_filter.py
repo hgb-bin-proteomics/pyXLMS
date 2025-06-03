@@ -19,7 +19,53 @@ from typing import Any
 
 
 def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
-    r"""
+    r"""Seperate crosslinks or crosslink-spectrum-matches based on target and decoy matches.
+
+    Seperates crosslinks or crosslink-spectrum-matches based on if both peptides match to the
+    target database, or if both match to the decoy database, or if one of them matches to the
+    target database and the other to the decoy database. The first we denote as "Target-Target"
+    or "TT" matches, the second as "Decoy-Decoy" or "DD" matches, and the third as "Target-Decoy"
+    or "TD" matches.
+
+    Parameters
+    ----------
+    data : list of dict of str, any
+        A list of pyXLMS crosslinks or crosslink-spectrum-matches.
+
+    Returns
+    -------
+    dict
+        Returns a dictionary with key "Target-Target" which contains all TT matches, key "Target-Decoy"
+        which contains all TD matches, and key "Decoy-Decoy" which contains all DD matches.
+
+    Raises
+    ------
+    TypeError
+        If an unsupported data type is provided.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import filter_target_decoy
+    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> target_and_decoys = filter_target_decoy(result["crosslink-spectrum-matches"])
+    >>> len(target_and_decoys["Target-Target"])
+    786
+    >>> len(target_and_decoys["Target-Decoy"])
+    39
+    >>> len(target_and_decoys["Decoy-Decoy"])
+    1
+
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import filter_target_decoy
+    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> target_and_decoys = filter_target_decoy(result["crosslinks"])
+    >>> len(target_and_decoys["Target-Target"])
+    265
+    >>> len(target_and_decoys["Target-Decoy"])
+    0
+    >>> len(target_and_decoys["Decoy-Decoy"])
+    35
     """
     _ok = check_input(data, "data", list, dict)
     tt = list()
@@ -45,6 +91,56 @@ def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
 
 def filter_proteins(data: List[Dict[str, Any]], proteins: Set[str] | List[str]) -> Dict[str, List[Any]]:
     r"""Get all crosslinks or crosslink-spectrum-matches originating from proteins of interest.
+
+    Gets all crosslinks or crosslink-spectrum-matches originating from a list of proteins of interest and
+    returns a list of crosslinks or crosslink-spectrum-matches where both peptides come from a protein of
+    interest and a list of crosslinks or crosslink-spectrum-matches where one of the peptides comes from a
+    protein of interest.
+
+    Parameters
+    ----------
+    data : list of dict of str, any
+        A list of pyXLMS crosslinks or crosslink-spectrum-matches.
+    proteins : set of str, or list of str
+        A set of protein accessions of interest.
+
+    Returns
+    -------
+    dict
+        Returns a dictionary with key "Proteins" which contains the list of proteins of interest,
+        key "Both" which contains all crosslinks or crosslink-spectrum-matches where both peptides
+        are originating from a protein of interest, and key "One" which contains all crosslinks or
+        crosslink-spectrum-matches where one of the two peptides is originating from a protein of
+        interest.
+
+    Raises
+    ------
+    TypeError
+        If an unsupported data type is provided.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import filter_proteins
+    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> proteins_csms = filter_proteins(result["crosslink-spectrum-matches"], ["Cas9"])
+    >>> proteins_csms["Proteins"]
+    ['Cas9']
+    >>> len(proteins_csms["Both"])
+    798
+    >>> len(proteins_csms["One"])
+    23
+
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import filter_proteins
+    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> proteins_xls = filter_proteins(result["crosslinks"], ["Cas9"])
+    >>> proteins_xls["Proteins"]
+    ['Cas9']
+    >>> len(proteins_xls["Both"])
+    274
+    >>> len(proteins_xls["One"])
+    21
     """
     _ok = check_input(data, "data", list, dict)
     _ok = check_input_multi(proteins, "proteins", [set, list], str)
