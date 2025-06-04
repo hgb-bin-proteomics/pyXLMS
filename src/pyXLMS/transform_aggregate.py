@@ -39,7 +39,12 @@ def __get_csm_key(csm: Dict[str, Any]) -> str:
 
 
 def __get_xl_key(xl: Dict[str, Any], by: Literal["peptide", "protein"]) -> str:
-    return
+    if by == "peptide":
+        return f"{xl['alpha_peptide']}_{xl['alpha_peptide_crosslink_position']}-{xl['beta_peptide']}_{xl['beta_peptide_crosslink_position']}"
+    prot_pos_a = "-".join(sorted([f"{xl['alpha_proteins'][i]}_{xl['alpha_proteins_crosslink_positions'][i]}" for i in range(len(xl["alpha_proteins"]))]))
+    prot_pos_b = "-".join(sorted([f"{xl['beta_proteins'][i]}_{xl['beta_proteins_crosslink_positions'][i]}" for i in range(len(xl["beta_proteins"]))]))
+    return ":".join(sorted([prot_pos_a, prot_pos_b]))
+
 
 def __unique_csms(
     csms: List[Dict[str, Any]],
@@ -65,7 +70,17 @@ def __unique_xls(
     has_scores: bool,
     score: Literal["higher_better", "lower_better"]
 ) -> List[Dict[str, Any]]:
-    return
+    unique_xls = dict()
+    for xl in xls:
+        key = __get_xl_key(xl, by)
+        if key not in unique_xls:
+            unique_xls[key] = xl
+        elif has_scores and __score_better(xl["score"], unique_xls[key]["score"], score):
+            unique_xls[key] = xl
+        else:
+            # do nothing
+            pass
+    return list(unique_xls.values())
 
 
 def unique(
