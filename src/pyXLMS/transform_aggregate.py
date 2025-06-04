@@ -29,16 +29,64 @@ except ImportError:
 
 
 def __score_better(score: float, reference: float, function: Literal["higher_better", "lower_better"]) -> bool:
+    r"""Checks if the score is better than the provided reference score.
+    
+    Checks if the score is better than the provided reference score using the given scoring scheme.
+    
+    Parameters
+    ----------
+    score : float
+        The score that should be compared.
+    reference : float
+        The reference score to compare to.
+    function : str, one of "higher_better" or "lower_better"
+        If a higher score is considered better, or a lower score is considered better.
+        
+    Returns
+    -------
+    bool
+        If the given score is better than the reference score.
+    """
     if function == "higher_better":
         return score > reference
     return score < reference
 
 
 def __get_csm_key(csm: Dict[str, Any]) -> str:
+    r"""Get the unique key for a crosslink-spectrum-match.
+    
+    Parameters
+    ----------
+    csm : dict of str, any
+        A pyXLMS crosslink-spectrum-match object.
+        
+    Returns
+    -------
+    str
+        The unique key for the crosslink-spectrum-match.
+    """
     return f"{csm['spectrum_file']}_{csm['scan_nr']}"
 
 
 def __get_xl_key(xl: Dict[str, Any], by: Literal["peptide", "protein"]) -> str:
+    r"""Get the unique key for a crosslink.
+    
+    Parameters
+    ----------
+    xl : dict of str, any
+        A pyXLMS crosslink object.
+    by : str, one of "peptide" or "protein"
+        If peptide or protein crosslink position should be used for determining if a crosslink is unique.
+        
+    Returns
+    -------
+    str
+        The unique key for the crosslink.
+        
+    Notes
+    -----
+    This function should not be called directly, it is called from ``__unique_xls()``.
+    """
     if by == "peptide":
         return f"{xl['alpha_peptide']}_{xl['alpha_peptide_crosslink_position']}-{xl['beta_peptide']}_{xl['beta_peptide_crosslink_position']}"
     prot_pos_a = "-".join(sorted([f"{xl['alpha_proteins'][i]}_{xl['alpha_proteins_crosslink_positions'][i]}" for i in range(len(xl["alpha_proteins"]))]))
