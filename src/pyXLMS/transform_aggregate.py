@@ -166,6 +166,11 @@ def unique(
         if data[0]["data_type"] == "crosslink" and by == "protein":
             if available_keys["alpha_proteins"] and available_keys["alpha_proteins_crosslink_positions"] and available_keys["beta_proteins"] and available_keys["beta_proteins_crosslink_positions"]:
                 unique_items += __unique_xls(data, by, available_keys["score"], score)
+            else:
+                raise ValueError(
+                    "Grouping by protein crosslink position is only available if all crosslinks have defined protein crosslink positions!\n"
+                    "This error might be fixable with 'transform.reannotate_positions()'"!
+                )
         elif data[0]["data_type"] == "crosslink":
             unique_items += __unique_xls(data, by, available_keys["score"], score)
         else:
