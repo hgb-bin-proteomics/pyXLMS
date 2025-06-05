@@ -30,9 +30,9 @@ except ImportError:
 
 def __score_better(score: float, reference: float, function: Literal["higher_better", "lower_better"]) -> bool:
     r"""Checks if the score is better than the provided reference score.
-    
+
     Checks if the score is better than the provided reference score using the given scoring scheme.
-    
+
     Parameters
     ----------
     score : float
@@ -41,7 +41,7 @@ def __score_better(score: float, reference: float, function: Literal["higher_bet
         The reference score to compare to.
     function : str, one of "higher_better" or "lower_better"
         If a higher score is considered better, or a lower score is considered better.
-        
+
     Returns
     -------
     bool
@@ -54,12 +54,12 @@ def __score_better(score: float, reference: float, function: Literal["higher_bet
 
 def __get_csm_key(csm: Dict[str, Any]) -> str:
     r"""Get the unique key for a crosslink-spectrum-match.
-    
+
     Parameters
     ----------
     csm : dict of str, any
         A pyXLMS crosslink-spectrum-match object.
-        
+
     Returns
     -------
     str
@@ -70,19 +70,19 @@ def __get_csm_key(csm: Dict[str, Any]) -> str:
 
 def __get_xl_key(xl: Dict[str, Any], by: Literal["peptide", "protein"]) -> str:
     r"""Get the unique key for a crosslink.
-    
+
     Parameters
     ----------
     xl : dict of str, any
         A pyXLMS crosslink object.
     by : str, one of "peptide" or "protein"
         If peptide or protein crosslink position should be used for determining if a crosslink is unique.
-        
+
     Returns
     -------
     str
         The unique key for the crosslink.
-        
+
     Notes
     -----
     This function should not be called directly, it is called from ``__unique_xls()``.
