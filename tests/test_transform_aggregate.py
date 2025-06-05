@@ -5,6 +5,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+import pytest
+
 
 def test1():
     from pyXLMS.parser import read
@@ -56,3 +58,107 @@ def test4():
     assert len(pr["crosslink-spectrum-matches"]) == 10
     aggregate_protein = aggregate(pr["crosslink-spectrum-matches"], by="protein")
     assert len(aggregate_protein) == 2
+
+
+def test5():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import unique
+
+    pr = read("data/_test/aggregate/csms.txt",
+        engine="custom",
+        crosslinker="DSS",
+    )
+    assert len(pr["crosslink-spectrum-matches"]) == 10
+    u = unique(pr["crosslink-spectrum-matches"])
+    assert len(u) == 5
+    assert [csm["Alpha Peptide"] for csm in u] == ["KPEPTIDE", "KPEPTIDE", "PEKPTIDE", "PEKPTIDE", "PEPKTIDE"]
+    assert [csm["Alpha Proteins"] for csm in u] == [["PROTA"], ["PROTA"], ["PROTA"], ["PROTA"], ["PROTA", "PROTB"]]
+
+
+def test6():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import unique
+
+    pr = read(
+        "data/_test/aggregate/xls.txt",
+        engine="custom",
+        crosslinker="DSS",
+    )
+    assert len(pr["crosslinks"]) == 10
+    u = unique(pr["crosslinks"])
+    assert len(u["crosslinks"]) == 3
+    assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
+    assert [xl["Alpha Proteins"] for xl in u] == [["PROTA"], ["PROTA"], ["PROTA", "PROTB"]]
+
+
+def test7():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import unique
+
+    pr = read(
+        "data/_test/aggregate/xls.txt",
+        engine="custom",
+        crosslinker="DSS",
+    )
+    assert len(pr["crosslinks"]) == 10
+    u = unique(pr["crosslinks"], by="protein")
+    assert len(u["crosslinks"]) == 2
+    assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEPKTIDE"]
+    assert [xl["Alpha Proteins"] for xl in u] == [["PROTA"], ["PROTA", "PROTB"]]
+
+
+def test8():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import aggregate
+
+    pr = read("data/_test/aggregate/csms.txt", engine="custom", crosslinker="DSS")
+    assert len(pr["crosslink-spectrum-matches"]) == 10
+    aggregate_peptide = aggregate(pr["crosslink-spectrum-matches"], by="peptide")
+    assert len(aggregate_peptide) == 3
+    assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
+    assert [xl["Alpha Proteins"] for xl in u] == [["PROTA"], ["PROTA"], ["PROTA", "PROTB"]]
+
+def test9():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import aggregate
+
+    pr = read("data/_test/aggregate/csms.txt", engine="custom", crosslinker="DSS")
+    assert len(pr["crosslink-spectrum-matches"]) == 10
+    aggregate_protein = aggregate(pr["crosslink-spectrum-matches"], by="protein")
+    assert len(aggregate_protein) == 2
+    assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEPKTIDE"]
+    assert [xl["Alpha Proteins"] for xl in u] == [["PROTA"], ["PROTA", "PROTB"]]
+
+
+def test10():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import unique
+
+    pr = read(
+        "data/_test/aggregate/xls_min.txt",
+        engine="custom",
+        crosslinker="DSS",
+    )
+    assert len(pr["crosslinks"]) == 10
+    u = unique(pr["crosslinks"])
+    assert len(u["crosslinks"]) == 3
+    assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
+    assert [xl["Alpha Proteins"] for xl in u] == [["PROTA"], ["PROTA"], ["PROTA", "PROTB"]]
+
+
+def test11():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import unique
+
+    pr = read(
+        "data/_test/aggregate/xls_min.txt",
+        engine="custom",
+        crosslinker="DSS",
+    )
+    assert len(pr["crosslinks"]) == 10
+    err_str = (
+        r"Grouping by protein crosslink position is only available if all crosslinks have defined protein crosslink positions!\n"
+        r"This error might be fixable with 'transform\.reannotate_positions\(\)'\!"
+    )
+    with pytest.raises(ValueError, match=err_str):
+        _u = unique(pr["crosslinks"], by="protein")
