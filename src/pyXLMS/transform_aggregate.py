@@ -217,7 +217,7 @@ def unique(
         position is not available for all crosslinks a ``ValueError`` will be raised. Make sure that all
         crosslinks have the ``_proteins`` and ``_proteins_crosslink_positions`` fields set. If this is not
         already done by the parser, this can be achieved with ``transform.reannotate_positions()``.
-    score: str, one of "higher_better" or "lower_better"
+    score: str, one of "higher_better" or "lower_better", default = "higher_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
@@ -339,7 +339,7 @@ def aggregate(
         will be raised. Make sure that all crosslink-spectrum-matches have the ``_proteins`` and
         ``_proteins_crosslink_positions`` fields set. If this is not already done by the parser, this can
         be achieved with ``transform.reannotate_positions()``.
-    score: str, one of "higher_better" or "lower_better"
+    score: str, one of "higher_better" or "lower_better", default = "higher_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
