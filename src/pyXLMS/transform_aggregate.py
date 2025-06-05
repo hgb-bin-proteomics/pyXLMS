@@ -461,4 +461,10 @@ def aggregate(
                 "crosslink positions!\nThis error might be fixable with 'transform.reannotate_positions()'!"
             )
     xls = [create_crosslink_from_csm(csm) for csm in csms]
-    return unique(xls, by, score)
+    aggregated = unique(xls, by, score)
+    if not isinstance(aggregated, list):
+        raise RuntimeError(
+            "Something went wrong while aggregating crosslinks.\n"
+            f"Expected data type: list. Got: {type(aggregated)}."
+        )
+    return aggregated
