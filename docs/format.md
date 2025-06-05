@@ -5,7 +5,7 @@ Description of the pyXLMS file format [TODO]
 | Column Name                        | Required | Data Type | Example 1 | Example 2     | Description |
 |:-----------------------------------|:--------:|:----------|:----------|:--------------|:------------|
 | Alpha Peptide                      | ✅       | str       | PEPKTIDE  | KPEPMTIDE     | Unmodified amino acid sequence of the alpha peptide in uppercase letters |
-| Alpha Peptide Modifications        | ❌       | str       | `(4:[DSS|138.06808])` | `(1:[DSS|138.06808]);(5:[Oxidation|15.994915])` | See [Modification Encoding](#Modification_Encoding) |
+| Alpha Peptide Modifications        | ❌       | str       | (4:[DSS\|138.06808]) | (1:[DSS\|138.06808]);(5:[Oxidation\|15.994915]) | See ➡️ [Modification Encoding](#Modification_Encoding) |
 | Alpha Peptide Crosslink Position   | ✅       | int       | 4         | 1             | Position of the crosslinker in the alpha peptide (1-based) |
 | Alpha Proteins                     | ❌       | str       | G3ECR1    | G3ECR1;J7RUA5 | Accession of the associated protein(s) of the alpha peptide, if multiple proteins are given they should be delimited by a semicolon |
 | Alpha Proteins Crosslink Positions | ❌       | int, str  | 13        | 13;15         | Position of the crosslinker in the associated alpha proteins, positions in multiple proteins should be delimited by a semicolon (1-based) |
