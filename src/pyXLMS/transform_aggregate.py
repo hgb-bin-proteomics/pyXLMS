@@ -8,17 +8,11 @@ from __future__ import annotations
 
 from .data import check_input
 from .data import check_input_multi
-from .data import create_csm
-from .data import create_crosslink
 from .data import create_crosslink_from_csm
 from .data import create_parser_result
 from .transform_util import get_available_keys
 
-from typing import Optional
-from typing import BinaryIO
-from typing import Callable
 from typing import Dict
-from typing import Tuple
 from typing import List
 from typing import Any
 
@@ -29,7 +23,9 @@ except ImportError:
     from typing_extensions import Literal
 
 
-def __score_better(score: float, reference: float, function: Literal["higher_better", "lower_better"]) -> bool:
+def __score_better(
+    score: float, reference: float, function: Literal["higher_better", "lower_better"]
+) -> bool:
     r"""Checks if the score is better than the provided reference score.
 
     Checks if the score is better than the provided reference score using the given scoring scheme.
@@ -90,15 +86,29 @@ def __get_xl_key(xl: Dict[str, Any], by: Literal["peptide", "protein"]) -> str:
     """
     if by == "peptide":
         return f"{xl['alpha_peptide']}_{xl['alpha_peptide_crosslink_position']}-{xl['beta_peptide']}_{xl['beta_peptide_crosslink_position']}"
-    prot_pos_a = "-".join(sorted([f"{xl['alpha_proteins'][i]}_{xl['alpha_proteins_crosslink_positions'][i]}" for i in range(len(xl["alpha_proteins"]))]))
-    prot_pos_b = "-".join(sorted([f"{xl['beta_proteins'][i]}_{xl['beta_proteins_crosslink_positions'][i]}" for i in range(len(xl["beta_proteins"]))]))
+    prot_pos_a = "-".join(
+        sorted(
+            [
+                f"{xl['alpha_proteins'][i]}_{xl['alpha_proteins_crosslink_positions'][i]}"
+                for i in range(len(xl["alpha_proteins"]))
+            ]
+        )
+    )
+    prot_pos_b = "-".join(
+        sorted(
+            [
+                f"{xl['beta_proteins'][i]}_{xl['beta_proteins_crosslink_positions'][i]}"
+                for i in range(len(xl["beta_proteins"]))
+            ]
+        )
+    )
     return ":".join(sorted([prot_pos_a, prot_pos_b]))
 
 
 def __unique_csms(
     csms: List[Dict[str, Any]],
     has_scores: bool,
-    score: Literal["higher_better", "lower_better"]
+    score: Literal["higher_better", "lower_better"],
 ) -> List[Dict[str, Any]]:
     r"""Filter for unique crosslink-spectrum-matches from a list on non-unique crosslink-spectrum-matches.
 
@@ -131,7 +141,9 @@ def __unique_csms(
         key = __get_csm_key(csm)
         if key not in unique_csms:
             unique_csms[key] = csm
-        elif has_scores and __score_better(csm["score"], unique_csms[key]["score"], score):
+        elif has_scores and __score_better(
+            csm["score"], unique_csms[key]["score"], score
+        ):
             unique_csms[key] = csm
         else:
             # do nothing
@@ -143,7 +155,7 @@ def __unique_xls(
     xls: List[Dict[str, Any]],
     by: Literal["peptide", "protein"],
     has_scores: bool,
-    score: Literal["higher_better", "lower_better"]
+    score: Literal["higher_better", "lower_better"],
 ) -> List[Dict[str, Any]]:
     r"""Filter for unique crosslinks from a list on non-unique crosslinks.
 
@@ -178,7 +190,9 @@ def __unique_xls(
         key = __get_xl_key(xl, by)
         if key not in unique_xls:
             unique_xls[key] = xl
-        elif has_scores and __score_better(xl["score"], unique_xls[key]["score"], score):
+        elif has_scores and __score_better(
+            xl["score"], unique_xls[key]["score"], score
+        ):
             unique_xls[key] = xl
         else:
             # do nothing
@@ -189,7 +203,7 @@ def __unique_xls(
 def unique(
     data: List[Dict[str, Any]] | Dict[str, Any],
     by: Literal["peptide", "protein"] = "protein",
-    score: Literal["higher_better", "lower_better"] = "higher_better"
+    score: Literal["higher_better", "lower_better"] = "higher_better",
 ) -> List[Dict[str, Any]] | Dict[str, Any]:
     r"""Filter for unique crosslinks or crosslink-spectrum-matches.
 
@@ -274,7 +288,7 @@ def unique(
         raise TypeError(
             "Parameter 'by' has to be one of 'peptide' or 'protein'! Option 'peptide' will group by peptide sequence and "
             "peptide crosslink position while option 'protein' will group by protein identifier and protein crosslink position."
-            )
+        )
     if score not in ["higher_better", "lower_better"]:
         raise TypeError(
             "Parameter 'score' has to be one of 'higher_better' or 'lower_better'! If two identical crosslinks or crosslink-spectrum"
@@ -295,12 +309,17 @@ def unique(
         available_keys = get_available_keys(data)
         unique_items = list()
         if data[0]["data_type"] == "crosslink" and by == "protein":
-            if available_keys["alpha_proteins"] and available_keys["alpha_proteins_crosslink_positions"] and available_keys["beta_proteins"] and available_keys["beta_proteins_crosslink_positions"]:
+            if (
+                available_keys["alpha_proteins"]
+                and available_keys["alpha_proteins_crosslink_positions"]
+                and available_keys["beta_proteins"]
+                and available_keys["beta_proteins_crosslink_positions"]
+            ):
                 unique_items += __unique_xls(data, by, available_keys["score"], score)
             else:
                 raise ValueError(
                     "Grouping by protein crosslink position is only available if all crosslinks have defined protein crosslink positions!\n"
-                    "This error might be fixable with 'transform.reannotate_positions()'"!
+                    "This error might be fixable with 'transform.reannotate_positions()'!"
                 )
         elif data[0]["data_type"] == "crosslink":
             unique_items += __unique_xls(data, by, available_keys["score"], score)
@@ -312,9 +331,7 @@ def unique(
             "Can't annotate positions for dict. Dict has to be a valid 'parser_result'!"
         )
     new_csms = (
-        unique(
-            data["crosslink-spectrum-matches"], by, score
-        )
+        unique(data["crosslink-spectrum-matches"], by, score)
         if data["crosslink-spectrum-matches"] is not None
         else None
     )
@@ -343,7 +360,7 @@ def unique(
 def aggregate(
     csms: List[Dict[str, Any]],
     by: Literal["peptide", "protein"] = "protein",
-    score: Literal["higher_better", "lower_better"] = "higher_better"
+    score: Literal["higher_better", "lower_better"] = "higher_better",
 ) -> List[Dict[str, Any]]:
     r"""Aggregate crosslink-spectrum-matches to crosslinks.
 
@@ -416,7 +433,7 @@ def aggregate(
         raise TypeError(
             "Parameter 'by' has to be one of 'peptide' or 'protein'! Option 'peptide' will group by peptide sequence and "
             "peptide crosslink position while option 'protein' will group by protein identifier and protein crosslink position."
-            )
+        )
     if score not in ["higher_better", "lower_better"]:
         raise TypeError(
             "Parameter 'score' has to be one of 'higher_better' or 'lower_better'! If two identical crosslinks or crosslink-spectrum"
@@ -428,15 +445,20 @@ def aggregate(
         raise TypeError(
             "Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!"
         )
-    available_keys = get_available_keys(data)
+    available_keys = get_available_keys(csms)
     if by == "protein":
-        if available_keys["alpha_proteins"] and available_keys["alpha_proteins_crosslink_positions"] and available_keys["beta_proteins"] and available_keys["beta_proteins_crosslink_positions"]:
+        if (
+            available_keys["alpha_proteins"]
+            and available_keys["alpha_proteins_crosslink_positions"]
+            and available_keys["beta_proteins"]
+            and available_keys["beta_proteins_crosslink_positions"]
+        ):
             # all fine
             pass
         else:
             raise ValueError(
                 "Grouping by protein crosslink position is only available if all crosslink-spectrum-matches have defined protein "
-                "crosslink positions!\nThis error might be fixable with 'transform.reannotate_positions()'"!
+                "crosslink positions!\nThis error might be fixable with 'transform.reannotate_positions()'!"
             )
     xls = [create_crosslink_from_csm(csm) for csm in csms]
     return unique(xls, by, score)
