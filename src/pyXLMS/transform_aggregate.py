@@ -202,7 +202,7 @@ def __unique_xls(
 
 def unique(
     data: List[Dict[str, Any]] | Dict[str, Any],
-    by: Literal["peptide", "protein"] = "protein",
+    by: Literal["peptide", "protein"] = "peptide",
     score: Literal["higher_better", "lower_better"] = "higher_better",
 ) -> List[Dict[str, Any]] | Dict[str, Any]:
     r"""Filter for unique crosslinks or crosslink-spectrum-matches.
@@ -225,7 +225,7 @@ def unique(
     ----------
     data : dict of str, any, or list of dict of str, any
         A list of crosslink-spectrum-matches or crosslinks to filter, or a parser_result.
-    by : str, one of "peptide" or "protein"
+    by : str, one of "peptide" or "protein", default = "peptide"
         If peptide or protein crosslink position should be used for determining if a crosslink is unique.
         Only affects filtering for unique crosslinks and not crosslink-spectrum-matches. If protein crosslink
         position is not available for all crosslinks a ``ValueError`` will be raised. Make sure that all
@@ -359,7 +359,7 @@ def unique(
 
 def aggregate(
     csms: List[Dict[str, Any]],
-    by: Literal["peptide", "protein"] = "protein",
+    by: Literal["peptide", "protein"] = "peptide",
     score: Literal["higher_better", "lower_better"] = "higher_better",
 ) -> List[Dict[str, Any]]:
     r"""Aggregate crosslink-spectrum-matches to crosslinks.
@@ -375,7 +375,7 @@ def aggregate(
     ----------
     csms : list of dict of str, any
         A list of crosslink-spectrum-matches.
-    by : str, one of "peptide" or "protein"
+    by : str, one of "peptide" or "protein", default = "peptide"
         If peptide or protein crosslink position should be used for determining if a crosslink is unique.
         If protein crosslink position is not available for all crosslink-spectrum-matches a ``ValueError``
         will be raised. Make sure that all crosslink-spectrum-matches have the ``_proteins`` and
