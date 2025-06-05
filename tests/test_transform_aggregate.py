@@ -64,15 +64,28 @@ def test5():
     from pyXLMS.parser import read
     from pyXLMS.transform import unique
 
-    pr = read("data/_test/aggregate/csms.txt",
+    pr = read(
+        "data/_test/aggregate/csms.txt",
         engine="custom",
         crosslinker="DSS",
     )
     assert len(pr["crosslink-spectrum-matches"]) == 10
     u = unique(pr["crosslink-spectrum-matches"])
     assert len(u) == 5
-    assert [csm["Alpha Peptide"] for csm in u] == ["KPEPTIDE", "KPEPTIDE", "PEKPTIDE", "PEKPTIDE", "PEPKTIDE"]
-    assert [csm["Alpha Proteins"] for csm in u] == [["PROTA"], ["PROTA"], ["PROTA"], ["PROTA"], ["PROTA", "PROTB"]]
+    assert [csm["Alpha Peptide"] for csm in u] == [
+        "KPEPTIDE",
+        "KPEPTIDE",
+        "PEKPTIDE",
+        "PEKPTIDE",
+        "PEPKTIDE",
+    ]
+    assert [csm["Alpha Proteins"] for csm in u] == [
+        ["PROTA"],
+        ["PROTA"],
+        ["PROTA"],
+        ["PROTA"],
+        ["PROTA", "PROTB"],
+    ]
 
 
 def test6():
@@ -88,7 +101,11 @@ def test6():
     u = unique(pr["crosslinks"])
     assert len(u["crosslinks"]) == 3
     assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
-    assert [xl["Alpha Proteins"] for xl in u] == [["PROTA"], ["PROTA"], ["PROTA", "PROTB"]]
+    assert [xl["Alpha Proteins"] for xl in u] == [
+        ["PROTA"],
+        ["PROTA"],
+        ["PROTA", "PROTB"],
+    ]
 
 
 def test7():
@@ -115,8 +132,17 @@ def test8():
     assert len(pr["crosslink-spectrum-matches"]) == 10
     aggregate_peptide = aggregate(pr["crosslink-spectrum-matches"], by="peptide")
     assert len(aggregate_peptide) == 3
-    assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
-    assert [xl["Alpha Proteins"] for xl in u] == [["PROTA"], ["PROTA"], ["PROTA", "PROTB"]]
+    assert [xl["Alpha Peptide"] for xl in aggregate_peptide] == [
+        "KPEPTIDE",
+        "PEKPTIDE",
+        "PEPKTIDE",
+    ]
+    assert [xl["Alpha Proteins"] for xl in aggregate_peptide] == [
+        ["PROTA"],
+        ["PROTA"],
+        ["PROTA", "PROTB"],
+    ]
+
 
 def test9():
     from pyXLMS.parser import read
@@ -126,8 +152,11 @@ def test9():
     assert len(pr["crosslink-spectrum-matches"]) == 10
     aggregate_protein = aggregate(pr["crosslink-spectrum-matches"], by="protein")
     assert len(aggregate_protein) == 2
-    assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEPKTIDE"]
-    assert [xl["Alpha Proteins"] for xl in u] == [["PROTA"], ["PROTA", "PROTB"]]
+    assert [xl["Alpha Peptide"] for xl in aggregate_protein] == ["KPEPTIDE", "PEPKTIDE"]
+    assert [xl["Alpha Proteins"] for xl in aggregate_protein] == [
+        ["PROTA"],
+        ["PROTA", "PROTB"],
+    ]
 
 
 def test10():
@@ -143,7 +172,11 @@ def test10():
     u = unique(pr["crosslinks"])
     assert len(u["crosslinks"]) == 3
     assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
-    assert [xl["Alpha Proteins"] for xl in u] == [["PROTA"], ["PROTA"], ["PROTA", "PROTB"]]
+    assert [xl["Alpha Proteins"] for xl in u] == [
+        ["PROTA"],
+        ["PROTA"],
+        ["PROTA", "PROTB"],
+    ]
 
 
 def test11():
