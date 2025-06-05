@@ -99,6 +99,32 @@ def __unique_csms(
     has_scores: bool,
     score: Literal["higher_better", "lower_better"]
 ) -> List[Dict[str, Any]]:
+    r"""Filter for unique crosslink-spectrum-matches from a list on non-unique crosslink-spectrum-matches.
+
+    Filters for unique crosslink-spectrum-matches from a list on non-unique crosslink-spectrum-matches. A crosslink-
+    spectrum-match is considered unique if there is no other crosslink-spectrum-match from the same spectrum file and
+    with the same scan number. If more than one crosslink-spectrum-match exists per spectrum file and scan number, the
+    one with the better/best score is kept and the rest is filtered out. If crosslink-spectrum-matches without scores
+    are provided, the first crosslink-spectrum-match in the list is kept instead.
+
+    Parameters
+    ----------
+    csms : list of dict of str, any
+        A list of pyXLMS crosslink-spectrum-match objects.
+    has_scores : bool
+        If the crosslink-spectrum-match objects contain scores.
+    score: str, one of "higher_better" or "lower_better"
+        If a higher score is considered better, or a lower score is considered better.
+
+    Returns
+    -------
+    list of dict of str, any
+        List of unique crosslink-spectrum-matches.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``unique()``.
+    """
     unique_csms = dict()
     for csm in csms:
         key = __get_csm_key(csm)
@@ -118,6 +144,34 @@ def __unique_xls(
     has_scores: bool,
     score: Literal["higher_better", "lower_better"]
 ) -> List[Dict[str, Any]]:
+    r"""Filter for unique crosslinks from a list on non-unique crosslinks.
+
+    Filters for unique crosslinks from a list on non-unique crosslinks. A crosslink is considered unique if there is no
+    other crosslink with the same peptide sequence and crosslink position if ``by = "peptide"``, otherwise it is considered
+    unique if there are no other crosslinks with the same protein crosslink position (residue pair). If more than one
+    crosslink exists per peptide sequence/residue pair, the one with the better/best score is kept and the rest is filtered
+    out. If crosslinks without scores are provided, the first crosslink in the list is kept instead.
+
+    Parameters
+    ----------
+    xls : list of dict of str, any
+        A list of pyXLMS crosslink objects.
+    by : str, one of "peptide" or "protein"
+        If peptide or protein crosslink position should be used for determining if a crosslink is unique.
+    has_scores : bool
+        If the crosslink objects contain scores.
+    score: str, one of "higher_better" or "lower_better"
+        If a higher score is considered better, or a lower score is considered better.
+
+    Returns
+    -------
+    list of dict of str, any
+        List of unique crosslinks.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``unique()``.
+    """
     unique_xls = dict()
     for xl in xls:
         key = __get_xl_key(xl, by)
@@ -132,10 +186,61 @@ def __unique_xls(
 
 
 def unique(
-    data: Dict[str, Any] | List[Dict[str, Any]],
+    data: List[Dict[str, Any]] | Dict[str, Any],
     by: Literal["peptide", "protein"] = "protein",
     score: Literal["higher_better", "lower_better"] = "higher_better"
-) -> Dict[str, Any] | List[Dict[str, Any]]:
+) -> List[Dict[str, Any]] | Dict[str, Any]:
+    r"""Filter for unique crosslinks or crosslink-spectrum-matches.
+
+    Filters for unique crosslinks from a list on non-unique crosslinks. A crosslink is considered unique if there is no
+    other crosslink with the same peptide sequence and crosslink position if ``by = "peptide"``, otherwise it is considered
+    unique if there are no other crosslinks with the same protein crosslink position (residue pair). If more than one
+    crosslink exists per peptide sequence/residue pair, the one with the better/best score is kept and the rest is filtered
+    out. If crosslinks without scores are provided, the first crosslink in the list is kept instead.
+
+    *or*
+
+    Filters for unique crosslink-spectrum-matches from a list on non-unique crosslink-spectrum-matches. A crosslink-
+    spectrum-match is considered unique if there is no other crosslink-spectrum-match from the same spectrum file and
+    with the same scan number. If more than one crosslink-spectrum-match exists per spectrum file and scan number, the
+    one with the better/best score is kept and the rest is filtered out. If crosslink-spectrum-matches without scores
+    are provided, the first crosslink-spectrum-match in the list is kept instead.
+
+    Parameters
+    ----------
+    data : dict of str, any, or list of dict of str, any
+        A list of crosslink-spectrum-matches or crosslinks to filter, or a parser_result.
+    by : str, one of "peptide" or "protein"
+        If peptide or protein crosslink position should be used for determining if a crosslink is unique.
+        Only affects filtering for unique crosslinks and not crosslink-spectrum-matches. If protein crosslink
+        position is not available for all crosslinks a ``ValueError`` will be raised. Make sure that all
+        crosslinks have the ``_proteins`` and ``_proteins_crosslink_positions`` fields set. If this is not
+        already done by the parser, this can be achieved with ``transform.reannotate_positions()``.
+    score: str, one of "higher_better" or "lower_better"
+        If a higher score is considered better, or a lower score is considered better.
+
+    Returns
+    -------
+    list of dict of str, any, or dict of str, any
+        If a list of crosslink-spectrum-matches or crosslinks was provided, a list of unique
+        crosslink-spectrum-matches or crosslinks is returned. If a parser_result was provided,
+        an parser_result with unique crosslink-spectrum-matches and/or unique crosslinks will
+        be returned.
+
+    Raises
+    ------
+    TypeError
+        If a wrong data type is provided.
+    TypeError
+        If parameter by is not one of 'peptide' or 'protein'.
+    TypeError
+        If parameter score is not one of 'higher_better' or 'lower_better'.
+    ValueError
+        If parameter by is set to 'protein' but protein crosslink positions are not available.
+
+    Examples
+    --------
+    """
     _ok = check_input_multi(data, "data", [dict, list])
     _ok = check_input(by, "by", str)
     _ok = check_input(score, "score", str)
