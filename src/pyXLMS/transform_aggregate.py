@@ -320,6 +320,53 @@ def aggregate(
     by: Literal["peptide", "protein"] = "protein",
     score: Literal["higher_better", "lower_better"] = "higher_better"
 ) -> List[Dict[str, Any]]:
+    r"""Aggregate crosslink-spectrum-matches to crosslinks.
+
+    Aggregates a list of crosslink-spectrum-matches to unique crosslinks. A crosslink is considered unique if there is no
+    other crosslink with the same peptide sequence and crosslink position if ``by = "peptide"``, otherwise it is considered
+    unique if there are no other crosslinks with the same protein crosslink position (residue pair). If more than one
+    crosslink exists per peptide sequence/residue pair, the one with the better/best score is kept and the rest is filtered
+    out. If crosslink-spectrum-matches without scores are provided, the crosslink of the first corresponding crosslink-spectrum
+    -match in the list is kept instead.
+
+    Parameters
+    ----------
+    csms : list of dict of str, any
+        A list of crosslink-spectrum-matches.
+    by : str, one of "peptide" or "protein"
+        If peptide or protein crosslink position should be used for determining if a crosslink is unique.
+        If protein crosslink position is not available for all crosslink-spectrum-matches a ``ValueError``
+        will be raised. Make sure that all crosslink-spectrum-matches have the ``_proteins`` and
+        ``_proteins_crosslink_positions`` fields set. If this is not already done by the parser, this can
+        be achieved with ``transform.reannotate_positions()``.
+    score: str, one of "higher_better" or "lower_better"
+        If a higher score is considered better, or a lower score is considered better.
+
+    Returns
+    -------
+    list of dict of str, any
+        A list of aggregated, unique crosslinks.
+
+    Warnings
+    --------
+    Aggregation will not conserve false discovery rate (FDR)! Aggregating crosslink-spectrum-matches that are
+    validated for 1% FDR will not result in crosslinks validated for 1% FDR! Aggregated crosslinks should be
+    validated with either external tools or with the built-in ``transform.validate()``!
+
+    Raises
+    ------
+    TypeError
+        If a wrong data type is provided.
+    TypeError
+        If parameter by is not one of 'peptide' or 'protein'.
+    TypeError
+        If parameter score is not one of 'higher_better' or 'lower_better'.
+    ValueError
+        If parameter by is set to 'protein' but protein crosslink positions are not available.
+
+    Examples
+    --------
+    """
     _ok = check_input(csms, "csms", list, dict)
     _ok = check_input(by, "by", str)
     _ok = check_input(score, "score", str)
