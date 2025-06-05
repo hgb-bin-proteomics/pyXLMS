@@ -257,7 +257,7 @@ def unique(
     --------
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import unique
-    >>> pr = read(["data/_test/aggregate/csms.txt", "data/_test/aggregate/xls.txt"], crosslinker="DSS")
+    >>> pr = read(["data/_test/aggregate/csms.txt", "data/_test/aggregate/xls.txt"], engine="custom", crosslinker="DSS")
     >>> len(pr["crosslink-spectrum-matches"])
     10
     >>> len(pr["crosslinks"])
@@ -270,7 +270,7 @@ def unique(
 
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import unique
-    >>> pr = read(["data/_test/aggregate/csms.txt", "data/_test/aggregate/xls.txt"], crosslinker="DSS")
+    >>> pr = read(["data/_test/aggregate/csms.txt", "data/_test/aggregate/xls.txt"], engine="custom", crosslinker="DSS")
     >>> len(pr["crosslink-spectrum-matches"])
     10
     >>> len(pr["crosslinks"])
@@ -410,7 +410,7 @@ def aggregate(
     --------
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import aggregate
-    >>> pr = read("data/_test/aggregate/csms.txt", crosslinker="DSS")
+    >>> pr = read("data/_test/aggregate/csms.txt", engine="custom", crosslinker="DSS")
     >>> len(pr["crosslink-spectrum-matches"])
     10
     >>> aggregate_peptide = aggregate(pr["crosslink-spectrum-matches"], by="peptide")
@@ -419,7 +419,7 @@ def aggregate(
 
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import aggregate
-    >>> pr = read("data/_test/aggregate/csms.txt", crosslinker="DSS")
+    >>> pr = read("data/_test/aggregate/csms.txt", engine="custom", crosslinker="DSS")
     >>> len(pr["crosslink-spectrum-matches"])
     10
     >>> aggregate_protein = aggregate(pr["crosslink-spectrum-matches"], by="protein")
