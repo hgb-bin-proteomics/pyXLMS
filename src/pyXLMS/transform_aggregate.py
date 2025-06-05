@@ -10,6 +10,7 @@ from .data import check_input
 from .data import check_input_multi
 from .data import create_csm
 from .data import create_crosslink
+from .data import create_crosslink_from_csm
 from .data import create_parser_result
 from .transform_util import get_available_keys
 
@@ -312,3 +313,41 @@ def unique(
     return create_parser_result(
         search_engine=data["search_engine"], csms=new_csms, crosslinks=new_xls
     )
+
+
+def aggregate(
+    csms: List[Dict[str, Any]],
+    by: Literal["peptide", "protein"] = "protein",
+    score: Literal["higher_better", "lower_better"] = "higher_better"
+) -> List[Dict[str, Any]]:
+    _ok = check_input(csms, "csms", list, dict)
+    _ok = check_input(by, "by", str)
+    _ok = check_input(score, "score", str)
+    if by not in ["peptide", "protein"]:
+        raise TypeError(
+            "Parameter 'by' has to be one of 'peptide' or 'protein'! Option 'peptide' will group by peptide sequence and "
+            "peptide crosslink position while option 'protein' will group by protein identifier and protein crosslink position."
+            )
+    if score not in ["higher_better", "lower_better"]:
+        raise TypeError(
+            "Parameter 'score' has to be one of 'higher_better' or 'lower_better'! If two identical crosslinks or crosslink-spectrum"
+            "-matches are found, the one with the higher score is kept if 'higher_better' is selected, and vice versa."
+        )
+    if len(csms) == 0:
+        return csms
+    if "data_type" not in csms[0] or csms[0]["data_type"] != "crosslink-spectrum-match":
+        raise TypeError(
+            "Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!"
+        )
+    available_keys = get_available_keys(data)
+    if by == "protein":
+        if available_keys["alpha_proteins"] and available_keys["alpha_proteins_crosslink_positions"] and available_keys["beta_proteins"] and available_keys["beta_proteins_crosslink_positions"]:
+            # all fine
+            pass
+        else:
+            raise ValueError(
+                "Grouping by protein crosslink position is only available if all crosslink-spectrum-matches have defined protein "
+                "crosslink positions!\nThis error might be fixable with 'transform.reannotate_positions()'"!
+            )
+    xls = [create_crosslink_from_csm(csm) for csm in csms]
+    return unique(xls, by, score)
