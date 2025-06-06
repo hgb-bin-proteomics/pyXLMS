@@ -204,7 +204,11 @@ def test12():
     assert len(pr["crosslink-spectrum-matches"]) == 10
     aggregate_peptide = aggregate(pr["crosslink-spectrum-matches"])
     assert len(aggregate_peptide) == 3
-    assert [xl["alpha_peptide"] for xl in aggregate_peptide] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
+    assert [xl["alpha_peptide"] for xl in aggregate_peptide] == [
+        "KPEPTIDE",
+        "PEKPTIDE",
+        "PEPKTIDE",
+    ]
     assert [xl["alpha_proteins"] for xl in aggregate_peptide] == [
         ["PROTA"],
         ["PROTA"],
@@ -360,7 +364,7 @@ def test18():
     assert u[0]["score"] == pytest.approx(10.5)
 
 
-def test18():
+def test19():
     from pyXLMS.parser import read
     from pyXLMS.transform import unique
 
@@ -389,8 +393,12 @@ def test20():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 10
     aggregate_peptide = aggregate(pr["crosslink-spectrum-matches"])
-    assert len(u) == 3
-    assert [xl["alpha_peptide"] for xl in aggregate_peptide] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
+    assert len(aggregate_peptide) == 3
+    assert [xl["alpha_peptide"] for xl in aggregate_peptide] == [
+        "KPEPTIDE",
+        "PEKPTIDE",
+        "PEPKTIDE",
+    ]
     assert [xl["alpha_proteins"] for xl in aggregate_peptide] == [
         ["PROTA"],
         ["PROTA"],
@@ -411,9 +419,15 @@ def test21():
         crosslinker="DSS",
     )
     assert len(pr["crosslink-spectrum-matches"]) == 10
-    aggregate_peptide = aggregate(pr["crosslink-spectrum-matches"], score="lower_better")
-    assert len(u) == 3
-    assert [xl["alpha_peptide"] for xl in aggregate_peptide] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
+    aggregate_peptide = aggregate(
+        pr["crosslink-spectrum-matches"], score="lower_better"
+    )
+    assert len(aggregate_peptide) == 3
+    assert [xl["alpha_peptide"] for xl in aggregate_peptide] == [
+        "KPEPTIDE",
+        "PEKPTIDE",
+        "PEPKTIDE",
+    ]
     assert [xl["alpha_proteins"] for xl in aggregate_peptide] == [
         ["PROTA"],
         ["PROTA"],
@@ -435,9 +449,12 @@ def test22():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 10
     aggregate_protein = aggregate(pr["crosslink-spectrum-matches"], by="protein")
-    assert len(u) == 2
+    assert len(aggregate_protein) == 2
     assert [xl["alpha_peptide"] for xl in aggregate_protein] == ["KPEPTIDE", "PEPKTIDE"]
-    assert [xl["alpha_proteins"] for xl in aggregate_protein] == [["PROTA"], ["PROTA", "PROTB"]]
+    assert [xl["alpha_proteins"] for xl in aggregate_protein] == [
+        ["PROTA"],
+        ["PROTA", "PROTB"],
+    ]
     assert aggregate_protein[0]["score"] == pytest.approx(8.5)
     assert aggregate_protein[0]["score"] == pytest.approx(10.5)
 
@@ -452,10 +469,15 @@ def test23():
         crosslinker="DSS",
     )
     assert len(pr["crosslink-spectrum-matches"]) == 10
-    aggregate_protein = aggregate(pr["crosslink-spectrum-matches"], by="protein", score="lower_better")
-    assert len(u) == 2
+    aggregate_protein = aggregate(
+        pr["crosslink-spectrum-matches"], by="protein", score="lower_better"
+    )
+    assert len(aggregate_protein) == 2
     assert [xl["alpha_peptide"] for xl in aggregate_protein] == ["KPEPTIDE", "PEPKTIDE"]
-    assert [xl["alpha_proteins"] for xl in aggregate_protein] == [["PROTA"], ["PROTA", "PROTB"]]
+    assert [xl["alpha_proteins"] for xl in aggregate_protein] == [
+        ["PROTA"],
+        ["PROTA", "PROTB"],
+    ]
     assert aggregate_protein[0]["score"] == pytest.approx(1.5)
     assert aggregate_protein[0]["score"] == pytest.approx(9.5)
 
