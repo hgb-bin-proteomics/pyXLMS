@@ -253,7 +253,7 @@ def test14():
         ["PROTA"],
         ["PROTA"],
         ["PROTA"],
-        ["PROTA", "PROTB"],
+        ["PROTB", "PROTA"],
     ]
     assert u[0]["score"] == pytest.approx(2.5)
     assert u[1]["score"] == pytest.approx(4.5)
@@ -311,7 +311,7 @@ def test16():
     assert [xl["alpha_proteins"] for xl in u] == [
         ["PROTA"],
         ["PROTA"],
-        ["PROTA", "PROTB"],
+        ["PROTB", "PROTA"],
     ]
     assert u[0]["score"] == pytest.approx(4.5)
     assert u[1]["score"] == pytest.approx(8.5)
@@ -353,10 +353,10 @@ def test18():
     assert len(pr["crosslinks"]) == 10
     u = unique(pr["crosslinks"], by="protein")
     assert len(u) == 2
-    assert [xl["alpha_peptide"] for xl in u] == ["KPEPTIDE", "PEPKTIDE"]
+    assert [xl["alpha_peptide"] for xl in u] == ["PEKPTIDE", "PEPKTIDE"]
     assert [xl["alpha_proteins"] for xl in u] == [["PROTA"], ["PROTA", "PROTB"]]
     assert u[0]["score"] == pytest.approx(8.5)
-    assert u[0]["score"] == pytest.approx(10.5)
+    assert u[1]["score"] == pytest.approx(10.5)
 
 
 def test19():
@@ -374,7 +374,7 @@ def test19():
     assert [xl["alpha_peptide"] for xl in u] == ["KPEPTIDE", "PEPKTIDE"]
     assert [xl["alpha_proteins"] for xl in u] == [["PROTA"], ["PROTA", "PROTB"]]
     assert u[0]["score"] == pytest.approx(1.5)
-    assert u[0]["score"] == pytest.approx(9.5)
+    assert u[1]["score"] == pytest.approx(9.5)
 
 
 def test20():
@@ -397,7 +397,7 @@ def test20():
     assert [xl["alpha_proteins"] for xl in aggregate_peptide] == [
         ["PROTA"],
         ["PROTA"],
-        ["PROTA", "PROTB"],
+        ["PROTB", "PROTA"],
     ]
     assert aggregate_peptide[0]["score"] == pytest.approx(4.5)
     assert aggregate_peptide[1]["score"] == pytest.approx(8.5)
@@ -445,13 +445,13 @@ def test22():
     assert len(pr["crosslink-spectrum-matches"]) == 10
     aggregate_protein = aggregate(pr["crosslink-spectrum-matches"], by="protein")
     assert len(aggregate_protein) == 2
-    assert [xl["alpha_peptide"] for xl in aggregate_protein] == ["KPEPTIDE", "PEPKTIDE"]
+    assert [xl["alpha_peptide"] for xl in aggregate_protein] == ["PEKPTIDE", "PEPKTIDE"]
     assert [xl["alpha_proteins"] for xl in aggregate_protein] == [
         ["PROTA"],
         ["PROTA", "PROTB"],
     ]
     assert aggregate_protein[0]["score"] == pytest.approx(8.5)
-    assert aggregate_protein[0]["score"] == pytest.approx(10.5)
+    assert aggregate_protein[1]["score"] == pytest.approx(10.5)
 
 
 def test23():
@@ -474,7 +474,7 @@ def test23():
         ["PROTA", "PROTB"],
     ]
     assert aggregate_protein[0]["score"] == pytest.approx(1.5)
-    assert aggregate_protein[0]["score"] == pytest.approx(9.5)
+    assert aggregate_protein[1]["score"] == pytest.approx(9.5)
 
 
 def test24():
