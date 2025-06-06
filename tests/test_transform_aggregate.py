@@ -72,14 +72,14 @@ def test5():
     assert len(pr["crosslink-spectrum-matches"]) == 10
     u = unique(pr["crosslink-spectrum-matches"])
     assert len(u) == 5
-    assert [csm["Alpha Peptide"] for csm in u] == [
+    assert [csm["alpha_peptide"] for csm in u] == [
         "KPEPTIDE",
         "KPEPTIDE",
         "PEKPTIDE",
         "PEKPTIDE",
         "PEPKTIDE",
     ]
-    assert [csm["Alpha Proteins"] for csm in u] == [
+    assert [csm["alpha_proteins"] for csm in u] == [
         ["PROTA"],
         ["PROTA"],
         ["PROTA"],
@@ -99,9 +99,9 @@ def test6():
     )
     assert len(pr["crosslinks"]) == 10
     u = unique(pr["crosslinks"])
-    assert len(u["crosslinks"]) == 3
-    assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
-    assert [xl["Alpha Proteins"] for xl in u] == [
+    assert len(u) == 3
+    assert [xl["alpha_peptide"] for xl in u] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
+    assert [xl["alpha_proteins"] for xl in u] == [
         ["PROTA"],
         ["PROTA"],
         ["PROTA", "PROTB"],
@@ -119,9 +119,9 @@ def test7():
     )
     assert len(pr["crosslinks"]) == 10
     u = unique(pr["crosslinks"], by="protein")
-    assert len(u["crosslinks"]) == 2
-    assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEPKTIDE"]
-    assert [xl["Alpha Proteins"] for xl in u] == [["PROTA"], ["PROTA", "PROTB"]]
+    assert len(u) == 2
+    assert [xl["alpha_peptide"] for xl in u] == ["KPEPTIDE", "PEPKTIDE"]
+    assert [xl["alpha_proteins"] for xl in u] == [["PROTA"], ["PROTA", "PROTB"]]
 
 
 def test8():
@@ -132,12 +132,12 @@ def test8():
     assert len(pr["crosslink-spectrum-matches"]) == 10
     aggregate_peptide = aggregate(pr["crosslink-spectrum-matches"], by="peptide")
     assert len(aggregate_peptide) == 3
-    assert [xl["Alpha Peptide"] for xl in aggregate_peptide] == [
+    assert [xl["alpha_peptide"] for xl in aggregate_peptide] == [
         "KPEPTIDE",
         "PEKPTIDE",
         "PEPKTIDE",
     ]
-    assert [xl["Alpha Proteins"] for xl in aggregate_peptide] == [
+    assert [xl["alpha_proteins"] for xl in aggregate_peptide] == [
         ["PROTA"],
         ["PROTA"],
         ["PROTA", "PROTB"],
@@ -152,8 +152,8 @@ def test9():
     assert len(pr["crosslink-spectrum-matches"]) == 10
     aggregate_protein = aggregate(pr["crosslink-spectrum-matches"], by="protein")
     assert len(aggregate_protein) == 2
-    assert [xl["Alpha Peptide"] for xl in aggregate_protein] == ["KPEPTIDE", "PEPKTIDE"]
-    assert [xl["Alpha Proteins"] for xl in aggregate_protein] == [
+    assert [xl["alpha_peptide"] for xl in aggregate_protein] == ["KPEPTIDE", "PEPKTIDE"]
+    assert [xl["alpha_proteins"] for xl in aggregate_protein] == [
         ["PROTA"],
         ["PROTA", "PROTB"],
     ]
@@ -170,9 +170,9 @@ def test10():
     )
     assert len(pr["crosslinks"]) == 10
     u = unique(pr["crosslinks"])
-    assert len(u["crosslinks"]) == 3
-    assert [xl["Alpha Peptide"] for xl in u] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
-    assert [xl["Alpha Proteins"] for xl in u] == [
+    assert len(u) == 3
+    assert [xl["alpha_peptide"] for xl in u] == ["KPEPTIDE", "PEKPTIDE", "PEPKTIDE"]
+    assert [xl["alpha_proteins"] for xl in u] == [
         ["PROTA"],
         ["PROTA"],
         ["PROTA", "PROTB"],
