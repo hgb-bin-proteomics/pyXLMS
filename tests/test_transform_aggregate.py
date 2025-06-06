@@ -354,7 +354,7 @@ def test18():
     u = unique(pr["crosslinks"], by="protein")
     assert len(u) == 2
     assert [xl["alpha_peptide"] for xl in u] == ["PEKPTIDE", "PEPKTIDE"]
-    assert [xl["alpha_proteins"] for xl in u] == [["PROTA"], ["PROTA", "PROTB"]]
+    assert [xl["alpha_proteins"] for xl in u] == [["PROTA"], ["PROTB", "PROTA"]]
     assert u[0]["score"] == pytest.approx(8.5)
     assert u[1]["score"] == pytest.approx(10.5)
 
@@ -448,7 +448,7 @@ def test22():
     assert [xl["alpha_peptide"] for xl in aggregate_protein] == ["PEKPTIDE", "PEPKTIDE"]
     assert [xl["alpha_proteins"] for xl in aggregate_protein] == [
         ["PROTA"],
-        ["PROTA", "PROTB"],
+        ["PROTB", "PROTA"],
     ]
     assert aggregate_protein[0]["score"] == pytest.approx(8.5)
     assert aggregate_protein[1]["score"] == pytest.approx(10.5)
