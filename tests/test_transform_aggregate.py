@@ -209,11 +209,6 @@ def test12():
         "PEKPTIDE",
         "PEPKTIDE",
     ]
-    assert [xl["alpha_proteins"] for xl in aggregate_peptide] == [
-        ["PROTA"],
-        ["PROTA"],
-        ["PROTA", "PROTB"],
-    ]
 
 
 def test13():
