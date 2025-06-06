@@ -119,6 +119,7 @@ def read_custom(
     decoy_prefix: str = "REV_",
     format: Literal["auto", "csv", "txt", "tsv", "xlsx"] = "auto",
     sep: str = ",",
+    decimal: str = ".",
 ) -> Dict[str, Any]:
     r"""Read a custom or pyXLMS result file.
 
@@ -160,6 +161,8 @@ def read_custom(
         The format of the result file. ``"auto"`` is only available if the name/path to the result file is given.
     sep : str, default = ","
         Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` format.
+    decimal : str, default = "."
+        Character to recognize as decimal point. Parameter is ignored if the file is in ``.xlsx`` format.
 
     Returns
     -------
@@ -263,7 +266,7 @@ def read_custom(
                 or file_extension == ".tsv"
                 or file_extension == ".csv"
             ):
-                data = pd.read_csv(input, sep=sep, low_memory=False)
+                data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
             elif file_extension == ".xlsx":
                 data = pd.read_excel(input, engine="openpyxl")
             else:
@@ -274,7 +277,7 @@ def read_custom(
             if format == "xlsx":
                 data = pd.read_excel(input, engine="openpyxl")
             else:
-                data = pd.read_csv(input, sep=sep, low_memory=False)
+                data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
         else:
             raise ValueError(
                 f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv' or 'xlsx'!"

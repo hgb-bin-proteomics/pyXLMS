@@ -523,6 +523,8 @@ def read_scout(
     crosslinker: str,
     crosslinker_mass: Optional[float] = None,
     modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING,
+    sep: str = ",",
+    decimal: str = ".",
     verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
     r"""Read a Scout result file.
@@ -542,6 +544,10 @@ def read_scout(
     modifications : dict of str, tuple, default = ``constants.SCOUT_MODIFICATION_MAPPING``
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
+    sep : str, default = ","
+        Seperator used in the ``.csv`` file.
+    decimal : str, default = "."
+        Character to recognize as decimal point.
     verbose : 0, 1, or 2, default = 1
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
@@ -617,7 +623,7 @@ def read_scout(
 
     for input in inputs:
         ## reading data
-        data = pd.read_csv(input, low_memory=False)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
         ## detect input file type
         scout_file_type = detect_scout_filetype(data)
         ## process data

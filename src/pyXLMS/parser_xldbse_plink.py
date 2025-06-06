@@ -263,6 +263,7 @@ def read_plink(
     decoy_prefix: str = "REV_",
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = ",",
+    decimal: str = ".",
     verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
     r"""Read a pLink result file.
@@ -286,6 +287,8 @@ def read_plink(
         Mapping of modification names to modification masses.
     sep : str, default = ","
         Seperator used in the ``.csv`` file.
+    decimal : str, default = "."
+        Character to recognize as decimal point.
     verbose : 0, 1, or 2, default = 1
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
@@ -348,7 +351,7 @@ def read_plink(
 
     ## process data
     for input in inputs:
-        data = pd.read_csv(input, sep=sep, low_memory=False)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
         for i, row in tqdm(
             data.iterrows(), total=data.shape[0], desc="Reading pLink CSMs..."
         ):

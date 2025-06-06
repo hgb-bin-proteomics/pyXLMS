@@ -33,8 +33,8 @@ def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
     Returns
     -------
     dict
-        Returns a dictionary with key "Target-Target" which contains all TT matches, key "Target-Decoy"
-        which contains all TD matches, and key "Decoy-Decoy" which contains all DD matches.
+        Returns a dictionary with key ``Target-Target`` which contains all TT matches, key ``Target-Decoy``
+        which contains all TD matches, and key ``Decoy-Decoy`` which contains all DD matches.
 
     Raises
     ------
@@ -107,9 +107,9 @@ def filter_proteins(
     Returns
     -------
     dict
-        Returns a dictionary with key "Proteins" which contains the list of proteins of interest,
-        key "Both" which contains all crosslinks or crosslink-spectrum-matches where both peptides
-        are originating from a protein of interest, and key "One" which contains all crosslinks or
+        Returns a dictionary with key ``Proteins`` which contains the list of proteins of interest,
+        key ``Both`` which contains all crosslinks or crosslink-spectrum-matches where both peptides
+        are originating from a protein of interest, and key ``One`` which contains all crosslinks or
         crosslink-spectrum-matches where one of the two peptides is originating from a protein of
         interest.
 
