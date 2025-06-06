@@ -112,6 +112,7 @@ def read_msannika(
     modifications: Dict[str, float] = MODIFICATIONS,
     format: Literal["auto", "csv", "txt", "tsv", "xlsx", "pdresult"] = "auto",
     sep: str = "\t",
+    decimal: str = ".",
 ) -> Dict[str, Any]:
     r"""Read an MS Annika result file.
 
@@ -128,6 +129,8 @@ def read_msannika(
         The format of the result file. ``"auto"`` is only available if the name/path to the MS Annika result file is given.
     sep : str, default = "\t"
         Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` or ``.pdResult`` format.
+    decimal : str, default = "."
+        Character to recognize as decimal point. Parameter is ignored if the file is in ``.xlsx`` or ``.pdResult`` format.
 
     Returns
     -------
@@ -224,7 +227,9 @@ def read_msannika(
                 or file_extension == ".tsv"
                 or file_extension == ".csv"
             ):
-                data_objects = [pd.read_csv(input, sep=sep, low_memory=False)]
+                data_objects = [
+                    pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+                ]
             elif file_extension == ".xlsx":
                 data_objects = [pd.read_excel(input, engine="openpyxl")]
             elif file_extension == ".pdresult":
@@ -237,7 +242,9 @@ def read_msannika(
             if format == "xlsx":
                 data_objects = [pd.read_excel(input, engine="openpyxl")]
             else:
-                data_objects = [pd.read_csv(input, sep=sep, low_memory=False)]
+                data_objects = [
+                    pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+                ]
         elif format == "pdresult":
             if not isinstance(input, str):
                 raise TypeError(

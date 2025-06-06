@@ -120,6 +120,7 @@ def read_xlinkx(
     modifications: Dict[str, float] = MODIFICATIONS,
     format: Literal["auto", "csv", "txt", "tsv", "xlsx", "pdresult"] = "auto",
     sep: str = "\t",
+    decimal: str = ".",
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
@@ -141,6 +142,8 @@ def read_xlinkx(
         The format of the result file. ``"auto"`` is only available if the name/path to the XlinkX result file is given.
     sep : str, default = "\t"
         Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` or ``.pdResult`` format.
+    decimal : str, default = "."
+        Character to recognize as decimal point. Parameter is ignored if the file is in ``.xlsx`` or ``.pdResult`` format.
     ignore_errors : bool, default = False
         If missing crosslink positions should raise an error or not. Setting this to True will suppress the ``RuntimeError``
         for the crosslink position not being able to be parsed for at least one of the crosslinks. For these cases the crosslink
@@ -290,7 +293,9 @@ def read_xlinkx(
                 or file_extension == ".tsv"
                 or file_extension == ".csv"
             ):
-                data_objects = [pd.read_csv(input, sep=sep, low_memory=False)]
+                data_objects = [
+                    pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+                ]
             elif file_extension == ".xlsx":
                 data_objects = [pd.read_excel(input, engine="openpyxl")]
             elif file_extension == ".pdresult":
@@ -303,7 +308,9 @@ def read_xlinkx(
             if format == "xlsx":
                 data_objects = [pd.read_excel(input, engine="openpyxl")]
             else:
-                data_objects = [pd.read_csv(input, sep=sep, low_memory=False)]
+                data_objects = [
+                    pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+                ]
         elif format == "pdresult":
             if not isinstance(input, str):
                 raise TypeError(

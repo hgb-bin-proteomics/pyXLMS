@@ -138,6 +138,7 @@ def read_maxquant(
     decoy_prefix: str = "REV__",
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = "\t",
+    decimal: str = ".",
 ) -> Dict[str, Any]:
     r"""Read a MaxQuant result file.
 
@@ -159,6 +160,8 @@ def read_maxquant(
         Mapping of modification names to modification masses.
     sep : str, default = "\t"
         Seperator used in the ``.txt`` file.
+    decimal : str, default = "."
+        Character to recognize as decimal point.
 
     Returns
     -------
@@ -215,7 +218,7 @@ def read_maxquant(
 
     ## process data
     for input in inputs:
-        data = pd.read_csv(input, sep=sep, low_memory=False)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
         xl = data.dropna(axis=0, subset=["Proteins2"])
         for i, row in tqdm(
             xl.iterrows(), total=xl.shape[0], desc="Reading MaxQuant CSMs..."
@@ -310,6 +313,7 @@ def read_maxlynx(
     decoy_prefix: str = "REV__",
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = "\t",
+    decimal: str = ".",
 ) -> Dict[str, Any]:
     r"""Read a MaxLynx result file.
 
@@ -331,6 +335,8 @@ def read_maxlynx(
         Mapping of modification names to modification masses.
     sep : str, default = "\t"
         Seperator used in the ``.txt`` file.
+    decimal : str, default = "."
+        Character to recognize as decimal point.
 
     Returns
     -------
@@ -358,5 +364,5 @@ def read_maxlynx(
     >>> csms_from_xlsx = read_maxlynx("data/maxquant/run1/crosslinkMsms.txt")
     """
     return read_maxquant(
-        files, crosslinker, crosslinker_mass, decoy_prefix, modifications, sep
+        files, crosslinker, crosslinker_mass, decoy_prefix, modifications, sep, decimal
     )

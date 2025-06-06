@@ -969,6 +969,8 @@ def read_xi(
     files: str | List[str] | BinaryIO,
     decoy_prefix: Optional[str] = "auto",
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
+    sep: str = ",",
+    decimal: str = ".",
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
@@ -987,6 +989,10 @@ def read_xi(
     modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
         Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
         This corresponds to the ``SYMBOLEXT`` field, or the ``SYMBOL`` field minus the amino acid in the xiSearch config.
+    sep : str, default = ","
+        Seperator used in the ``.csv`` file.
+    decimal : str, default = "."
+        Character to recognize as decimal point.
     ignore_errors : bool, default = False
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
@@ -1043,7 +1049,7 @@ def read_xi(
 
     for input in inputs:
         ## reading data
-        data = pd.read_csv(input, low_memory=False)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
         ## detect input file type
         xi_file_type = detect_xi_filetype(data)
         ## set decoy prefix
