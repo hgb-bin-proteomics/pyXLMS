@@ -20,7 +20,7 @@ Description of the pyXLMS file format [TODO]
 | Beta Proteins Peptide Positions   | ❌       | int, str  | 10        | 13;15          | Position of the beta peptide in the associated beta protein(s), positions in multiple proteins should be delimited by a semicolon (1-based) |
 | Beta Score                        | ❌       | float     | 0.837     | 45.73          | Score of the beta peptide |
 | Beta Decoy                         | ❌       | bool, str | False     | True          | Whether the beta peptide is from the target (False) or decoy (True) database |
-| Score                              | ❌       | float     | 0.99513   | 170.3         | Score of the crosslink |
+| CSM Score                          | ❌       | float     | 0.99513   | 170.3         | Score of the crosslink-spectrum-match |
 | Spectrum File                      | ✅       | str       | 2025_03_17_EXP1_RUN3_R1.raw | 2025_03_17_EXP1_RUN3_R1 | File name of the spectrum file |
 | Scan Nr                            | ✅       | int       | 1703      | 38901         | The scan number of the spectrum the match was identified in |
 | Precursor Charge                   | ❌       | int       | 3         | 4             | Precursor charge of the crosslink spectrum |
@@ -47,7 +47,7 @@ Additional resources:
 | Beta Proteins                      | ❌       | str       | G3ECR1    | G3ECR1;J7RUA5 | Accession of the associated protein(s) of the beta peptide, if multiple proteins are given they should be delimited by a semicolon |
 | Beta Proteins Crosslink Positions  | ❌       | int, str  | 13        | 13;15         | Position of the crosslinker in the associated beta protein(s), positions in multiple proteins should be delimited by a semicolon (1-based) |
 | Beta Decoy                         | ❌       | bool, str | False     | True          | Whether the beta peptide is from the target (False) or decoy (True) database |
-| Score                              | ❌       | float     | 0.99513   | 170.3         | Score of the crosslink |
+| Crosslink Score                    | ❌       | float     | 0.99513   | 170.3         | Score of the crosslink |
 
 Additional resources:
 - [API Documentation of the parser]()
