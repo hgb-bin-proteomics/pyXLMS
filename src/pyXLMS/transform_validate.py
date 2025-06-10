@@ -13,6 +13,7 @@ from .data import check_input
 from .data import check_input_multi
 from .data import create_parser_result
 from .transform_util import get_available_keys
+from .transform_filter import filter_target_decoy
 
 from typing import Dict
 from typing import List
@@ -179,6 +180,12 @@ def __verify_fdr_relaxed(
         that are within the target FDR. Returns False if the given score cutoff yields crosslinks or
         crosslink-spectrum-matches that produce a higher estimated FDR than the desired target FDR.
 
+    Raises
+    ------
+    RuntimeError
+        If the number of DD matches exceeds the number of TD matches.
+        FDR can not be estimated with the formula '(TD-DD)/TT' in these cases.
+
     Notes
     -----
     This function should not be called directly, it is called from ``__validate_relaxed()``.
@@ -205,7 +212,10 @@ def __verify_fdr_relaxed(
             # do nothing
             pass
     if (DT - D) < 0.0:
-        raise RuntimeError()
+        raise RuntimeError(
+            f"Number of DD matches is greater than the number of TD matches for score {cutoff}! "
+            "Invalid FDR estimation! Please use formula 'D/T' instead!"
+        )
     return (DT - D) / T < fdr
 
 
@@ -233,6 +243,12 @@ def __validate_relaxed(
     -------
     list of dict of str, any, or dict of str, any
         A list of validated crosslink-spectrum-matches or crosslinks.
+
+    Raises
+    ------
+    RuntimeError
+        If the number of DD matches exceeds the number of TD matches.
+        FDR can not be estimated with the formula '(TD-DD)/TT' in these cases.
 
     Notes
     -----
@@ -271,7 +287,10 @@ def __validate_relaxed(
         desc="Iterating over scores for FDR calculation...",
     ):
         if tdd[i:].sum() < 0.0:
-            raise RuntimeError()
+            raise RuntimeError(
+                f"Number of DD matches is greater than the number of TD matches for score {scores[i]}! "
+                "Invalid FDR estimation! Please use formula 'D/T' instead!"
+            )
         if tdd[i:].sum() / (nr_items - i - td[i:].sum()) < fdr:
             # we need to verify in this case because there might be multiple
             # items with the same score
@@ -343,6 +362,9 @@ def validate(
     ValueError
         If attribute 'alpha_decoy' or 'beta_decoy' is not available for any of the data and parameter ignore_missing_labels
         is set to False.
+    ValueError
+        If the number of DD matches exceeds the number of TD matches for formula '(TD-DD)/TT'.
+        FDR can not be estimated with the formula '(TD-DD)/TT' in these cases.
 
     Examples
     --------
@@ -431,6 +453,10 @@ def validate(
                 "that don't have a valid target/decoy label and filter them out!"
             )
         if formula == "(TD-DD)/TT":
+            if len(filter_target_decoy(data)["Target-Decoy"]) == 0:
+                raise ValueError(
+                    "Can't estimate FDR with formula '(TD-DD)/TT' when there are not TD matches! Please select the default formula instead!"
+                )
             if separate_intra_inter:
                 intra = list()
                 inter = list()
