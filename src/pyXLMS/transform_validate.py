@@ -194,6 +194,10 @@ def validate(
     _ok = check_input(score, "score", str)
     _ok = check_input(separate_intra_inter, "separate_intra_inter", bool)
     _ok = check_input(ignore_missing_labels, "ignore_missing_labels", bool)
+    if fdr >= 1.0 or fdr <= 0.0:
+        raise ValueError(
+            "FDR must be given as a real number between 0 and 1, e.g. 0.01 corresponds to 1% FDR!"
+        )
     if formula not in ["D/T", "(TD+DD)/TT", "(TD-DD)/TT"]:
         raise TypeError(
             "Parameter 'formula' has to be one of 'D/T', '(TD+DD)/TT' or '(TD-DD)/TT'! Where D and DD is the number of decoys, T and TT the number of targets, "
