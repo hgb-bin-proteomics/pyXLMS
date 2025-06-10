@@ -26,10 +26,10 @@ except ImportError:
 
 
 def __verify_fdr_strict(
-    data: List[Dict[str, Any]], 
+    data: List[Dict[str, Any]],
     fdr: float,
     cutoff: float,
-    score: Literal["higher_better", "lower_better"]
+    score: Literal["higher_better", "lower_better"],
 ) -> bool:
     r"""Verifies that a list of crosslinks or crosslink-spectrum-matches has the estimated false discovery rate using a strict approach.
 
@@ -81,7 +81,7 @@ def __verify_fdr_strict(
 def __validate_strict(
     data: List[Dict[str, Any]],
     fdr: float,
-    score: Literal["higher_better", "lower_better"]
+    score: Literal["higher_better", "lower_better"],
 ) -> List[Dict[str, Any]]:
     r"""Validate a list of crosslinks or crosslink-spectrum-matches by strict false discovery rate estimation.
 
@@ -120,13 +120,17 @@ def __validate_strict(
     if score == "higher_better":
         td = np.array(td)[np.argsort(scores, stable=True)]
         scores = scores[np.argsort(scores, stable=True)]
-        cutoff = scores[0] #scores.max()
+        cutoff = scores[0]  # scores.max()
     else:
         td = np.array(td)[np.argsort(scores, stable=True)[::-1]]
         scores = scores[np.argsort(scores, stable=True)[::-1]]
-        cutoff = scores[0] #scores.min()
+        cutoff = scores[0]  # scores.min()
     nr_items = len(td)
-    for i in tqdm(range(nr_items), total=nr_items, desc="Iterating over scores for FDR calculation..."):
+    for i in tqdm(
+        range(nr_items),
+        total=nr_items,
+        desc="Iterating over scores for FDR calculation...",
+    ):
         if td[i:].sum() / (nr_items - i - td[i:].sum()) < fdr:
             # we need to verify in this case because there might be multiple
             # items with the same score
@@ -146,10 +150,10 @@ def __validate_strict(
 
 
 def __verify_fdr_relaxed(
-    data: List[Dict[str, Any]], 
+    data: List[Dict[str, Any]],
     fdr: float,
     cutoff: float,
-    score: Literal["higher_better", "lower_better"]
+    score: Literal["higher_better", "lower_better"],
 ) -> bool:
     r"""Verifies that a list of crosslinks or crosslink-spectrum-matches has the estimated false discovery rate using a relaxed approach.
 
@@ -200,15 +204,15 @@ def __verify_fdr_relaxed(
         else:
             # do nothing
             pass
-    if (DT-D) < 0.0:
+    if (DT - D) < 0.0:
         raise RuntimeError()
-    return (DT-D) / T < fdr
+    return (DT - D) / T < fdr
 
 
 def __validate_relaxed(
     data: List[Dict[str, Any]],
     fdr: float,
-    score: Literal["higher_better", "lower_better"]
+    score: Literal["higher_better", "lower_better"],
 ) -> List[Dict[str, Any]]:
     r"""Validate a list of crosslinks or crosslink-spectrum-matches by relaxed false discovery rate estimation.
 
@@ -254,14 +258,18 @@ def __validate_relaxed(
         td = np.array(td)[np.argsort(scores, stable=True)]
         tdd = np.array(tdd)[np.argsort(scores, stable=True)]
         scores = scores[np.argsort(scores, stable=True)]
-        cutoff = scores[0] #scores.max()
+        cutoff = scores[0]  # scores.max()
     else:
         td = np.array(td)[np.argsort(scores, stable=True)[::-1]]
         tdd = np.array(tdd)[np.argsort(scores, stable=True)[::-1]]
         scores = scores[np.argsort(scores, stable=True)[::-1]]
-        cutoff = scores[0] #scores.min()
+        cutoff = scores[0]  # scores.min()
     nr_items = len(td)
-    for i in tqdm(range(nr_items), total=nr_items, desc="Iterating over scores for FDR calculation..."):
+    for i in tqdm(
+        range(nr_items),
+        total=nr_items,
+        desc="Iterating over scores for FDR calculation...",
+    ):
         if tdd[i:].sum() < 0.0:
             raise RuntimeError()
         if tdd[i:].sum() / (nr_items - i - td[i:].sum()) < fdr:
@@ -407,9 +415,17 @@ def validate(
                 "or a parser_result!"
             )
         if ignore_missing_labels:
-            data = [item for item in data if item["alpha_decoy"] is not None and item["beta_decoy"] is not None]
+            data = [
+                item
+                for item in data
+                if item["alpha_decoy"] is not None and item["beta_decoy"] is not None
+            ]
         available_keys = get_available_keys(data)
-        if not available_keys["score"] or not available_keys["alpha_decoy"] or not available_keys["beta_decoy"]:
+        if (
+            not available_keys["score"]
+            or not available_keys["alpha_decoy"]
+            or not available_keys["beta_decoy"]
+        ):
             raise ValueError(
                 "Can't validate data if 'score' or target/decoy labels are missing! Selecting 'ignore_missing_labels = True' will ignore crosslinks and crosslink-spectrum-matches "
                 "that don't have a valid target/decoy label and filter them out!"
@@ -423,7 +439,9 @@ def validate(
                         intra.append(item)
                     else:
                         inter.append(item)
-                return __validate_relaxed(intra, fdr, score) + __validate_relaxed(inter, fdr, score)
+                return __validate_relaxed(intra, fdr, score) + __validate_relaxed(
+                    inter, fdr, score
+                )
             return __validate_relaxed(data, fdr, score)
         if separate_intra_inter:
             intra = list()
@@ -433,19 +451,33 @@ def validate(
                     intra.append(item)
                 else:
                     inter.append(item)
-            return __validate_strict(intra, fdr, score) + __validate_strict(inter, fdr, score)
+            return __validate_strict(intra, fdr, score) + __validate_strict(
+                inter, fdr, score
+            )
         return __validate_strict(data, fdr, score)
     if "data_type" not in data or data["data_type"] != "parser_result":
-        raise TypeError(
-            "Can't validate dict. Dict has to be a valid 'parser_result'!"
-        )
+        raise TypeError("Can't validate dict. Dict has to be a valid 'parser_result'!")
     new_csms = (
-        validate(data["crosslink-spectrum-matches"], fdr, formula, score, separate_intra_inter, ignore_missing_labels)
+        validate(
+            data["crosslink-spectrum-matches"],
+            fdr,
+            formula,
+            score,
+            separate_intra_inter,
+            ignore_missing_labels,
+        )
         if data["crosslink-spectrum-matches"] is not None
         else None
     )
     new_xls = (
-        validate(data["crosslinks"], fdr, formula, score, separate_intra_inter, ignore_missing_labels)
+        validate(
+            data["crosslinks"],
+            fdr,
+            formula,
+            score,
+            separate_intra_inter,
+            ignore_missing_labels,
+        )
         if data["crosslinks"] is not None
         else None
     )

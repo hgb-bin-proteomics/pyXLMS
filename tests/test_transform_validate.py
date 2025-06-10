@@ -9,7 +9,12 @@
 def test1():
     from pyXLMS.parser import read
     from pyXLMS.transform import validate
-    pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+
+    pr = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
     csms = pr["crosslink-spectrum-matches"]
     assert len(csms) == 826
     validated = validate(csms)
@@ -19,7 +24,15 @@ def test1():
 def test2():
     from pyXLMS.parser import read
     from pyXLMS.transform import validate
-    pr = read(["data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx"], engine="MS Annika", crosslinker="DSS")
+
+    pr = read(
+        [
+            "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+            "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx",
+        ],
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
     validated = validate(pr)
@@ -30,7 +43,15 @@ def test2():
 def test3():
     from pyXLMS.parser import read
     from pyXLMS.transform import validate
-    pr = read(["data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx"], engine="MS Annika", crosslinker="DSS")
+
+    pr = read(
+        [
+            "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+            "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx",
+        ],
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
     validated = validate(pr, fdr=0.05)
