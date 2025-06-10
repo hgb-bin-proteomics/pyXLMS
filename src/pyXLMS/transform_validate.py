@@ -33,6 +33,34 @@ def __verify_fdr_strict(
     cutoff: float,
     score: Literal["higher_better", "lower_better"]
 ) -> bool:
+    r"""Verifies that a list of crosslinks or crosslink-spectrum-matches has the estimated false discovery rate using a strict approach.
+
+    Verifies that a list of crosslinks or crosslink-spectrum-matches has the estimated false discovery rate (FDR) using the
+    formula (TD+DD)/TT given a score cutoff.
+    Requires that "score", "alpha_decoy" and "beta_decoy" fields are set for crosslinks and crosslink-spectrum-matches.
+
+    Parameters
+    ----------
+    data : list of dict of str, any, or dict of str, any
+        A list of crosslink-spectrum-matches or crosslinks to validate.
+    fdr : float
+        The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
+    cutoff : float
+        Score cutoff that defines which crosslinks or crosslink-spectrum-matches fall within the FDR validated result.
+    score: str, one of "higher_better" or "lower_better"
+        If a higher score is considered better, or a lower score is considered better.
+
+    Returns
+    -------
+    bool
+        Returns True if the given score cutoff yields only crosslinks or crosslink-spectrum-matches
+        that are within the target FDR. Returns False if the given score cutoff yields crosslinks or
+        crosslink-spectrum-matches that produce a higher estimated FDR than the desired target FDR.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``__validate_strict()``.
+    """
     D = 0
     T = 0
     for item in data:
@@ -57,6 +85,30 @@ def __validate_strict(
     fdr: float,
     score: Literal["higher_better", "lower_better"]
 ) -> List[Dict[str, Any]]:
+    r"""Validate a list of crosslinks or crosslink-spectrum-matches by strict false discovery rate estimation.
+
+    Validate a list of crosslinks or crosslink-spectrum-matches by relaxed false discovery rate (FDR) estimation using the
+    formula (TD+DD)/TT.
+    Requires that "score", "alpha_decoy" and "beta_decoy" fields are set for crosslinks and crosslink-spectrum-matches.
+
+    Parameters
+    ----------
+    data : list of dict of str, any, or dict of str, any
+        A list of crosslink-spectrum-matches or crosslinks to validate.
+    fdr : float
+        The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
+    score: str, one of "higher_better" or "lower_better"
+        If a higher score is considered better, or a lower score is considered better.
+
+    Returns
+    -------
+    list of dict of str, any, or dict of str, any
+        A list of validated crosslink-spectrum-matches or crosslinks.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``validate()``.
+    """
     scores = list()
     td = list()
     for item in data:
@@ -101,6 +153,34 @@ def __verify_fdr_relaxed(
     cutoff: float,
     score: Literal["higher_better", "lower_better"]
 ) -> bool:
+    r"""Verifies that a list of crosslinks or crosslink-spectrum-matches has the estimated false discovery rate using a relaxed approach.
+
+    Verifies that a list of crosslinks or crosslink-spectrum-matches has the estimated false discovery rate (FDR) using the
+    formula (TD-DD)/TT given a score cutoff.
+    Requires that "score", "alpha_decoy" and "beta_decoy" fields are set for crosslinks and crosslink-spectrum-matches.
+
+    Parameters
+    ----------
+    data : list of dict of str, any, or dict of str, any
+        A list of crosslink-spectrum-matches or crosslinks to validate.
+    fdr : float
+        The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
+    cutoff : float
+        Score cutoff that defines which crosslinks or crosslink-spectrum-matches fall within the FDR validated result.
+    score: str, one of "higher_better" or "lower_better"
+        If a higher score is considered better, or a lower score is considered better.
+
+    Returns
+    -------
+    bool
+        Returns True if the given score cutoff yields only crosslinks or crosslink-spectrum-matches
+        that are within the target FDR. Returns False if the given score cutoff yields crosslinks or
+        crosslink-spectrum-matches that produce a higher estimated FDR than the desired target FDR.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``__validate_relaxed()``.
+    """
     D = 0
     DT = 0
     T = 0
@@ -132,6 +212,30 @@ def __validate_relaxed(
     fdr: float,
     score: Literal["higher_better", "lower_better"]
 ) -> List[Dict[str, Any]]:
+    r"""Validate a list of crosslinks or crosslink-spectrum-matches by relaxed false discovery rate estimation.
+
+    Validate a list of crosslinks or crosslink-spectrum-matches by relaxed false discovery rate (FDR) estimation using the
+    formula (TD-DD)/TT.
+    Requires that "score", "alpha_decoy" and "beta_decoy" fields are set for crosslinks and crosslink-spectrum-matches.
+
+    Parameters
+    ----------
+    data : list of dict of str, any, or dict of str, any
+        A list of crosslink-spectrum-matches or crosslinks to validate.
+    fdr : float
+        The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
+    score: str, one of "higher_better" or "lower_better"
+        If a higher score is considered better, or a lower score is considered better.
+
+    Returns
+    -------
+    list of dict of str, any, or dict of str, any
+        A list of validated crosslink-spectrum-matches or crosslinks.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``validate()``.
+    """
     scores = list()
     td = list()
     tdd = list()
@@ -188,6 +292,90 @@ def validate(
     separate_intra_inter: bool = False,
     ignore_missing_labels: bool = False,
 ) -> List[Dict[str, Any]] | Dict[str, Any]:
+    r"""Validate a list of crosslinks or crosslink-spectrum-matches, or a parser_result by estimating false discovery rate.
+
+    Validate a list of crosslinks or crosslink-spectrum-matches, or a parser_result by estimating false discovery rate (FDR) using the defined formula.
+    Requires that "score", "alpha_decoy" and "beta_decoy" fields are set for crosslinks and crosslink-spectrum-matches.
+
+    Parameters
+    ----------
+    data : list of dict of str, any, or dict of str, any
+        A list of crosslink-spectrum-matches or crosslinks to validate, or a parser_result.
+    fdr : float, default = 0.01
+        The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
+    formula : str, one of "D/T", "(TD+DD)/TT", or "(TD-DD)/TT", default = "D/T"
+        Which formula to use to estimate FDR. D and DD denote decoy matches, T and TT denote target matches, and TD denotes target-decoy
+        and decoy-target matches.
+    score: str, one of "higher_better" or "lower_better", default = "higher_better"
+        If a higher score is considered better, or a lower score is considered better.
+    separate_intra_inter : bool, default = False
+        If FDR should be estimated separately for intra and inter matches.
+    ignore_missing_labels : bool, default = False
+        If crosslinks and crosslink-spectrum-matches should be ignored if they don't have target and decoy labels. By default and error is
+        thrown if any unlabelled data is encountered.
+
+    Returns
+    -------
+    list of dict of str, any, or dict of str, any
+        If a list of crosslink-spectrum-matches or crosslinks was provided, a list of validated
+        crosslink-spectrum-matches or crosslinks is returned. If a parser_result was provided,
+        an parser_result with validated crosslink-spectrum-matches and/or validated crosslinks will
+        be returned.
+
+    Raises
+    ------
+    TypeError
+        If a wrong data type is provided.
+    TypeError
+        If parameter formula is not one of 'D/T', '(TD+DD)/TT', or '(TD-DD)/TT'.
+    TypeError
+        If parameter score is not one of 'higher_better' or 'lower_better'.
+    ValueError
+        If parameter fdr is outside of the supported range.
+    ValueError
+        If attribute 'score' is not available for any of the data.
+    ValueError
+        If attribute 'alpha_decoy' or 'beta_decoy' is not available for any of the data and parameter ignore_missing_labels
+        is set to False.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import validate
+    >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> csms = pr["crosslink-spectrum-matches"]
+    >>> len(csms)
+    826
+    >>> validated = validate(csms)
+    >>> len(validated)
+    705
+
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import validate
+    >>> pr = read(["data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx"], engine="MS Annika", crosslinker="DSS")
+    >>> len(pr["crosslink-spectrum-matches"])
+    826
+    >>> len(pr["crosslinks"])
+    300
+    >>> validated = validate(pr)
+    >>> len(validated["crosslink-spectrum-matches"])
+    705
+    >> len(validated["crosslinks"])
+    226
+
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import validate
+    >>> pr = read(["data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx"], engine="MS Annika", crosslinker="DSS")
+    >>> len(pr["crosslink-spectrum-matches"])
+    826
+    >>> len(pr["crosslinks"])
+    300
+    >>> validated = validate(pr, fdr=0.05)
+    >>> len(validated["crosslink-spectrum-matches"])
+    825
+    >> len(validated["crosslinks"])
+    260
+    """
     _ok = check_input_multi(data, "data", [dict, list])
     _ok = check_input(fdr, "fdr", float)
     _ok = check_input(formula, "formula", str)
