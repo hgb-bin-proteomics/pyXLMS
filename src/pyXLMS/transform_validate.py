@@ -118,12 +118,12 @@ def __validate_strict(
     scores = np.array(scores)
     cutoff = 0
     if score == "higher_better":
-        td = np.array(td)[np.argsort(scores, stable=True)]
-        scores = scores[np.argsort(scores, stable=True)]
+        td = np.array(td)[np.argsort(scores, kind="stable")]
+        scores = scores[np.argsort(scores, kind="stable")]
         cutoff = scores[0]  # scores.max()
     else:
-        td = np.array(td)[np.argsort(scores, stable=True)[::-1]]
-        scores = scores[np.argsort(scores, stable=True)[::-1]]
+        td = np.array(td)[np.argsort(scores, kind="stable")[::-1]]
+        scores = scores[np.argsort(scores, kind="stable")[::-1]]
         cutoff = scores[0]  # scores.min()
     nr_items = len(td)
     for i in tqdm(
@@ -255,14 +255,14 @@ def __validate_relaxed(
     scores = np.array(scores)
     cutoff = 0
     if score == "higher_better":
-        td = np.array(td)[np.argsort(scores, stable=True)]
-        tdd = np.array(tdd)[np.argsort(scores, stable=True)]
-        scores = scores[np.argsort(scores, stable=True)]
+        td = np.array(td)[np.argsort(scores, kind="stable")]
+        tdd = np.array(tdd)[np.argsort(scores, kind="stable")]
+        scores = scores[np.argsort(scores, kind="stable")]
         cutoff = scores[0]  # scores.max()
     else:
-        td = np.array(td)[np.argsort(scores, stable=True)[::-1]]
-        tdd = np.array(tdd)[np.argsort(scores, stable=True)[::-1]]
-        scores = scores[np.argsort(scores, stable=True)[::-1]]
+        td = np.array(td)[np.argsort(scores, kind="stable")[::-1]]
+        tdd = np.array(tdd)[np.argsort(scores, kind="stable")[::-1]]
+        scores = scores[np.argsort(scores, kind="stable")[::-1]]
         cutoff = scores[0]  # scores.min()
     nr_items = len(td)
     for i in tqdm(
