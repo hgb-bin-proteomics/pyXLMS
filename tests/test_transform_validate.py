@@ -5,6 +5,7 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+import pytest
 from typing import List, Dict, Any
 
 
@@ -86,3 +87,20 @@ def test3():
     validated = validate(pr, fdr=0.05)
     assert len(validated["crosslink-spectrum-matches"]) == 825
     assert len(validated["crosslinks"]) == 260
+
+
+def test4():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import validate
+
+    pr = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=r"FDR must be given as a real number between 0 and 1, e\.g\. 0\.01 corresponds to 1\% FDR!",
+    ):
+        _validated = validate(pr, fdr=1.0)
