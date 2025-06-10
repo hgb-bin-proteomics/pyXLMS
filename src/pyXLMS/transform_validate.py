@@ -14,10 +14,8 @@ from .data import check_input_multi
 from .data import create_parser_result
 from .transform_util import get_available_keys
 
-from typing import Optional
 from typing import Dict
 from typing import List
-from typing import Tuple
 from typing import Any
 
 # legacy
@@ -288,7 +286,7 @@ def validate(
     data: List[Dict[str, Any]] | Dict[str, Any],
     fdr: float = 0.01,
     formula: Literal["D/T", "(TD+DD)/TT", "(TD-DD)/TT"] = "D/T",
-    score: Literal["higher_better", "lower_better"] = "higher_better":
+    score: Literal["higher_better", "lower_better"] = "higher_better",
     separate_intra_inter: bool = False,
     ignore_missing_labels: bool = False,
 ) -> List[Dict[str, Any]] | Dict[str, Any]:
