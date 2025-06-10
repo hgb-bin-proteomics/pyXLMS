@@ -5,6 +5,35 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+from typing import List, Dict, Any
+
+
+def get_fdr_strict(data: List[Dict[str, Any]]) -> float:
+    D = 0
+    T = 0
+    for item in data:
+        if not item["alpha_decoy"] and not item["beta_decoy"]:
+            T += 1
+        else:
+            D += 1
+    return D / T
+
+
+def get_fdr_relaxed(data: List[Dict[str, Any]]) -> float:
+    D = 0
+    DT = 0
+    T = 0
+    for item in data:
+        if not item["alpha_decoy"] and not item["beta_decoy"]:
+            T += 1
+        elif item["alpha_decoy"] and item["beta_decoy"]:
+            D += 1
+        else:
+            DT += 1
+    if (DT - D) < 0.0:
+        raise RuntimeError("Negative FDR!")
+    return (DT - D) / T
+
 
 def test1():
     from pyXLMS.parser import read
