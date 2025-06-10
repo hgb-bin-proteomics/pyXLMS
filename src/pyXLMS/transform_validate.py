@@ -225,7 +225,25 @@ def validate(
                 "that don't have a valid target/decoy label and filter them out!"
             )
         if formula == "(TD-DD)/TT":
+            if separate_intra_inter:
+                intra = list()
+                inter = list()
+                for item in data:
+                    if item["crosslink_type"] == "intra":
+                        intra.append(item)
+                    else:
+                        inter.append(item)
+                return __validate_relaxed(intra, fdr, score) + __validate_relaxed(inter, fdr, score)
             return __validate_relaxed(data, fdr, score)
+        if separate_intra_inter:
+            intra = list()
+            inter = list()
+            for item in data:
+                if item["crosslink_type"] == "intra":
+                    intra.append(item)
+                else:
+                    inter.append(item)
+            return __validate_strict(intra, fdr, score) + __validate_strict(inter, fdr, score)
         return __validate_strict(data, fdr, score)
     if "data_type" not in data or data["data_type"] != "parser_result":
         raise TypeError(
