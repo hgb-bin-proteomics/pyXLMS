@@ -168,3 +168,66 @@ def filter_proteins(
             else:
                 inter.append(item)
     return {"Proteins": list(proteins), "Both": intra, "One": inter}
+
+
+def filter_crosslink_type(
+    data: List[Dict[str, Any]]
+) -> Dict[str, List[Any]]:
+    r"""Separate crosslinks and crosslink-spectrum-matches by their crosslink type.
+
+    Gets all crosslinks or crosslink-spectrum-matches depending on crosslink type. Will separate based
+    on if a crosslink or crosslink-spectrum-matche is of type "intra" or "inter" crosslink.
+
+    Parameters
+    ----------
+    data : list of dict of str, any
+        A list of pyXLMS crosslinks or crosslink-spectrum-matches.
+
+    Returns
+    -------
+    dict of str, list of dict
+        Returns a dictionary with key ``Intra`` which contains all crosslinks or crosslink-spectrum-
+        matches with crosslink type = "intra", and key ``Inter`` which contains all crosslinks or
+        crosslink-spectrum-matches with crosslink type = "inter".
+
+    Raises
+    ------
+    TypeError
+        If an unsupported data type is provided.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import filter_proteins
+    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> crosslink_type_filtered_csms = filter_crosslink_type(result["crosslink-spectrum-matches"])
+    >>> len(crosslink_type_filtered_csms["Intra"])
+    803
+    >>> len(crosslink_type_filtered_csms["Inter"])
+    23
+
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import filter_proteins
+    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> crosslink_type_filtered_crosslinks = filter_crosslink_type(result["crosslinks"])
+    >>> len(crosslink_type_filtered_crosslinks["Intra"])
+    279
+    >>> len(crosslink_type_filtered_crosslinks["Inter"])
+    21
+    """
+    _ok = check_input(data, "data", list, dict)
+    intra = list()
+    inter = list()
+    for item in data:
+        if "data_type" not in item or item["data_type"] not in [
+            "crosslink",
+            "crosslink-spectrum-match",
+        ]:
+            raise TypeError(
+                "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
+            )
+        if item["crosslink_type"] == "intra":
+            intra.append(item)
+        else:
+            inter.append(item)
+    return {"Intra": intra, "Inter": inter}
