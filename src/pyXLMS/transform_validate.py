@@ -14,6 +14,7 @@ from .data import check_input_multi
 from .data import create_parser_result
 from .transform_util import get_available_keys
 from .transform_filter import filter_target_decoy
+from .transform_filter import filter_crosslink_type
 
 from typing import Dict
 from typing import List
@@ -458,27 +459,15 @@ def validate(
                     "Can't estimate FDR with formula '(TD-DD)/TT' when there are not TD matches! Please select the default formula instead!"
                 )
             if separate_intra_inter:
-                intra = list()
-                inter = list()
-                for item in data:
-                    if item["crosslink_type"] == "intra":
-                        intra.append(item)
-                    else:
-                        inter.append(item)
-                return __validate_relaxed(intra, fdr, score) + __validate_relaxed(
-                    inter, fdr, score
+                separate = filter_crosslink_type(data)
+                return __validate_relaxed(separate["Intra"], fdr, score) + __validate_relaxed(
+                    separate["Inter"], fdr, score
                 )
             return __validate_relaxed(data, fdr, score)
         if separate_intra_inter:
-            intra = list()
-            inter = list()
-            for item in data:
-                if item["crosslink_type"] == "intra":
-                    intra.append(item)
-                else:
-                    inter.append(item)
-            return __validate_strict(intra, fdr, score) + __validate_strict(
-                inter, fdr, score
+            separate = filter_crosslink_type(data)
+            return __validate_strict(separate["Intra"], fdr, score) + __validate_strict(
+                separate["Inter"], fdr, score
             )
         return __validate_strict(data, fdr, score)
     if "data_type" not in data or data["data_type"] != "parser_result":
