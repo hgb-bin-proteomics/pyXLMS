@@ -32,6 +32,28 @@ except ImportError:
     from typing_extensions import Literal
 
 
+def __check_positions_okay(positions: List[int]) -> bool:
+    r"""Checks if all the positions are positive.
+    
+    Parameters
+    ----------
+    positions : list of int
+    
+    Returns
+    -------
+    bool
+        If all positions are valid (greater than zero).
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``read_msannika()``.
+    """
+    for position in positions:
+        if position < 1:
+            return False
+    return True
+
+
 def __read_msannika_pdresult(filename: str) -> List[pd.DataFrame]:
     r"""Read an MS Annika pdResult file and convert it to standard MS Annika result tables.
 
@@ -113,6 +135,7 @@ def read_msannika(
     format: Literal["auto", "csv", "txt", "tsv", "xlsx", "pdresult"] = "auto",
     sep: str = "\t",
     decimal: str = ".",
+    unsafe: bool = False,
 ) -> Dict[str, Any]:
     r"""Read an MS Annika result file.
 
@@ -131,6 +154,10 @@ def read_msannika(
         Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` or ``.pdResult`` format.
     decimal : str, default = "."
         Character to recognize as decimal point. Parameter is ignored if the file is in ``.xlsx`` or ``.pdResult`` format.
+    unsafe : bool, default = False
+        If True, allows reading of negative peptide and crosslink positions but replaces their values with None.
+        Negative values occur when peptides can't be matched to proteins because of 'X' in protein sequences.
+        Reannotation might be possible with ``transform.reannotate_positions()``.
 
     Returns
     -------
@@ -143,6 +170,11 @@ def read_msannika(
         If the input format is not supported or cannot be inferred.
     TypeError
         If the pdResult file is provided in the wrong format.
+    RuntimeError
+        If one of the crosslinks or crosslink-spectrum-matches contains unknown crosslink or peptide positions.
+        This occurs when peptides can't be matched to proteins because of 'X' in protein sequences. Selecting
+        'unsafe = True' will ignore these errors and return None type positions.
+        Reannotation might be possible with ``transform.reannotate_positions()``.
     RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslinks or crosslink-spectrum-matches.
     KeyError
@@ -280,6 +312,31 @@ def read_msannika(
                     total=data.shape[0],
                     desc="Reading MS Annika crosslinks...",
                 ):
+                    # pre compute values
+                    xl_position_proteins_a=[
+                        int(position)
+                        for position in str(row["In protein A"]).split(";")
+                    ]
+                    if not __check_positions_okay(xl_position_proteins_a):
+                        if unsafe:
+                            xl_position_proteins_a = None
+                        else:
+                            raise RuntimeError(
+                                f"Encountered invalid crosslink position for crosslink with sequence "
+                                f"{format_sequence(str(row['Sequence A']))}-{format_sequence(str(row['Sequence B']))}!"
+                            )
+                    xl_position_proteins_b=[
+                        int(position)
+                        for position in str(row["In protein B"]).split(";")
+                    ]
+                    if not __check_positions_okay(xl_position_proteins_b):
+                        if unsafe:
+                            xl_position_proteins_b = None
+                        else:
+                            raise RuntimeError(
+                                f"Encountered invalid crosslink position for crosslink with sequence "
+                                f"{format_sequence(str(row['Sequence A']))}-{format_sequence(str(row['Sequence B']))}!"
+                            )
                     # create crosslink
                     crosslink = create_crosslink(
                         peptide_a=format_sequence(str(row["Sequence A"])),
@@ -288,10 +345,7 @@ def read_msannika(
                             protein.strip()
                             for protein in str(row["Accession A"]).split(";")
                         ],
-                        xl_position_proteins_a=[
-                            int(position)
-                            for position in str(row["In protein A"]).split(";")
-                        ],
+                        xl_position_proteins_a=xl_position_proteins_a,
                         decoy_a=get_bool_from_value(row["Decoy"]),
                         peptide_b=format_sequence(str(row["Sequence B"])),
                         xl_position_peptide_b=int(row["Position B"]),
@@ -299,10 +353,7 @@ def read_msannika(
                             protein.strip()
                             for protein in str(row["Accession B"]).split(";")
                         ],
-                        xl_position_proteins_b=[
-                            int(position)
-                            for position in str(row["In protein B"]).split(";")
-                        ],
+                        xl_position_proteins_b=xl_position_proteins_b,
                         decoy_b=get_bool_from_value(row["Decoy"]),
                         score=float(row["Best CSM Score"]),
                     )
@@ -313,6 +364,51 @@ def read_msannika(
                     total=data.shape[0],
                     desc="Reading MS Annika CSMs...",
                 ):
+                    # pre compute values
+                    xl_position_proteins_a=[
+                        int(position) + int(row["Crosslinker Position A"])
+                        for position in str(row["A in protein"]).split(";")
+                    ]
+                    if not __check_positions_okay(xl_position_proteins_a):
+                        if unsafe:
+                            xl_position_proteins_a = None
+                        else:
+                            raise RuntimeError(
+                                f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
+                            )
+                    pep_position_proteins_a=[
+                        int(position) + 1
+                        for position in str(row["A in protein"]).split(";")
+                    ]
+                    if not __check_positions_okay(pep_position_proteins_a):
+                        if unsafe:
+                            pep_position_proteins_a = None
+                        else:
+                            raise RuntimeError(
+                                f"Encountered invalid peptide position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
+                            )
+                    xl_position_proteins_b=[
+                        int(position) + int(row["Crosslinker Position B"])
+                        for position in str(row["B in protein"]).split(";")
+                    ]
+                    if not __check_positions_okay(xl_position_proteins_b):
+                        if unsafe:
+                            xl_position_proteins_b = None
+                        else:
+                            raise RuntimeError(
+                                f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
+                            )
+                    pep_position_proteins_b=[
+                        int(position) + 1
+                        for position in str(row["B in protein"]).split(";")
+                    ]
+                    if not __check_positions_okay(pep_position_proteins_b):
+                        if unsafe:
+                            pep_position_proteins_b = None
+                        else:
+                            raise RuntimeError(
+                                f"Encountered invalid peptide position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
+                            )
                     # create csm
                     csm = create_csm(
                         peptide_a=format_sequence(str(row["Sequence A"])),
@@ -325,14 +421,8 @@ def read_msannika(
                             protein.strip()
                             for protein in str(row["Accession A"]).split(";")
                         ],
-                        xl_position_proteins_a=[
-                            int(position) + int(row["Crosslinker Position A"])
-                            for position in str(row["A in protein"]).split(";")
-                        ],
-                        pep_position_proteins_a=[
-                            int(position) + 1
-                            for position in str(row["A in protein"]).split(";")
-                        ],
+                        xl_position_proteins_a=xl_position_proteins_a,
+                        pep_position_proteins_a=pep_position_proteins_a,
                         score_a=float(row["Score Alpha"]),
                         decoy_a=not get_bool_from_value(str(row["Alpha T/D"])),
                         peptide_b=format_sequence(str(row["Sequence B"])),
@@ -345,14 +435,8 @@ def read_msannika(
                             protein.strip()
                             for protein in str(row["Accession B"]).split(";")
                         ],
-                        xl_position_proteins_b=[
-                            int(position) + int(row["Crosslinker Position B"])
-                            for position in str(row["B in protein"]).split(";")
-                        ],
-                        pep_position_proteins_b=[
-                            int(position) + 1
-                            for position in str(row["B in protein"]).split(";")
-                        ],
+                        xl_position_proteins_b=xl_position_proteins_b,
+                        pep_position_proteins_b=pep_position_proteins_b,
                         score_b=float(row["Score Beta"]),
                         decoy_b=not get_bool_from_value(str(row["Beta T/D"])),
                         score=float(row["Combined Score"]),
