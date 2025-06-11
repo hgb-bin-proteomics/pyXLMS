@@ -1,0 +1,11 @@
+﻿Alpha Peptide,Alpha Peptide Crosslink Position,Alpha Proteins,Alpha Proteins Crosslink Positions,Beta Peptide,Beta Peptide Crosslink Position,Beta Proteins,Beta Proteins Crosslink Positions,Spectrum File,Scan Nr,CSM Score,Alpha Decoy,Beta Decoy
+KPEPTIDE,1,PROTA,1,PEPTIDEK,8,PROTA,12,RUN_1,1,1.5,False,False
+KPEPTIDE,1,PROTA,1,PEPTIDEK,8,PROTA,12,RUN_1,1,2.5,False,False
+KPEPTIDE,1,PROTA,1,PEPTIDEK,8,PROTA,12,RUN_1,2,3.5,False,False
+KPEPTIDE,1,PROTA,1,PEPTIDEK,8,PROTA,12,RUN_1,2,4.5,False,False
+PEKPTIDE,3,PROTA,1,PEPTIDEK,8,PROTA,12,RUN_1,3,5.5,False,False
+PEKPTIDE,3,PROTA,1,PEPTIDEK,8,PROTA,12,RUN_1,3,6.5,False,False
+PEKPTIDE,3,PROTA,1,PEPTIDEK,8,PROTA,12,RUN_1,4,7.5,False,False
+PEKPTIDE,3,PROTA,1,PEPTIDEK,8,PROTA,12,RUN_1,4,8.5,False,False
+PEPKTIDE,4,PROTA;PROTB,1;2,PEPTIDEK,8,PROTA,12,RUN_1,5,9.5,True,True
+PEPKTIDE,4,PROTB;PROTA,2;1,PEPTIDEK,8,PROTA,12,RUN_1,5,10.5,True,True
