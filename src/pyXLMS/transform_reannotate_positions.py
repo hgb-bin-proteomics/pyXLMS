@@ -167,14 +167,18 @@ def reannotate_positions(
                     protein_db[title_to_accession(item[0])] = item[1]
             if len(protein_db) != i + 1:
                 warnings.warn(
-                    f"Possible duplicates found in fasta file! Read {i + 1} sequences but only stored {len(protein_db)}."
+                    RuntimeWarning(
+                        f"Possible duplicates found in fasta file! Read {i + 1} sequences but only stored {len(protein_db)}."
+                    )
                 )
         else:
             for i, item in enumerate(SimpleFastaParser(fasta)):
                 protein_db[title_to_accession(item[0])] = item[1]
             if len(protein_db) != i + 1:
                 warnings.warn(
-                    f"Possible duplicates found in fasta file! Read {i + 1} sequences but only stored {len(protein_db)}."
+                    RuntimeWarning(
+                        f"Possible duplicates found in fasta file! Read {i + 1} sequences but only stored {len(protein_db)}."
+                    )
                 )
         # annotate crosslinks
         if data[0]["data_type"] == "crosslink":
