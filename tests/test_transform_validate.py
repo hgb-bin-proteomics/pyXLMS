@@ -305,6 +305,8 @@ def test14():
         "data/_test/validate/csms.xlsx",
         engine="MS Annika",
         crosslinker="DSS",
+        unsafe=True,
+        verbose=0,
     )
     for csm in pr["crosslink-spectrum-matches"]:
         csm["score"] = -csm["score"]
@@ -329,6 +331,8 @@ def test15():
         "data/_test/validate/csms.xlsx",
         engine="MS Annika",
         crosslinker="DSS",
+        unsafe=True,
+        verbose=0,
     )
     for csm in pr["crosslink-spectrum-matches"]:
         csm["score"] = -csm["score"]
@@ -461,6 +465,8 @@ def test19():
             csm["alpha_decoy"] = None
         elif i < 10:
             csm["beta_decoy"] = None
+    for i in range(10):
+        print(pr["crosslink-spectrum-matches"][i])
     err_str = (
         r"Can't validate data if 'score' or target\/decoy labels are missing! Selecting 'ignore_missing_labels \= True' will ignore crosslinks and crosslink-spectrum-matches "
         r"that don't have a valid target\/decoy label and filter them out!"
