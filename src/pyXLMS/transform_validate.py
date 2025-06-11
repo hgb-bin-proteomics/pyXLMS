@@ -460,9 +460,9 @@ def validate(
                 )
             if separate_intra_inter:
                 separate = filter_crosslink_type(data)
-                return __validate_relaxed(separate["Intra"], fdr, score) + __validate_relaxed(
-                    separate["Inter"], fdr, score
-                )
+                return __validate_relaxed(
+                    separate["Intra"], fdr, score
+                ) + __validate_relaxed(separate["Inter"], fdr, score)
             return __validate_relaxed(data, fdr, score)
         if separate_intra_inter:
             separate = filter_crosslink_type(data)

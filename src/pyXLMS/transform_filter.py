@@ -170,9 +170,7 @@ def filter_proteins(
     return {"Proteins": list(proteins), "Both": intra, "One": inter}
 
 
-def filter_crosslink_type(
-    data: List[Dict[str, Any]]
-) -> Dict[str, List[Any]]:
+def filter_crosslink_type(data: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
     r"""Separate crosslinks and crosslink-spectrum-matches by their crosslink type.
 
     Gets all crosslinks or crosslink-spectrum-matches depending on crosslink type. Will separate based
