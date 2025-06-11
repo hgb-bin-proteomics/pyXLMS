@@ -9,6 +9,7 @@ from .transform_util import assert_data_type_same  # noqa: F401
 from .transform_util import get_available_keys  # noqa: F401
 from .transform_filter import filter_target_decoy  # noqa: F401
 from .transform_filter import filter_proteins  # noqa: F401
+from .transform_filter import filter_crosslink_type  # noqa: F401
 from .transform_aggregate import unique  # noqa: F401
 from .transform_aggregate import aggregate  # noqa: F401
 from .transform_validate import validate  # noqa: F401
