@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import sqlite3
+import warnings
 import pandas as pd
 from tqdm import tqdm
 from os.path import splitext
@@ -136,6 +137,7 @@ def read_msannika(
     sep: str = "\t",
     decimal: str = ".",
     unsafe: bool = False,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
     r"""Read an MS Annika result file.
 
@@ -158,6 +160,10 @@ def read_msannika(
         If True, allows reading of negative peptide and crosslink positions but replaces their values with None.
         Negative values occur when peptides can't be matched to proteins because of 'X' in protein sequences.
         Reannotation might be possible with ``transform.reannotate_positions()``.
+    verbose : 0, 1, or 2, default = 1
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -170,6 +176,8 @@ def read_msannika(
         If the input format is not supported or cannot be inferred.
     TypeError
         If the pdResult file is provided in the wrong format.
+    TypeError
+        If parameter verbose was not set correctly.
     RuntimeError
         If one of the crosslinks or crosslink-spectrum-matches contains unknown crosslink or peptide positions.
         This occurs when peptides can't be matched to proteins because of 'X' in protein sequences. Selecting
@@ -209,6 +217,10 @@ def read_msannika(
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(format, "format", str)
     _ok = check_input(sep, "sep", str)
+    _ok = check_input(decimal, "decimal", str)
+    _ok = check_input(verbose, "verbose", int)
+    if verbose not in [0, 1, 2]:
+        raise TypeError("Verbose level has to be one of 0, 1, or 2!")
 
     ## helper functions
     def parse_modification_str(
@@ -318,8 +330,15 @@ def read_msannika(
                         for position in str(row["In protein A"]).split(";")
                     ]
                     if not __check_positions_okay(xl_position_proteins_a):
-                        if unsafe:
+                        if unsafe and not verbose == 2:
                             xl_position_proteins_a = None
+                            if verbose == 1:
+                                warnings.warn(
+                                    RuntimeWarning(
+                                        f"Encountered invalid crosslink position for crosslink with sequence "
+                                        f"{format_sequence(str(row['Sequence A']))}-{format_sequence(str(row['Sequence B']))}!"
+                                    )
+                                )
                         else:
                             raise RuntimeError(
                                 f"Encountered invalid crosslink position for crosslink with sequence "
@@ -330,8 +349,15 @@ def read_msannika(
                         for position in str(row["In protein B"]).split(";")
                     ]
                     if not __check_positions_okay(xl_position_proteins_b):
-                        if unsafe:
+                        if unsafe and not verbose == 2:
                             xl_position_proteins_b = None
+                            if verbose == 1:
+                                warnings.warn(
+                                    RuntimeWarning(
+                                        f"Encountered invalid crosslink position for crosslink with sequence "
+                                        f"{format_sequence(str(row['Sequence A']))}-{format_sequence(str(row['Sequence B']))}!"
+                                    )
+                                )
                         else:
                             raise RuntimeError(
                                 f"Encountered invalid crosslink position for crosslink with sequence "
@@ -370,8 +396,14 @@ def read_msannika(
                         for position in str(row["A in protein"]).split(";")
                     ]
                     if not __check_positions_okay(xl_position_proteins_a):
-                        if unsafe:
+                        if unsafe and not verbose == 2:
                             xl_position_proteins_a = None
+                            if verbose == 1:
+                                warnings.warn(
+                                    RuntimeWarning(
+                                        f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
+                                    )
+                                )
                         else:
                             raise RuntimeError(
                                 f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
@@ -381,8 +413,14 @@ def read_msannika(
                         for position in str(row["A in protein"]).split(";")
                     ]
                     if not __check_positions_okay(pep_position_proteins_a):
-                        if unsafe:
+                        if unsafe and not verbose == 2:
                             pep_position_proteins_a = None
+                            if verbose == 1:
+                                warnings.warn(
+                                    RuntimeWarning(
+                                        f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
+                                    )
+                                )
                         else:
                             raise RuntimeError(
                                 f"Encountered invalid peptide position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
@@ -392,8 +430,14 @@ def read_msannika(
                         for position in str(row["B in protein"]).split(";")
                     ]
                     if not __check_positions_okay(xl_position_proteins_b):
-                        if unsafe:
+                        if unsafe and not verbose == 2:
                             xl_position_proteins_b = None
+                            if verbose == 1:
+                                warnings.warn(
+                                    RuntimeWarning(
+                                        f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
+                                    )
+                                )
                         else:
                             raise RuntimeError(
                                 f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
@@ -403,8 +447,14 @@ def read_msannika(
                         for position in str(row["B in protein"]).split(";")
                     ]
                     if not __check_positions_okay(pep_position_proteins_b):
-                        if unsafe:
+                        if unsafe and not verbose == 2:
                             pep_position_proteins_b = None
+                            if verbose == 1:
+                                warnings.warn(
+                                    RuntimeWarning(
+                                        f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
+                                    )
+                                )
                         else:
                             raise RuntimeError(
                                 f"Encountered invalid peptide position for crosslink-spectrum-match with scan number: {int(row['First Scan'])}!"
