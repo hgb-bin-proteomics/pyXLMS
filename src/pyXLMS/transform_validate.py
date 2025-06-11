@@ -42,10 +42,10 @@ def __verify_fdr_strict(
 
     Parameters
     ----------
-    data : list of dict of str, any, or dict of str, any
+    data : list of dict of str, any
         A list of crosslink-spectrum-matches or crosslinks to validate.
     fdr : float
-        The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
+        The target FDR, must be given as a real number between 0 and 1.
     cutoff : float
         Score cutoff that defines which crosslinks or crosslink-spectrum-matches fall within the FDR validated result.
     score: str, one of "higher_better" or "lower_better"
@@ -88,13 +88,13 @@ def __validate_strict(
 ) -> List[Dict[str, Any]]:
     r"""Validate a list of crosslinks or crosslink-spectrum-matches by strict false discovery rate estimation.
 
-    Validate a list of crosslinks or crosslink-spectrum-matches by relaxed false discovery rate (FDR) estimation using the
+    Validate a list of crosslinks or crosslink-spectrum-matches by strict false discovery rate (FDR) estimation using the
     formula (TD+DD)/TT.
     Requires that "score", "alpha_decoy" and "beta_decoy" fields are set for crosslinks and crosslink-spectrum-matches.
 
     Parameters
     ----------
-    data : list of dict of str, any, or dict of str, any
+    data : list of dict of str, any
         A list of crosslink-spectrum-matches or crosslinks to validate.
     fdr : float
         The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
@@ -103,7 +103,7 @@ def __validate_strict(
 
     Returns
     -------
-    list of dict of str, any, or dict of str, any
+    list of dict of str, any
         A list of validated crosslink-spectrum-matches or crosslinks.
 
     Warns
@@ -178,10 +178,10 @@ def __verify_fdr_relaxed(
 
     Parameters
     ----------
-    data : list of dict of str, any, or dict of str, any
+    data : list of dict of str, any
         A list of crosslink-spectrum-matches or crosslinks to validate.
     fdr : float
-        The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
+        The target FDR, must be given as a real number between 0 and 1.
     cutoff : float
         Score cutoff that defines which crosslinks or crosslink-spectrum-matches fall within the FDR validated result.
     score: str, one of "higher_better" or "lower_better"
@@ -246,16 +246,16 @@ def __validate_relaxed(
 
     Parameters
     ----------
-    data : list of dict of str, any, or dict of str, any
+    data : list of dict of str, any
         A list of crosslink-spectrum-matches or crosslinks to validate.
     fdr : float
-        The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
+        The target FDR, must be given as a real number between 0 and 1.
     score: str, one of "higher_better" or "lower_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
     -------
-    list of dict of str, any, or dict of str, any
+    list of dict of str, any
         A list of validated crosslink-spectrum-matches or crosslinks.
 
     Raises

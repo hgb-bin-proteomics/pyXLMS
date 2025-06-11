@@ -39,6 +39,7 @@ def __check_positions_okay(positions: List[int]) -> bool:
     Parameters
     ----------
     positions : list of int
+        List of positions.
 
     Returns
     -------
