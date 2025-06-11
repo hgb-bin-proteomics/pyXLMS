@@ -229,7 +229,7 @@ def test5():
     last_csm = csms[825]
 
     assert first_csm["data_type"] == "crosslink-spectrum-match"
-    assert first_csm["completeness"] == "full"
+    assert first_csm["completeness"] == "partial"
     assert first_csm["alpha_peptide"] == "GQKNSR"
     assert mts(first_csm["alpha_modifications"]) is None
     assert first_csm["alpha_peptide_crosslink_position"] == 3
@@ -255,7 +255,7 @@ def test5():
     assert first_csm["ion_mobility"] == pytest.approx(0.0)
 
     assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "full"
+    assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
     assert mts(csm["alpha_modifications"]) is None
     assert csm["alpha_peptide_crosslink_position"] == 1
@@ -281,7 +281,7 @@ def test5():
     assert csm["ion_mobility"] == pytest.approx(0.0)
 
     assert last_csm["data_type"] == "crosslink-spectrum-match"
-    assert last_csm["completeness"] == "full"
+    assert last_csm["completeness"] == "partial"
     assert last_csm["alpha_peptide"] == "MEDESKLHKFKDFK"
     assert mts(last_csm["alpha_modifications"]) is None
     assert last_csm["alpha_peptide_crosslink_position"] == 11
@@ -328,7 +328,7 @@ def test6():
     last_csm = csms[825]
 
     assert first_csm["data_type"] == "crosslink-spectrum-match"
-    assert first_csm["completeness"] == "full"
+    assert first_csm["completeness"] == "partial"
     assert first_csm["alpha_peptide"] == "GQKNSR"
     assert mts(first_csm["alpha_modifications"]) is None
     assert first_csm["alpha_peptide_crosslink_position"] == 3
@@ -354,7 +354,7 @@ def test6():
     assert first_csm["ion_mobility"] == pytest.approx(0.0)
 
     assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "full"
+    assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
     assert mts(csm["alpha_modifications"]) is None
     assert csm["alpha_peptide_crosslink_position"] == 1
@@ -380,7 +380,7 @@ def test6():
     assert csm["ion_mobility"] == pytest.approx(0.0)
 
     assert last_csm["data_type"] == "crosslink-spectrum-match"
-    assert last_csm["completeness"] == "full"
+    assert last_csm["completeness"] == "partial"
     assert last_csm["alpha_peptide"] == "MEDESKLHKFKDFK"
     assert mts(last_csm["alpha_modifications"]) is None
     assert last_csm["alpha_peptide_crosslink_position"] == 11
@@ -427,7 +427,7 @@ def test7():
     last_csm = csms[826 * 2 - 1]
 
     assert first_csm["data_type"] == "crosslink-spectrum-match"
-    assert first_csm["completeness"] == "full"
+    assert first_csm["completeness"] == "partial"
     assert first_csm["alpha_peptide"] == "GQKNSR"
     assert mts(first_csm["alpha_modifications"]) is None
     assert first_csm["alpha_peptide_crosslink_position"] == 3
@@ -453,7 +453,7 @@ def test7():
     assert first_csm["ion_mobility"] == pytest.approx(0.0)
 
     assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "full"
+    assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
     assert mts(csm["alpha_modifications"]) is None
     assert csm["alpha_peptide_crosslink_position"] == 1
@@ -479,7 +479,7 @@ def test7():
     assert csm["ion_mobility"] == pytest.approx(0.0)
 
     assert last_csm["data_type"] == "crosslink-spectrum-match"
-    assert last_csm["completeness"] == "full"
+    assert last_csm["completeness"] == "partial"
     assert last_csm["alpha_peptide"] == "MEDESKLHKFKDFK"
     assert mts(last_csm["alpha_modifications"]) is None
     assert last_csm["alpha_peptide_crosslink_position"] == 11
@@ -526,7 +526,7 @@ def test8():
     last_csm = csms[826 * 2 - 1]
 
     assert first_csm["data_type"] == "crosslink-spectrum-match"
-    assert first_csm["completeness"] == "full"
+    assert first_csm["completeness"] == "partial"
     assert first_csm["alpha_peptide"] == "GQKNSR"
     assert mts(first_csm["alpha_modifications"]) is None
     assert first_csm["alpha_peptide_crosslink_position"] == 3
@@ -552,7 +552,7 @@ def test8():
     assert first_csm["ion_mobility"] == pytest.approx(0.0)
 
     assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "full"
+    assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
     assert mts(csm["alpha_modifications"]) is None
     assert csm["alpha_peptide_crosslink_position"] == 1
@@ -578,7 +578,7 @@ def test8():
     assert csm["ion_mobility"] == pytest.approx(0.0)
 
     assert last_csm["data_type"] == "crosslink-spectrum-match"
-    assert last_csm["completeness"] == "full"
+    assert last_csm["completeness"] == "partial"
     assert last_csm["alpha_peptide"] == "MEDESKLHKFKDFK"
     assert mts(last_csm["alpha_modifications"]) is None
     assert last_csm["alpha_peptide_crosslink_position"] == 11
@@ -661,7 +661,7 @@ def test9():
     assert last_crosslink["score"] == pytest.approx(15.89)
 
     assert first_csm["data_type"] == "crosslink-spectrum-match"
-    assert first_csm["completeness"] == "full"
+    assert first_csm["completeness"] == "partial"
     assert first_csm["alpha_peptide"] == "GQKNSR"
     assert mts(first_csm["alpha_modifications"]) is None
     assert first_csm["alpha_peptide_crosslink_position"] == 3
@@ -687,7 +687,7 @@ def test9():
     assert first_csm["ion_mobility"] == pytest.approx(0.0)
 
     assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "full"
+    assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
     assert mts(csm["alpha_modifications"]) is None
     assert csm["alpha_peptide_crosslink_position"] == 1
@@ -713,7 +713,7 @@ def test9():
     assert csm["ion_mobility"] == pytest.approx(0.0)
 
     assert last_csm["data_type"] == "crosslink-spectrum-match"
-    assert last_csm["completeness"] == "full"
+    assert last_csm["completeness"] == "partial"
     assert last_csm["alpha_peptide"] == "MEDESKLHKFKDFK"
     assert mts(last_csm["alpha_modifications"]) is None
     assert last_csm["alpha_peptide_crosslink_position"] == 11
@@ -796,7 +796,7 @@ def test10():
     assert last_crosslink["score"] == pytest.approx(15.89)
 
     assert first_csm["data_type"] == "crosslink-spectrum-match"
-    assert first_csm["completeness"] == "full"
+    assert first_csm["completeness"] == "partial"
     assert first_csm["alpha_peptide"] == "GQKNSR"
     assert mts(first_csm["alpha_modifications"]) is None
     assert first_csm["alpha_peptide_crosslink_position"] == 3
@@ -822,7 +822,7 @@ def test10():
     assert first_csm["ion_mobility"] == pytest.approx(0.0)
 
     assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "full"
+    assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
     assert mts(csm["alpha_modifications"]) is None
     assert csm["alpha_peptide_crosslink_position"] == 1
@@ -848,7 +848,7 @@ def test10():
     assert csm["ion_mobility"] == pytest.approx(0.0)
 
     assert last_csm["data_type"] == "crosslink-spectrum-match"
-    assert last_csm["completeness"] == "full"
+    assert last_csm["completeness"] == "partial"
     assert last_csm["alpha_peptide"] == "MEDESKLHKFKDFK"
     assert mts(last_csm["alpha_modifications"]) is None
     assert last_csm["alpha_peptide_crosslink_position"] == 11
@@ -931,7 +931,7 @@ def test11():
     assert last_crosslink["score"] == pytest.approx(15.89)
 
     assert first_csm["data_type"] == "crosslink-spectrum-match"
-    assert first_csm["completeness"] == "full"
+    assert first_csm["completeness"] == "partial"
     assert first_csm["alpha_peptide"] == "GQKNSR"
     assert mts(first_csm["alpha_modifications"]) is None
     assert first_csm["alpha_peptide_crosslink_position"] == 3
@@ -957,7 +957,7 @@ def test11():
     assert first_csm["ion_mobility"] == pytest.approx(0.0)
 
     assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "full"
+    assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
     assert mts(csm["alpha_modifications"]) is None
     assert csm["alpha_peptide_crosslink_position"] == 1
@@ -983,7 +983,7 @@ def test11():
     assert csm["ion_mobility"] == pytest.approx(0.0)
 
     assert last_csm["data_type"] == "crosslink-spectrum-match"
-    assert last_csm["completeness"] == "full"
+    assert last_csm["completeness"] == "partial"
     assert last_csm["alpha_peptide"] == "MEDESKLHKFKDFK"
     assert mts(last_csm["alpha_modifications"]) is None
     assert last_csm["alpha_peptide_crosslink_position"] == 11
@@ -1066,7 +1066,7 @@ def test12():
     assert last_crosslink["score"] == pytest.approx(15.89)
 
     assert first_csm["data_type"] == "crosslink-spectrum-match"
-    assert first_csm["completeness"] == "full"
+    assert first_csm["completeness"] == "partial"
     assert first_csm["alpha_peptide"] == "GQKNSR"
     assert mts(first_csm["alpha_modifications"]) is None
     assert first_csm["alpha_peptide_crosslink_position"] == 3
@@ -1092,7 +1092,7 @@ def test12():
     assert first_csm["ion_mobility"] == pytest.approx(0.0)
 
     assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "full"
+    assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
     assert mts(csm["alpha_modifications"]) is None
     assert csm["alpha_peptide_crosslink_position"] == 1
@@ -1118,7 +1118,7 @@ def test12():
     assert csm["ion_mobility"] == pytest.approx(0.0)
 
     assert last_csm["data_type"] == "crosslink-spectrum-match"
-    assert last_csm["completeness"] == "full"
+    assert last_csm["completeness"] == "partial"
     assert last_csm["alpha_peptide"] == "MEDESKLHKFKDFK"
     assert mts(last_csm["alpha_modifications"]) is None
     assert last_csm["alpha_peptide_crosslink_position"] == 11
@@ -1201,7 +1201,7 @@ def test13():
     assert last_crosslink["score"] == pytest.approx(15.89)
 
     assert first_csm["data_type"] == "crosslink-spectrum-match"
-    assert first_csm["completeness"] == "full"
+    assert first_csm["completeness"] == "partial"
     assert first_csm["alpha_peptide"] == "GQKNSR"
     assert mts(first_csm["alpha_modifications"]) is None
     assert first_csm["alpha_peptide_crosslink_position"] == 3
@@ -1227,7 +1227,7 @@ def test13():
     assert first_csm["ion_mobility"] == pytest.approx(0.0)
 
     assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "full"
+    assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
     assert mts(csm["alpha_modifications"]) is None
     assert csm["alpha_peptide_crosslink_position"] == 1
@@ -1253,7 +1253,7 @@ def test13():
     assert csm["ion_mobility"] == pytest.approx(0.0)
 
     assert last_csm["data_type"] == "crosslink-spectrum-match"
-    assert last_csm["completeness"] == "full"
+    assert last_csm["completeness"] == "partial"
     assert last_csm["alpha_peptide"] == "MEDESKLHKFKDFK"
     assert mts(last_csm["alpha_modifications"]) is None
     assert last_csm["alpha_peptide_crosslink_position"] == 11
