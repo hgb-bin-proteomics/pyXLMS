@@ -184,4 +184,23 @@ def test8():
         ValueError,
         match=err_str,
     ):
-        _validated = validate(pr)
+        _validated = validate(pr, formula="(TD-DD)/TT")
+
+
+def test9():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import validate
+
+    pr = read(
+        "data/_test/validate/csms.txt",
+        engine="custom",
+        crosslinker="DSS",
+    )
+
+    err_str = r"None of the data passes the desired FDR threshold! This is usually due to decoys with very good scores."
+    with pytest.warns(
+        RuntimeWarning,
+        match=err_str,
+    ):
+        validated = validate(pr)
+        assert validated == []
