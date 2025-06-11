@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import warnings
 import numpy as np
 from tqdm import tqdm
 
@@ -105,6 +106,11 @@ def __validate_strict(
     list of dict of str, any, or dict of str, any
         A list of validated crosslink-spectrum-matches or crosslinks.
 
+    Warns
+    -----
+    RuntimeWarning
+        If none of the data passes the desired FDR threshold.
+
     Notes
     -----
     This function should not be called directly, it is called from ``validate()``.
@@ -133,6 +139,13 @@ def __validate_strict(
         total=nr_items,
         desc="Iterating over scores for FDR calculation...",
     ):
+        if (nr_items - i - td[i:].sum()) <= 0.0:
+            warnings.warn(
+                RuntimeWarning(
+                    "None of the data passes the desired FDR threshold! This is usually due to decoys with very good scores."
+                )
+            )
+            return []
         if td[i:].sum() / (nr_items - i - td[i:].sum()) < fdr:
             # we need to verify in this case because there might be multiple
             # items with the same score
@@ -251,6 +264,11 @@ def __validate_relaxed(
         If the number of DD matches exceeds the number of TD matches.
         FDR can not be estimated with the formula '(TD-DD)/TT' in these cases.
 
+    Warns
+    -----
+    RuntimeWarning
+        If none of the data passes the desired FDR threshold.
+
     Notes
     -----
     This function should not be called directly, it is called from ``validate()``.
@@ -292,6 +310,13 @@ def __validate_relaxed(
                 f"Number of DD matches is greater than the number of TD matches for score {scores[i]}! "
                 "Invalid FDR estimation! Please use formula 'D/T' instead!"
             )
+        if (nr_items - i - td[i:].sum()) <= 0.0:
+            warnings.warn(
+                RuntimeWarning(
+                    "None of the data passes the desired FDR threshold! This is usually due to decoys with very good scores."
+                )
+            )
+            return []
         if tdd[i:].sum() / (nr_items - i - td[i:].sum()) < fdr:
             # we need to verify in this case because there might be multiple
             # items with the same score
