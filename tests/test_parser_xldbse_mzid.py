@@ -16,6 +16,7 @@ def test1():
     assert parse_scan_nr_from_mzid("scan=5321") == 5321
 
 
+@pytest.mark.slow
 def test2():
     from pyXLMS import parser as p
 
@@ -30,6 +31,7 @@ def test2():
     assert len(csms) == 786
 
 
+@pytest.mark.slow
 def test3():
     from pyXLMS import parser as p
 

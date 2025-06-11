@@ -296,6 +296,7 @@ def test13():
     assert get_fdr_relaxed(validated) < 0.01
 
 
+@pytest.mark.slow
 def test14():
     from pyXLMS.parser import read
     from pyXLMS.transform import validate
@@ -322,6 +323,7 @@ def test14():
     assert get_fdr_strict(separate["Inter"]) < 0.01
 
 
+@pytest.mark.slow
 def test15():
     from pyXLMS.parser import read
     from pyXLMS.transform import validate

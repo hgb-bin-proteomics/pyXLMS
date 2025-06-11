@@ -96,6 +96,7 @@ def test1():
         )
 
 
+@pytest.mark.slow
 def test2():
     from pyXLMS import parser as p
 
