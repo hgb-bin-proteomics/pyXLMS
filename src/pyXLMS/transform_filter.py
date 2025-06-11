@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-
 from .data import check_input
 from .data import check_input_multi
 
