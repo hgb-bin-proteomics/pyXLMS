@@ -120,7 +120,7 @@ def read(
     if ff in ["maxlynx", "max lynx"]:
         return read_maxlynx(files, crosslinker=crosslinker, **kwargs)
     if ff in ["ms annika", "msannika"]:
-        return read_msannika(files, **kwargs)
+        return read_msannika(files, verbose=verbose, **kwargs)
     if ff in ["mzidentml", "mzid"]:
         return read_mzid(files, verbose=verbose, **kwargs)
     if ff in ["plink", "plink2", "plink3", "plink 2", "plink 3"]:
