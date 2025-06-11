@@ -425,8 +425,10 @@ def test18():
     for i, csm in enumerate(pr["crosslink-spectrum-matches"]):
         csm["score"] = -csm["score"]
         if i < 5:
+            csm["completeness"] = "partial"
             csm["alpha_decoy"] = None
         elif i < 10:
+            csm["completeness"] = "partial"
             csm["beta_decoy"] = None
     err_str = (
         r"Can't validate data if 'score' or target\/decoy labels are missing! Selecting 'ignore_missing_labels \= True' will ignore crosslinks and crosslink-spectrum-matches "
@@ -462,11 +464,11 @@ def test19():
     for i, csm in enumerate(pr["crosslink-spectrum-matches"]):
         csm["score"] = -csm["score"]
         if i < 5:
+            csm["completeness"] = "partial"
             csm["alpha_decoy"] = None
         elif i < 10:
+            csm["completeness"] = "partial"
             csm["beta_decoy"] = None
-    for i in range(10):
-        print(pr["crosslink-spectrum-matches"][i])
     err_str = (
         r"Can't validate data if 'score' or target\/decoy labels are missing! Selecting 'ignore_missing_labels \= True' will ignore crosslinks and crosslink-spectrum-matches "
         r"that don't have a valid target\/decoy label and filter them out!"
