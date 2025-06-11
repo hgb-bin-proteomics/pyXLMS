@@ -198,7 +198,7 @@ def filter_crosslink_type(
     Examples
     --------
     >>> from pyXLMS.parser import read
-    >>> from pyXLMS.transform import filter_proteins
+    >>> from pyXLMS.transform import filter_crosslink_type
     >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
     >>> crosslink_type_filtered_csms = filter_crosslink_type(result["crosslink-spectrum-matches"])
     >>> len(crosslink_type_filtered_csms["Intra"])
@@ -207,7 +207,7 @@ def filter_crosslink_type(
     23
 
     >>> from pyXLMS.parser import read
-    >>> from pyXLMS.transform import filter_proteins
+    >>> from pyXLMS.transform import filter_crosslink_type
     >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
     >>> crosslink_type_filtered_crosslinks = filter_crosslink_type(result["crosslinks"])
     >>> len(crosslink_type_filtered_crosslinks["Intra"])
