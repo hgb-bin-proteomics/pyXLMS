@@ -5,6 +5,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+import pytest
+
 
 F1 = "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.mzid"
 F2 = "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3.mzid"
