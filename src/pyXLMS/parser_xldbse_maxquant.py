@@ -136,6 +136,7 @@ def read_maxquant(
     crosslinker: str,
     crosslinker_mass: Optional[float] = None,
     decoy_prefix: str = "REV__",
+    parse_modifications: bool = True,
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = "\t",
     decimal: str = ".",
@@ -156,6 +157,9 @@ def read_maxquant(
         defined in parameter "modifications" this can be omitted.
     decoy_prefix : str, default = "REV\_\_"
         The prefix that indicates that a protein is from the decoy database.
+    parse_modifications : bool, default = True
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
     sep : str, default = "\t"
@@ -196,8 +200,10 @@ def read_maxquant(
         else True
     )
     _ok = check_input(decoy_prefix, "decoy_prefix", str)
+    _ok = check_input(parse_modifications, "parse_modifications", bool)
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(sep, "sep", str)
+    _ok = check_input(decimal, "decimal", str)
     if crosslinker_mass is None:
         if crosslinker not in modifications:
             raise KeyError(
@@ -243,7 +249,9 @@ def read_maxquant(
                     crosslinker,
                     crosslinker_mass,
                     modifications,
-                ),
+                )
+                if parse_modifications
+                else None,
                 xl_position_peptide_a=int(row["Peptide index of Crosslink 1"]),
                 proteins_a=[
                     protein_a.strip()
@@ -265,7 +273,9 @@ def read_maxquant(
                     crosslinker,
                     crosslinker_mass,
                     modifications,
-                ),
+                )
+                if parse_modifications
+                else None,
                 xl_position_peptide_b=int(row["Peptide index of Crosslink 2"]),
                 proteins_b=[
                     protein_b.strip()
@@ -311,6 +321,7 @@ def read_maxlynx(
     crosslinker: str,
     crosslinker_mass: Optional[float] = None,
     decoy_prefix: str = "REV__",
+    parse_modifications: bool = True,
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = "\t",
     decimal: str = ".",
@@ -331,6 +342,9 @@ def read_maxlynx(
         defined in parameter "modifications" this can be omitted.
     decoy_prefix : str, default = "REV\_\_"
         The prefix that indicates that a protein is from the decoy database.
+    parse_modifications : bool, default = True
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
     sep : str, default = "\t"
@@ -364,5 +378,12 @@ def read_maxlynx(
     >>> csms_from_xlsx = read_maxlynx("data/maxquant/run1/crosslinkMsms.txt")
     """
     return read_maxquant(
-        files, crosslinker, crosslinker_mass, decoy_prefix, modifications, sep, decimal
+        files,
+        crosslinker,
+        crosslinker_mass,
+        decoy_prefix,
+        parse_modifications,
+        modifications,
+        sep,
+        decimal,
     )
