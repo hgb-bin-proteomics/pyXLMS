@@ -5,6 +5,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+import pytest
+
 
 F1 = "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.mzid"
 F2 = "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3.mzid"
@@ -16,6 +18,7 @@ def test1():
     assert parse_scan_nr_from_mzid("scan=5321") == 5321
 
 
+@pytest.mark.slow
 def test2():
     from pyXLMS import parser as p
 
@@ -30,6 +33,7 @@ def test2():
     assert len(csms) == 786
 
 
+@pytest.mark.slow
 def test3():
     from pyXLMS import parser as p
 
