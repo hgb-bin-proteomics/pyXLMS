@@ -203,4 +203,4 @@ def test9():
         match=err_str,
     ):
         validated = validate(pr)
-        assert validated == []
+        assert validated["crosslink-spectrum-matches"] == []
