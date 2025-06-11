@@ -132,6 +132,7 @@ def __read_msannika_pdresult(filename: str) -> List[pd.DataFrame]:
 
 def read_msannika(
     files: str | List[str] | BinaryIO,
+    parse_modifications: bool = True,
     modifications: Dict[str, float] = MODIFICATIONS,
     format: Literal["auto", "csv", "txt", "tsv", "xlsx", "pdresult"] = "auto",
     sep: str = "\t",
@@ -148,6 +149,9 @@ def read_msannika(
     ----------
     files : str, list of str, or file stream
         The name/path of the MS Annika result file(s) or a file-like object/stream.
+    parse_modifications : bool, default = True
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
     format : "auto", "csv", "tsv", "txt", "xlsx", or "pdresult", default = "auto"
@@ -465,7 +469,7 @@ def read_msannika(
                         modifications_a=parse_modification_str(
                             format_sequence(str(row["Sequence A"]).strip()),
                             str(row["Modifications A"]).strip(),
-                        ),
+                        ) if parse_modifications else None,
                         xl_position_peptide_a=int(row["Crosslinker Position A"]),
                         proteins_a=[
                             protein.strip()
@@ -479,7 +483,7 @@ def read_msannika(
                         modifications_b=parse_modification_str(
                             format_sequence(str(row["Sequence B"]).strip()),
                             str(row["Modifications B"]).strip(),
-                        ),
+                        ) if parse_modifications else None,
                         xl_position_peptide_b=int(row["Crosslinker Position B"]),
                         proteins_b=[
                             protein.strip()
