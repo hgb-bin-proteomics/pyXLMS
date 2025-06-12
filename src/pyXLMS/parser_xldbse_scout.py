@@ -151,7 +151,7 @@ def parse_modifications_from_scout_sequence(
     """
     # clean seq
     sequence = seq.strip()
-    # init parsed modifiations dict
+    # init parsed modifications dict
     parsed_modifications = {crosslink_position: (crosslinker, crosslinker_mass)}
     # parse modifications from sequence
     pos = 0
