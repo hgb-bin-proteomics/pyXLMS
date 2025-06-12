@@ -189,8 +189,9 @@ def __read_scout_csms_unfiltered(
     data: pd.DataFrame,
     crosslinker: str,
     crosslinker_mass: float,
-    modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING,
-    verbose: Literal[0, 1, 2] = 1,
+    parse_modifications: bool,
+    modifications: Dict[str, Tuple[str, float]],
+    verbose: Literal[0, 1, 2],
 ) -> List[Dict[str, Any]]:
     r"""Reads crosslink-spectrum-matches from a Scout unfiltered CSMs result.
 
@@ -202,10 +203,13 @@ def __read_scout_csms_unfiltered(
         Name of the used cross-linking reagent, for example "DSSO".
     crosslinker_mass : float
         Monoisotopic delta mass of the crosslink modification.
-    modifications : dict of str, tuple, default = ``constants.SCOUT_MODIFICATION_MAPPING``
+    parse_modifications : bool, default = True
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter.
+    modifications : dict of str, tuple
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
-    verbose : 0, 1, or 2, default = 1
+    verbose : 0, 1, or 2
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
@@ -233,7 +237,9 @@ def __read_scout_csms_unfiltered(
                 crosslinker_mass,
                 modifications,
                 verbose,
-            ),
+            )
+            if parse_modifications
+            else None,
             xl_position_peptide_a=int(row["AlphaPos"]) + 1,
             proteins_a=[
                 protein.strip() for protein in str(row["AlphaMappings"]).split(";")
@@ -250,7 +256,9 @@ def __read_scout_csms_unfiltered(
                 crosslinker_mass,
                 modifications,
                 verbose,
-            ),
+            )
+            if parse_modifications
+            else None,
             xl_position_peptide_b=int(row["BetaPos"]) + 1,
             proteins_b=[
                 protein.strip() for protein in str(row["BetaMappings"]).split(";")
@@ -281,8 +289,9 @@ def __read_scout_csms_filtered(
     data: pd.DataFrame,
     crosslinker: str,
     crosslinker_mass: float,
-    modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING,
-    verbose: Literal[0, 1, 2] = 1,
+    parse_modifications: bool,
+    modifications: Dict[str, Tuple[str, float]],
+    verbose: Literal[0, 1, 2],
 ) -> List[Dict[str, Any]]:
     r"""Reads crosslink-spectrum-matches from a Scout filtered CSMs result.
 
@@ -294,10 +303,13 @@ def __read_scout_csms_filtered(
         Name of the used cross-linking reagent, for example "DSSO".
     crosslinker_mass : float
         Monoisotopic delta mass of the crosslink modification.
-    modifications : dict of str, tuple, default = ``constants.SCOUT_MODIFICATION_MAPPING``
+    parse_modifications : bool, default = True
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter.
+    modifications : dict of str, tuple
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
-    verbose : 0, 1, or 2, default = 1
+    verbose : 0, 1, or 2
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
@@ -326,7 +338,7 @@ def __read_scout_csms_filtered(
                 return True
         return False
 
-    def parse_modifications(
+    def parse_modifications_fn(
         row: pd.Series,
         alpha: bool,
         crosslinker: str,
@@ -413,14 +425,16 @@ def __read_scout_csms_filtered(
     ):
         csm = create_csm(
             peptide_a=format_sequence(str(row["Alpha peptide"])),
-            modifications_a=parse_modifications(
+            modifications_a=parse_modifications_fn(
                 row,
                 True,
                 crosslinker,
                 crosslinker_mass,
                 modifications,
                 verbose,
-            ),
+            )
+            if parse_modifications
+            else None,
             xl_position_peptide_a=int(row["Alpha peptide position"]),
             proteins_a=[
                 protein.strip()
@@ -436,14 +450,16 @@ def __read_scout_csms_filtered(
             score_a=None,
             decoy_a=get_bool_from_value(row["IsDecoy"]),
             peptide_b=format_sequence(str(row["Beta peptide"])),
-            modifications_b=parse_modifications(
+            modifications_b=parse_modifications_fn(
                 row,
                 False,
                 crosslinker,
                 crosslinker_mass,
                 modifications,
                 verbose,
-            ),
+            )
+            if parse_modifications
+            else None,
             xl_position_peptide_b=int(row["Beta peptide position"]),
             proteins_b=[
                 protein.strip()
@@ -522,6 +538,7 @@ def read_scout(
     files: str | List[str] | BinaryIO,
     crosslinker: str,
     crosslinker_mass: Optional[float] = None,
+    parse_modifications: bool = True,
     modifications: Dict[str, Tuple[str, float]] = SCOUT_MODIFICATION_MAPPING,
     sep: str = ",",
     decimal: str = ".",
@@ -541,6 +558,9 @@ def read_scout(
     crosslinker_mass : float, or None, default = None
         Monoisotopic delta mass of the crosslink modification. If the crosslinker is
         defined in parameter "modifications" this can be omitted.
+    parse_modifications : bool, default = True
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter.
     modifications : dict of str, tuple, default = ``constants.SCOUT_MODIFICATION_MAPPING``
         Mapping of Scout sequence elements (e.g. ``"+15.994900"``) and modifications (e.g ``"Oxidation of Methionine"``)
         to their modifications (e.g. ``("Oxidation", 15.994915)``).
@@ -598,14 +618,20 @@ def read_scout(
         if crosslinker_mass is not None
         else True
     )
+    _ok = check_input(parse_modifications, "parse_modifications", bool)
     _ok = check_input(modifications, "modifications", dict, tuple)
+    _ok = check_input(sep, "sep", str)
+    _ok = check_input(decimal, "decimal", str)
     _ok = check_input(verbose, "verbose", int)
     if crosslinker_mass is None:
         if crosslinker not in modifications:
-            raise KeyError(
-                "Cannot infer crosslinker mass because crosslinker is not defined in "
-                "parameter 'modifications'. Please specify crosslinker mass manually!"
-            )
+            if parse_modifications:
+                raise KeyError(
+                    "Cannot infer crosslinker mass because crosslinker is not defined in "
+                    "parameter 'modifications'. Please specify crosslinker mass manually!"
+                )
+            else:
+                crosslinker_mass = 0.0
         else:
             crosslinker_mass = modifications[crosslinker][1]
     if verbose not in [0, 1, 2]:
@@ -629,11 +655,21 @@ def read_scout(
         ## process data
         if scout_file_type == "scout_csms_unfiltered":
             csms += __read_scout_csms_unfiltered(
-                data, crosslinker, crosslinker_mass, modifications, verbose
+                data,
+                crosslinker,
+                crosslinker_mass,
+                parse_modifications,
+                modifications,
+                verbose,
             )
         elif scout_file_type == "scout_csms_filtered":
             csms += __read_scout_csms_filtered(
-                data, crosslinker, crosslinker_mass, modifications, verbose
+                data,
+                crosslinker,
+                crosslinker_mass,
+                parse_modifications,
+                modifications,
+                verbose,
             )
         else:
             crosslinks += __read_scout_crosslinks(data)
