@@ -206,10 +206,13 @@ def read_maxquant(
     _ok = check_input(decimal, "decimal", str)
     if crosslinker_mass is None:
         if crosslinker not in modifications:
-            raise KeyError(
-                "Cannot infer crosslinker mass because crosslinker is not defined in "
-                "parameter 'modifications'. Please specify crosslinker mass manually!"
-            )
+            if parse_modifications:
+                raise KeyError(
+                    "Cannot infer crosslinker mass because crosslinker is not defined in "
+                    "parameter 'modifications'. Please specify crosslinker mass manually!"
+                )
+            else:
+                crosslinker_mass = 0.0
         else:
             crosslinker_mass = modifications[crosslinker]
 
