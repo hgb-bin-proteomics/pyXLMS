@@ -203,7 +203,7 @@ def __read_scout_csms_unfiltered(
         Name of the used cross-linking reagent, for example "DSSO".
     crosslinker_mass : float
         Monoisotopic delta mass of the crosslink modification.
-    parse_modifications : bool, default = True
+    parse_modifications : bool
         Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
         Requires correct specification of the 'modifications' parameter.
     modifications : dict of str, tuple
@@ -303,7 +303,7 @@ def __read_scout_csms_filtered(
         Name of the used cross-linking reagent, for example "DSSO".
     crosslinker_mass : float
         Monoisotopic delta mass of the crosslink modification.
-    parse_modifications : bool, default = True
+    parse_modifications : bool
         Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
         Requires correct specification of the 'modifications' parameter.
     modifications : dict of str, tuple
