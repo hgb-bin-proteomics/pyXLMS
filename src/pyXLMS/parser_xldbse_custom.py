@@ -115,6 +115,7 @@ def __get_value(row: pd.Series, column: str) -> Any | None:
 def read_custom(
     files: str | List[str] | BinaryIO,
     column_mapping: Optional[Dict[str, str]] = None,
+    parse_modifications: bool = True,
     modification_parser: Optional[Callable[[str], Dict[int, Tuple[str, float]]]] = None,
     decoy_prefix: str = "REV_",
     format: Literal["auto", "csv", "txt", "tsv", "xlsx"] = "auto",
@@ -151,6 +152,9 @@ def read_custom(
         The name/path of the result file(s) or a file-like object/stream.
     column_mapping : dict of str, str
         A dictionary that maps the result file columns to the required pyXLMS column names.
+    parse_modifications : bool, default = True
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modification_parser' parameter.
     modification_parser : callable, or None
         A function that parses modification strings and returns the pyXLMS specific modifications object.
         If None, the function ``pyxlms_modification_str_parser()`` is used. If no modification columns are
@@ -192,6 +196,7 @@ def read_custom(
         if column_mapping is not None
         else True
     )
+    _ok = check_input(parse_modifications, "parse_modifications", bool)
     _ok = (
         check_input(modification_parser, "modification_parser", Callable)
         if modification_parser is not None
@@ -200,6 +205,7 @@ def read_custom(
     _ok = check_input(decoy_prefix, "decoy_prefix", str)
     _ok = check_input(format, "format", str)
     _ok = check_input(sep, "sep", str)
+    _ok = check_input(decimal, "decimal", str)
     ## helper functions
 
     def get_is_decoy_value(
@@ -361,7 +367,8 @@ def read_custom(
                     modifications_a=modification_parser(
                         str(__get_value(row, "Alpha Peptide Modifications"))
                     )
-                    if __get_value(row, "Alpha Peptide Modifications") is not None
+                    if parse_modifications
+                    and __get_value(row, "Alpha Peptide Modifications") is not None
                     else None,
                     xl_position_peptide_a=int(row["Alpha Peptide Crosslink Position"]),
                     proteins_a=[
@@ -397,7 +404,8 @@ def read_custom(
                     modifications_b=modification_parser(
                         str(__get_value(row, "Beta Peptide Modifications"))
                     )
-                    if __get_value(row, "Beta Peptide Modifications") is not None
+                    if parse_modifications
+                    and __get_value(row, "Beta Peptide Modifications") is not None
                     else None,
                     xl_position_peptide_b=int(row["Beta Peptide Crosslink Position"]),
                     proteins_b=[

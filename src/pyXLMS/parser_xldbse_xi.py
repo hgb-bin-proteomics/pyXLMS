@@ -594,10 +594,11 @@ def __parse_xisearch_modifications(
 
 def __read_xisearch(
     data: pd.DataFrame,
-    decoy_prefix: str = "REV_",
-    modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
-    ignore_errors: bool = False,
-    verbose: Literal[0, 1, 2] = 1,
+    decoy_prefix: str,
+    parse_modifications: bool,
+    modifications: Dict[str, Tuple[str, float]],
+    ignore_errors: bool,
+    verbose: Literal[0, 1, 2],
 ) -> List[Dict[str, Any]]:
     r"""Reads a xiSearch pandas dataframe and returns a list of crosslink-spectrum-matches.
 
@@ -605,15 +606,18 @@ def __read_xisearch(
     ----------
     data : pandas.DataFrame
         Dataframe of a xiSearch result ``.csv`` file read with pandas.
-    decoy_prefix : str, default = "REV_"
+    decoy_prefix : str
         The prefix that indicates that a protein is from the decoy database.
-    modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
+    parse_modifications : bool
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter.
+    modifications : dict of str, tuple
         Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
-    ignore_errors : bool, default = False
+    ignore_errors : bool
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
-    verbose : 0, 1, or 2, default = 1
+    verbose : 0, 1, or 2
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
@@ -639,7 +643,9 @@ def __read_xisearch(
             peptide_a=format_sequence(str(row["BasePeptide1"])),
             modifications_a=__parse_xisearch_modifications(
                 row, True, modifications, ignore_errors, verbose
-            ),
+            )
+            if parse_modifications
+            else None,
             xl_position_peptide_a=int(row["Link1"]),
             proteins_a=[
                 p.strip()
@@ -658,7 +664,9 @@ def __read_xisearch(
             peptide_b=format_sequence(str(row["BasePeptide2"])),
             modifications_b=__parse_xisearch_modifications(
                 row, False, modifications, ignore_errors, verbose
-            ),
+            )
+            if parse_modifications
+            else None,
             xl_position_peptide_b=int(row["Link2"]),
             proteins_b=[
                 p.strip()
@@ -817,10 +825,11 @@ def __parse_xifdr_modifications(
 
 def __read_xifdr_csms(
     data: pd.DataFrame,
-    decoy_prefix: str = "decoy:",
-    modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
-    ignore_errors: bool = False,
-    verbose: Literal[0, 1, 2] = 1,
+    decoy_prefix: str,
+    parse_modifications: bool,
+    modifications: Dict[str, Tuple[str, float]],
+    ignore_errors: bool,
+    verbose: Literal[0, 1, 2],
 ) -> List[Dict[str, Any]]:
     r"""Reads a xiFDR CSM pandas dataframe and returns a list of crosslink-spectrum-matches.
 
@@ -828,15 +837,18 @@ def __read_xifdr_csms(
     ----------
     data : pandas.DataFrame
         Dataframe of a xiFDR CSM result ``.csv`` file read with pandas.
-    decoy_prefix : str, default = "decoy:"
+    decoy_prefix : str
         The prefix that indicates that a protein is from the decoy database.
-    modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
+    parse_modifications : bool
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter.
+    modifications : dict of str, tuple
         Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
-    ignore_errors : bool, default = False
+    ignore_errors : bool
         If modifications that are not given in parameter 'modifications' should raise an error or not. By default an error is
         raised if an unknown modification is encountered. If ``True`` modifications that are unknown are encoded with the xi
         shortcode (``SYMBOLEXT``) and ``float("nan")`` modification mass.
-    verbose : 0, 1, or 2, default = 1
+    verbose : 0, 1, or 2
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
@@ -860,7 +872,9 @@ def __read_xifdr_csms(
             peptide_a=format_sequence(str(row["PepSeq1"])),
             modifications_a=__parse_xifdr_modifications(
                 row, True, modifications, ignore_errors, verbose
-            ),
+            )
+            if parse_modifications
+            else None,
             xl_position_peptide_a=int(row["LinkPos1"]),
             proteins_a=[
                 p.strip()
@@ -877,7 +891,9 @@ def __read_xifdr_csms(
             peptide_b=format_sequence(str(row["PepSeq2"])),
             modifications_b=__parse_xifdr_modifications(
                 row, False, modifications, ignore_errors, verbose
-            ),
+            )
+            if parse_modifications
+            else None,
             xl_position_peptide_b=int(row["LinkPos2"]),
             proteins_b=[
                 p.strip()
@@ -904,7 +920,7 @@ def __read_xifdr_csms(
 
 
 def __read_xifdr_crosslinks(
-    data: pd.DataFrame, decoy_prefix: str = "decoy:"
+    data: pd.DataFrame, decoy_prefix: str
 ) -> List[Dict[str, Any]]:
     r"""Reads a xiFDR Links pandas dataframe and returns a list of crosslinks.
 
@@ -912,7 +928,7 @@ def __read_xifdr_crosslinks(
     ----------
     data : pandas.DataFrame
         Dataframe of a xiFDR Links result ``.csv`` file read with pandas.
-    decoy_prefix : str, default = "decoy:"
+    decoy_prefix : str
         The prefix that indicates that a protein is from the decoy database.
 
     Returns
@@ -968,6 +984,7 @@ def __read_xifdr_crosslinks(
 def read_xi(
     files: str | List[str] | BinaryIO,
     decoy_prefix: Optional[str] = "auto",
+    parse_modifications: bool = True,
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
     sep: str = ",",
     decimal: str = ".",
@@ -986,6 +1003,9 @@ def read_xi(
     decoy_prefix : str, or None, default = "auto"
         The prefix that indicates that a protein is from the decoy database.
         If "auto" or None it will use the default for each xi file type.
+    parse_modifications : bool, default = True
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter.
     modifications : dict of str, tuple, default = ``constants.XI_MODIFICATION_MAPPING``
         Mapping of xi sequence elements (e.g. ``"cm"``) to their modifications (e.g. ``("Carbamidomethyl", 57.021464)``).
         This corresponds to the ``SYMBOLEXT`` field, or the ``SYMBOL`` field minus the amino acid in the xiSearch config.
@@ -1031,7 +1051,10 @@ def read_xi(
         if decoy_prefix is not None
         else True
     )
+    _ok = check_input(parse_modifications, "parse_modifications", bool)
     _ok = check_input(modifications, "modifications", dict, tuple)
+    _ok = check_input(sep, "sep", str)
+    _ok = check_input(decimal, "decimal", str)
     _ok = check_input(ignore_errors, "ignore_errors", bool)
     _ok = check_input(verbose, "verbose", int)
     if verbose not in [0, 1, 2]:
@@ -1058,13 +1081,23 @@ def read_xi(
         ## process data
         if xi_file_type == "xifdr_csms":
             csms += __read_xifdr_csms(
-                data, decoy_prefix, modifications, ignore_errors, verbose
+                data,
+                decoy_prefix,
+                parse_modifications,
+                modifications,
+                ignore_errors,
+                verbose,
             )
         elif xi_file_type == "xifdr_crosslinks":
             crosslinks += __read_xifdr_crosslinks(data, decoy_prefix)
         else:
             csms += __read_xisearch(
-                data, decoy_prefix, modifications, ignore_errors, verbose
+                data,
+                decoy_prefix,
+                parse_modifications,
+                modifications,
+                ignore_errors,
+                verbose,
             )
 
     ## check results

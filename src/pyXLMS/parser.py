@@ -55,6 +55,7 @@ def read(
         "XlinkX",
     ],
     crosslinker: str,
+    parse_modifications: bool = True,
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
     **kwargs,
@@ -75,6 +76,10 @@ def read(
         Crosslink search engine or format of the result file.
     crosslinker : str
         Name of the used cross-linking reagent, for example "DSSO".
+    parse_modifications : bool, default = True
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter for every parser. Defaults are selected
+        for every parser if 'modifications' is not passed via ``**kwargs``.
     ignore_errors : bool, default = False
         Ignore errors when mapping modifications. Used in ``parser.read_xi()`` and ``parser.read_xlinkx()``.
     verbose : 0, 1, or 2, default = 1
@@ -114,24 +119,54 @@ def read(
     ff = engine.lower().strip()
 
     if ff in ["custom", "pyxlms"]:
-        return read_custom(files, **kwargs)
+        return read_custom(files, parse_modifications=parse_modifications, **kwargs)
     if ff in ["maxquant", "max quant"]:
-        return read_maxquant(files, crosslinker=crosslinker, **kwargs)
+        return read_maxquant(
+            files,
+            crosslinker=crosslinker,
+            parse_modifications=parse_modifications,
+            **kwargs,
+        )
     if ff in ["maxlynx", "max lynx"]:
-        return read_maxlynx(files, crosslinker=crosslinker, **kwargs)
+        return read_maxlynx(
+            files,
+            crosslinker=crosslinker,
+            parse_modifications=parse_modifications,
+            **kwargs,
+        )
     if ff in ["ms annika", "msannika"]:
-        return read_msannika(files, verbose=verbose, **kwargs)
+        return read_msannika(
+            files, parse_modifications=parse_modifications, verbose=verbose, **kwargs
+        )
     if ff in ["mzidentml", "mzid"]:
         return read_mzid(files, verbose=verbose, **kwargs)
     if ff in ["plink", "plink2", "plink3", "plink 2", "plink 3"]:
-        return read_plink(files, verbose=verbose, **kwargs)
+        return read_plink(
+            files, parse_modifications=parse_modifications, verbose=verbose, **kwargs
+        )
     if ff in ["scout"]:
-        return read_scout(files, crosslinker=crosslinker, verbose=verbose, **kwargs)
+        return read_scout(
+            files,
+            crosslinker=crosslinker,
+            parse_modifications=parse_modifications,
+            verbose=verbose,
+            **kwargs,
+        )
     if ff in ["xisearch/xifdr", "xisearch", "xifdr", "xi search", "xi fdr", "xi"]:
-        return read_xi(files, ignore_errors=ignore_errors, verbose=verbose, **kwargs)
+        return read_xi(
+            files,
+            parse_modifications=parse_modifications,
+            ignore_errors=ignore_errors,
+            verbose=verbose,
+            **kwargs,
+        )
     if ff in ["xlinkx", "x link x"]:
         return read_xlinkx(
-            files, ignore_errors=ignore_errors, verbose=verbose, **kwargs
+            files,
+            parse_modifications=parse_modifications,
+            ignore_errors=ignore_errors,
+            verbose=verbose,
+            **kwargs,
         )
 
     err_str = (
