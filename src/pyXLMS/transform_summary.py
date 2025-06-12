@@ -16,11 +16,30 @@ from typing import Any
 
 def __summary_csm(data: List[Dict[str, Any]], **kwargs) -> Dict[str, Any]:
     # todo
+    # nr
+    # nr unique
+    # nr intra
+    # nr inter
+    # nr tt
+    # nr td
+    # nr dd
+    # min score
+    # max score
     return {}
 
 
 def __summary_xl(data: List[Dict[str, Any]], **kwargs) -> Dict[str, Any]:
     # todo
+    # nr
+    # nr unique by seq
+    # nr unique by pos
+    # nr intra
+    # nr inter
+    # nr tt
+    # nr td
+    # nr dd
+    # min score
+    # max score
     return {}
 
 
