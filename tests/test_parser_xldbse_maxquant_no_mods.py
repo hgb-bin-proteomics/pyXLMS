@@ -15,7 +15,9 @@ def test1():
     from pyXLMS.parser import read_maxquant
     from pyXLMS.transform import modifications_to_str as mts
 
-    pr = read_maxquant(MAXQUANT1, crosslinker="DSS", parse_modifications=False)
+    pr = read_maxquant(
+        MAXQUANT1, crosslinker="DSS", parse_modifications=False, modifications={}
+    )
     assert pr["data_type"] == "parser_result"
     assert pr["completeness"] == "partial"
     assert pr["search_engine"] == "MaxQuant"
@@ -138,7 +140,9 @@ def test2():
     from pyXLMS.parser import read_maxquant
     from pyXLMS.transform import modifications_to_str as mts
 
-    pr = read_maxquant(MAXQUANT2, crosslinker="DSS", parse_modifications=False)
+    pr = read_maxquant(
+        MAXQUANT2, crosslinker="DSS", parse_modifications=False, modifications={}
+    )
     assert pr["data_type"] == "parser_result"
     assert pr["completeness"] == "partial"
     assert pr["search_engine"] == "MaxQuant"
@@ -214,7 +218,7 @@ def test2():
     assert csm["alpha_score"] == pytest.approx(121.292258)
     assert not csm["alpha_decoy"]
     assert csm["beta_peptide"] == "MDGTEELLVKLNR"
-    assert mts(csm["beta_modifications"]) == "(10:[DSS|138.06808])"
+    assert mts(csm["beta_modifications"]) is None
     assert csm["beta_peptide_crosslink_position"] == 10
     assert csm["beta_proteins"] == ["Cas10"]
     assert csm["beta_proteins_crosslink_positions"] == [407]
@@ -261,7 +265,9 @@ def test3():
     from pyXLMS.parser import read_maxlynx
     from pyXLMS.transform import modifications_to_str as mts
 
-    pr = read_maxlynx(MAXQUANT1, crosslinker="DSS", parse_modifications=False)
+    pr = read_maxlynx(
+        MAXQUANT1, crosslinker="DSS", parse_modifications=False, modifications={}
+    )
     assert pr["data_type"] == "parser_result"
     assert pr["completeness"] == "partial"
     assert pr["search_engine"] == "MaxQuant"
@@ -384,7 +390,9 @@ def test4():
     from pyXLMS.parser import read_maxlynx
     from pyXLMS.transform import modifications_to_str as mts
 
-    pr = read_maxlynx(MAXQUANT2, crosslinker="DSS", parse_modifications=False)
+    pr = read_maxlynx(
+        MAXQUANT2, crosslinker="DSS", parse_modifications=False, modifications={}
+    )
     assert pr["data_type"] == "parser_result"
     assert pr["completeness"] == "partial"
     assert pr["search_engine"] == "MaxQuant"
@@ -460,7 +468,7 @@ def test4():
     assert csm["alpha_score"] == pytest.approx(121.292258)
     assert not csm["alpha_decoy"]
     assert csm["beta_peptide"] == "MDGTEELLVKLNR"
-    assert mts(csm["beta_modifications"]) == "(10:[DSS|138.06808])"
+    assert mts(csm["beta_modifications"]) is None
     assert csm["beta_peptide_crosslink_position"] == 10
     assert csm["beta_proteins"] == ["Cas10"]
     assert csm["beta_proteins_crosslink_positions"] == [407]
