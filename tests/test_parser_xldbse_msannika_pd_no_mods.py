@@ -30,7 +30,7 @@ def test1():
 
     csm = csms[822]
     assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "full"
+    assert csm["completeness"] == "partial"
     assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
     assert mts(csm["alpha_modifications"]) is None
     assert csm["alpha_peptide_crosslink_position"] == 1
