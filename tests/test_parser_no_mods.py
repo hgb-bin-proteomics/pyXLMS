@@ -5,6 +5,7 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+import pytest
 
 FILES = {
     "data/maxquant/run1/crosslinkMsms.txt": {
@@ -39,8 +40,6 @@ FILES = {
         "engine": "pLink",
         "crosslinker": "DSS",
     },
-    "data/pyxlms/csm.txt": {"engine": "Custom", "crosslinker": "DSS"},
-    "data/pyxlms/xl.txt": {"engine": "Custom", "crosslinker": "DSS"},
     "data/scout/Cas9_Filtered_CSMs.csv": {"engine": "Scout", "crosslinker": "DSSO"},
     "data/scout/Cas9_Residue_Pairs.csv": {"engine": "Scout", "crosslinker": "DSSO"},
     "data/scout/Cas9_Unfiltered_CSMs.csv": {"engine": "Scout", "crosslinker": "DSSO"},
@@ -53,10 +52,6 @@ FILES = {
         "crosslinker": "BS3",
     },
     "data/xi/r1_Xi1.7.6.7.csv": {"engine": "xiSearch/xiFDR", "crosslinker": "BS3"},
-    "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3.mzid": {
-        "engine": "mzIdentML",
-        "crosslinker": "DSSO",
-    },
     "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3.pdResult": {
         "engine": "XlinkX",
         "crosslinker": "DSSO",
@@ -79,6 +74,19 @@ FILES = {
     },
 }
 
+NOT_SUPPORTED = {
+    "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.mzid": {
+        "engine": "mzIdentML",
+        "crosslinker": "DSS",
+    },
+    "data/pyxlms/csm.txt": {"engine": "Custom", "crosslinker": "DSS"},
+    "data/pyxlms/xl.txt": {"engine": "Custom", "crosslinker": "DSS"},
+    "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3.mzid": {
+        "engine": "mzIdentML",
+        "crosslinker": "DSSO",
+    },
+}
+
 
 def test1():
     from pyXLMS import parser as p
@@ -93,3 +101,18 @@ def test1():
             verbose=0,
         )
         assert pr["search_engine"] == v["engine"]
+
+
+def test2():
+    from pyXLMS import parser as p
+
+    for k, v in NOT_SUPPORTED.items():
+        with pytest.raises(TypeError, match=r".+got an unexpected keyword argument.+"):
+            _pr = p.read(
+                k,
+                engine=v["engine"],
+                crosslinker=v["crosslinker"],
+                parse_modifications=False,
+                modifications={},
+                verbose=0,
+            )
