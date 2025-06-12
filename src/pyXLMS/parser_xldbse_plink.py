@@ -261,6 +261,7 @@ def read_plink(
     spectrum_file_parser: Optional[Callable[[str], str]] = None,
     scan_nr_parser: Optional[Callable[[str], int]] = None,
     decoy_prefix: str = "REV_",
+    parse_modifications: bool = True,
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = ",",
     decimal: str = ".",
@@ -283,6 +284,9 @@ def read_plink(
         the function ``parse_scan_nr_from_plink()`` is used.
     decoy_prefix : str, default = "REV\_"
         The prefix that indicates that a protein is from the decoy database.
+    parse_modifications : bool, default = True
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
     sep : str, default = ","
@@ -328,8 +332,10 @@ def read_plink(
         else True
     )
     _ok = check_input(decoy_prefix, "decoy_prefix", str)
+    _ok = check_input(parse_modifications, "parse_modifications", bool)
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(sep, "sep", str)
+    _ok = check_input(decimal, "decimal", str)
     _ok = check_input(verbose, "verbose", int)
     if verbose not in [0, 1, 2]:
         raise TypeError("Verbose level has to be one of 0, 1, or 2!")
@@ -356,12 +362,16 @@ def read_plink(
             data.iterrows(), total=data.shape[0], desc="Reading pLink CSMs..."
         ):
             # pre information
-            parsed_modifications = __parse_modifications_from_plink_modifications_str(
-                seq=str(row["Peptide"]).strip(),
-                mod_str=row["Modifications"],  # pyright: ignore [reportArgumentType]
-                crosslinker=str(row["Linker"]).strip(),
-                modifications=modifications,
-                verbose=verbose,
+            parsed_modifications = (
+                __parse_modifications_from_plink_modifications_str(
+                    seq=str(row["Peptide"]).strip(),
+                    mod_str=row["Modifications"],  # pyright: ignore [reportArgumentType]
+                    crosslinker=str(row["Linker"]).strip(),
+                    modifications=modifications,
+                    verbose=verbose,
+                )
+                if parse_modifications
+                else None
             )
             parsed_positions = __parse_proteins_and_position_from_plink(
                 seq=str(row["Peptide"]).strip(), proteins=str(row["Proteins"]).strip()
@@ -371,7 +381,9 @@ def read_plink(
                 peptide_a=format_sequence(
                     str(row["Peptide"]).split("-")[0].split("(")[0].strip()
                 ),
-                modifications_a=parsed_modifications[0],
+                modifications_a=parsed_modifications[0]
+                if parsed_modifications is not None
+                else None,
                 xl_position_peptide_a=parsed_positions["xl_pos_a"],
                 proteins_a=[
                     protein_a.strip()
@@ -386,7 +398,9 @@ def read_plink(
                 peptide_b=format_sequence(
                     str(row["Peptide"]).split("-")[1].split("(")[0].strip()
                 ),
-                modifications_b=parsed_modifications[1],
+                modifications_b=parsed_modifications[1]
+                if parsed_modifications is not None
+                else None,
                 xl_position_peptide_b=parsed_positions["xl_pos_b"],
                 proteins_b=[
                     protein_b.strip()

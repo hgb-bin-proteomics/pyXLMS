@@ -219,6 +219,7 @@ def read_msannika(
     >>> csms_and_crosslinks_from_pdresult = read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult")
     """
     ## check input
+    _ok = check_input(parse_modifications, "parse_modifications", bool)
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(format, "format", str)
     _ok = check_input(sep, "sep", str)

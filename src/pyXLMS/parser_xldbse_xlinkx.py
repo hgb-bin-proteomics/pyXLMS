@@ -117,6 +117,7 @@ def __read_xlinkx_pdresult(filename: str) -> List[pd.DataFrame]:
 def read_xlinkx(
     files: str | List[str] | BinaryIO,
     decoy: Optional[bool] = None,
+    parse_modifications: bool = True,
     modifications: Dict[str, float] = MODIFICATIONS,
     format: Literal["auto", "csv", "txt", "tsv", "xlsx", "pdresult"] = "auto",
     sep: str = "\t",
@@ -136,6 +137,9 @@ def read_xlinkx(
     decoy : bool, or None
         Default decoy value to use if no decoy value is found. Only used if the "Is Decoy" column is not found
         in the supplied data.
+    parse_modifications : bool, default = True
+        Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
+        Requires correct specification of the 'modifications' parameter.
     modifications: dict of str, float, default = ``constants.MODIFICATIONS``
         Mapping of modification names to modification masses.
     format : "auto", "csv", "tsv", "txt", "xlsx", or "pdresult", default = "auto"
@@ -198,9 +202,12 @@ def read_xlinkx(
     >>> csms_and_crosslinks_from_pdresult = read_xlinkx("data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3.pdResult")
     """
     ## check input
+    _ok = check_input(decoy, "decoy", bool) if decoy is not None else True
+    _ok = check_input(parse_modifications, "parse_modifications", bool)
     _ok = check_input(modifications, "modifications", dict, float)
     _ok = check_input(format, "format", str)
     _ok = check_input(sep, "sep", str)
+    _ok = check_input(decimal, "decimal", str)
     _ok = check_input(ignore_errors, "ignore_errors", bool)
     _ok = check_input(verbose, "verbose", int)
     if verbose not in [0, 1, 2]:
@@ -397,7 +404,9 @@ def read_xlinkx(
                         modifications_a=parse_modification_str(
                             format_sequence(str(row["Sequence A"]).strip()),
                             str(row["Modifications A"]).strip(),
-                        ),
+                        )
+                        if parse_modifications
+                        else None,
                         xl_position_peptide_a=adjust_crosslink_position(
                             int(row["Crosslinker Position A"]),
                             format_sequence(str(row["Sequence A"]).strip()),
@@ -431,7 +440,9 @@ def read_xlinkx(
                         modifications_b=parse_modification_str(
                             format_sequence(str(row["Sequence B"]).strip()),
                             str(row["Modifications B"]).strip(),
-                        ),
+                        )
+                        if parse_modifications
+                        else None,
                         xl_position_peptide_b=adjust_crosslink_position(
                             int(row["Crosslinker Position B"]),
                             format_sequence(str(row["Sequence B"])),

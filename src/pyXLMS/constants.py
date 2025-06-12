@@ -125,13 +125,6 @@ SCOUT_MODIFICATION_MAPPING = {
     "+15.994900": ("Oxidation", 15.994915),
     "Oxidation of Methionine": ("Oxidation", 15.994915),
     "Carbamidomethyl": ("Carbamidomethyl", 57.021464),
-    "BS3": ("BS3", 138.06808),
-    "DSS": ("DSS", 138.06808),
-    "DSSO": ("DSSO", 158.00376),
-    "DSBU": ("DSBU", 196.08479231),
-    "ADH": ("ADH", 138.09054635),
-    "DSBSO": ("DSBSO", 308.03883),
-    "PhoX": ("PhoX", 209.97181),
 }
 r"""Dictionary that maps sequence elements and modifications from Scout to their corresponding post-translational-modifications.
 
@@ -148,3 +141,6 @@ Examples
 >>> SCOUT_MODIFICATION_MAPPING["Oxidation of Methionine"]
 ('Oxidation', 15.994915)
 """
+
+SCOUT_CROSSLINKER_MAPPING = {k: (k, v) for k, v in CROSSLINKERS.items()}
+SCOUT_MODIFICATION_MAPPING.update(SCOUT_CROSSLINKER_MAPPING)
