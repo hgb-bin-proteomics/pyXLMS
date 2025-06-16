@@ -6,18 +6,19 @@
 
 from __future__ import annotations
 
+import pandas as pd
+
 from .exporter_to_msannika import to_msannika
 
-from typing import BinaryIO
+from typing import Optional
 from typing import Dict
 from typing import Any
-from typing import Tuple
 from typing import List
 
 
 def to_impxfdr(
     data: List[Dict[str, Any]],
-    filename: str,
+    filename: Optional[str],
 ) -> pd.DataFrame:
     # assert csms
-    return to_msannika(data, filename, format="excel")
+    return to_msannika(data, filename, format="xlsx")
