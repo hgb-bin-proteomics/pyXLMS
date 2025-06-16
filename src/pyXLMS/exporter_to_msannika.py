@@ -24,7 +24,28 @@ except ImportError:
 
 
 def get_msannika_crosslink_sequence(peptide: str, crosslink_position: int) -> str:
-    r"""
+    r"""Returns the crosslinked peptide sequence in MS Annika format.
+
+    Returns the crosslinked peptide sequence in MS Annika format, which is the peptide amino
+    acid sequence with the crosslinked residue in square brackets (see examples).
+
+    Parameters
+    ----------
+    peptide : str
+        The (unmodified) amino acid sequence of the peptide.
+    crosslink_position : int
+        Position of the crosslinker in the peptide sequence (1-based).
+
+    Returns
+    -------
+    str
+        The crosslinked peptide sequence in MS Annika format.
+
+    Raises
+    ------
+    ValueError
+        If the crosslink position is outside the peptide's length.
+
     Examples
     --------
     >>> from pyXLMS.exporter import get_msannika_crosslink_sequence
@@ -47,6 +68,22 @@ def get_msannika_crosslink_sequence(peptide: str, crosslink_position: int) -> st
 
 
 def __get_csm_td(value: Optional[bool]) -> str | None:
+    r"""Helper function to get the [Alpha|Beta] T/D value.
+
+    Parameters
+    ----------
+    value : bool, or None
+        Decoy value of the crosslink-spectrum-match, should be either "alpha_decoy" or "beta_decoy" attribute.
+
+    Returns
+    -------
+    str, or None
+        If None was provided, None is returned. If a boolean is provided, returns "D" if True or "T" if False.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``__csms_to_msannika()``.
+    """
     _ok = check_input(value, "value", bool) if value is not None else True
     if value is None:
         return None
@@ -58,6 +95,25 @@ def __get_csm_td(value: Optional[bool]) -> str | None:
 def __get_xl_isdecoy(
     alpha_decoy: Optional[bool], beta_decoy: Optional[bool]
 ) -> bool | None:
+    r"""Helper function to get the Decoy value.
+
+    Parameters
+    ----------
+    alpha_decoy : bool, or None
+        Decoy value for the alpha peptide of the crosslink, should be "alpha_decoy" attribute.
+    beta_decoy : bool, or None
+        Decoy value for the beta peptide of the crosslink, should be "beta_decoy" attribute.
+
+    Returns
+    -------
+    bool, or None
+        If None was provided for any of the inputs, None is returned. Otherwise returns True if any of the inputs
+        is True (= a decoy).
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``__xls_to_msannika()``.
+    """
     _ok = (
         check_input(alpha_decoy, "alpha_decoy", bool)
         if alpha_decoy is not None
@@ -76,6 +132,26 @@ def __csms_to_msannika(
     filename: Optional[str],
     format: Literal["csv", "tsv", "xlsx"],
 ) -> pd.DataFrame:
+    r"""Exports crosslink-spectrum-matches to MS Annika format.
+
+    Parameters
+    ----------
+    csms : list of dict of str, any
+        A list of crosslink-spectrum-matches.
+    filename : str, or None
+        If not None, the data will be written to a file with the specified filename.
+    format : str, one of "csv", "tsv", or "xlsx"
+        Format of the output file if filename is not None.
+
+    Returns
+    -------
+    pd.DataFrame
+        A pandas DataFrame in MS Annika format.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``to_msannika()``.
+    """
     sequence = list()
     crosslink_type = list()
     sequence_a = list()
@@ -172,6 +248,26 @@ def __xls_to_msannika(
     filename: Optional[str],
     format: Literal["csv", "tsv", "xlsx"],
 ) -> pd.DataFrame:
+    r"""Exports crosslinks to MS Annika format.
+
+    Parameters
+    ----------
+    xls : list of dict of str, any
+        A list of crosslinks.
+    filename : str, or None
+        If not None, the data will be written to a file with the specified filename.
+    format : str, one of "csv", "tsv", or "xlsx"
+        Format of the output file if filename is not None.
+
+    Returns
+    -------
+    pd.DataFrame
+        A pandas DataFrame in MS Annika format.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``to_msannika()``.
+    """
     sequence_a = list()
     position_a = list()
     accession_a = list()
@@ -242,6 +338,64 @@ def to_msannika(
     filename: Optional[str] = None,
     format: Literal["csv", "tsv", "xlsx"] = "csv",
 ) -> pd.DataFrame:
+    r"""Exports a list of crosslinks or crosslink-spectrum-matches to MS Annika format.
+
+    Exports a list of crosslinks or crosslink-spectrum-matches to MS Annika format. This might be useful
+    for tools that support MS Annika input but are not supported by pyXLMS (yet).
+
+    Parameters
+    ----------
+    data : list of dict of str, any
+        A list of crosslinks or crosslink-spectrum-matches.
+    filename : str, or None, default = None
+        If not None, the exported data will be written to a file with the specified filename.
+    format : str, one of "csv", "tsv", or "xlsx", default = "csv"
+        File format of the exported file if filename is not None.
+
+    Returns
+    -------
+    pd.DataFrame
+        A pandas DataFrame containing crosslinks or crosslink-spectrum-matches in MS Annika format.
+
+    Raises
+    ------
+    TypeError
+        If a wrong data type is provided.
+    TypeError
+        If data contains elements of mixed data type.
+    TypeError
+        If parameter fromat is not one of 'csv', 'tsv' or 'xlsx'.
+    ValueError
+        If the provided data contains no elements.
+
+    Warnings
+    --------
+    The MS Annika exporter will not check if all necessary information is available for the exported
+    crosslinks or crosslink-spectrum-matches. If a value is not available it will be denoted as a missing
+    value in the dataframe and exported file. Please make sure all necessary information is available
+    before using the exported file with another tool! Please also note that modifications are not exported,
+    for modification down-stream analysis please refer to ``transform.to_proforma()`` or
+    ``transform.to_dataframe()``!
+
+    Examples
+    --------
+    >>> from pyXLMS.exporter import to_msannika
+    >>> from pyXLMS.data import create_crosslink_min
+    >>> xl1 = create_crosslink_min("KPEPTIDE", 1, "PKEPTIDE", 2)
+    >>> xl2 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
+    >>> crosslinks = [xl1, xl2]
+    >>> to_msannika(crosslinks)
+       Sequence A  Position A Accession A In protein A  Sequence B  Position B Accession B In protein B Best CSM Score Decoy
+    0  [K]PEPTIDE           1        None         None  P[K]EPTIDE           2        None         None           None  None
+    1  PE[K]PTIDE           3        None         None  PEP[K]TIDE           4        None         None           None  None
+
+    >>> from pyXLMS.exporter import to_msannika
+    >>> from pyXLMS.data import create_crosslink_min
+    >>> xl1 = create_crosslink_min("KPEPTIDE", 1, "PKEPTIDE", 2)
+    >>> xl2 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
+    >>> crosslinks = [xl1, xl2]
+    >>> df = to_msannika(crosslinks, filename = "crosslinks.csv", format = "csv")    
+    """
     _ok = check_input(data, "data", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True
     _ok = check_input(format, "format", str)
