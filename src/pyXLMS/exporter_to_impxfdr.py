@@ -63,34 +63,13 @@ def to_impxfdr(
     ValueError
         If the provided data contains no elements or if none of the data has target-decoy labels
         and parameter 'targets_only' is set to True.
-
-    Warnings
-    --------
-    The IMP-X-FDR exporter will not check if all necessary information is available for the exported
-    crosslinks or crosslink-spectrum-matches. If a value is not available it will be denoted as a missing
-    value in the dataframe and exported file. Please make sure all necessary information is available
-    before using the exported file with another tool! Please also note that modifications are not exported,
-    for modification down-stream analysis please refer to ``transform.to_proforma()`` or
-    ``transform.to_dataframe()``!
+    RuntimeError
+        If not all of the required information is present in the input data.
 
     Examples
     --------
     >>> from pyXLMS.exporter import to_impxfdr
-    >>> from pyXLMS.data import create_crosslink_min
-    >>> xl1 = create_crosslink_min("KPEPTIDE", 1, "PKEPTIDE", 2, decoy_a = False, decoy_b = False)
-    >>> xl2 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4, decoy_a = False, decoy_b = False)
-    >>> crosslinks = [xl1, xl2]
-    >>> to_impxfdr(crosslinks)
-       Sequence A  Position A Accession A In protein A  Sequence B  Position B Accession B In protein B Best CSM Score  Decoy
-    0  [K]PEPTIDE           1        None         None  P[K]EPTIDE           2        None         None           None  False
-    1  PE[K]PTIDE           3        None         None  PEP[K]TIDE           4        None         None           None  False
-
-    >>> from pyXLMS.exporter import to_impxfdr
-    >>> from pyXLMS.data import create_crosslink_min
-    >>> xl1 = create_crosslink_min("KPEPTIDE", 1, "PKEPTIDE", 2)
-    >>> xl2 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
-    >>> crosslinks = [xl1, xl2]
-    >>> df = to_impxfdr(crosslinks, filename = "crosslinks.xlsx", targets_only = False)
+    >>> from pyXLMS.parser import read
     """
     _ok = check_input(data, "data", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True
