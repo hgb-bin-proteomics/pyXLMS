@@ -394,7 +394,7 @@ def to_msannika(
     >>> xl1 = create_crosslink_min("KPEPTIDE", 1, "PKEPTIDE", 2)
     >>> xl2 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
     >>> crosslinks = [xl1, xl2]
-    >>> df = to_msannika(crosslinks, filename = "crosslinks.csv", format = "csv")    
+    >>> df = to_msannika(crosslinks, filename = "crosslinks.csv", format = "csv")
     """
     _ok = check_input(data, "data", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True
