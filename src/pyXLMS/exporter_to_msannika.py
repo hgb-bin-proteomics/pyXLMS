@@ -268,6 +268,7 @@ def __xls_to_msannika(
     -----
     This function should not be called directly, it is called from ``to_msannika()``.
     """
+    crosslink_type = list()
     sequence_a = list()
     position_a = list()
     accession_a = list()
@@ -279,6 +280,7 @@ def __xls_to_msannika(
     best_csm_score = list()
     decoy = list()
     for xl in xls:
+        crosslink_type.append("Intra" if csm["crosslink_type"] == "intra" else "Inter")
         sequence_a.append(
             get_msannika_crosslink_sequence(
                 xl["alpha_peptide"], xl["alpha_peptide_crosslink_position"]
@@ -311,6 +313,7 @@ def __xls_to_msannika(
         decoy.append(__get_xl_isdecoy(xl["alpha_decoy"], xl["beta_decoy"]))
     msannika_df = pd.DataFrame(
         {
+            "Crosslink Type": crosslink_type,
             "Sequence A": sequence_a,
             "Position A": position_a,
             "Accession A": accession_a,
