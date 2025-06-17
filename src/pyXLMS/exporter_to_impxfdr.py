@@ -73,38 +73,38 @@ def to_impxfdr(
     >>> pr = read("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv", engine="xiSearch/xiFDR", crosslinker="DSS")
     >>> crosslinks = pr["crosslinks"]
     >>> to_impxfdr(crosslinks, filename="crosslinks.xlsx")
-                    Sequence A  Position A Accession A In protein A  ... Accession B  In protein B Best CSM Score  Decoy
-    0            VVDELV[K]VMGR           7        Cas9          753  ...        Cas9           753         40.679  False
-    1    MLASAGELQ[K]GNELALPSK          10        Cas9          753  ...        Cas9          1226         40.231  False
-    2          MDGTEELLV[K]LNR          10        Cas9          396  ...        Cas9           396         39.582  False
-    3           MTNFD[K]NLPNEK           6        Cas9          965  ...        Cas9           504         35.880  False
-    4               DFQFY[K]VR           6        Cas9          978  ...        Cas9          1028         35.281  False
-    ..                     ...         ...         ...          ...  ...         ...           ...            ...    ...
-    220        LP[K]YSLFELENGR           3        Cas9          866  ...        Cas9          1204          9.877  False
-    221               D[K]QSGK           2        Cas9          677  ...        Cas9           677          9.702  False
-    222               AGFI[K]R           5        Cas9          922  ...        Cas9           881          9.666  False
-    223                E[K]IEK           2        Cas9          443  ...        Cas9           562          9.656  False
-    224                LS[K]SR           3        Cas9          222  ...        Cas9           222          9.619  False
-    [225 rows x 10 columns]
+        Crosslink Type             Sequence A  Position A Accession A In protein A  ... Position B  Accession B In protein B Best CSM Score  Decoy
+    0            Intra          VVDELV[K]VMGR           7        Cas9          753  ...          7         Cas9          753         40.679  False
+    1            Intra  MLASAGELQ[K]GNELALPSK          10        Cas9          753  ...          7         Cas9         1226         40.231  False
+    2            Intra        MDGTEELLV[K]LNR          10        Cas9          396  ...         10         Cas9          396         39.582  False
+    3            Intra         MTNFD[K]NLPNEK           6        Cas9          965  ...          2         Cas9          504         35.880  False
+    4            Intra             DFQFY[K]VR           6        Cas9          978  ...          4         Cas9         1028         35.281  False
+    ..             ...                    ...         ...         ...          ...  ...        ...          ...          ...            ...    ...
+    220          Intra        LP[K]YSLFELENGR           3        Cas9          866  ...          3         Cas9         1204          9.877  False
+    221          Intra               D[K]QSGK           2        Cas9          677  ...          2         Cas9          677          9.702  False
+    222          Intra               AGFI[K]R           5        Cas9          922  ...         11         Cas9          881          9.666  False
+    223          Intra                E[K]IEK           2        Cas9          443  ...          1         Cas9          562          9.656  False
+    224          Intra                LS[K]SR           3        Cas9          222  ...          3         Cas9          222          9.619  False
+    [225 rows x 11 columns]
 
     >>> from pyXLMS.exporter import to_impxfdr
     >>> from pyXLMS.parser import read
     >>> pr = read("data/xi/1perc_xl_boost_CSM_xiFDR2.2.1.csv", engine="xiSearch/xiFDR", crosslinker="DSS")
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> to_impxfdr(csms, filename="csms.xlsx")
-                 Sequence A  Position A Accession A In protein A  ... Accession B  In protein B Best CSM Score  Decoy
-    0    [K]IECFDSVEISGVEDR           1        Cas9          575  ...        Cas9           575         27.268  False
-    1         LVDSTD[K]ADLR           7        Cas9          152  ...        Cas9           881         26.437  False
-    2       GGLSELD[K]AGFIK           8        Cas9          917  ...        Cas9           917         26.134  False
-    3         LVDSTD[K]ADLR           7        Cas9          152  ...        Cas9           152         25.804  False
-    4         VVDELV[K]VMGR           7        Cas9          753  ...        Cas9           753         24.861  False
-    ..                  ...         ...         ...          ...  ...         ...           ...            ...    ...
-    406          [K]GILQTVK           1        Cas9          739  ...        Cas9           222          6.977  False
-    407          QQLPE[K]YK           6        Cas9          350  ...        Cas9           350          6.919  False
-    408           ESILP[K]R           6        Cas9         1117  ...        Cas9          1035          6.853  False
-    409             LS[K]SR           3        Cas9          222  ...        Cas9           884          6.809  False
-    410     QIT[K]HVAQILDSR           4        Cas9          933  ...        Cas9           350          6.808  False
-    [411 rows x 10 columns]
+        Crosslink Type          Sequence A  Position A Accession A In protein A  ... Position B  Accession B In protein B Best CSM Score  Decoy
+    0            Intra  [K]IECFDSVEISGVEDR           1        Cas9          575  ...          1         Cas9          575         27.268  False
+    1            Intra       LVDSTD[K]ADLR           7        Cas9          152  ...         11         Cas9          881         26.437  False
+    2            Intra     GGLSELD[K]AGFIK           8        Cas9          917  ...          8         Cas9          917         26.134  False
+    3            Intra       LVDSTD[K]ADLR           7        Cas9          152  ...          7         Cas9          152         25.804  False
+    4            Intra       VVDELV[K]VMGR           7        Cas9          753  ...          7         Cas9          753         24.861  False
+    ..             ...                 ...         ...         ...          ...  ...        ...          ...          ...            ...    ...
+    406          Intra          [K]GILQTVK           1        Cas9          739  ...          3         Cas9          222          6.977  False
+    407          Intra          QQLPE[K]YK           6        Cas9          350  ...          6         Cas9          350          6.919  False
+    408          Intra           ESILP[K]R           6        Cas9         1117  ...          7         Cas9         1035          6.853  False
+    409          Intra             LS[K]SR           3        Cas9          222  ...          2         Cas9          884          6.809  False
+    410          Intra     QIT[K]HVAQILDSR           4        Cas9          933  ...          6         Cas9          350          6.808  False
+    [411 rows x 11 columns]
     """
     _ok = check_input(data, "data", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True
