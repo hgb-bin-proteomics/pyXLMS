@@ -388,9 +388,9 @@ def to_msannika(
     >>> xl2 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
     >>> crosslinks = [xl1, xl2]
     >>> to_msannika(crosslinks)
-       Sequence A  Position A Accession A In protein A  Sequence B  Position B Accession B In protein B Best CSM Score Decoy
-    0  [K]PEPTIDE           1        None         None  P[K]EPTIDE           2        None         None           None  None
-    1  PE[K]PTIDE           3        None         None  PEP[K]TIDE           4        None         None           None  None
+      Crosslink Type  Sequence A  Position A Accession A In protein A  Sequence B  Position B Accession B In protein B Best CSM Score Decoy
+    0          Inter  [K]PEPTIDE           1        None         None  P[K]EPTIDE           2        None         None           None  None
+    1          Inter  PE[K]PTIDE           3        None         None  PEP[K]TIDE           4        None         None           None  None
 
     >>> from pyXLMS.exporter import to_msannika
     >>> from pyXLMS.data import create_crosslink_min
