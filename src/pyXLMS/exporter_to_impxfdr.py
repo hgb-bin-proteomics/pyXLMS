@@ -111,6 +111,15 @@ def to_impxfdr(
     _ok = check_input(targets_only, "targets_only", bool)
     if targets_only:
         data = filter_target_decoy(data)["Target-Target"]
+    if len(data) == 0:
+        if targets_only:
+            raise ValueError(
+                "Provided data does not contain any crosslinks or crosslink-spectrum-matches after filtering for targets only!"
+            )
+        else:
+            raise ValueError(
+                "Provided data does not contain any crosslinks or crosslink-spectrum-matches!"
+            )
     if "data_type" not in data[0] or data[0]["data_type"] not in [
         "crosslink",
         "crosslink-spectrum-match",
