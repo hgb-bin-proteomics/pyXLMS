@@ -395,6 +395,24 @@ def to_msannika(
     >>> xl2 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
     >>> crosslinks = [xl1, xl2]
     >>> df = to_msannika(crosslinks, filename = "crosslinks.csv", format = "csv")
+
+    >>> from pyXLMS.exporter import to_msannika
+    >>> from pyXLMS.data import create_csm_min
+    >>> csm1 = create_csm_min("KPEPTIDE", 1, "PKEPTIDE", 2, "RUN_1", 1)
+    >>> csm2 = create_csm_min("PEKPTIDE", 3, "PEPKTIDE", 4, "RUN_1", 2)
+    >>> csms = [csm1, csm2]
+    >>> to_msannika(csms)
+                Sequence Crosslink Type Sequence A  Crosslinker Position A  ... First Scan Charge RT [min] Compensation Voltage
+    0  KPEPTIDE-PKEPTIDE          Inter   KPEPTIDE                       1  ...          1   None     None                 None
+    1  PEKPTIDE-PEPKTIDE          Inter   PEKPTIDE                       3  ...          2   None     None                 None
+    [2 rows x 20 columns]
+
+    >>> from pyXLMS.exporter import to_msannika
+    >>> from pyXLMS.data import create_csm_min
+    >>> csm1 = create_csm_min("KPEPTIDE", 1, "PKEPTIDE", 2, "RUN_1", 1)
+    >>> csm2 = create_csm_min("PEKPTIDE", 3, "PEPKTIDE", 4, "RUN_1", 2)
+    >>> csms = [csm1, csm2]
+    >>> df = to_msannika(csms, filename = "csms.csv", format = "csv")
     """
     _ok = check_input(data, "data", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True
