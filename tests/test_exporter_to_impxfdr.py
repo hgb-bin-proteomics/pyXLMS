@@ -20,7 +20,7 @@ def test1():
     crosslinks = pr["crosslinks"]
     df = to_impxfdr(crosslinks, filename="crosslinks.xlsx")
     assert df.shape[0] == 225
-    assert df.shape[1] == 10
+    assert df.shape[1] == 11
 
 
 def test2():
@@ -35,7 +35,7 @@ def test2():
     crosslinks = pr["crosslinks"]
     df = to_impxfdr(crosslinks, filename=None)
     assert df.shape[0] == 225
-    assert df.shape[1] == 10
+    assert df.shape[1] == 11
 
 
 def test3():
@@ -50,7 +50,7 @@ def test3():
     csms = pr["crosslink-spectrum-matches"]
     df = to_impxfdr(csms, filename="csms.xlsx")
     assert df.shape[0] == 411
-    assert df.shape[1] == 10
+    assert df.shape[1] == 11
 
 
 def test4():
@@ -65,7 +65,7 @@ def test4():
     csms = pr["crosslink-spectrum-matches"]
     df = to_impxfdr(csms, filename=None, targets_only=False)
     assert df.shape[0] == 413
-    assert df.shape[1] == 10
+    assert df.shape[1] == 11
 
 
 def test5():
