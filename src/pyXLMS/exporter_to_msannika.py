@@ -280,7 +280,7 @@ def __xls_to_msannika(
     best_csm_score = list()
     decoy = list()
     for xl in xls:
-        crosslink_type.append("Intra" if csm["crosslink_type"] == "intra" else "Inter")
+        crosslink_type.append("Intra" if xl["crosslink_type"] == "intra" else "Inter")
         sequence_a.append(
             get_msannika_crosslink_sequence(
                 xl["alpha_peptide"], xl["alpha_peptide_crosslink_position"]
