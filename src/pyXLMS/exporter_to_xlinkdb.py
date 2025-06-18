@@ -53,7 +53,7 @@ def __xls_to_xlinkdb(
         labeled_position_a.append(xl["alpha_peptide_crosslink_position"] - 1)
         peptide_b.append(xl["beta_peptide"])
         protein_b.append(xl["beta_proteins"][0])
-        labeled_position_a.append(xl["beta_peptide_crosslink_position"] - 1)
+        labeled_position_b.append(xl["beta_peptide_crosslink_position"] - 1)
         probability.append(1)
     xlinkdb_df = pd.DataFrame(
         {
@@ -124,7 +124,7 @@ def to_xlinkdb(
     _ok = check_input(filename, "filename", str) if filename is not None else True
     if filename is not None and not filename.isalnum():
         raise ValueError(
-            "Parameter filename must only contain alpha-numeric characters and not file extension!"
+            "Parameter filename must only contain alpha-numeric characters and no file extension!"
         )
     if len(crosslinks) == 0:
         raise ValueError("Provided crosslinks contain no elements!")
