@@ -42,6 +42,51 @@ True
 False
 """
 
+AMINO_ACIDS_3TO1 = {
+    "GLY": "G",
+    "PRO": "P",
+    "ALA": "A",
+    "VAL": "V",
+    "LEU": "L",
+    "ILE": "I",
+    "MET": "M",
+    "CYS": "C",
+    "PHE": "F",
+    "TYR": "Y",
+    "TRP": "W",
+    "HIS": "H",
+    "LYS": "K",
+    "ARG": "R",
+    "GLN": "Q",
+    "ASN": "N",
+    "GLU": "E",
+    "ASP": "D",
+    "SER": "S",
+    "THR": "T",
+}
+r"""Mapping of amino acid 3-letter codes to their 1-letter codes.
+
+Mapping of all amino acid 3-letter codes to their corresponding 1-letter codes.
+
+Examples
+--------
+>>> from pyXLMS.constants import AMINO_ACIDS_3TO1
+>>> AMINO_ACIDS_3TO1["GLY"]
+'G'
+"""
+
+AMINO_ACIDS_1TO3 = {v: k for k, v in AMINO_ACIDS_3TO1.items()}
+r"""Mapping of amino acid 1-letter codes to their 3-letter codes.
+
+Mapping of all amino acid 1-letter codes to their corresponding 3-letter codes.
+
+Examples
+--------
+>>> from pyXLMS.constants import AMINO_ACIDS_1TO3
+>>> AMINO_ACIDS_1TO3["G"]
+'GLY'
+"""
+
 CROSSLINKERS = {
     "BS3": 138.06808,
     "DSS": 138.06808,
