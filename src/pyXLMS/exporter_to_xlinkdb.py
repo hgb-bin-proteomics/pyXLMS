@@ -73,7 +73,6 @@ def __xls_to_xlinkdb(
     return xlinkdb_df
 
 
-# wip
 def to_xlinkdb(
     crosslinks: List[Dict[str, Any]],
     filename: Optional[str],
