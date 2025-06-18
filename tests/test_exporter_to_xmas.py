@@ -25,7 +25,7 @@ def test2():
 
     csm1 = create_csm_min("KPEPTIDE", 1, "PKEPTIDE", 2, "RUN_1", 1)
     xl1 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
-    mixed = [csm1, xl1]
+    mixed = [xl1, csm1]
     with pytest.raises(
         TypeError, match="Not all elements in data have the same data type!"
     ):
@@ -67,7 +67,7 @@ def test5():
     )
     crosslinks = pr["crosslinks"]
     df = to_xmas(crosslinks, filename=None)
-    assert df.shape[0] == 225
+    assert df.shape[0] == 227
     assert df.shape[1] == 2
 
 

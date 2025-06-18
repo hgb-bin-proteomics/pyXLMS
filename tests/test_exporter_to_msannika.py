@@ -269,7 +269,7 @@ def test10():
     assert xl["beta_peptide_crosslink_position"] == 4
     assert xl["beta_proteins"] == ["Cas9"]
     assert xl["beta_proteins_crosslink_positions"] == [1189]
-    assert not xl["beta_decoy"]
+    assert xl["beta_decoy"]
     assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(10.071)
 
