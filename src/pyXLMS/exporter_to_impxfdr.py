@@ -29,12 +29,12 @@ def to_impxfdr(
 
     Exports a list of crosslinks or crosslink-spectrum-matches to IMP-X-FDR format for benchmarking purposes.
     The tool IMP-X-FDR is available from
-    `here <https://github.com/vbc-proteomics-org/imp-x-fdr>`_.
+    `github.com/vbc-proteomics-org/imp-x-fdr <https://github.com/vbc-proteomics-org/imp-x-fdr>`_.
     We recommend using version 1.1.0 and selecting "MS Annika" as input file format for the here exported file.
-    A slightly modified version is available
-    `here <https://github.com/hgb-bin-proteomics/MSAnnika_NC_Results/blob/master/Peplib_Beveridge/MS_Annika/Tools/IMP-X-FDR.v1.1.0.zip>_`.
+    A slightly modified version is available from
+    `github.com/hgb-bin-proteomics/MSAnnika_NC_Results <https://github.com/hgb-bin-proteomics/MSAnnika_NC_Results/blob/master/Peplib_Beveridge/MS_Annika/Tools/IMP-X-FDR.v1.1.0.zip>`_.
     This version contains a few bug fixes and was used for the MS Annika 2.0 and MS Annika 3.0 publications.
-    Requires that "alpha_proteins", "beta_proteins", "alpha_proteins_crosslink_positions" and "beta_proteins_crosslink_positions" fields
+    Requires that ``alpha_proteins``, ``beta_proteins``, ``alpha_proteins_crosslink_positions`` and ``beta_proteins_crosslink_positions`` fields
     are set for crosslinks and crosslink-spectrum-matches.
 
     Parameters

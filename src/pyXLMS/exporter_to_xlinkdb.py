@@ -82,8 +82,8 @@ def to_xlinkdb(
 
     Exports a list of crosslinks to XlinkDB format. The tool XlinkDB is accessible
     via the link
-    `here <https://xlinkdb.gs.washington.edu/xlinkdb/index.php>`_.
-    Requires that "alpha_proteins" and "beta_proteins" fields are set for all crosslinks.
+    `xlinkdb.gs.washington.edu/xlinkdb <https://xlinkdb.gs.washington.edu/xlinkdb/index.php>`_.
+    Requires that ``alpha_proteins`` and ``beta_proteins`` fields are set for all crosslinks.
 
     Parameters
     ----------

@@ -75,7 +75,7 @@ def to_xmas(
 
     Exports a list of crosslinks to XMAS format for visualization in ChimeraX. The tool XMAS
     is available from
-    `here <https://github.com/ScheltemaLab/ChimeraX_XMAS_bundle>`_.
+    `github.com/ScheltemaLab/ChimeraX_XMAS_bundle <https://github.com/ScheltemaLab/ChimeraX_XMAS_bundle>`_.
 
     Parameters
     ----------
