@@ -10,6 +10,7 @@ import re
 import os
 import warnings
 import numpy as np
+import pandas as pd
 from Bio.Seq import Seq
 from Bio import pairwise2
 from Bio.Align import substitution_matrices
@@ -243,6 +244,23 @@ def __get_xl_position_and_chain_in_protein(
         return chain_residues
 
 
+def __to_dataframe(pyxlinkviewer: str) -> pd.DataFrame:
+    pos_a = list()
+    chain_a = list()
+    pos_b = list()
+    chain_b = list()
+    for line in pyxlinkviewer.split("\n"):
+        if len(line.strip()) > 0:
+            xl = line.split("|")
+            pos_a.append(int(xl[0]))
+            chain_a.append(xl[1].strip())
+            pos_b.append(int(xl[2]))
+            chain_b.append(xl[3].strip())
+    return pd.DataFrame(
+        {"residue 1": pos_a, "chain 1": chain_a, "residue 2": pos_b, "chain 2": chain_b}
+    )
+
+
 def __to_pyxlinkviewer(
     crosslinks: List[Dict[str, Any]],
     pdb_file: str | BinaryIO,
@@ -333,6 +351,7 @@ def __to_pyxlinkviewer(
         exported_files.append(filename_prefix + "_sequence.fasta")
     return {
         "PyXlinkViewer": output_string,
+        "PyXlinkViewer DataFrame": __to_dataframe(output_string),
         "Number of mapped crosslinks": nr_of_mapped_xl,
         "Mapping": mapping_string,
         "Parsed PDB sequence": pdb_sequence,
