@@ -10,6 +10,7 @@ import pandas as pd
 
 from .data import check_input
 from .transform_util import get_available_keys
+from .exporter_util import __get_filename
 
 from typing import Optional
 from typing import Dict
@@ -49,10 +50,10 @@ def __xls_to_xlinkdb(
     for xl in xls:
         peptide_a.append(xl["alpha_peptide"])
         protein_a.append(xl["alpha_proteins"][0])
-        labeled_position_a.append(xl["alpha_peptide_crosslink_position"]-1)
+        labeled_position_a.append(xl["alpha_peptide_crosslink_position"] - 1)
         peptide_b.append(xl["beta_peptide"])
         protein_b.append(xl["beta_proteins"][0])
-        labeled_position_a.append(xl["beta_peptide_crosslink_position"]-1)
+        labeled_position_a.append(xl["beta_peptide_crosslink_position"] - 1)
         probability.append(1)
     xlinkdb_df = pd.DataFrame(
         {
@@ -66,7 +67,9 @@ def __xls_to_xlinkdb(
         }
     )
     if filename is not None:
-        xlinkdb_df.to_csv(filename, sep="\t", header=False, index=False)
+        xlinkdb_df.to_csv(
+            __get_filename(filename, "tsv"), sep="\t", header=False, index=False
+        )
     return xlinkdb_df
 
 
@@ -75,11 +78,12 @@ def to_xlinkdb(
     crosslinks: List[Dict[str, Any]],
     filename: Optional[str],
 ) -> pd.DataFrame:
-    r"""Exports a list of crosslinks to XMAS format.
+    r"""Exports a list of crosslinks to XlinkDB format.
 
-    Exports a list of crosslinks to XMAS format for visualization in ChimeraX. The tool XMAS
-    is available from
-    `here <https://github.com/ScheltemaLab/ChimeraX_XMAS_bundle>`_.
+    Exports a list of crosslinks to XlinkDB format. The tool XlinkDB is accessible
+    via the link
+    `here <https://xlinkdb.gs.washington.edu/xlinkdb/index.php>`_.
+    Requires that "alpha_proteins" and "beta_proteins" fields are set for all crosslinks.
 
     Parameters
     ----------
@@ -87,11 +91,13 @@ def to_xlinkdb(
         A list of crosslinks.
     filename : str, or None
         If not None, the exported data will be written to a file with the specified filename.
+        The filename should not contain a file extension and consist only of alpha-numeric
+        characters (a-Z, 0-9).
 
     Returns
     -------
     pd.DataFrame
-        A pandas DataFrame containing crosslinks in XMAS format.
+        A pandas DataFrame containing crosslinks in XlinkDB format.
 
     Raises
     ------
@@ -100,38 +106,35 @@ def to_xlinkdb(
     TypeError
         If 'crosslinks' parameter contains elements of mixed data type.
     ValueError
+        If the filename contains any non-alpha-numeric characters.
+    ValueError
         If the provided 'crosslinks' parameter contains no elements.
+    RuntimeError
+        If not all of the required information is present in the input data.
+
+    Notes
+    -----
+    XlinkDB input format requires a column with probabilities that the crosslinks are correct. Since that is not available
+    from most crosslink search engines, this is simply set to a constant ``1``.
 
     Examples
     --------
-    >>> from pyXLMS.exporter import to_xmas
-    >>> from pyXLMS.data import create_crosslink_min
-    >>> xl1 = create_crosslink_min("KPEPTIDE", 1, "PKEPTIDE", 2)
-    >>> xl2 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
-    >>> crosslinks = [xl1, xl2]
-    >>> to_xmas(crosslinks, filename="crosslinks_xmas.xlsx")
-       Sequence A  Sequence B
-    0  [K]PEPTIDE  P[K]EPTIDE
-    1  PE[K]PTIDE  PEP[K]TIDE
-
-    >>> from pyXLMS.exporter import to_xmas
-    >>> from pyXLMS.data import create_crosslink_min
-    >>> xl1 = create_crosslink_min("KPEPTIDE", 1, "PKEPTIDE", 2)
-    >>> xl2 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
-    >>> crosslinks = [xl1, xl2]
-    >>> to_xmas(crosslinks, filename=None)
-       Sequence A  Sequence B
-    0  [K]PEPTIDE  P[K]EPTIDE
-    1  PE[K]PTIDE  PEP[K]TIDE
     """
     _ok = check_input(crosslinks, "crosslinks", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True
+    if filename is not None and not filename.isalnum():
+        raise ValueError(
+            "Parameter filename must only contain alpha-numeric characters and not file extension!"
+        )
     if len(crosslinks) == 0:
         raise ValueError("Provided crosslinks contain no elements!")
     if "data_type" not in crosslinks[0] or crosslinks[0]["data_type"] != "crosslink":
         raise TypeError(
             "Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!"
         )
-    if not assert_data_type_same(crosslinks):
-        raise TypeError("Not all elements in data have the same data type!")
-    return __xls_to_xmas(crosslinks, filename)
+    available_keys = get_available_keys(crosslinks)
+    if not available_keys["alpha_proteins"] or not available_keys["beta_proteins"]:
+        raise RuntimeError(
+            "Can't export to XlinkDB because not all necessary information is available!"
+        )
+    return __xls_to_xlinkdb(crosslinks, filename)
