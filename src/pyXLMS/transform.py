@@ -16,5 +16,6 @@ from .transform_aggregate import aggregate  # noqa: F401
 from .transform_validate import validate  # noqa: F401
 from .transform_to_proforma import to_proforma  # noqa: F401
 from .transform_to_dataframe import to_dataframe  # noqa: F401
+from .transform_targets_only import targets_only  # noqa: F401
 from .transform_reannotate_positions import fasta_title_to_accession  # noqa: F401
 from .transform_reannotate_positions import reannotate_positions  # noqa: F401

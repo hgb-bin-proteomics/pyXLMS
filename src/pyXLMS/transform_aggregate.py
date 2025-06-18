@@ -239,7 +239,7 @@ def unique(
     list of dict of str, any, or dict of str, any
         If a list of crosslink-spectrum-matches or crosslinks was provided, a list of unique
         crosslink-spectrum-matches or crosslinks is returned. If a parser_result was provided,
-        an parser_result with unique crosslink-spectrum-matches and/or unique crosslinks will
+        a parser_result with unique crosslink-spectrum-matches and/or unique crosslinks will
         be returned.
 
     Raises
