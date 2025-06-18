@@ -10,6 +10,7 @@ import pandas as pd
 
 from .data import check_input
 from .transform_util import assert_data_type_same
+from .exporter_util import __get_filename
 
 from typing import Optional
 from typing import Dict
@@ -235,11 +236,13 @@ def __csms_to_msannika(
     )
     if filename is not None:
         if format == "csv":
-            msannika_df.to_csv(filename, index=False)
+            msannika_df.to_csv(__get_filename(filename, format), index=False)
         elif format == "tsv":
-            msannika_df.to_csv(filename, sep="\t", index=False)
+            msannika_df.to_csv(__get_filename(filename, format), sep="\t", index=False)
         else:
-            msannika_df.to_excel(filename, engine="openpyxl", index=False)
+            msannika_df.to_excel(
+                __get_filename(filename, format), engine="openpyxl", index=False
+            )
     return msannika_df
 
 
@@ -328,11 +331,13 @@ def __xls_to_msannika(
     )
     if filename is not None:
         if format == "csv":
-            msannika_df.to_csv(filename, index=False)
+            msannika_df.to_csv(__get_filename(filename, format), index=False)
         elif format == "tsv":
-            msannika_df.to_csv(filename, sep="\t", index=False)
+            msannika_df.to_csv(__get_filename(filename, format), sep="\t", index=False)
         else:
-            msannika_df.to_excel(filename, engine="openpyxl", index=False)
+            msannika_df.to_excel(
+                __get_filename(filename, format), engine="openpyxl", index=False
+            )
     return msannika_df
 
 

@@ -10,6 +10,7 @@ import pandas as pd
 
 from .data import check_input
 from .transform_util import assert_data_type_same
+from .exporter_util import __get_filename
 from .exporter_to_msannika import get_msannika_crosslink_sequence
 
 from typing import Optional
@@ -60,7 +61,9 @@ def __xls_to_xmas(
         }
     )
     if filename is not None:
-        xmas_df.to_excel(filename, engine="openpyxl", index=False)
+        xmas_df.to_excel(
+            __get_filename(filename, "xlsx"), engine="openpyxl", index=False
+        )
     return xmas_df
 
 
