@@ -6,6 +6,8 @@
 
 from __future__ import annotations
 
+import pandas as pd
+
 from typing import Optional
 from typing import List
 from typing import Dict
@@ -352,7 +354,7 @@ def create_crosslink(
         "crosslink_type": "intra"
         if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0
         else "inter",
-        "score": score,
+        "score": score if not pd.isna(score) else None,  # pyright: ignore[reportGeneralTypeIssues]
         "additional_information": additional_information,
     }
 
@@ -788,7 +790,9 @@ def create_csm(
             "xl_position_proteins"
         ],
         "alpha_proteins_peptide_positions": crosslink[keys[0]]["pep_position_proteins"],
-        "alpha_score": crosslink[keys[0]]["score"],
+        "alpha_score": crosslink[keys[0]]["score"]
+        if not pd.isna(crosslink[keys[0]]["score"])
+        else None,  # pyright: ignore[reportGeneralTypeIssues]
         "alpha_decoy": crosslink[keys[0]]["decoy"],
         "beta_peptide": crosslink[keys[1]]["peptide"].strip(),
         "beta_modifications": crosslink[keys[1]]["modifications"],
@@ -796,17 +800,19 @@ def create_csm(
         "beta_proteins": beta_proteins if len(beta_proteins) > 0 else None,
         "beta_proteins_crosslink_positions": crosslink[keys[1]]["xl_position_proteins"],
         "beta_proteins_peptide_positions": crosslink[keys[1]]["pep_position_proteins"],
-        "beta_score": crosslink[keys[1]]["score"],
+        "beta_score": crosslink[keys[1]]["score"]
+        if not pd.isna(crosslink[keys[1]]["score"])
+        else None,  # pyright: ignore[reportGeneralTypeIssues]
         "beta_decoy": crosslink[keys[1]]["decoy"],
         "crosslink_type": "intra"
         if len(set(alpha_proteins).intersection(set(beta_proteins))) > 0
         else "inter",
-        "score": score,
+        "score": score if not pd.isna(score) else None,  # pyright: ignore[reportGeneralTypeIssues]
         "spectrum_file": spectrum_file.strip(),
         "scan_nr": scan_nr,
         "charge": charge,
-        "retention_time": rt,
-        "ion_mobility": im_cv,
+        "retention_time": rt if not pd.isna(rt) else None,  # pyright: ignore[reportGeneralTypeIssues]
+        "ion_mobility": im_cv if not pd.isna(im_cv) else None,  # pyright: ignore[reportGeneralTypeIssues]
         "additional_information": additional_information,
     }
 
