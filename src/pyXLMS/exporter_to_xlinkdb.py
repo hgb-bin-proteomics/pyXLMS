@@ -119,6 +119,30 @@ def to_xlinkdb(
 
     Examples
     --------
+    >>> from pyXLMS.exporter import to_xlinkdb
+    >>> from pyXLMS.parser import read
+    >>> pr = read("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv", engine="xiSearch/xiFDR", crosslinker="DSS")
+    >>> crosslinks = pr["crosslinks"]
+    >>> to_xlinkdb(crosslinks, filename="crosslinksForXlinkDB")
+                   Peptide A Protein A  Labeled Position A      Peptide B Protein B  Labeled Position B  Probability
+    0            VVDELVKVMGR      Cas9                   6    VVDELVKVMGR      Cas9                   6            1
+    1    MLASAGELQKGNELALPSK      Cas9                   9    VVDELVKVMGR      Cas9                   6            1
+    2          MDGTEELLVKLNR      Cas9                   9  MDGTEELLVKLNR      Cas9                   9            1
+    3           MTNFDKNLPNEK      Cas9                   5       SKLVSDFR      Cas9                   1            1
+    4               DFQFYKVR      Cas9                   5    MIAKSEQEIGK      Cas9                   3            1
+    ..                   ...       ...                 ...            ...       ...                 ...          ...
+    222        LPKYSLFELENGR      Cas9                   2          SDKNR      Cas9                   2            1
+    223               DKQSGK      Cas9                   1         DKQSGK      Cas9                   1            1
+    224               AGFIKR      Cas9                   4   SDNVPSEEVVKK      Cas9                  10            1
+    225                EKIEK      Cas9                   1          KVTVK      Cas9                   0            1
+    226                LSKSR      Cas9                   2          LSKSR      Cas9                   2            1
+    [227 rows x 7 columns]
+
+    >>> from pyXLMS.exporter import to_xlinkdb
+    >>> from pyXLMS.parser import read
+    >>> pr = read("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv", engine="xiSearch/xiFDR", crosslinker="DSS")
+    >>> crosslinks = pr["crosslinks"]
+    >>> df = to_xlinkdb(crosslinks, filename=None)
     """
     _ok = check_input(crosslinks, "crosslinks", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True
