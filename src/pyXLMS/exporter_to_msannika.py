@@ -372,7 +372,7 @@ def to_msannika(
     TypeError
         If data contains elements of mixed data type.
     TypeError
-        If parameter fromat is not one of 'csv', 'tsv' or 'xlsx'.
+        If parameter format is not one of 'csv', 'tsv' or 'xlsx'.
     ValueError
         If the provided data contains no elements.
 
