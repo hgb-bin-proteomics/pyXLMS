@@ -52,7 +52,7 @@ def test3():
 
 
 def test4():
-    from pyXLMS.tranform import targets_only
+    from pyXLMS.transform import targets_only
     from pyXLMS.data import create_crosslink_min
 
     xl1 = create_crosslink_min("KPEPTIDE", 1, "PKEPTIDE", 2)
@@ -96,4 +96,4 @@ def test6():
         RuntimeError,
         match=r"No target crosslinks found! Are you sure they are labelled\?",
     ):
-        _r = targets_only(result["crosslinks"])
+        _r = targets_only(result)
