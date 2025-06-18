@@ -67,6 +67,25 @@ except Exception as _e:
     )
 
 
+## ------------------------------ INFO ------------------------------ ##
+##                                                                    ##
+## This code is based on pyXlinkViewerExporter_msannika.py            ##
+## retrieved: 18. June 2025                                           ##
+## base version: 1.1.0                                                ##
+## accessible via:                                                    ##
+## https://github.com/hgb-bin-proteomics/MSAnnika_exporters/          ##
+##     blob/master/pyXlinkViewerExporter_msannika.py                  ##
+##                                                                    ##
+## Because this code has been written a very long time ago and is     ##
+## very complicated it is unfortunately largely undocumented. For me  ##
+## documentation of the private functions is not a priority, so this  ##
+## will probably largely stay undocumented.                           ##
+##                                                                    ##
+## signed -MJB                                                        ##
+##                                                                    ##
+## ------------------------------------------------------------------ ##
+
+
 def __get_pdb(pdb_file: str | BinaryIO) -> PandasPdb:
     if isinstance(pdb_file, str):
         if os.path.isfile(pdb_file):
