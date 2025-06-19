@@ -392,15 +392,55 @@ def to_pyxlinkviewer(
 ) -> Dict[str, Any]:
     r"""Exports a list of crosslinks to PyXlinkViewer format.
 
-    Exports a list of crosslinks to PyXlinkViewer format.
+    Exports a list of crosslinks to PyXlinkViewer format for visualization in pyMOL. The tool
+    PyXlinkViewer is available from
+    `github.com/BobSchiffrin/PyXlinkViewer <https://github.com/BobSchiffrin/PyXlinkViewer>`_.
+    This exporter performs basical local sequence alignment to align crosslinked peptides to a protein
+    structure in PDB format. Gap open and gap extension penalties can be chosen as well as a threshold
+    for sequence identity that must be satisfied in order for a match to be reported. Additionally the
+    alignment is checked if the supposedly crosslinked residue can be modified with a crosslinker in
+    the protein structure. Due to the alignment shift amino acids might change and a crosslink is
+    reported at a position that is not able to react with the crosslinker. Optionally, these positions
+    can still be reported.
 
     Parameters
     ----------
     crosslinks : list of dict of str, any
         A list of crosslinks.
+    pdb_file : str, or file stream
+        The name/path of the PDB file or a file-like object/stream. If a string is
+        provided but no file is found locally, it's assumed to be an identifier and
+        the file is fetched from the PDB.
+    gap_open : int, or float, default = -10.0
+        Gap open penalty for sequence alignment.
+    gap_extension : int, or float, default = -1.0,
+        Gap extension penalty for sequence alignment.
+    min_sequence_identity : float, default = 0.8
+        Minimum sequence identity to consider an aligned crosslinked peptide a match with
+        its corresponding position in the protein structure. Should be given as a fraction
+        between 0 and 1, e.g. the default of 0.8 corresponds to a minimum of 80% sequence
+        identity.
+    allow_site_mismatch : bool, default = False
+        If the crosslink position after alignment is not a reactive amino acid in the protein
+        structure, should the position still be reported. By default such cases are not reported.
+    ignore_chains : list of str, default = empty list
+        A list of chains to ignore in the protein structure.
+    filename_prefix : str, or None, default = None
+        If not None, the exported data will be written to files with the specified filename prefix.
+        The full list of written files can be accessed via the returned dictionary.
 
     Returns
     -------
+    dict of str, any
+        Returns a dictionary with key ``PyXlinkViewer`` containing the formatted text for PyXlinkViewer,
+        with key ``PyXlinkViewer DataFrame`` containing the information from ``PyXlinkViewer`` but as a
+        pandas DataFrame, with key ``Number of mapped crosslinks`` containing the total number of mapped
+        crosslinks, with key ``Mapping`` containing a string that logs how crosslinks were mapped to the
+        protein structure, with key ``Parsed PDB sequence`` containing the protein sequence that was
+        parsed from the PDB file, with key ``Parsed PDB chains`` containing the parsed chains from the
+        PDB file, with key ``Parsed PDB residue numbers`` containing the parsed residue numbers from the
+        PDB file, and with key ``Exported files`` containing a list of filenames of all files that were
+        written to disk.
 
     Raises
     ------
@@ -408,17 +448,14 @@ def to_pyxlinkviewer(
         If a wrong data type is provided.
     TypeError
         If data contains elements of mixed data type.
-    TypeError
-        If parameter fromat is not one of 'csv', 'tsv' or 'xlsx'.
+    ValueError
+        If parameter min_sequence_identity is out of bounds.
     ValueError
         If the provided data contains no elements.
 
-    Warnings
-    --------
-
     Examples
     --------
-
+    >>> from pyXLMS.exporter import to_pyxlinkviewer
     """
     _ok = check_input(crosslinks, "crosslinks", list, dict)
     _ok = check_input_multi(gap_open, "gap_open", [int, float])
