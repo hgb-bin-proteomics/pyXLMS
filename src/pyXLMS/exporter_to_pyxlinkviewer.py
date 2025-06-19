@@ -498,7 +498,7 @@ def to_pyxlinkviewer(
         raise ValueError("Provided data does not contain any crosslinks!")
     if "data_type" not in crosslinks[0] or crosslinks[0]["data_type"] != "crosslink":
         raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
+            "Unsupported data type for input data! Parameter data has to be a list of crosslinks!"
         )
     if not assert_data_type_same(crosslinks):
         raise TypeError("Not all elements in data have the same data type!")
