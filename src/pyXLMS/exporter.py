@@ -9,3 +9,4 @@ from .exporter_to_xlinkdb import to_xlinkdb  # noqa: F401
 from .exporter_to_impxfdr import to_impxfdr  # noqa: F401
 from .exporter_to_msannika import to_msannika  # noqa: F401
 from .exporter_to_msannika import get_msannika_crosslink_sequence  # noqa: F401
+from .exporter_to_pyxlinkviewer import to_pyxlinkviewer  # nopa: F401
