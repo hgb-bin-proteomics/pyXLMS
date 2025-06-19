@@ -25,11 +25,13 @@ classifiers = [
   "Development Status :: 5 - Production/Stable"
 ]
 dependencies = [
+  "numpy",
   "pandas",
   "openpyxl",
   "tqdm",
   "pyteomics[XML]",
-  "biopython"
+  "biopython",
+  "biopandas"
 ]
 
 [project.optional-dependencies]

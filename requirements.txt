@@ -1,5 +1,7 @@
+numpy
 pandas
 openpyxl
 tqdm
 pyteomics[XML]
 biopython
+biopandas
