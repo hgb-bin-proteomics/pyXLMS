@@ -466,6 +466,18 @@ def to_pyxlinkviewer(
     Examples
     --------
     >>> from pyXLMS.exporter import to_pyxlinkviewer
+    >>> from pyXLMS.parser import read_custom
+    >>> pr = read_custom("data/_test/exporter/pyxlinkviewer/unique_links_all_pyxlms.csv")
+    >>> crosslinks = pr["crosslinks"]
+    >>> pyxlinkviewer_result = to_pyxlinkviewer(crosslinks, pdb_file="6YHU", filename_prefix="6YHU")
+    >>> pyxlinkviewer_output_file_str = pyxlinkviewer_result["PyXlinkViewer"]
+    >>> pyxlinkviewer_dataframe = pyxlinkviewer_result["PyXlinkViewer DataFrame"]
+    >>> nr_mapped_crosslinks = pyxlinkviewer_result["Number of mapped crosslinks"]
+    >>> crosslink_mapping = pyxlinkviewer_result["Mapping"]
+    >>> parsed_pdb_sequenece = pyxlinkviewer_result["Parsed PDB sequence"]
+    >>> parsed_pdb_chains = pyxlinkviewer_result["Parsed PDB chains"]
+    >>> parsed_pdb_residue_numbers = pyxlinkviewer_result["Parsed PDB residue numbers"]
+    >>> exported_files = pyxlinkviewer_result["Exported files"]
     """
     _ok = check_input(crosslinks, "crosslinks", list, dict)
     _ok = check_input_multi(gap_open, "gap_open", [int, float])
