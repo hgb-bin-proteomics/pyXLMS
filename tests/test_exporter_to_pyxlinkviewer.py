@@ -16,7 +16,7 @@ YHU_RESULT_ALL = (
     "data/_test/exporter/pyxlinkviewer/6YHU/all/unique_links_all_crosslinks.txt"
 )
 YHU_RESULT_NSP8 = (
-    "data/_test/exporter/pyxlinkviewer/nsp8/unique_links_nsp8_crosslinks.txt"
+    "data/_test/exporter/pyxlinkviewer/6YHU/nsp8/unique_links_nsp8_crosslinks.txt"
 )
 JLT_PDB = "data/_test/exporter/pyxlinkviewer/7JLT/7jlt.pdb"
 JLT_RESULT_NSP8 = (
