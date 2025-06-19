@@ -196,7 +196,7 @@ def test11():
         match=r"Minimum sequence identity should be given as a fraction, e\.g\. 0\.8 for 80\% minimum sequence identity!",
     ):
         _pyxlinkviewer_result = to_pyxlinkviewer(
-            crosslinks, pdb_file="6YHU", min_sequence_identity=80
+            crosslinks, pdb_file="6YHU", min_sequence_identity=80.0
         )
 
 
