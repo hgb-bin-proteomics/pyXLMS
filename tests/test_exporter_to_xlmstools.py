@@ -15,30 +15,6 @@ YHU_RESULT_ALL = (
 )
 
 
-def helper_get_crosslink_position(pep_seq: str) -> int:
-    for i, aa in enumerate(pep_seq.strip()):
-        if aa == "[":
-            return i
-
-
-def helper_get_crosslinks(f: str) -> pd.DataFrame:
-    from pyXLMS.data import create_crosslink_min
-    from pyXLMS.parser_util import format_sequence
-
-    df = pd.read_excel(f)
-    xls = list()
-    for i, row in df.iterrows():
-        xls.append(
-            create_crosslink_min(
-                format_sequence(row["Sequence A"]),
-                helper_get_crosslink_position(row["Sequence A"]) + 1,
-                format_sequence(row["Sequence B"]),
-                helper_get_crosslink_position(row["Sequence B"]) + 1,
-            )
-        )
-    return xls
-
-
 def helper_get_dataframe_from_pyxlinkviewer(filename: str) -> pd.DataFrame:
     pyxlinkviewer = ""
     with open(filename, "r", encoding="utf-8") as f:
