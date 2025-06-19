@@ -108,7 +108,7 @@ def test2():
     crosslinks = pr["crosslinks"]
     pyxlinkviewer_result = to_pyxlinkviewer(crosslinks, pdb_file="6YHU")
     should_result = helper_get_dataframe_from_pyxlinkviewer(YHU_RESULT_ALL)
-    assert should_result.equal(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
+    assert should_result.equals(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
 
 
 def test3():
@@ -119,7 +119,7 @@ def test3():
     crosslinks = pr["crosslinks"]
     pyxlinkviewer_result = to_pyxlinkviewer(crosslinks, pdb_file=YHU_PDB)
     should_result = helper_get_dataframe_from_pyxlinkviewer(YHU_RESULT_ALL)
-    assert should_result.equal(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
+    assert should_result.equals(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
 
 
 def test4():
@@ -128,7 +128,7 @@ def test4():
     xls = helper_get_crosslinks(CROSSLINKS_ALL)
     pyxlinkviewer_result = to_pyxlinkviewer(xls, pdb_file=YHU_PDB)
     should_result = helper_get_dataframe_from_pyxlinkviewer(YHU_RESULT_ALL)
-    assert should_result.equal(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
+    assert should_result.equals(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
 
 
 def test5():
@@ -137,7 +137,7 @@ def test5():
     xls = helper_get_crosslinks(CROSSLINKS_ALL)
     pyxlinkviewer_result = to_pyxlinkviewer(xls, pdb_file="6YHU.pdb")
     should_result = helper_get_dataframe_from_pyxlinkviewer(YHU_RESULT_ALL)
-    assert should_result.equal(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
+    assert should_result.equals(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
 
 
 def test6():
@@ -146,7 +146,7 @@ def test6():
     xls = helper_get_crosslinks(CROSSLINKS_ALL)
     pyxlinkviewer_result = to_pyxlinkviewer(xls, pdb_file="6YHU")
     should_result = helper_get_dataframe_from_pyxlinkviewer(YHU_RESULT_ALL)
-    assert should_result.equal(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
+    assert should_result.equals(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
 
 
 def test7():
@@ -155,7 +155,7 @@ def test7():
     xls = helper_get_crosslinks(CROSSLINKS_ALL)
     pyxlinkviewer_result = to_pyxlinkviewer(xls, pdb_file="6yhu")
     should_result = helper_get_dataframe_from_pyxlinkviewer(YHU_RESULT_ALL)
-    assert should_result.equal(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
+    assert should_result.equals(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
 
 
 def test8():
@@ -164,7 +164,7 @@ def test8():
     xls = helper_get_crosslinks(CROSSLINKS_NSP8)
     pyxlinkviewer_result = to_pyxlinkviewer(xls, pdb_file="6yhu")
     should_result = helper_get_dataframe_from_pyxlinkviewer(YHU_RESULT_NSP8)
-    assert should_result.equal(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
+    assert should_result.equals(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
 
 
 def test9():
@@ -173,7 +173,7 @@ def test9():
     xls = helper_get_crosslinks(CROSSLINKS_NSP8)
     pyxlinkviewer_result = to_pyxlinkviewer(xls, pdb_file=JLT_PDB)
     should_result = helper_get_dataframe_from_pyxlinkviewer(JLT_RESULT_NSP8)
-    assert should_result.equal(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
+    assert should_result.equals(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
 
 
 def test10():
@@ -182,7 +182,7 @@ def test10():
     xls = helper_get_crosslinks(CROSSLINKS_NSP8)
     pyxlinkviewer_result = to_pyxlinkviewer(xls, pdb_file="7jlt")
     should_result = helper_get_dataframe_from_pyxlinkviewer(JLT_RESULT_NSP8)
-    assert should_result.equal(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
+    assert should_result.equals(pyxlinkviewer_result["PyXlinkViewer DataFrame"])
 
 
 def test11():
