@@ -12,7 +12,7 @@ import warnings
 import numpy as np
 import pandas as pd
 from Bio.Seq import Seq
-from Bio import pairwise2
+from Bio.Align import PairwiseAligner
 from Bio.Align import substitution_matrices
 from biopandas.pdb import PandasPdb
 
@@ -181,23 +181,33 @@ def __get_xl_position_and_chain_in_protein(
     min_sequence_identity: float,
     allow_site_mismatch: bool,
 ) -> List[str]:
+    aligner = PairwiseAligner()
+    aligner.mode = "local"
+    aligner.open_gap_score = gap_open
+    aligner.extend_gap_score = gap_extension
+    aligner.substitution_matrix = BLOSUM62
     pep_seq = peptide_sequence
     pep_pos_in_proteins = [m.start() for m in re.finditer(pep_seq, pdb_sequence)]
     xl_pos_in_pep = crosslink_position_in_peptide - 1
     if len(pep_pos_in_proteins) == 0:
         alignments = sorted(
-            pairwise2.align.localds(  # pyright: ignore[reportAttributeAccessIssue]
-                Seq(pdb_sequence), Seq(pep_seq), BLOSUM62, gap_open, gap_extension
-            ),
-            key=lambda alignment: alignment.score,
+            aligner.align(Seq(pdb_sequence), Seq(pep_seq)),
+            key=lambda alignment: alignment.score,  # pyright: ignore[reportAttributeAccessIssue]
             reverse=True,
         )
         if len(alignments) == 0:
             return []
         else:
             top_alignment = alignments[0]
-            seqA = top_alignment.seqA[top_alignment.start : top_alignment.end]
-            seqB = top_alignment.seqB[top_alignment.start : top_alignment.end]
+            if top_alignment.coordinates is not None:
+                a_start = top_alignment.coordinates[0][0]
+                a_end = top_alignment.coordinates[0][1]
+                b_start = top_alignment.coordinates[1][0]
+                b_end = top_alignment.coordinates[1][1]
+            else:
+                raise RuntimeError("Could not extract positions of alignment!")
+            seqA = top_alignment.target[a_start:a_end]
+            seqB = top_alignment.query[b_start:b_end]
             sequence_identity = __calculate_sequence_identity(seqA, seqB)
             if sequence_identity > min_sequence_identity:
                 xl_pos_in_alignment = xl_pos_in_pep
@@ -231,7 +241,7 @@ def __get_xl_position_and_chain_in_protein(
                                     seqA.replace("-", ""), pdb_sequence
                                 )
                             ],
-                            top_alignment.start,
+                            a_start,
                         )
                         xl_position = pep_pos_in_protein + xl_pos_in_alignment
                         xl_chain = pdb_chains[xl_position]
@@ -245,7 +255,7 @@ def __get_xl_position_and_chain_in_protein(
                             m.start()
                             for m in re.finditer(seqA.replace("-", ""), pdb_sequence)
                         ],
-                        top_alignment.start,
+                        a_start,
                     )
                     xl_position = pep_pos_in_protein + xl_pos_in_alignment
                     xl_chain = pdb_chains[xl_position]
