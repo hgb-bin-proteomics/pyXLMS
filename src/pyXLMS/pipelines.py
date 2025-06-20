@@ -9,6 +9,7 @@ from __future__ import annotations
 from .parser import read
 from .transform_aggregate import unique as transform_unique
 
+from typing import Optional
 from typing import BinaryIO
 from typing import Dict
 from typing import Any
@@ -43,10 +44,10 @@ def pipeline(
     if unique is not None:
         if isinstance(unique, dict):
             unique_params.update(unique)
-            pr = transform_unique(pr, by=unique_params["by"], score=unique_params["score"])
+            pr = transform_unique(pr, by=str(unique_params["by"]), score=str(unique_params["score"]))  # pyright: ignore[reportArgumentType]
         elif isinstance(unique, bool):
             if unique:
-                pr = transform_unique(pr, by=unique_params["by"], score=unique_params["score"])
+                pr = transform_unique(pr, by=str(unique_params["by"]), score=str(unique_params["score"]))  # pyright: ignore[reportArgumentType]
         else:
             raise TypeError()
     return pr
