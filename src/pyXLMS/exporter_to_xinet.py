@@ -157,29 +157,33 @@ def to_xinet(
     >>> from pyXLMS.exporter import to_xinet
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import targets_only
+    >>> from pyXLMS.transform import filter_proteins
     >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
     >>> crosslinks = targets_only(pr)["crosslinks"]
-    >>> to_xinet(crosslinks, filename="crosslinks_xiNET.csv")
-        Protein1           PepSeq1 LinkPos1 Protein2         PepSeq2 LinkPos2   Score   Id
-    0       Cas9            GQKNSR      779     Cas9          GQKNSR      779  119.83    0
-    1       Cas9             SDKNR      866     Cas9           SDKNR      866  114.43    1
-    2       Cas9            DKQSGK      677     Cas9          DKQSGK      677  200.98    2
-    3       Cas9            DKQSGK      677     Cas9           HSIKK       48   94.47    3
-    4       Cas9             VPSKK       34     Cas9           VPSKK       34  110.48    4
-    ..       ...               ...      ...      ...             ...      ...     ...  ...
-    260     Cas9     MDGTEELLVKLNR      396     Cas9   MDGTEELLVKLNR      396  305.63  260
-    261     Cas9    TILDFLKSDGFANR      688     Cas9       YDENDKLIR      952  110.46  261
-    262     Cas9    IEEGIKELGSQILK      793     Cas9  SSFEKNPIDFLEAK     1180  288.36  262
-    263     Cas9  KIECFDSVEISGVEDR      575     Cas9  TILDFLKSDGFANR      688  376.15  263
-    264     Cas9    SSFEKNPIDFLEAK     1180     Cas9  SSFEKNPIDFLEAK     1180  437.10  264
-    [265 rows x 8 columns]
+    >>> cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
+    >>> to_xinet(cas9, filename="crosslinks_xiNET.csv")
+        Protein1 PepPos1           PepSeq1  LinkPos1 Protein2 PepPos2         PepSeq2  LinkPos2   Score   Id
+    0       Cas9     777            GQKNSR         3     Cas9     777          GQKNSR         3  119.83    1
+    1       Cas9     864             SDKNR         3     Cas9     864           SDKNR         3  114.43    2
+    2       Cas9     676            DKQSGK         2     Cas9     676          DKQSGK         2  200.98    3
+    3       Cas9     676            DKQSGK         2     Cas9      45           HSIKK         4   94.47    4
+    4       Cas9      31             VPSKK         4     Cas9      31           VPSKK         4  110.48    5
+    ..       ...     ...               ...       ...      ...     ...             ...       ...     ...  ...
+    248     Cas9     387     MDGTEELLVKLNR        10     Cas9     387   MDGTEELLVKLNR        10  305.63  249
+    249     Cas9     682    TILDFLKSDGFANR         7     Cas9     947       YDENDKLIR         6  110.46  250
+    250     Cas9     788    IEEGIKELGSQILK         6     Cas9    1176  SSFEKNPIDFLEAK         5  288.36  251
+    251     Cas9     575  KIECFDSVEISGVEDR         1     Cas9     682  TILDFLKSDGFANR         7  376.15  252
+    252     Cas9    1176    SSFEKNPIDFLEAK         5     Cas9    1176  SSFEKNPIDFLEAK         5  437.10  253
+    [253 rows x 10 columns]
 
     >>> from pyXLMS.exporter import to_xinet
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import targets_only
+    >>> from pyXLMS.transform import filter_proteins
     >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
     >>> crosslinks = targets_only(pr)["crosslinks"]
-    >>> df = to_xinet(crosslinks, filename=None)
+    >>> cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
+    >>> df = to_xinet(cas9, filename=None)
     """
     _ok = check_input(crosslinks, "crosslinks", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True
