@@ -52,10 +52,14 @@ def __xls_to_xinet(
     for i, xl in enumerate(xls):
         protein1.append(";".join(xl["alpha_proteins"]))
         pepseq1.append(xl["alpha_peptide"])
-        linkpos1.append(";".join(xl["alpha_proteins_crosslink_positions"]))
+        linkpos1.append(
+            ";".join([str(pos) for pos in xl["alpha_proteins_crosslink_positions"]])
+        )
         protein2.append(";".join(xl["beta_proteins"]))
         pepseq2.append(xl["beta_peptide"])
-        linkpos2.append(";".join(xl["beta_proteins_crosslink_positions"]))
+        linkpos2.append(
+            ";".join([str(pos) for pos in xl["beta_proteins_crosslink_positions"]])
+        )
         if xl["score"] is not None:
             score.append(xl["score"])
         else:
