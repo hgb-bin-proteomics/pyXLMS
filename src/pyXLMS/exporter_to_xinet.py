@@ -143,6 +143,19 @@ def to_xinet(
     >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
     >>> crosslinks = targets_only(pr)["crosslinks"]
     >>> to_xinet(crosslinks, filename="crosslinks_xiNET.csv")
+        Protein1           PepSeq1 LinkPos1 Protein2         PepSeq2 LinkPos2   Score   Id
+    0       Cas9            GQKNSR      779     Cas9          GQKNSR      779  119.83    0
+    1       Cas9             SDKNR      866     Cas9           SDKNR      866  114.43    1
+    2       Cas9            DKQSGK      677     Cas9          DKQSGK      677  200.98    2
+    3       Cas9            DKQSGK      677     Cas9           HSIKK       48   94.47    3
+    4       Cas9             VPSKK       34     Cas9           VPSKK       34  110.48    4
+    ..       ...               ...      ...      ...             ...      ...     ...  ...
+    260     Cas9     MDGTEELLVKLNR      396     Cas9   MDGTEELLVKLNR      396  305.63  260
+    261     Cas9    TILDFLKSDGFANR      688     Cas9       YDENDKLIR      952  110.46  261
+    262     Cas9    IEEGIKELGSQILK      793     Cas9  SSFEKNPIDFLEAK     1180  288.36  262
+    263     Cas9  KIECFDSVEISGVEDR      575     Cas9  TILDFLKSDGFANR      688  376.15  263
+    264     Cas9    SSFEKNPIDFLEAK     1180     Cas9  SSFEKNPIDFLEAK     1180  437.10  264
+    [265 rows x 8 columns]
 
     >>> from pyXLMS.exporter import to_xinet
     >>> from pyXLMS.parser import read
