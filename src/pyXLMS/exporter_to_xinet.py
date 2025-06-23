@@ -41,38 +41,53 @@ def __xls_to_xinet(
     This function should not be called directly, it is called from ``to_xinet()``.
     """
     protein1 = list()
+    peppos1 = list()
     pepseq1 = list()
     linkpos1 = list()
     protein2 = list()
+    peppos2 = list()
     pepseq2 = list()
     linkpos2 = list()
     score = list()
     id = list()
     has_scores = True
     for i, xl in enumerate(xls):
+        pos1 = xl["alpha_peptide_crosslink_position"]
         protein1.append(";".join(xl["alpha_proteins"]))
+        peppos1.append(
+            ";".join(
+                [
+                    str(pos - pos1 + 1)
+                    for pos in xl["alpha_proteins_crosslink_positions"]
+                ]
+            )
+        )
         pepseq1.append(xl["alpha_peptide"])
-        linkpos1.append(
-            ";".join([str(pos) for pos in xl["alpha_proteins_crosslink_positions"]])
-        )
+        linkpos1.append(pos1)
+        pos2 = xl["beta_peptide_crosslink_position"]
         protein2.append(";".join(xl["beta_proteins"]))
-        pepseq2.append(xl["beta_peptide"])
-        linkpos2.append(
-            ";".join([str(pos) for pos in xl["beta_proteins_crosslink_positions"]])
+        peppos2.append(
+            ";".join(
+                [str(pos - pos2 + 1) for pos in xl["beta_proteins_crosslink_positions"]]
+            )
         )
+        pepseq2.append(xl["beta_peptide"])
+        linkpos2.append(pos2)
         if xl["score"] is not None:
             score.append(xl["score"])
         else:
             has_scores = False
-        id.append(i)
+        id.append(i + 1)
     xinet_df = pd.DataFrame()
     if has_scores:
         xinet_df = pd.DataFrame(
             {
                 "Protein1": protein1,
+                "PepPos1": peppos1,
                 "PepSeq1": pepseq1,
                 "LinkPos1": linkpos1,
                 "Protein2": protein2,
+                "PepPos2": peppos2,
                 "PepSeq2": pepseq2,
                 "LinkPos2": linkpos2,
                 "Score": score,
@@ -83,9 +98,11 @@ def __xls_to_xinet(
         xinet_df = pd.DataFrame(
             {
                 "Protein1": protein1,
+                "PepPos1": peppos1,
                 "PepSeq1": pepseq1,
                 "LinkPos1": linkpos1,
                 "Protein2": protein2,
+                "PepPos2": peppos2,
                 "PepSeq2": pepseq2,
                 "LinkPos2": linkpos2,
                 "Id": id,
