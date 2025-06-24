@@ -92,7 +92,7 @@ def pipeline(
     :: transform.targets_only() :: params :: no params
     """
     # steps: reading
-    pr = read(files, engine, crosslinker, **kwargs)
+    pr = read(files, engine=engine, crosslinker=crosslinker, **kwargs)
     # steps: summary (before)
     print("---- Summary statistics before pipeline ----")
     _ = transform_summary(pr)
