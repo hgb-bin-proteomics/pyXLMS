@@ -39,9 +39,9 @@ def pipeline(
         "XlinkX",
     ],
     crosslinker: str,
-    unique: Optional[bool | Dict[str, Any]] = None,
-    validate: Optional[bool | Dict[str, Any]] = None,
-    targets_only: Optional[bool] = None,
+    unique: Optional[bool | Dict[str, Any]] = True,
+    validate: Optional[bool | Dict[str, Any]] = True,
+    targets_only: Optional[bool] = True,
     **kwargs,
 ) -> Dict[str, Any]:
     r"""
