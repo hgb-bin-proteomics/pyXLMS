@@ -115,6 +115,24 @@ def pipeline(
     # steps: summary (after)
     print("---- Summary statistics after pipeline ----")
     _ = transform_summary(pr)
+    # steps: pipeline summary
+    print("---- Performed pipeline steps ----")
+    print(":: parser.read() ::")
+    print(":: parser.read() :: params :: <params omitted>")
+    if unique is not None:
+        if isinstance(unique, dict) or (isinstance(unique, bool) and unique):
+            print(":: transform.unique() ::")
+            for k, v in unique_params.items():
+                print(f":: transform.unique() :: params :: {k}={v}")
+    if validate is not None:
+        if isinstance(validate, dict) or (isinstance(validate, bool) and validate):
+            print(":: transform.validate() ::")
+            for k, v in validate_params.items():
+                print(f":: transform.validate() :: params :: {k}={v}")
+    if targets_only is not None and targets_only:
+        print(":: transform.targets_only() ::")
+        print(":: transform.targets_only() :: params :: no params")
+    # steps: finalize
     if not isinstance(pr, dict):
         raise RuntimeError(
             "Something went wrong while running the pipeline.\n"
