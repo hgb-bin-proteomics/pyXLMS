@@ -2,5 +2,6 @@
 
 - Every function needs to be documented
 - Every function needs to have sufficient tests
-- Preferably open pull requests to develop first
+- Open pull requests to develop first
 - Pull requests must pass all CI checks
+- If new parser, parser -> read and pipeline -> read
