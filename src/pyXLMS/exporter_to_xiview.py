@@ -151,6 +151,50 @@ def to_xiview(
     >>> crosslinks = targets_only(pr)["crosslinks"]
     >>> cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
     >>> to_xiview(cas9, filename="crosslinks_xiVIEW.csv")
+        AbsPos1 AbsPos2 Protein1 Protein2 Decoy1 Decoy2   Score
+    0       779     779     Cas9     Cas9  FALSE  FALSE  119.83
+    1       866     866     Cas9     Cas9  FALSE  FALSE  114.43
+    2       677     677     Cas9     Cas9  FALSE  FALSE  200.98
+    3       677      48     Cas9     Cas9  FALSE  FALSE   94.47
+    4        34      34     Cas9     Cas9  FALSE  FALSE  110.48
+    ..      ...     ...      ...      ...    ...    ...     ...
+    248     396     396     Cas9     Cas9  FALSE  FALSE  305.63
+    249     688     952     Cas9     Cas9  FALSE  FALSE  110.46
+    250     793    1180     Cas9     Cas9  FALSE  FALSE  288.36
+    251     575     688     Cas9     Cas9  FALSE  FALSE  376.15
+    252    1180    1180     Cas9     Cas9  FALSE  FALSE  437.10
+    [253 rows x 7 columns]
+
+    >>> from pyXLMS.exporter import to_xiview
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import targets_only
+    >>> from pyXLMS.transform import filter_proteins
+    >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> crosslinks = targets_only(pr)["crosslinks"]
+    >>> cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
+    >>> df = to_xiview(cas9, filename=None)
+
+    >>> from pyXLMS.exporter import to_xiview
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import targets_only
+    >>> from pyXLMS.transform import filter_proteins
+    >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> crosslinks = targets_only(pr)["crosslinks"]
+    >>> cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
+    >>> to_xiview(cas9, filename="crosslinks_xiVIEW.csv", minimal=False)
+        Protein1 PepPos1           PepSeq1  LinkPos1 Protein2 PepPos2         PepSeq2  LinkPos2   Score   Id
+    0       Cas9     777            GQKNSR         3     Cas9     777          GQKNSR         3  119.83    1
+    1       Cas9     864             SDKNR         3     Cas9     864           SDKNR         3  114.43    2
+    2       Cas9     676            DKQSGK         2     Cas9     676          DKQSGK         2  200.98    3
+    3       Cas9     676            DKQSGK         2     Cas9      45           HSIKK         4   94.47    4
+    4       Cas9      31             VPSKK         4     Cas9      31           VPSKK         4  110.48    5
+    ..       ...     ...               ...       ...      ...     ...             ...       ...     ...  ...
+    248     Cas9     387     MDGTEELLVKLNR        10     Cas9     387   MDGTEELLVKLNR        10  305.63  249
+    249     Cas9     682    TILDFLKSDGFANR         7     Cas9     947       YDENDKLIR         6  110.46  250
+    250     Cas9     788    IEEGIKELGSQILK         6     Cas9    1176  SSFEKNPIDFLEAK         5  288.36  251
+    251     Cas9     575  KIECFDSVEISGVEDR         1     Cas9     682  TILDFLKSDGFANR         7  376.15  252
+    252     Cas9    1176    SSFEKNPIDFLEAK         5     Cas9    1176  SSFEKNPIDFLEAK         5  437.10  253
+    [253 rows x 10 columns]
     """
     _ok = check_input(crosslinks, "crosslinks", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True
