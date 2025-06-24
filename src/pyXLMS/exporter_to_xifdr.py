@@ -140,6 +140,25 @@ def to_xifdr(
     >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> to_xifdr(csms, filename="msannika_xiFDR.csv")
+                                           run   scan          peptide1  ... peptide position 1  peptide position 2   score
+    0    XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw   2257            GQKNSR  ...                777                 777  119.83
+    1    XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw   2448            GQKNSR  ...                777                 693   13.91
+    2    XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw   2561             SDKNR  ...                864                 864  114.43
+    3    XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw   2719            DKQSGK  ...                676                 676  200.98
+    4    XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw   2792            DKQSGK  ...                676                  45   94.47
+    ..                                     ...    ...               ...  ...                ...                 ...     ...
+    821  XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw  23297     MDGTEELLVKLNR  ...                387                 387  286.05
+    822  XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw  23454  KIECFDSVEISGVEDR  ...                575                 682  376.15
+    823  XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw  23581    SSFEKNPIDFLEAK  ...               1176                1176  412.44
+    824  XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw  23683    SSFEKNPIDFLEAK  ...               1176                1176  437.10
+    825  XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw  27087    MEDESKLHKFKDFK  ...                 99                1176   15.89
+    [826 rows x 14 columns]
+
+    >>> from pyXLMS.exporter import to_xifdr
+    >>> from pyXLMS.parser import read
+    >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> csms = pr["crosslink-spectrum-matches"]
+    >>> df = to_xifdr(csms, filename=None)
     """
     _ok = check_input(csms, "csms", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True
