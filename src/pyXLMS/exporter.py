@@ -13,3 +13,4 @@ from .exporter_to_pyxlinkviewer import to_pyxlinkviewer  # noqa: F401
 from .exporter_to_xlmstools import to_xlmstools  # noqa: F401
 from .exporter_to_xinet import to_xinet  # noqa: F401
 from .exporter_to_xiview import to_xiview  # noqa: F401
+from .exporter_to_xifdr import to_xifdr  # noqa: F401
