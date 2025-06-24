@@ -46,8 +46,8 @@ def pipeline(
 ) -> Dict[str, Any]:
     r"""Runs a standard down-stream analysis pipeline for crosslinks and crosslink-spectrum-matches.
 
-    Runs a standard down-stream analysis pipeline for crosslinks and crosslink-spectrum-matches. The pipeline first
-    reads a file and subsequently optionally filters the the read data for unique crosslinks and crosslink-spectrum-matches,
+    Runs a standard down-stream analysis pipeline for crosslinks and crosslink-spectrum-matches. The pipeline first reads
+    a result file and subsequently optionally filters the the read data for unique crosslinks and crosslink-spectrum-matches,
     optionally the data is validated by false discovery rate estimation and - also optionally - only target-target matches
     are returned. Internally the pipeline calls ``parser.read()``, ``transform.unique()``, ``transform.validate()``, and
     ``transform.targets_only()``.
@@ -63,11 +63,11 @@ def pipeline(
     unique : dict of str, any, or bool, or None, default = True
         If ``transform.unique()`` should be run in the pipeline. If None or False this step is omitted.
         If True this step is run with default parameters. If a dictionary is given it should contain parameters for
-        ``transform.unique()``. Omitting a parameter in the dictionary will fall back to its default value.
+        running ``transform.unique()``. Omitting a parameter in the dictionary will fall back to its default value.
     validate : dict of str, any, or bool, or None, default = True
         If ``transform.validate()`` should be run in the pipeline. If None or False this step is omitted.
         If True this step is run with default parameters. If a dictionary is given it should contain parameters for
-        ``transform.validate()``. Omitting a parameter in the dictionary will fall back to its default value.
+        running ``transform.validate()``. Omitting a parameter in the dictionary will fall back to its default value.
     targets_only : bool, or None, default = True
         If ``transform.targets_only()`` should be run in the pipeline. If None or False this step is omitted.
     **kwargs
@@ -85,7 +85,7 @@ def pipeline(
 
     Notes
     -----
-    Various pipeline information is also printed to ``stdout``.
+    Various helpful pipeline information is also printed to ``stdout``.
 
     Examples
     --------
