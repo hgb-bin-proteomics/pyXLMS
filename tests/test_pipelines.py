@@ -45,7 +45,7 @@ def test3():
 
     with pytest.raises(
         TypeError,
-        match=r"Parameter unique has to be a dictionary of parameters for transform\.validate\(\), a boolean or None!",
+        match=r"Parameter validate has to be a dictionary of parameters for transform\.validate\(\), a boolean or None!",
     ):
         _pr = pipeline(
             "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
