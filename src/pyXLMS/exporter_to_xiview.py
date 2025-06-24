@@ -17,6 +17,7 @@ from typing import Optional
 from typing import Dict
 from typing import Any
 from typing import List
+from typing import Callable
 
 
 def __xls_to_xiview_minimal(
@@ -88,6 +89,133 @@ def __xls_to_xiview_minimal(
     if has_decoys:
         xiview_df["Decoy1"] = decoy1
         xiview_df["Decoy2"] = decoy2
+    if has_scores:
+        xiview_df["Score"] = score
+
+    if filename is not None:
+        xiview_df.to_csv(__get_filename(filename, "csv"), index=False)
+    return xiview_df
+
+
+def __get_PeakListFileName(filename: str) -> str:
+    ## replaces file extension with "mzML"
+    return ".".join(filename.split(".")[:-1]) + ".mzML"
+
+
+def __csms_to_xiview_with_peaks(
+    csms: List[Dict[str, Any]],
+    crosslinker_mass: float,
+    get_PeakListFileName: Optional[Callable[[str], str]] = None,
+    filename: Optional[str] = None,
+    unsafe: bool = False,
+) -> pd.DataFrame:
+    ## experimental export to CSV with peaks list
+    ## see -> https://xiview.org/csv-formats.php
+    ##
+    ## params:
+    ## csms -> list of crosslink-spectrum-matches
+    ## crosslinker_mass -> mono-isotopic delta modification mass of the used crosslinker
+    ## get_PeakListFileName -> function that maps csm["spectrum_file"] to PeakListFileName, by default: __get_PeakListFileName
+    ## filename -> if given, data frame is written to file
+    ## unsafe -> needs to be True in order to run, otherwise throws NotImplementedError
+    ##
+    ## warning!
+    ## this function is untested on real data!
+    ## should also only be used with mzML files, because of ScanId definition (see https://xiview.org/csv-formats.php)!
+    ##
+    ## required crosslink-spectrum-match attributes:
+    ## - alpha_proteins_crosslink_positions
+    ## - beta_proteins_crosslink_positions
+    ## - alpha_proteins
+    ## - beta_proteins
+    ## - charge
+    if not unsafe:
+        raise NotImplementedError()
+    if get_PeakListFileName is None:
+        get_PeakListFileName = __get_PeakListFileName
+
+    pepseq1 = list()
+    pepseq2 = list()
+    peppos1 = list()
+    peppos2 = list()
+    linkpos1 = list()
+    linkpos2 = list()
+    protein1 = list()
+    protein2 = list()
+    charge = list()
+    crosslinkermodmass = list()
+    scanid = list()
+    peaklistfilename = list()
+    decoy1 = list()
+    decoy2 = list()
+    score = list()
+    has_decoys = True
+    has_scores = True
+
+    for csm in csms:
+        pos1 = csm["alpha_peptide_crosslink_position"]
+        pos2 = csm["beta_peptide_crosslink_position"]
+        pepseq1.append(csm["alpha_peptide"])
+        pepseq2.append(csm["beta_peptide"])
+        peppos1.append(
+            ";".join(
+                [
+                    str(pos - pos1 + 1)
+                    for pos in csm["alpha_proteins_crosslink_positions"]
+                ]
+            )
+        )
+        peppos2.append(
+            ";".join(
+                [
+                    str(pos - pos2 + 1)
+                    for pos in csm["beta_proteins_crosslink_positions"]
+                ]
+            )
+        )
+        linkpos1.append(pos1)
+        linkpos2.append(pos2)
+        protein1.append(";".join(csm["alpha_proteins"]))
+        protein2.append(";".join(csm["beta_proteins"]))
+        charge.append(csm["charge"])
+        crosslinkermodmass.append(crosslinker_mass)
+        scanid.append(csm["scan_nr"])
+        peaklistfilename.append(get_PeakListFileName(csm["spectrum_file"]))
+        if csm["alpha_decoy"] is not None and csm["beta_decoy"] is not None:
+            if csm["alpha_decoy"]:
+                decoy1.append("TRUE")
+            else:
+                decoy1.append("FALSE")
+            if csm["beta_decoy"]:
+                decoy2.append("TRUE")
+            else:
+                decoy2.append("FALSE")
+        else:
+            has_decoys = False
+        if csm["score"] is not None:
+            score.append(csm["score"])
+        else:
+            has_scores = False
+
+    xiview_df = pd.DataFrame(
+        {
+            "PepSeq1": pepseq1,
+            "PepSeq2": pepseq2,
+            "PepPos1": peppos1,
+            "PepPos2": peppos2,
+            "LinkPos1": linkpos1,
+            "LinkPos2": linkpos2,
+            "Protein1": protein1,
+            "Protein2": protein2,
+            "Charge": charge,
+            "CrossLinkerModMass": crosslinkermodmass,
+            "ScanId": scanid,
+            "PeakListFileName": peaklistfilename,
+        }
+    )
+    if has_decoys:
+        xiview_df["Decoy 1"] = decoy1
+        xiview_df["Decoy 2"] = decoy2
     if has_scores:
         xiview_df["Score"] = score
 
