@@ -47,10 +47,10 @@ def pipeline(
     r"""Runs a standard down-stream analysis pipeline for crosslinks and crosslink-spectrum-matches.
 
     Runs a standard down-stream analysis pipeline for crosslinks and crosslink-spectrum-matches. The pipeline first
-    reads a file and subsequently optionally filters the the read data for unique crosslinks and crosslink-spectrum-
-    matches, optionally the data is validated by false discovery rate estimation and - also optionally - only target-
-    target matches are returned. Internally the pipeline calls ``parser.read()``, ``transform.unique()``,
-    ``transform.validate()``, and ``transform.targets_only()``.
+    reads a file and subsequently optionally filters the the read data for unique crosslinks and crosslink-spectrum-matches,
+    optionally the data is validated by false discovery rate estimation and - also optionally - only target-target matches
+    are returned. Internally the pipeline calls ``parser.read()``, ``transform.unique()``, ``transform.validate()``, and
+    ``transform.targets_only()``.
 
     Parameters
     ----------
