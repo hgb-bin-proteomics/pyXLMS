@@ -44,6 +44,53 @@ def pipeline(
     targets_only: Optional[bool] = None,
     **kwargs,
 ) -> Dict[str, Any]:
+    r"""
+    Examples
+    --------
+    >>> from pyXLMS.pipelines import pipeline
+    >>> pr = pipeline("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...               engine="MS Annika",
+    ...               crosslinker="DSS",
+    ...               unique=True,
+    ...               validate={"fdr": 0.05, "formula":"(TD-DD)/TT"},
+    ...               targets_only=True)
+    Reading MS Annika CSMs...: 100%|██████████████████████████████████████████████████| 826/826 [00:00<00:00, 10337.98it/s]
+    ---- Summary statistics before pipeline ----
+    Number of CSMs: 826.0
+    Number of unique CSMs: 826.0
+    Number of intra CSMs: 803.0
+    Number of inter CSMs: 23.0
+    Number of target-target CSMs: 786.0
+    Number of target-decoy CSMs: 39.0
+    Number of decoy-decoy CSMs: 1.0
+    Minimum CSM score: 1.11
+    Maximum CSM score: 452.99
+    Iterating over scores for FDR calculation...:   0%|                                            | 0/826 [00:00<?, ?it/s]
+    ---- Summary statistics after pipeline ----
+    Number of CSMs: 786.0
+    Number of unique CSMs: 786.0
+    Number of intra CSMs: 774.0
+    Number of inter CSMs: 12.0
+    Number of target-target CSMs: 786.0
+    Number of target-decoy CSMs: 0.0
+    Number of decoy-decoy CSMs: 0.0
+    Minimum CSM score: 1.28
+    Maximum CSM score: 452.99
+    ---- Performed pipeline steps ----
+    :: parser.read() ::
+    :: parser.read() :: params :: <params omitted>
+    :: transform.unique() ::
+    :: transform.unique() :: params :: by=peptide
+    :: transform.unique() :: params :: score=higher_better
+    :: transform.validate() ::
+    :: transform.validate() :: params :: fdr=0.05
+    :: transform.validate() :: params :: formula=(TD-DD)/TT
+    :: transform.validate() :: params :: score=higher_better
+    :: transform.validate() :: params :: separate_intra_inter=False
+    :: transform.validate() :: params :: ignore_missing_labels=False
+    :: transform.targets_only() ::
+    :: transform.targets_only() :: params :: no params
+    """
     # steps: reading
     pr = read(files, engine, crosslinker, **kwargs)
     # steps: summary (before)
