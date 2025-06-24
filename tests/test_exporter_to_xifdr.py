@@ -80,7 +80,7 @@ def test4():
     crosslinks = [xl1, xl2]
 
     with pytest.raises(
-        RuntimeError,
+        TypeError,
         match="Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!",
     ):
         _df = to_xifdr(crosslinks, filename=None)
