@@ -83,6 +83,10 @@ def pipeline(
     TypeError
         If any of the parameters do not have the correct type.
 
+    Notes
+    -----
+    Various pipeline information is also printed to ``stdout``.
+
     Examples
     --------
     >>> from pyXLMS.pipelines import pipeline
