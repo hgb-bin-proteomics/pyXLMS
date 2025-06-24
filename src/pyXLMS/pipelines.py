@@ -44,7 +44,45 @@ def pipeline(
     targets_only: Optional[bool] = True,
     **kwargs,
 ) -> Dict[str, Any]:
-    r"""
+    r"""Runs a standard down-stream analysis pipeline for crosslinks and crosslink-spectrum-matches.
+
+    Runs a standard down-stream analysis pipeline for crosslinks and crosslink-spectrum-matches. The pipeline first
+    reads a file and subsequently optionally filters the the read data for unique crosslinks and crosslink-spectrum-
+    matches, optionally the data is validated by false discovery rate estimation and - also optionally - only target-
+    target matches are returned. Internally the pipeline calls ``parser.read()``, ``transform.unique()``,
+    ``transform.validate()``, and ``transform.targets_only()``.
+
+    Parameters
+    ----------
+    files : str, list of str, or file stream
+        The name/path of the result file(s) or a file-like object/stream.
+    engine : "Custom", "MaxQuant", "MaxLynx", "MS Annika", "mzIdentML", "pLink", "Scout", "xiSearch/xiFDR", or "XlinkX"
+        Crosslink search engine or format of the result file.
+    crosslinker : str
+        Name of the used cross-linking reagent, for example "DSSO".
+    unique : dict of str, any, or bool, or None, default = True
+        If ``transform.unique()`` should be run in the pipeline. If None or False this step is omitted.
+        If True this step is run with default parameters. If a dictionary is given it should contain parameters for
+        ``transform.unique()``. Omitting a parameter in the dictionary will fall back to its default value.
+    validate : dict of str, any, or bool, or None, default = True
+        If ``transform.validate()`` should be run in the pipeline. If None or False this step is omitted.
+        If True this step is run with default parameters. If a dictionary is given it should contain parameters for
+        ``transform.validate()``. Omitting a parameter in the dictionary will fall back to its default value.
+    targets_only : bool, or None, default = True
+        If ``transform.targets_only()`` should be run in the pipeline. If None or False this step is omitted.
+    **kwargs
+        Any additional parameters will be passed to the specific result file parsers.
+
+    Returns
+    -------
+    dict of str, any
+        The transformed parser_result after all pipeline steps are completed.
+
+    Raises
+    ------
+    TypeError
+        If any of the parameters do not have the correct type.
+
     Examples
     --------
     >>> from pyXLMS.pipelines import pipeline
