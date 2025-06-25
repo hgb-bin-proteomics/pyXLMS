@@ -5,7 +5,7 @@
 # micha.birklbauer@gmail.com
 
 __all__ = ["constants", "data", "exporter", "parser", "pipelines", "transform"]
-__version__ = "0.0.4"
+__version__ = "1.0.0"
 __author__ = "Micha Johannes Birklbauer"
 
 from . import constants

@@ -14,8 +14,8 @@ sys.path.insert(0, os.path.abspath("../src/"))
 project = "pyXLMS"
 copyright = "2025, Micha Johannes Birklbauer"
 author = "Micha Johannes Birklbauer"
-version = "0.2"
-release = "0.2.0"
+version = "1.0"
+release = "1.0.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -55,6 +55,10 @@ html_theme_options = {
         "image_dark": "https://github.com/hgb-bin-proteomics/MSAnnika/raw/master/logo/icons/icon.png",
     },
     "external_links": [
+        {
+            "name": "Web App",
+            "url": "https://github.com/hgb-bin-proteomics/pyXLMS",
+        },
         {
             "name": "Documentation",
             "url": "https://hgb-bin-proteomics.github.io/pyXLMS-docs",
