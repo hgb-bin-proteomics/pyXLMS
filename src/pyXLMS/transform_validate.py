@@ -392,6 +392,11 @@ def validate(
         If the number of DD matches exceeds the number of TD matches for formula '(TD-DD)/TT'.
         FDR can not be estimated with the formula '(TD-DD)/TT' in these cases.
 
+    Notes
+    -----
+    Please note that progress bars will usually not complete when running this function. This is by design as it is not
+    necessary to iterate over all scores to estimate FDR.
+
     Examples
     --------
     >>> from pyXLMS.parser import read
