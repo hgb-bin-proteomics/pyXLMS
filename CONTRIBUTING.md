@@ -24,8 +24,8 @@ there are a few guidelines for code contributions:
 - pyXLMS is built using a functional approach rather than an object-oriented one
   for two reasons:
   - Performance is usually better
-  - All data remains easy to serialize  
-  Preferably your code follows this style.
+  - All data remains easy to serialize
+- Preferably your code follows this functional-oriented style.
 - Code needs to be type-hinted and type-checked.
   - Type-checking is done with `pyright`.
   - `ignore` flags may be used when there is a clear issue with the type checker.
