@@ -2,8 +2,7 @@ name: Master Branch Protection
 
 on:
   pull_request:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
   check-branch:
