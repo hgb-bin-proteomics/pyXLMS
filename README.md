@@ -1,4 +1,5 @@
-# pyXLMS - A python package to process protein cross-linking data
+# pyXLMS
+_a python package to process protein cross-linking data_
 
 **pyXLMS** is a python package and web application with graphical user interface that aims to simplify and streamline the intermediate step of
 connecting crosslink search engine results with down-stream analysis tools, enabling researchers even without bioinformatics knowledge to
@@ -24,7 +25,9 @@ or [IMP-X-FDR](https://github.com/vbc-proteomics-org/imp-x-fdr).
 
 ## Installation
 
-pyXLMS can be installed via pip:
+pyXLMS supports python version 3.7 and greater!
+
+pyXLMS can easily be installed via pip:
 ```
 pip install pyxlms
 ```
