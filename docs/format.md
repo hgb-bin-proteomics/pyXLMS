@@ -6,6 +6,8 @@ Reading files with `parser.read(*, engine="Custom")` requires the following data
 
 ## Crosslink-Spectrum-Matches
 
+Data required for parsing crosslink-spectrum-matches:
+
 | Column Name                        | Required | Data Type | Example 1 | Example 2     | Description |
 |:-----------------------------------|:--------:|:----------|:----------|:--------------|:------------|
 | Alpha Peptide                      | ✅       | str       | PEPKTIDE  | KPEPMTIDE     | Unmodified amino acid sequence of the alpha peptide in uppercase letters |
@@ -54,6 +56,8 @@ same position, their names should be delimited by a comma `,`. See examples belo
 - `(5:[Substitution, Oxidation|13.541798])`
 
 ## Crosslinks
+
+Data required for parsing crosslinks:
 
 | Column Name                        | Required | Data Type | Example 1 | Example 2     | Description |
 |:-----------------------------------|:--------:|:----------|:----------|:--------------|:------------|
