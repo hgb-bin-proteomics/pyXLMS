@@ -41,11 +41,11 @@ Additional resources:
 
 Modifications are encoded with the following values:
 
-- position: The 1-based position of the modification in the peptide sequence
+- _position_: The 1-based position of the modification in the peptide sequence
   - should be parse-able as `int` data type
-- name: The name of the modification, for example `Oxidation`
+- _name_: The name of the modification, for example `Oxidation`
   - should be parse-able as `str` data type
-- mass: The monoisotopic delta mass of the modification, for example `15.994915`
+- _mass_: The monoisotopic delta mass of the modification, for example `15.994915`
   - should be parse-able as `float` data type
 
 Any modification is then encoded as `(position:[name|mass])`, multiple modifications should be delimited by a semicolon `;`. In the rare case that there is more than one modification on the
