@@ -46,4 +46,4 @@ guidelines, we will still have a look and then adapt ourselves. Thank you!
 
 *****
 
-Thank you for using and contributing to pyXLMS!
+**Thank you for using and contributing to pyXLMS!**
