@@ -56,6 +56,10 @@ html_theme_options = {
     },
     "external_links": [
         {
+            "name": "Web App",
+            "url": "https://github.com/hgb-bin-proteomics/pyXLMS",
+        },
+        {
             "name": "Documentation",
             "url": "https://hgb-bin-proteomics.github.io/pyXLMS-docs",
         },
