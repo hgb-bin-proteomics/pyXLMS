@@ -14,13 +14,13 @@ dictionary with the following keys and values, values that are optional may be
 `None`:
 
 | Key | Value Type | Value Optional | Value Description |
-|:----|:-----------|:------------------|
-| "data_type" | `Literal["crosslink-spectrum-match"]` | ❌ | Data type of the dictionary. |
-| "completeness" | `Literal["full", "partial"]` | ❌ | Full crosslink-spectrum-matches have all their values set, partial crosslink-spectrum-matches have one or more missing values. |
-| "alpha_peptide" | `str` | ❌ | The unmodified amino acid sequence of the alpha peptide. |
-| "alpha_modifications" | `Dict[int, Tuple[str, float]]` | ✅ | The modifications of the alpha peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass. N-terminal modifications are denoted with position 0. C-terminal modifications are denoted with position `len(peptide) + 1`. If the peptide is not modified an empty dictionary is given. |
-| "alpha_peptide_crosslink_position" | `int` | ❌ | The position of the crosslinker in the sequence of the alpha peptide (1-based). |
-| "alpha_proteins" | `List[str]` | ✅ | The accessions of proteins that the alpha peptide is associated with. |
+|:----|:-----------|:---------------|:------------------|
+| "data_type"                          | `Literal["crosslink-spectrum-match"]` | ❌ | Data type of the dictionary. |
+| "completeness"                       | `Literal["full", "partial"]` | ❌ | Full crosslink-spectrum-matches have all their values set, partial crosslink-spectrum-matches have one or more missing values. |
+| "alpha_peptide"                      | `str` | ❌ | The unmodified amino acid sequence of the alpha peptide. |
+| "alpha_modifications"                | `Dict[int, Tuple[str, float]]` | ✅ | The modifications of the alpha peptide given as a dictionary that maps peptide position (1-based) to modification given as a tuple of modification name and modification delta mass. N-terminal modifications are denoted with position 0. C-terminal modifications are denoted with position `len(peptide) + 1`. If the peptide is not modified an empty dictionary is given. |
+| "alpha_peptide_crosslink_position"   | `int` | ❌ | The position of the crosslinker in the sequence of the alpha peptide (1-based). |
+| "alpha_proteins"                     | `List[str]` | ✅ | The accessions of proteins that the alpha peptide is associated with. |
 | "alpha_proteins_crosslink_positions" | `List[int]` | ✅ | Positions of the crosslink in the proteins of the alpha peptide (1-based). |
 | "alpha_proteins_peptide_positions" | `List[int]` | ✅ | Positions of the alpha peptide in the corresponding proteins (1-based). |
 | "alpha_score" | `float` | ✅ | Identification score of the alpha peptide. |
