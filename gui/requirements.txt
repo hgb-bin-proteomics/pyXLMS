@@ -1,0 +1,2 @@
+streamlit
+pyxlms>=1
