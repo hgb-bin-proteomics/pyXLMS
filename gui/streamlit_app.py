@@ -373,6 +373,11 @@ def main_page():
                                 raise ValueError(
                                     "Can't annotate crosslink position when no FASTA file is uploaded!"
                                 )
+                            if not targets_only:
+                                _ = st.warning(
+                                    "Might not be able to (re-)annotate positions if results contain decoy matches!",
+                                    icon="⚠️",
+                                )
                             st.session_state["pr"] = reannotating_positions(
                                 st.session_state["pr"],
                                 uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
@@ -431,6 +436,11 @@ def main_page():
                             if uploaded_fasta is None:  # pyright: ignore[reportPossiblyUnboundVariable]
                                 raise ValueError(
                                     "Can't annotate crosslink position when no FASTA file is uploaded!"
+                                )
+                            if not targets_only:
+                                _ = st.warning(
+                                    "Might not be able to (re-)annotate positions if results contain decoy matches!",
+                                    icon="⚠️",
                                 )
                             st.session_state["pr"] = reannotating_positions(
                                 st.session_state["pr"],
