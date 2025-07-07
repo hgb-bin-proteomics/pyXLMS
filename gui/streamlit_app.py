@@ -39,6 +39,22 @@ from typing import Any
 
 
 @st.cache_data
+def dataframe_to_csv_stream(dataframe: pd.DataFrame, sep: str, index: bool) -> bytes:
+    return dataframe.to_csv(sep=sep, index=index).encode("utf-8")
+
+
+@st.cache_data
+def dataframe_to_xlsx_stream(
+    dataframe: pd.DataFrame, sheet_name: str, index: bool
+) -> io.BytesIO:
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:  # pyright: ignore[reportArgumentType]
+        dataframe.to_excel(writer, index=index, sheet_name=sheet_name)
+        writer.close()
+    return buffer
+
+
+@st.cache_data
 def read_file(
     uploaded_file: io.BytesIO,
     engine: str,
@@ -474,6 +490,43 @@ def main_page():
                 summary_stats_df = st.dataframe(
                     pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
                 )
+
+                l7, r7 = st.columns(2)
+
+                with l7:
+                    csms_dl_csv = st.download_button(
+                        label="Download crosslink-spectrum-matches as .csv!",
+                        data=dataframe_to_csv_stream(
+                            transform.to_dataframe(csms),
+                            sep=",",
+                            index=False,
+                        ),
+                        file_name="crosslink-spectrum-matches.csv",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/csv",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Download crosslink-spectrum-matches in comma-separated format.",
+                    )
+
+                with r7:
+                    csms_dl_excel = st.download_button(
+                        label="Download crosslink-spectrum-matches as .xlsx!",
+                        data=dataframe_to_xlsx_stream(
+                            transform.to_dataframe(csms),
+                            sheet_name="crosslink-spectrum-matches",
+                            index=False,
+                        ),
+                        file_name="crosslink-spectrum-matches.xlsx",
+                        on_click="ignore",
+                        type="primary",
+                        mime="application/vnd.ms-excel",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Download crosslink-spectrum-matches in Microsoft Excel format.",
+                    )
+
             if st.session_state["pr"]["crosslinks"] is not None:
                 crosslinks_header = st.subheader("Read Crosslinks", divider="grey")
                 crosslinks = st.session_state["pr"]["crosslinks"]
@@ -486,6 +539,42 @@ def main_page():
                 summary_stats_df = st.dataframe(
                     pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
                 )
+
+                l8, r8 = st.columns(2)
+
+                with l8:
+                    crosslinks_dl_csv = st.download_button(
+                        label="Download crosslinks as .csv!",
+                        data=dataframe_to_csv_stream(
+                            transform.to_dataframe(crosslinks),
+                            sep=",",
+                            index=False,
+                        ),
+                        file_name="crosslinks.csv",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/csv",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Download crosslinks in comma-separated format.",
+                    )
+
+                with r8:
+                    crosslinks_dl_excel = st.download_button(
+                        label="Download crosslinks as .xlsx!",
+                        data=dataframe_to_xlsx_stream(
+                            transform.to_dataframe(crosslinks),
+                            sheet_name="crosslinks",
+                            index=False,
+                        ),
+                        file_name="crosslinks.xlsx",
+                        on_click="ignore",
+                        type="primary",
+                        mime="application/vnd.ms-excel",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Download crosslinks in Microsoft Excel format.",
+                    )
 
 
 # side bar and main page loader
