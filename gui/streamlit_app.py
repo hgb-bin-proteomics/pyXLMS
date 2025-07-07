@@ -24,6 +24,7 @@
 
 import io
 import os
+import pandas as pd
 from tempfile import NamedTemporaryFile
 
 from pyXLMS import parser
@@ -466,12 +467,24 @@ def main_page():
                 csms_df = st.dataframe(
                     transform.to_dataframe(csms), use_container_width=True
                 )
+                summary_stats = transform.summary(
+                    st.session_state["pr"]["crosslink-spectrum-matches"]
+                )
+                summary_stats_md = st.markdown("**Summary Statistics:**")
+                summary_stats_df = st.dataframe(
+                    pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
+                )
             if st.session_state["pr"]["crosslinks"] is not None:
                 crosslinks_header = st.subheader("Read Crosslinks", divider="grey")
                 crosslinks = st.session_state["pr"]["crosslinks"]
                 crosslinks_info = st.markdown(f"**Read {len(crosslinks)} crosslinks:**")
                 crosslinks_df = st.dataframe(
                     transform.to_dataframe(crosslinks), use_container_width=True
+                )
+                summary_stats = transform.summary(st.session_state["pr"]["crosslinks"])
+                summary_stats_md = st.markdown("**Summary Statistics:**")
+                summary_stats_df = st.dataframe(
+                    pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
                 )
 
 
