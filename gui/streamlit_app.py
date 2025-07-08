@@ -4,6 +4,7 @@
 # dependencies = [
 #   "streamlit",
 #   "pyxlms>=1",
+#   "xlsxwriter",
 # ]
 # ///
 
@@ -24,6 +25,7 @@
 
 import io
 import os
+import json
 import pandas as pd
 from tempfile import NamedTemporaryFile
 
@@ -36,6 +38,11 @@ import streamlit as st
 from typing import Optional
 from typing import Dict
 from typing import Any
+
+
+@st.cache_data
+def to_json(data: Dict[str, Any]) -> bytes:
+    return json.dumps(data).encode("utf-8")
 
 
 @st.cache_data
@@ -491,7 +498,7 @@ def main_page():
                     pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
                 )
 
-                l7, r7 = st.columns(2)
+                l7, center_7, r7 = st.columns(3)
 
                 with l7:
                     csms_dl_csv = st.download_button(
@@ -510,7 +517,7 @@ def main_page():
                         help="Download crosslink-spectrum-matches in comma-separated format.",
                     )
 
-                with r7:
+                with center_7:
                     csms_dl_excel = st.download_button(
                         label="Download crosslink-spectrum-matches as .xlsx!",
                         data=dataframe_to_xlsx_stream(
@@ -527,6 +534,19 @@ def main_page():
                         help="Download crosslink-spectrum-matches in Microsoft Excel format.",
                     )
 
+                with r7:
+                    csms_dl_json = st.download_button(
+                        label="Download crosslink-spectrum-matches as .json!",
+                        data=to_json(csms),
+                        file_name="crosslink-spectrum-matches.json",
+                        on_click="ignore",
+                        type="primary",
+                        mime="application/json",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Download crosslink-spectrum-matches in JavaScript Object Notation (JSON) format.",
+                    )
+
             if st.session_state["pr"]["crosslinks"] is not None:
                 crosslinks_header = st.subheader("Read Crosslinks", divider="grey")
                 crosslinks = st.session_state["pr"]["crosslinks"]
@@ -540,7 +560,7 @@ def main_page():
                     pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
                 )
 
-                l8, r8 = st.columns(2)
+                l8, center_8, r8 = st.columns(3)
 
                 with l8:
                     crosslinks_dl_csv = st.download_button(
@@ -559,7 +579,7 @@ def main_page():
                         help="Download crosslinks in comma-separated format.",
                     )
 
-                with r8:
+                with center_8:
                     crosslinks_dl_excel = st.download_button(
                         label="Download crosslinks as .xlsx!",
                         data=dataframe_to_xlsx_stream(
@@ -574,6 +594,19 @@ def main_page():
                         icon=":material/download:",
                         use_container_width=True,
                         help="Download crosslinks in Microsoft Excel format.",
+                    )
+
+                with r8:
+                    crosslinks_dl_json = st.download_button(
+                        label="Download crosslinks as .json!",
+                        data=to_json(crosslinks),
+                        file_name="crosslinks.json",
+                        on_click="ignore",
+                        type="primary",
+                        mime="application/json",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Download crosslinks in JavaScript Object Notation (JSON) format.",
                     )
 
 
