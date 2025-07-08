@@ -23,6 +23,8 @@
 #####################################################
 """
 
+from __future__ import annotations
+
 import io
 import os
 import json
@@ -37,6 +39,7 @@ import streamlit as st
 
 from typing import Optional
 from typing import Dict
+from typing import List
 from typing import Any
 
 
@@ -101,513 +104,685 @@ def read_file(
 
 @st.cache_data
 def reannotating_positions(
-    pr: Dict[str, Any], uploaded_fasta: io.BytesIO
-) -> Dict[str, Any]:
+    pr: List[Dict[str, Any]] | Dict[str, Any], uploaded_fasta: io.BytesIO
+) -> List[Dict[str, Any]] | Dict[str, Any]:
     #
     with NamedTemporaryFile(
         suffix=os.path.splitext(uploaded_fasta.name)[1], delete_on_close=False
     ) as f:  # pyright: ignore[reportCallIssue]
         f.write(uploaded_fasta.getbuffer())
         f.close()
-        new_pr = transform.reannotate_positions(pr, f.name)
-        if not isinstance(new_pr, dict):
-            raise RuntimeError(
-                "Someting went wrong when calling transform.reannotate_positions()!"
+        return transform.reannotate_positions(pr, f.name)
+
+
+# input tab
+def input_tab():
+    general_description = """
+    _a python package to process protein cross-linking data_
+
+    **pyXLMS** is a python package and web application with graphical user interface that aims to simplify and streamline the intermediate step of
+    connecting crosslink search engine results with down-stream analysis tools, enabling researchers even without bioinformatics knowledge to
+    conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
+    insight.
+
+    Currently pyXLMS supports input from six different crosslink search engines:
+    [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
+    [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
+    [pLink 2 and pLink 3](http://pfind.ict.ac.cn/se/plink/),
+    [Scout](https://github.com/diogobor/Scout),
+    [xiSearch](https://www.rappsilberlab.org/software/xisearch/) and [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
+    [XlinkX](https://docs.thermofisher.com/r/XlinkX-3.2-Quick-Start-Guide/),
+    as well as the [mzIdentML format](https://www.psidev.info/mzidentml) of the HUPO Proteomics Standards Initiative,
+    and a well-documented and [human-readable custom tabular format](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/format.md).
+
+    Down-stream analysis is facilitated by functionality that is directly available within pyXLMS such as validation, annotation, aggregation,
+    and filtering of crosslink-spectrum-matches and crosslinks.
+
+    In addition, the data can easily be exported to the required data format of the various available down-stream analysis tools such as
+    [xiNET](https://crosslinkviewer.org/index.php),
+    [xiVIEW](https://www.xiview.org/index.php),
+    [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
+    [XlinkDB](https://xlinkdb.gs.washington.edu/xlinkdb/),
+    [xlms-tools](https://gitlab.com/topf-lab/xlms-tools),
+    pyMOL (via [pyXlinkViewer](https://github.com/BobSchiffrin/PyXlinkViewer)),
+    ChimeraX (via [XMAS](https://github.com/ScheltemaLab/ChimeraX_XMAS_bundle)),
+    or [IMP-X-FDR](https://github.com/vbc-proteomics-org/imp-x-fdr).
+
+    **Try it yourself below!** 😉
+    """
+    description = st.markdown(general_description)
+
+    header_1 = st.subheader("File Upload", divider="grey")
+
+    uploaded_file = st.file_uploader(
+        "Upload a cross-linking result file from any of the supported search engines or formats:",
+        type=None,
+        accept_multiple_files=False,
+        key="uploaded_file",
+        help="Upload a cross-linking result file from any of the supported search engines or formats.",
+    )
+
+    l1, r1 = st.columns(2)
+
+    with l1:
+        search_engine = st.selectbox(
+            "Select a crosslink search engine or file format:",
+            options=[
+                "Custom",
+                "MaxQuant",
+                "MaxLynx",
+                "MS Annika",
+                "mzIdentML",
+                "pLink",
+                "Scout",
+                "xiSearch/xiFDR",
+                "XlinkX",
+            ],
+            index=None,
+            key="search_engine",
+            help="The crosslink search engine or file format of the uploaded file.",
+        )
+
+    with r1:
+        crosslinker = st.selectbox(
+            "Select the used cross-linking reagent:",
+            options=["Custom"] + list(constants.CROSSLINKERS.keys()),
+            index=None,
+            key="crosslinker",
+            help="The crosslinker used in the experiment of the uploaded result file.",
+        )
+
+    l2, center_2, r2 = st.columns(3)
+
+    with l2:
+        parse_modifications = st.toggle(
+            "Parse modifications",
+            key="parse_modifications",
+            help="If post-translational-modifications should be parsed or not.",
+        )
+
+    with center_2:
+        reannotate_positions = st.toggle(
+            "(Re-)Annotate crosslink positions",
+            key="reannotate_positions",
+            help="If crosslink positions in proteins should be (re-)annotated.",
+        )
+
+    with r2:
+        unique = st.toggle(
+            "Filter for unique crosslink spectrum matches and crosslinks",
+            key="unique",
+            help="If crosslink spectrum matches and crosslinks should be filtered for unique matches only.",
+        )
+
+    l3, center_3, r3 = st.columns(3)
+
+    with l3:
+        validate = st.toggle(
+            "Validate via FDR estimation",
+            key="validate",
+            help="If crosslink spectrum matches and crosslinks should be validated via false discovery rate estimation.",
+        )
+
+    with center_3:
+        targets_only = st.toggle(
+            "Filter for target matches only",
+            key="targets_only",
+            help="If crosslink spectrum matches and crosslinks should be filtered to contain only target-target matches.",
+        )
+
+    with r3:
+        aggregate = st.toggle(
+            "Aggregate crosslink spectrum matches to crosslinks",
+            key="aggregate",
+            help="If crosslink spectrum matches should be aggregated and grouped to crosslinks/residue pairs.",
+        )
+
+    l4, center_4, r4 = st.columns(3)
+
+    with l4:
+        validate_aggregated = st.toggle(
+            "Validate aggregated crosslinks via FDR estimation",
+            key="validate_aggregated",
+            help="If aggregated crosslinks should be validated via false discovery rate estimation.",
+        )
+
+    crosslinker_name = None
+    crosslinker_mass = None
+    if crosslinker == "Custom":
+        l5, r5 = st.columns(2)
+
+        with l5:
+            crosslinker_name = st.text_input(
+                "Name of the crosslinker:",
+                value=None,
+                max_chars=50,
+                placeholder="DSSO",
+                key="crosslinker_name",
+                help="Name of the crosslinker used in the experiment of the uploaded result file.",
             )
-        return new_pr
+
+        with r5:
+            crosslinker_mass = st.number_input(
+                "Mass of the crosslinker:",
+                value=None,
+                step=0.00001,
+                format="%0.5f",
+                placeholder="158.00376",
+                key="crosslinker_mass",
+                help="Monoisotopic delta mass of the crosslinker used in the experiment of the uploaded result file.",
+            )
+
+    if reannotate_positions:
+        uploaded_fasta = st.file_uploader(
+            "Upload a FASTA file for (re-)annotation:",
+            type="fasta",
+            accept_multiple_files=False,
+            key="uploaded_fasta",
+            help="Upload a FASTA file containing protein sequences for the provided crosslink spectrum matches and crosslinks.",
+        )
+
+    if unique or aggregate:
+        group_by = st.selectbox(
+            "Group crosslinks by:",
+            options=[
+                "Peptide sequence and peptide crosslink position",
+                "Protein Crosslink Position",
+            ],
+            index=0,
+            key="group_by",
+            help="If crosslinks should be grouped by peptide sequence and peptide crosslink position, or by protein crosslink position.",
+        )
+
+    if validate or validate_aggregated:
+        l6, center_6, r6 = st.columns(3)
+
+        with l6:
+            fdr = st.number_input(
+                "Target FDR:",
+                value=0.01,
+                step=0.001,
+                format="%0.3f",
+                key="fdr",
+                help="The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.",
+            )
+
+        with center_6:
+            formula = st.selectbox(
+                "FDR formula:",
+                options=["(TD+DD)/TT", "(TD-DD)/TT"],
+                index=0,
+                key="formula",
+                help="Which formula to use to estimate FDR. D and DD denote decoy matches, T and TT denote target matches, and TD denotes target-decoy and decoy-target matches.",
+            )
+
+        with r6:
+            separate = st.selectbox(
+                "Separate intra and inter FDR?",
+                options=[
+                    "Concatenated FDR for intra and inter matches",
+                    "Separate FDR for intra and inter matches",
+                ],
+                index=0,
+                key="separate",
+                help="If FDR should be estimated separately for intra and inter matches.",
+            )
+
+    if unique or aggregate or validate or validate_aggregated:
+        score = st.selectbox(
+            "Is a higher identification score considered better?",
+            options=["Higher better", "Lower better"],
+            index=0,
+            key="score",
+            help="If a higher score is considered better, or a lower score is considered better.",
+        )
+
+    l7, center_7, r7 = st.columns(3)
+
+    with center_7:
+        read_file_button = st.button(
+            "Read file!", type="primary", use_container_width=True
+        )
+
+    if read_file_button:
+        if uploaded_file is None:
+            _ = st.error("You need to upload a result file first!")
+        if search_engine is None:
+            _ = st.error("You need to select a search engine or format first!")
+        if crosslinker is None:
+            _ = st.error("You need to select a crosslinker first!")
+        if crosslinker == "Custom":
+            if crosslinker_name is None:
+                _ = st.error("You need to specify a name for your custom crosslinker!")
+            if crosslinker_mass is None:
+                _ = st.error(
+                    "You need to specify the crosslinker mass for your custom crosslinker!"
+                )
+        if (
+            uploaded_file is not None
+            and search_engine is not None
+            and crosslinker is not None
+            and crosslinker != "Custom"
+        ):
+            with st.spinner("Parsing file...", show_time=True):
+                try:
+                    st.session_state["pr"] = read_file(
+                        uploaded_file,
+                        search_engine,
+                        crosslinker,
+                        parse_modifications,
+                        crosslinker_mass,
+                    )
+                    if aggregate:
+                        if st.session_state["pr"]["crosslink-spectrum-matches"] is None:
+                            st.session_state["aggregated"] = None
+                        else:
+                            st.session_state["aggregated"] = transform.aggregate(
+                                st.session_state["pr"]["crosslink-spectrum-matches"],
+                                by="peptide"
+                                if group_by  # pyright: ignore[reportPossiblyUnboundVariable]
+                                == "Peptide sequence and peptide crosslink position"
+                                else "protein",
+                                score="higher_better"
+                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                                else "lower_better",
+                            )
+                    if validate_aggregated:
+                        if st.session_state["aggregated"] is not None:
+                            st.session_state["aggregated"] = transform.validate(
+                                st.session_state["aggregated"],
+                                fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable]
+                                formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType]
+                                score="higher_better"
+                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                                else "lower_better",
+                                separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable]
+                                == "Separate FDR for intra and inter matches",
+                            )
+                    if unique:
+                        st.session_state["pr"] = transform.unique(
+                            st.session_state["pr"],
+                            by="peptide"
+                            if group_by  # pyright: ignore[reportPossiblyUnboundVariable]
+                            == "Peptide sequence and peptide crosslink position"
+                            else "protein",
+                            score="higher_better"
+                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                            else "lower_better",
+                        )
+                    if validate:
+                        st.session_state["pr"] = transform.validate(
+                            st.session_state["pr"],
+                            fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable]
+                            formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType]
+                            score="higher_better"
+                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                            else "lower_better",
+                            separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable]
+                            == "Separate FDR for intra and inter matches",
+                        )
+                    if targets_only:
+                        st.session_state["pr"] = transform.targets_only(
+                            st.session_state["pr"]
+                        )
+                        if (
+                            "aggregated" in st.session_state
+                            and st.session_state["aggregated"] is not None
+                        ):
+                            st.session_state["aggregated"] = transform.targets_only(
+                                st.session_state["aggregated"]
+                            )
+                    if reannotate_positions:
+                        if uploaded_fasta is None:  # pyright: ignore[reportPossiblyUnboundVariable]
+                            raise ValueError(
+                                "Can't annotate crosslink position when no FASTA file is uploaded!"
+                            )
+                        if not targets_only:
+                            _ = st.warning(
+                                "Might not be able to (re-)annotate positions if results contain decoy matches!",
+                                icon="⚠️",
+                            )
+                        st.session_state["pr"] = reannotating_positions(
+                            st.session_state["pr"],
+                            uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
+                        )
+                        if (
+                            "aggregated" in st.session_state
+                            and st.session_state["aggregated"] is not None
+                        ):
+                            st.session_state["aggregated"] = reannotating_positions(
+                                st.session_state["aggregated"],
+                                uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
+                            )
+                except Exception as e:
+                    _ = st.error(
+                        "Something went wrong! This is most likely due to missing information in the results!",
+                        icon="⚠️",
+                    )
+                    with st.expander("Show exception"):
+                        _ = st.exception(e)
+        elif (
+            uploaded_file is not None
+            and search_engine is not None
+            and crosslinker is not None
+            and crosslinker == "Custom"
+            and crosslinker_name is not None
+            and crosslinker_mass is not None
+        ):
+            with st.spinner("Parsing file...", show_time=True):
+                try:
+                    st.session_state["pr"] = read_file(
+                        uploaded_file,
+                        search_engine,
+                        crosslinker_name,
+                        parse_modifications,
+                        crosslinker_mass,
+                    )
+                    if aggregate:
+                        if st.session_state["pr"]["crosslink-spectrum-matches"] is None:
+                            st.session_state["aggregated"] = None
+                        else:
+                            st.session_state["aggregated"] = transform.aggregate(
+                                st.session_state["pr"]["crosslink-spectrum-matches"],
+                                by="peptide"
+                                if group_by  # pyright: ignore[reportPossiblyUnboundVariable]
+                                == "Peptide sequence and peptide crosslink position"
+                                else "protein",
+                                score="higher_better"
+                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                                else "lower_better",
+                            )
+                    if validate_aggregated:
+                        if st.session_state["aggregated"] is not None:
+                            st.session_state["aggregated"] = transform.validate(
+                                st.session_state["aggregated"],
+                                fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable]
+                                formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType]
+                                score="higher_better"
+                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                                else "lower_better",
+                                separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable]
+                                == "Separate FDR for intra and inter matches",
+                            )
+                    if unique:
+                        st.session_state["pr"] = transform.unique(
+                            st.session_state["pr"],
+                            by="peptide"
+                            if group_by  # pyright: ignore[reportPossiblyUnboundVariable]
+                            == "Peptide sequence and peptide crosslink position"
+                            else "protein",
+                            score="higher_better"
+                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                            else "lower_better",
+                        )
+                    if validate:
+                        st.session_state["pr"] = transform.validate(
+                            st.session_state["pr"],
+                            fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable]
+                            formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType]
+                            score="higher_better"
+                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                            else "lower_better",
+                            separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable]
+                            == "Separate FDR for intra and inter matches",
+                        )
+                    if targets_only:
+                        st.session_state["pr"] = transform.targets_only(
+                            st.session_state["pr"]
+                        )
+                        if (
+                            "aggregated" in st.session_state
+                            and st.session_state["aggregated"] is not None
+                        ):
+                            st.session_state["aggregated"] = transform.targets_only(
+                                st.session_state["aggregated"]
+                            )
+                    if reannotate_positions:
+                        if uploaded_fasta is None:  # pyright: ignore[reportPossiblyUnboundVariable]
+                            raise ValueError(
+                                "Can't annotate crosslink position when no FASTA file is uploaded!"
+                            )
+                        if not targets_only:
+                            _ = st.warning(
+                                "Might not be able to (re-)annotate positions if results contain decoy matches!",
+                                icon="⚠️",
+                            )
+                        st.session_state["pr"] = reannotating_positions(
+                            st.session_state["pr"],
+                            uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
+                        )
+                        if (
+                            "aggregated" in st.session_state
+                            and st.session_state["aggregated"] is not None
+                        ):
+                            st.session_state["aggregated"] = reannotating_positions(
+                                st.session_state["aggregated"],
+                                uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
+                            )
+                except Exception as e:
+                    _ = st.error(
+                        "Something went wrong! This is most likely due to missing information in the results!",
+                        icon="⚠️",
+                    )
+                    with st.expander("Show exception"):
+                        _ = st.exception(e)
+
+    if "pr" in st.session_state:
+        if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
+            csms_header = st.subheader(
+                "Read Crosslink-Spectrum-Matches", divider="grey"
+            )
+            csms = st.session_state["pr"]["crosslink-spectrum-matches"]
+            csms_info = st.markdown(f"**Read {len(csms)} crosslink-spectrum-matches:**")
+            csms_df = st.dataframe(
+                transform.to_dataframe(csms), use_container_width=True
+            )
+            summary_stats = transform.summary(csms)
+            summary_stats_md = st.markdown("**Summary Statistics:**")
+            summary_stats_df = st.dataframe(
+                pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
+            )
+
+            l8, center_8, r8 = st.columns(3)
+
+            with l8:
+                csms_dl_csv = st.download_button(
+                    label="Download crosslink-spectrum-matches as .csv!",
+                    data=dataframe_to_csv_stream(
+                        transform.to_dataframe(csms),
+                        sep=",",
+                        index=False,
+                    ),
+                    file_name="crosslink-spectrum-matches.csv",
+                    on_click="ignore",
+                    type="primary",
+                    mime="text/csv",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslink-spectrum-matches in comma-separated format.",
+                )
+
+            with center_8:
+                csms_dl_excel = st.download_button(
+                    label="Download crosslink-spectrum-matches as .xlsx!",
+                    data=dataframe_to_xlsx_stream(
+                        transform.to_dataframe(csms),
+                        sheet_name="crosslink-spectrum-matches",
+                        index=False,
+                    ),
+                    file_name="crosslink-spectrum-matches.xlsx",
+                    on_click="ignore",
+                    type="primary",
+                    mime="application/vnd.ms-excel",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslink-spectrum-matches in Microsoft Excel format.",
+                )
+
+            with r8:
+                csms_dl_json = st.download_button(
+                    label="Download crosslink-spectrum-matches as .json!",
+                    data=to_json(csms),
+                    file_name="crosslink-spectrum-matches.json",
+                    on_click="ignore",
+                    type="primary",
+                    mime="application/json",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslink-spectrum-matches in JavaScript Object Notation (JSON) format.",
+                )
+
+        if st.session_state["pr"]["crosslinks"] is not None:
+            crosslinks_header = st.subheader("Read Crosslinks", divider="grey")
+            crosslinks = st.session_state["pr"]["crosslinks"]
+            crosslinks_info = st.markdown(f"**Read {len(crosslinks)} crosslinks:**")
+            crosslinks_df = st.dataframe(
+                transform.to_dataframe(crosslinks), use_container_width=True
+            )
+            summary_stats = transform.summary(crosslinks)
+            summary_stats_md = st.markdown("**Summary Statistics:**")
+            summary_stats_df = st.dataframe(
+                pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
+            )
+
+            l9, center_9, r9 = st.columns(3)
+
+            with l9:
+                crosslinks_dl_csv = st.download_button(
+                    label="Download crosslinks as .csv!",
+                    data=dataframe_to_csv_stream(
+                        transform.to_dataframe(crosslinks),
+                        sep=",",
+                        index=False,
+                    ),
+                    file_name="crosslinks.csv",
+                    on_click="ignore",
+                    type="primary",
+                    mime="text/csv",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslinks in comma-separated format.",
+                )
+
+            with center_9:
+                crosslinks_dl_excel = st.download_button(
+                    label="Download crosslinks as .xlsx!",
+                    data=dataframe_to_xlsx_stream(
+                        transform.to_dataframe(crosslinks),
+                        sheet_name="crosslinks",
+                        index=False,
+                    ),
+                    file_name="crosslinks.xlsx",
+                    on_click="ignore",
+                    type="primary",
+                    mime="application/vnd.ms-excel",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslinks in Microsoft Excel format.",
+                )
+
+            with r9:
+                crosslinks_dl_json = st.download_button(
+                    label="Download crosslinks as .json!",
+                    data=to_json(crosslinks),
+                    file_name="crosslinks.json",
+                    on_click="ignore",
+                    type="primary",
+                    mime="application/json",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslinks in JavaScript Object Notation (JSON) format.",
+                )
+
+    if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
+        aggregated_crosslinks_header = st.subheader(
+            "Aggregated Crosslinks", divider="grey"
+        )
+        aggregated_crosslinks = st.session_state["aggregated"]
+        aggregated_crosslinks_info = st.markdown(
+            f"**Aggregated {len(aggregated_crosslinks)} crosslinks:**"
+        )
+        aggregated_crosslinks_df = st.dataframe(
+            transform.to_dataframe(aggregated_crosslinks), use_container_width=True
+        )
+        summary_stats = transform.summary(aggregated_crosslinks)
+        summary_stats_md = st.markdown("**Summary Statistics:**")
+        summary_stats_df = st.dataframe(
+            pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
+        )
+
+        l10, center_10, r10 = st.columns(3)
+
+        with l10:
+            aggregated_crosslinks_dl_csv = st.download_button(
+                label="Download aggregated crosslinks as .csv!",
+                data=dataframe_to_csv_stream(
+                    transform.to_dataframe(aggregated_crosslinks),
+                    sep=",",
+                    index=False,
+                ),
+                file_name="aggregated_crosslinks.csv",
+                on_click="ignore",
+                type="primary",
+                mime="text/csv",
+                icon=":material/download:",
+                use_container_width=True,
+                help="Download aggregated crosslinks in comma-separated format.",
+            )
+
+        with center_10:
+            aggregated_crosslinks_dl_excel = st.download_button(
+                label="Download aggregated crosslinks as .xlsx!",
+                data=dataframe_to_xlsx_stream(
+                    transform.to_dataframe(aggregated_crosslinks),
+                    sheet_name="aggregated crosslinks",
+                    index=False,
+                ),
+                file_name="aggregated_crosslinks.xlsx",
+                on_click="ignore",
+                type="primary",
+                mime="application/vnd.ms-excel",
+                icon=":material/download:",
+                use_container_width=True,
+                help="Download aggregated crosslinks in Microsoft Excel format.",
+            )
+
+        with r10:
+            aggregated_crosslinks_dl_json = st.download_button(
+                label="Download aggregated crosslinks as .json!",
+                data=to_json(aggregated_crosslinks),
+                file_name="aggregated_crosslinks.json",
+                on_click="ignore",
+                type="primary",
+                mime="application/json",
+                icon=":material/download:",
+                use_container_width=True,
+                help="Download aggregated crosslinks in JavaScript Object Notation (JSON) format.",
+            )
+
+
+def export_tab():
+    st.markdown("# WIP")
+
+
+def about_tab():
+    st.markdown("# WIP")
 
 
 # main page content
 def main_page():
     title = st.title("pyXLMS")
 
-    tab1, tab2 = st.tabs(["App", "About"])
+    tab1, tab2, tab3 = st.tabs(["Load Data", "Export", "About"])
 
     with tab1:
-        general_description = """
-        _a python package to process protein cross-linking data_
+        input_tab()
 
-        **pyXLMS** is a python package and web application with graphical user interface that aims to simplify and streamline the intermediate step of
-        connecting crosslink search engine results with down-stream analysis tools, enabling researchers even without bioinformatics knowledge to
-        conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
-        insight.
+    with tab2:
+        export_tab()
 
-        Currently pyXLMS supports input from six different crosslink search engines:
-        [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
-        [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
-        [pLink 2 and pLink 3](http://pfind.ict.ac.cn/se/plink/),
-        [Scout](https://github.com/diogobor/Scout),
-        [xiSearch](https://www.rappsilberlab.org/software/xisearch/) and [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
-        [XlinkX](https://docs.thermofisher.com/r/XlinkX-3.2-Quick-Start-Guide/),
-        as well as the [mzIdentML format](https://www.psidev.info/mzidentml) of the HUPO Proteomics Standards Initiative,
-        and a well-documented and [human-readable custom tabular format](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/format.md).
-
-        Down-stream analysis is facilitated by functionality that is directly available within pyXLMS such as validation, annotation, aggregation,
-        and filtering of crosslink-spectrum-matches and crosslinks.
-
-        In addition, the data can easily be exported to the required data format of the various available down-stream analysis tools such as
-        [xiNET](https://crosslinkviewer.org/index.php),
-        [xiVIEW](https://www.xiview.org/index.php),
-        [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
-        [XlinkDB](https://xlinkdb.gs.washington.edu/xlinkdb/),
-        [xlms-tools](https://gitlab.com/topf-lab/xlms-tools),
-        pyMOL (via [pyXlinkViewer](https://github.com/BobSchiffrin/PyXlinkViewer)),
-        ChimeraX (via [XMAS](https://github.com/ScheltemaLab/ChimeraX_XMAS_bundle)),
-        or [IMP-X-FDR](https://github.com/vbc-proteomics-org/imp-x-fdr).
-
-        **Try it yourself below!** 😉
-        """
-        description = st.markdown(general_description)
-
-        header_1 = st.subheader("File Upload", divider="grey")
-
-        uploaded_file = st.file_uploader(
-            "Upload a cross-linking result file from any of the supported search engines or formats:",
-            type=None,
-            accept_multiple_files=False,
-            key="uploaded_file",
-            help="Upload a cross-linking result file from any of the supported search engines or formats.",
-        )
-
-        l1, r1 = st.columns(2)
-
-        with l1:
-            search_engine = st.selectbox(
-                "Select a crosslink search engine or file format:",
-                options=[
-                    "Custom",
-                    "MaxQuant",
-                    "MaxLynx",
-                    "MS Annika",
-                    "mzIdentML",
-                    "pLink",
-                    "Scout",
-                    "xiSearch/xiFDR",
-                    "XlinkX",
-                ],
-                index=None,
-                key="search_engine",
-                help="The crosslink search engine or file format of the uploaded file.",
-            )
-
-        with r1:
-            crosslinker = st.selectbox(
-                "Select the used cross-linking reagent:",
-                options=["Custom"] + list(constants.CROSSLINKERS.keys()),
-                index=None,
-                key="crosslinker",
-                help="The crosslinker used in the experiment of the uploaded result file.",
-            )
-
-        l2, center_2, r2 = st.columns(3)
-
-        with l2:
-            parse_modifications = st.toggle(
-                "Parse modifications",
-                key="parse_modifications",
-                help="If post-translational-modifications should be parsed or not.",
-            )
-
-        with center_2:
-            reannotate_positions = st.toggle(
-                "(Re-)Annotate crosslink positions",
-                key="reannotate_positions",
-                help="If crosslink positions in proteins should be (re-)annotated.",
-            )
-
-        with r2:
-            unique = st.toggle(
-                "Filter for unique crosslink spectrum matches and crosslinks",
-                key="unique",
-                help="If crosslink spectrum matches and crosslinks should be filtered for unique matches only.",
-            )
-
-        l3, center_3, r3 = st.columns(3)
-
-        with l3:
-            validate = st.toggle(
-                "Validate via FDR estimation",
-                key="validate",
-                help="If crosslink spectrum matches and crosslinks should be validated via false discovery rate estimation.",
-            )
-
-        with center_3:
-            targets_only = st.toggle(
-                "Filter for target matches only",
-                key="targets_only",
-                help="If crosslink spectrum matches and crosslinks should be filtered to contain only target-target matches.",
-            )
-
-        crosslinker_name = None
-        crosslinker_mass = None
-        if crosslinker == "Custom":
-            l4, r4 = st.columns(2)
-
-            with l4:
-                crosslinker_name = st.text_input(
-                    "Name of the crosslinker:",
-                    value=None,
-                    max_chars=50,
-                    placeholder="DSSO",
-                    key="crosslinker_name",
-                    help="Name of the crosslinker used in the experiment of the uploaded result file.",
-                )
-
-            with r4:
-                crosslinker_mass = st.number_input(
-                    "Mass of the crosslinker:",
-                    value=None,
-                    step=0.00001,
-                    format="%0.5f",
-                    placeholder="158.00376",
-                    key="crosslinker_mass",
-                    help="Monoisotopic delta mass of the crosslinker used in the experiment of the uploaded result file.",
-                )
-
-        if reannotate_positions:
-            uploaded_fasta = st.file_uploader(
-                "Upload a FASTA file for (re-)annotation:",
-                type="fasta",
-                accept_multiple_files=False,
-                key="uploaded_fasta",
-                help="Upload a FASTA file containing protein sequences for the provided crosslink spectrum matches and crosslinks.",
-            )
-
-        if unique:
-            group_by = st.selectbox(
-                "Group crosslinks by:",
-                options=[
-                    "Peptide sequence and peptide crosslink position",
-                    "Protein Crosslink Position",
-                ],
-                index=0,
-                key="group_by",
-                help="If crosslinks should be grouped by peptide sequence and peptide crosslink position, or by protein crosslink position.",
-            )
-
-        if validate:
-            l5, center_5, r5 = st.columns(3)
-
-            with l5:
-                fdr = st.number_input(
-                    "Target FDR:",
-                    value=0.01,
-                    step=0.001,
-                    format="%0.3f",
-                    key="fdr",
-                    help="The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.",
-                )
-
-            with center_5:
-                formula = st.selectbox(
-                    "FDR formula:",
-                    options=["(TD+DD)/TT", "(TD-DD)/TT"],
-                    index=0,
-                    key="formula",
-                    help="Which formula to use to estimate FDR. D and DD denote decoy matches, T and TT denote target matches, and TD denotes target-decoy and decoy-target matches.",
-                )
-
-            with r5:
-                separate = st.selectbox(
-                    "Separate intra and inter FDR?",
-                    options=[
-                        "Concatenated FDR for intra and inter matches",
-                        "Separate FDR for intra and inter matches",
-                    ],
-                    index=0,
-                    key="separate",
-                    help="If FDR should be estimated separately for intra and inter matches.",
-                )
-
-        if unique or validate:
-            score = st.selectbox(
-                "Is a higher identification score considered better?",
-                options=["Higher better", "Lower better"],
-                index=0,
-                key="score",
-                help="If a higher score is considered better, or a lower score is considered better.",
-            )
-
-        l6, center_6, r6 = st.columns(3)
-
-        with center_6:
-            read_file_button = st.button(
-                "Read file!", type="primary", use_container_width=True
-            )
-
-        if read_file_button:
-            if uploaded_file is None:
-                _ = st.error("You need to upload a result file first!")
-            if search_engine is None:
-                _ = st.error("You need to select a search engine or format first!")
-            if crosslinker is None:
-                _ = st.error("You need to select a crosslinker first!")
-            if crosslinker == "Custom":
-                if crosslinker_name is None:
-                    _ = st.error(
-                        "You need to specify a name for your custom crosslinker!"
-                    )
-                if crosslinker_mass is None:
-                    _ = st.error(
-                        "You need to specify the crosslinker mass for your custom crosslinker!"
-                    )
-            if (
-                uploaded_file is not None
-                and search_engine is not None
-                and crosslinker is not None
-                and crosslinker != "Custom"
-            ):
-                with st.spinner("Parsing file...", show_time=True):
-                    try:
-                        st.session_state["pr"] = read_file(
-                            uploaded_file,
-                            search_engine,
-                            crosslinker,
-                            parse_modifications,
-                            crosslinker_mass,
-                        )
-                        if unique:
-                            st.session_state["pr"] = transform.unique(
-                                st.session_state["pr"],
-                                by="peptide"
-                                if group_by  # pyright: ignore[reportPossiblyUnboundVariable]
-                                == "Peptide sequence and peptide crosslink position"
-                                else "protein",
-                                score="higher_better"
-                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
-                                else "lower_better",
-                            )
-                        if validate:
-                            st.session_state["pr"] = transform.validate(
-                                st.session_state["pr"],
-                                fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable]
-                                formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType]
-                                score="higher_better"
-                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
-                                else "lower_better",
-                                separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable]
-                                == "Separate FDR for intra and inter matches",
-                            )
-                        if targets_only:
-                            st.session_state["pr"] = transform.targets_only(
-                                st.session_state["pr"]
-                            )
-                        if reannotate_positions:
-                            if uploaded_fasta is None:  # pyright: ignore[reportPossiblyUnboundVariable]
-                                raise ValueError(
-                                    "Can't annotate crosslink position when no FASTA file is uploaded!"
-                                )
-                            if not targets_only:
-                                _ = st.warning(
-                                    "Might not be able to (re-)annotate positions if results contain decoy matches!",
-                                    icon="⚠️",
-                                )
-                            st.session_state["pr"] = reannotating_positions(
-                                st.session_state["pr"],
-                                uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
-                            )
-                    except Exception as e:
-                        _ = st.error(
-                            "Something went wrong! This is most likely due to missing information in the results!",
-                            icon="⚠️",
-                        )
-                        with st.expander("Show exception"):
-                            _ = st.exception(e)
-            elif (
-                uploaded_file is not None
-                and search_engine is not None
-                and crosslinker is not None
-                and crosslinker == "Custom"
-                and crosslinker_name is not None
-                and crosslinker_mass is not None
-            ):
-                with st.spinner("Parsing file...", show_time=True):
-                    try:
-                        st.session_state["pr"] = read_file(
-                            uploaded_file,
-                            search_engine,
-                            crosslinker_name,
-                            parse_modifications,
-                            crosslinker_mass,
-                        )
-                        if unique:
-                            st.session_state["pr"] = transform.unique(
-                                st.session_state["pr"],
-                                by="peptide"
-                                if group_by  # pyright: ignore[reportPossiblyUnboundVariable]
-                                == "Peptide sequence and peptide crosslink position"
-                                else "protein",
-                                score="higher_better"
-                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
-                                else "lower_better",
-                            )
-                        if validate:
-                            st.session_state["pr"] = transform.validate(
-                                st.session_state["pr"],
-                                fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable]
-                                formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType]
-                                score="higher_better"
-                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
-                                else "lower_better",
-                                separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable]
-                                == "Separate FDR for intra and inter matches",
-                            )
-                        if targets_only:
-                            st.session_state["pr"] = transform.targets_only(
-                                st.session_state["pr"]
-                            )
-                        if reannotate_positions:
-                            if uploaded_fasta is None:  # pyright: ignore[reportPossiblyUnboundVariable]
-                                raise ValueError(
-                                    "Can't annotate crosslink position when no FASTA file is uploaded!"
-                                )
-                            if not targets_only:
-                                _ = st.warning(
-                                    "Might not be able to (re-)annotate positions if results contain decoy matches!",
-                                    icon="⚠️",
-                                )
-                            st.session_state["pr"] = reannotating_positions(
-                                st.session_state["pr"],
-                                uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
-                            )
-                    except Exception as e:
-                        _ = st.error(
-                            "Something went wrong! This is most likely due to missing information in the results!",
-                            icon="⚠️",
-                        )
-                        with st.expander("Show exception"):
-                            _ = st.exception(e)
-
-        if "pr" in st.session_state:
-            if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
-                csms_header = st.subheader(
-                    "Read Crosslink-Spectrum-Matches", divider="grey"
-                )
-                csms = st.session_state["pr"]["crosslink-spectrum-matches"]
-                csms_info = st.markdown(
-                    f"**Read {len(csms)} crosslink-spectrum-matches:**"
-                )
-                csms_df = st.dataframe(
-                    transform.to_dataframe(csms), use_container_width=True
-                )
-                summary_stats = transform.summary(
-                    st.session_state["pr"]["crosslink-spectrum-matches"]
-                )
-                summary_stats_md = st.markdown("**Summary Statistics:**")
-                summary_stats_df = st.dataframe(
-                    pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
-                )
-
-                l7, center_7, r7 = st.columns(3)
-
-                with l7:
-                    csms_dl_csv = st.download_button(
-                        label="Download crosslink-spectrum-matches as .csv!",
-                        data=dataframe_to_csv_stream(
-                            transform.to_dataframe(csms),
-                            sep=",",
-                            index=False,
-                        ),
-                        file_name="crosslink-spectrum-matches.csv",
-                        on_click="ignore",
-                        type="primary",
-                        mime="text/csv",
-                        icon=":material/download:",
-                        use_container_width=True,
-                        help="Download crosslink-spectrum-matches in comma-separated format.",
-                    )
-
-                with center_7:
-                    csms_dl_excel = st.download_button(
-                        label="Download crosslink-spectrum-matches as .xlsx!",
-                        data=dataframe_to_xlsx_stream(
-                            transform.to_dataframe(csms),
-                            sheet_name="crosslink-spectrum-matches",
-                            index=False,
-                        ),
-                        file_name="crosslink-spectrum-matches.xlsx",
-                        on_click="ignore",
-                        type="primary",
-                        mime="application/vnd.ms-excel",
-                        icon=":material/download:",
-                        use_container_width=True,
-                        help="Download crosslink-spectrum-matches in Microsoft Excel format.",
-                    )
-
-                with r7:
-                    csms_dl_json = st.download_button(
-                        label="Download crosslink-spectrum-matches as .json!",
-                        data=to_json(csms),
-                        file_name="crosslink-spectrum-matches.json",
-                        on_click="ignore",
-                        type="primary",
-                        mime="application/json",
-                        icon=":material/download:",
-                        use_container_width=True,
-                        help="Download crosslink-spectrum-matches in JavaScript Object Notation (JSON) format.",
-                    )
-
-            if st.session_state["pr"]["crosslinks"] is not None:
-                crosslinks_header = st.subheader("Read Crosslinks", divider="grey")
-                crosslinks = st.session_state["pr"]["crosslinks"]
-                crosslinks_info = st.markdown(f"**Read {len(crosslinks)} crosslinks:**")
-                crosslinks_df = st.dataframe(
-                    transform.to_dataframe(crosslinks), use_container_width=True
-                )
-                summary_stats = transform.summary(st.session_state["pr"]["crosslinks"])
-                summary_stats_md = st.markdown("**Summary Statistics:**")
-                summary_stats_df = st.dataframe(
-                    pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
-                )
-
-                l8, center_8, r8 = st.columns(3)
-
-                with l8:
-                    crosslinks_dl_csv = st.download_button(
-                        label="Download crosslinks as .csv!",
-                        data=dataframe_to_csv_stream(
-                            transform.to_dataframe(crosslinks),
-                            sep=",",
-                            index=False,
-                        ),
-                        file_name="crosslinks.csv",
-                        on_click="ignore",
-                        type="primary",
-                        mime="text/csv",
-                        icon=":material/download:",
-                        use_container_width=True,
-                        help="Download crosslinks in comma-separated format.",
-                    )
-
-                with center_8:
-                    crosslinks_dl_excel = st.download_button(
-                        label="Download crosslinks as .xlsx!",
-                        data=dataframe_to_xlsx_stream(
-                            transform.to_dataframe(crosslinks),
-                            sheet_name="crosslinks",
-                            index=False,
-                        ),
-                        file_name="crosslinks.xlsx",
-                        on_click="ignore",
-                        type="primary",
-                        mime="application/vnd.ms-excel",
-                        icon=":material/download:",
-                        use_container_width=True,
-                        help="Download crosslinks in Microsoft Excel format.",
-                    )
-
-                with r8:
-                    crosslinks_dl_json = st.download_button(
-                        label="Download crosslinks as .json!",
-                        data=to_json(crosslinks),
-                        file_name="crosslinks.json",
-                        on_click="ignore",
-                        type="primary",
-                        mime="application/json",
-                        icon=":material/download:",
-                        use_container_width=True,
-                        help="Download crosslinks in JavaScript Object Notation (JSON) format.",
-                    )
+    with tab3:
+        about_tab()
 
 
 # side bar and main page loader
