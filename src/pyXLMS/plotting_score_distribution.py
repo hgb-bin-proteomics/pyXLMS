@@ -108,7 +108,7 @@ def plot_score_distribution(
             "Can't plot score distribution if 'score' or target/decoy labels are missing!"
         )
     ylabel = (
-        "crosslink spectrum matches"
+        "crosslink-spectrum-matches"
         if data[0]["data_type"] == "crosslink-spectrum-match"
         else "crosslinks"
     )
