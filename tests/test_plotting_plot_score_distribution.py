@@ -11,7 +11,10 @@ import pytest
 def test1():
     from pyXLMS import parser
     from pyXLMS import plotting
-    pr = parser.read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx")
+
+    pr = parser.read_msannika(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx"
+    )
     csms = pr["crosslink-spectrum-matches"]
     fig, ax = plotting.plot_score_distribution(csms)
     assert fig is not None
@@ -19,6 +22,16 @@ def test1():
 
 
 def test2():
+    from pyXLMS.plotting import plot_score_distribution
+
+    with pytest.raises(
+        ValueError,
+        match=r"Can't plot score distribution if no crosslink-spectrum-matches or crosslinks are given!",
+    ):
+        _plot = plot_score_distribution([])
+
+
+def test3():
     from pyXLMS.parser import read
     from pyXLMS.plotting import plot_score_distribution
 
@@ -28,11 +41,13 @@ def test2():
         crosslinker="DSS",
     )
 
+    pr["crosslink-spectrum-matches"][0]["data_type"] = "peptide-spectrum-match"
+
     with pytest.raises(
-        ValueError,
-        match=r"FDR must be given as a real number between 0 and 1, e\.g\. 0\.01 corresponds to 1\% FDR!",
+        TypeError,
+        match=r"Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!",
     ):
-        _plot = plot_score_distribution([])
+        _plot = plot_score_distribution(pr["crosslink-spectrum-matches"])
 
 
 def test4():
@@ -45,8 +60,48 @@ def test4():
         crosslinker="DSS",
     )
 
+    pr["crosslink-spectrum-matches"][0]["score"] = None
+
     with pytest.raises(
         ValueError,
-        match=r"FDR must be given as a real number between 0 and 1, e\.g\. 0\.01 corresponds to 1\% FDR!",
+        match=r"Can't plot score distribution if 'score' or target/decoy labels are missing!",
     ):
-        _plot = plot_score_distribution()
+        _plot = plot_score_distribution(pr["crosslink-spectrum-matches"])
+
+
+def test5():
+    from pyXLMS.parser import read
+    from pyXLMS.plotting import plot_score_distribution
+
+    pr = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+
+    pr["crosslink-spectrum-matches"][0]["alpha_decoy"] = None
+
+    with pytest.raises(
+        ValueError,
+        match=r"Can't plot score distribution if 'score' or target/decoy labels are missing!",
+    ):
+        _plot = plot_score_distribution(pr["crosslink-spectrum-matches"])
+
+
+def test6():
+    from pyXLMS.parser import read
+    from pyXLMS.plotting import plot_score_distribution
+
+    pr = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+
+    pr["crosslink-spectrum-matches"][0]["beta_decoy"] = None
+
+    with pytest.raises(
+        ValueError,
+        match=r"Can't plot score distribution if 'score' or target/decoy labels are missing!",
+    ):
+        _plot = plot_score_distribution(pr["crosslink-spectrum-matches"])
