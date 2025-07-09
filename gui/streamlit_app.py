@@ -3,7 +3,7 @@
 # requires-python = ">=3.12"
 # dependencies = [
 #   "streamlit",
-#   "pyxlms>=1",
+#   "pyxlms>=1.1",
 #   "xlsxwriter",
 # ]
 # ///
@@ -34,6 +34,7 @@ from tempfile import NamedTemporaryFile
 from pyXLMS import parser
 from pyXLMS import transform
 from pyXLMS import constants
+from pyXLMS import plotting
 
 import streamlit as st
 
@@ -761,6 +762,63 @@ def input_tab():
             )
 
 
+def visualize_tab():
+    if "pr" not in st.session_state and "aggregated" not in st.session_state:
+        no_data = st.info("You need to upload a result file first!")
+    if "pr" in st.session_state and st.session_state["pr"] is not None:
+        if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
+            csms = st.session_state["pr"]["crosslink-spectrum-matches"]
+            available_keys = transform.get_available_keys(csms)
+            if (
+                available_keys["score"]
+                and available_keys["alpha_decoy"]
+                and available_keys["beta_decoy"]
+            ):
+                csms_score_dist_header = st.subheader(
+                    "Crosslink-Spectrum-Match Score Distribution", divider="grey"
+                )
+                fig, ax = plotting.plot_score_distribution(csms)
+                csms_score_dist = st.pyplot(fig, use_container_width=True)
+            else:
+                csms_not_enough_data = st.info(
+                    "Not enough data to plot score distribution for crosslink-spectrum-matches!"
+                )
+        if st.session_state["pr"]["crosslinks"] is not None:
+            crosslinks = st.session_state["pr"]["crosslinks"]
+            available_keys = transform.get_available_keys(crosslinks)
+            if (
+                available_keys["score"]
+                and available_keys["alpha_decoy"]
+                and available_keys["beta_decoy"]
+            ):
+                crosslinks_score_dist_header = st.subheader(
+                    "Crosslink Score Distribution", divider="grey"
+                )
+                fig, ax = plotting.plot_score_distribution(crosslinks)
+                crosslinks_score_dist = st.pyplot(fig, use_container_width=True)
+            else:
+                crosslinks_not_enough_data = st.info(
+                    "Not enough data to plot score distribution for crosslinks!"
+                )
+    if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
+        aggregated_crosslinks = st.session_state["aggregated"]
+        available_keys = transform.get_available_keys(aggregated_crosslinks)
+        if (
+            available_keys["score"]
+            and available_keys["alpha_decoy"]
+            and available_keys["beta_decoy"]
+        ):
+            aggregated_crosslinks_score_dist_header = st.subheader(
+                "Aggregated Crosslink Score Distribution", divider="grey"
+            )
+            fig, ax = plotting.plot_score_distribution(aggregated_crosslinks)
+            aggregated_crosslinks_score_dist = st.pyplot(fig, use_container_width=True)
+        else:
+            aggregated_crosslinks_not_enough_data = st.info(
+                "Not enough data to plot score distribution for aggregated crosslinks!"
+            )
+
+
 def export_tab():
     st.markdown("# WIP")
 
@@ -773,15 +831,18 @@ def about_tab():
 def main_page():
     title = st.title("pyXLMS")
 
-    tab1, tab2, tab3 = st.tabs(["Load Data", "Export", "About"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Load Data", "Visualize", "Export", "About"])
 
     with tab1:
         input_tab()
 
     with tab2:
-        export_tab()
+        visualize_tab()
 
     with tab3:
+        export_tab()
+
+    with tab4:
         about_tab()
 
 
