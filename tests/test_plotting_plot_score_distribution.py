@@ -8,6 +8,7 @@
 import pytest
 
 
+@pytest.mark.filterwarnings("ignore:'mode' parameter is deprecated")
 def test1():
     from pyXLMS import parser
     from pyXLMS import plotting
@@ -60,6 +61,7 @@ def test4():
         crosslinker="DSS",
     )
 
+    pr["crosslink-spectrum-matches"][0]["completeness"] = "partial"
     pr["crosslink-spectrum-matches"][0]["score"] = None
 
     with pytest.raises(
@@ -79,6 +81,7 @@ def test5():
         crosslinker="DSS",
     )
 
+    pr["crosslink-spectrum-matches"][0]["completeness"] = "partial"
     pr["crosslink-spectrum-matches"][0]["alpha_decoy"] = None
 
     with pytest.raises(
@@ -98,6 +101,7 @@ def test6():
         crosslinker="DSS",
     )
 
+    pr["crosslink-spectrum-matches"][0]["completeness"] = "partial"
     pr["crosslink-spectrum-matches"][0]["beta_decoy"] = None
 
     with pytest.raises(
