@@ -35,6 +35,7 @@ from pyXLMS import parser
 from pyXLMS import transform
 from pyXLMS import constants
 from pyXLMS import plotting
+from pyXLMS import exporter
 
 import streamlit as st
 
@@ -820,7 +821,82 @@ def visualize_tab():
 
 
 def export_tab():
-    st.markdown("# WIP")
+    if "pr" not in st.session_state and "aggregated" not in st.session_state:
+        no_data = st.info("You need to upload a result file first!")
+    if "pr" in st.session_state and st.session_state["pr"] is not None:
+        if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
+            csms = st.session_state["pr"]["crosslink-spectrum-matches"]
+            export_csms_header = st.subheader("Export Crosslink-Spectrum-Matches")
+            export_csms_options = ["IMP-X-FDR", "MS Annika", "xiFDR"]
+            export_csms_picker = st.selectbox(
+                "Export crosslink-spectrum-matches to:",
+                options=export_csms_options,
+                index=None,
+                help="Chose a format to export the crosslink-spectrum-matches to.",
+            )
+            if export_csms_picker is None:
+                pass
+            elif export_csms_picker == "IMP-X-FDR":
+                export_csms_impxfdr_button = st.button(
+                    "Export to IMP-X-FDR!", type="primary", use_container_width=True
+                )
+                if export_csms_impxfdr_button:
+                    with st.spinner(
+                        "Exporting crosslink-spectrum-matches to IMP-X-FDR...",
+                        show_time=True,
+                    ):
+                        try:
+                            st.session_state["export_csms_impxfdr"] = (
+                                exporter.to_impxfdr(csms, filename=None)
+                            )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+                if (
+                    "export_csms_impxfdr" in st.session_state
+                    and st.session_state["export_csms_impxfdr"] is not None
+                ):
+                    export_csms_impxfdr_download_info = st.markdown(
+                        "Your exported crosslink-spectrum-matches in IMP-X-FDR format are ready for download:"
+                    )
+                    export_csms_impxfdr_download = st.download_button(
+                        label="Download in IMP-X-FDR format!",
+                        data=dataframe_to_xlsx_stream(
+                            st.session_state["export_csms_impxfdr"],
+                            sheet_name="imp-x-fdr",
+                            index=False,
+                        ),
+                        file_name="crosslink-spectrum-matches_imp-x-fdr.xlsx",
+                        on_click="ignore",
+                        type="primary",
+                        mime="application/vnd.ms-excel",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the exported crosslink-spectrum-matches in IMP-X-FDR format.",
+                    )
+
+        if st.session_state["pr"]["crosslinks"] is not None:
+            crosslinks = st.session_state["pr"]["crosslinks"]
+            export_crosslinks_header = st.subheader("Export Crosslinks")
+            export_crosslinks_options = [
+                "IMP-X-FDR",
+                "MS Annika",
+                "PyXlinkViewer",
+                "xiNET",
+                "xiVIEW",
+                "XlinkDB",
+                "xlms-tools",
+                "XMAS",
+            ]
+    if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
+        aggregated_crosslinks = st.session_state["aggregated"]
+        export_aggregated_crosslinks_header = st.subheader(
+            "Export Aggregated Crosslinks"
+        )
 
 
 def about_tab():
