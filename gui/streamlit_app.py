@@ -824,7 +824,86 @@ def export_tab():
 
 
 def about_tab():
-    st.markdown("# WIP")
+    general_description = """
+        **pyXLMS** is a python package and web application with graphical user interface that aims to simplify and streamline the intermediate step of
+        connecting crosslink search engine results with down-stream analysis tools, enabling researchers even without bioinformatics knowledge to
+        conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
+        insight.
+
+        Currently pyXLMS supports input from six different crosslink search engines:
+        [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
+        [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
+        [pLink 2 and pLink 3](http://pfind.ict.ac.cn/se/plink/),
+        [Scout](https://github.com/diogobor/Scout),
+        [xiSearch](https://www.rappsilberlab.org/software/xisearch/) and [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
+        [XlinkX](https://docs.thermofisher.com/r/XlinkX-3.2-Quick-Start-Guide/),
+        as well as the [mzIdentML format](https://www.psidev.info/mzidentml) of the HUPO Proteomics Standards Initiative,
+        and a well-documented and [human-readable custom tabular format](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/format.md).
+
+        Down-stream analysis is facilitated by functionality that is directly available within pyXLMS such as validation, annotation, aggregation,
+        and filtering of crosslink-spectrum-matches and crosslinks.
+
+        In addition, the data can easily be exported to the required data format of the various available down-stream analysis tools such as
+        [xiNET](https://crosslinkviewer.org/index.php),
+        [xiVIEW](https://www.xiview.org/index.php),
+        [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
+        [XlinkDB](https://xlinkdb.gs.washington.edu/xlinkdb/),
+        [xlms-tools](https://gitlab.com/topf-lab/xlms-tools),
+        pyMOL (via [pyXlinkViewer](https://github.com/BobSchiffrin/PyXlinkViewer)),
+        ChimeraX (via [XMAS](https://github.com/ScheltemaLab/ChimeraX_XMAS_bundle)),
+        or [IMP-X-FDR](https://github.com/vbc-proteomics-org/imp-x-fdr).
+        """
+    description = st.markdown(general_description)
+
+    header_2 = st.subheader("Citing", divider="grey")
+    citation_str = """
+        If you are using pyXLMS please cite the following publication:
+
+        - Manuscript in preparation
+          ```
+          (wip)
+          ```
+        """
+    citation = st.markdown(citation_str)
+
+    header_3 = st.header("Contact", divider="grey")
+    contact_str = """
+        - [proteomics@fh-hagenberg.at](mailto:proteomics@fh-hagenberg.at)
+        - [micha.birklbauer@fh-hagenberg.at](mailto:micha.birklbauer@fh-hagenberg.at) (primary developer)
+        """
+    contact = st.markdown(contact_str)
+
+    header_4 = st.subheader("Further Links", divider="grey")
+    further_info = st.markdown("Read more about pyXLMS at the links below:")
+
+    l1, center_1, r1 = st.columns(3)
+
+    with l1:
+        link_button_1 = st.link_button(
+            "GitHub",
+            url="https://github.com/hgb-bin-proteomics/pyXLMS",
+            type="primary",
+            help="Link to the pyXLMS GitHub page.",
+            use_container_width=True,
+        )
+
+    with center_1:
+        link_button_2 = st.link_button(
+            "User Guide",
+            url="https://pyxlms.vercel.app",
+            type="primary",
+            help="Link to the pyXLMS user guide page.",
+            use_container_width=True,
+        )
+
+    with r1:
+        link_button_3 = st.link_button(
+            "Documentation",
+            url="https://hgb-bin-proteomics.github.io/pyXLMS",
+            type="primary",
+            help="Link to the pyXLMS documentaion page.",
+            use_container_width=True,
+        )
 
 
 # main page content
