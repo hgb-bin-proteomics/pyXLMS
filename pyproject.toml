@@ -31,7 +31,9 @@ dependencies = [
   "tqdm",
   "pyteomics[XML]",
   "biopython",
-  "biopandas"
+  "biopandas",
+  "matplotlib",
+  "matplotlib-venn"
 ]
 
 [project.optional-dependencies]
