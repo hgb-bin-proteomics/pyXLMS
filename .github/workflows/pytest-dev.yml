@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  pytest-develop:
 
     runs-on: ubuntu-22.04
     strategy:

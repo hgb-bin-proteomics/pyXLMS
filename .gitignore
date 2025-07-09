@@ -74,6 +74,8 @@ instance/
 # Sphinx documentation
 docs/_build/
 html/
+sphinx/modules.rst
+sphinx/pyXLMS.rst
 
 # PyBuilder
 .pybuilder/

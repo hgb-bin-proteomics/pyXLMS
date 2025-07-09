@@ -86,6 +86,8 @@ def read(
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
+    **kwargs
+        Any additional parameters will be passed to the specific parsers.
 
     Returns
     -------
