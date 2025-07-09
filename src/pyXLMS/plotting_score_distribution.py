@@ -13,6 +13,7 @@ from .data import check_input
 from .transform_util import get_available_keys
 from .transform_filter import filter_target_decoy
 
+from typing import Optional
 from typing import List
 from typing import Dict
 from typing import Tuple
@@ -25,6 +26,8 @@ def plot_score_distribution(
     density: bool = False,
     colors: List[str] = ["#00a087", "#3c5488", "#e64b35"],
     title: str = "Target and Decoy Score Distribution",
+    figsize: Tuple[float, float] = (16.0, 9.0),
+    filename_prefix: Optional[str] = None,
 ) -> Tuple[Figure, Any]:
     r"""Plot the score distribution for a set of crosslink-spectrum-matches or crosslinks.
 
@@ -45,12 +48,45 @@ def plot_score_distribution(
         Colors of the histogram lines.
     title : str, default = "Target and Decoy Score Distribution"
         The title of the histogram.
+    figsize : tuple of float, float, default = (16.0, 9.0)
+        Width, height in inches.
+    filename_prefix : str, or None
+        If given, plot will be saved with and without title in .png and .svg format with the given
+        prefix.
+
+    Returns
+    -------
+    tuple of matplotlib.figure.Figure, any
+        The created figure and axis ``from matplotlib.pyplot.subplots()``.
+
+    Raises
+    ------
+    TypeError
+        If a wrong data type is provided.
+    ValueError
+        If parameter data does not contain any crosslink-spectrum-matches or crosslinks.
+    ValueError
+        If attribute 'score', 'alpha_decoy', or 'beta_decoy' is not available for any of the data.
+
+    Examples
+    --------
+    >>> from pyXLMS import parser
+    >>> from pyXLMS import plotting
+    >>> pr = parser.read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx")
+    >>> csms = pr["crosslink-spectrum-matches"]
+    >>> fig, ax = plotting.plot_score_distribution(csms)
     """
     _ok = check_input(data, "data", list, dict)
     _ok = check_input(bins, "bins", int)
     _ok = check_input(density, "density", bool)
     _ok = check_input(colors, "colors", list, str)
     _ok = check_input(title, "title", str)
+    _ok = check_input(figsize, "figsize", tuple)
+    _ok = (
+        check_input(filename_prefix, "filename_prefix", str)
+        if filename_prefix is not None
+        else True
+    )
     if len(data) == 0:
         raise ValueError(
             "Can't plot score distribution if no crosslink-spectrum-matches or crosslinks are given!"
@@ -81,7 +117,7 @@ def plot_score_distribution(
     td = [item["score"] for item in filtered["Target-Decoy"]]
     dd = [item["score"] for item in filtered["Decoy-Decoy"]]
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=figsize)
 
     ax.hist(
         [tt, td, dd],
@@ -93,8 +129,30 @@ def plot_score_distribution(
         label=["Target-Target", "Target-Decoy", "Decoy-Decoy"],
     )
     ax.legend()
-    ax.set_title(title)
     ax.set_ylabel(f"Number of {ylabel}")
     ax.set_xlabel("Score")
+
+    if filename_prefix is not None:
+        plt.savefig(
+            filename_prefix + "_notitle.png",
+            dpi=300,
+            transparent=True,
+            bbox_inches="tight",
+        )
+        plt.savefig(
+            filename_prefix + "_notitle.svg",
+            dpi=300,
+            transparent=True,
+            bbox_inches="tight",
+        )
+        ax.set_title(title)
+        plt.savefig(
+            filename_prefix + ".png", dpi=300, transparent=True, bbox_inches="tight"
+        )
+        plt.savefig(
+            filename_prefix + ".svg", dpi=300, transparent=True, bbox_inches="tight"
+        )
+    else:
+        ax.set_title(title)
 
     return (fig, ax)
