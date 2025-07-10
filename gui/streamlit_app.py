@@ -960,6 +960,62 @@ def export_tab():
                             use_container_width=True,
                             help="Downloads the exported crosslink-spectrum-matches in MS Annika Microsoft Excel (.xlsx) format.",
                         )
+            elif export_csms_picker == "xiFDR":
+                export_csms_xifdr_info = st.info(
+                    "To export to xiFDR your crosslink-spectrum-matches should be **unique** and **must** "
+                    + "**contain decoy matches**! It is also required that all crosslink-spectrum-matches have "
+                    + "associated proteins for the alpha and beta peptide as well as the corresponding crosslink "
+                    + "positions in those proteins! Additionally, all crosslink-spectrum-matches need to specify "
+                    + "if the alpha and beta peptide are target or decoy matches (separately) and need to have an "
+                    + "associated score and charge! It is **not necessary to check this preemptively** as the exporter "
+                    + "automatically checks that this information is available and will throw an error otherwise! "
+                    + "Please however **make sure** that your crosslink-spectrum-matches are **unique** and **contain decoys** "
+                    + "as otherwise xiFDR will not work as intended! You can check this in the "
+                    + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+                )
+                export_csms_xifdr_button = st.button(
+                    "Export to xiFDR!", type="primary", use_container_width=True
+                )
+                if export_csms_xifdr_button:
+                    with st.spinner(
+                        "Exporting crosslink-spectrum-matches to xiFDR...",
+                        show_time=True,
+                    ):
+                        try:
+                            st.session_state["export_csms_xifdr"] = exporter.to_xifdr(
+                                csms, filename=None
+                            )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+                if (
+                    "export_csms_xifdr" in st.session_state
+                    and st.session_state["export_csms_xifdr"] is not None
+                ):
+                    export_csms_xifdr_download_info = st.markdown(
+                        "Your exported crosslink-spectrum-matches in xiFDR format are ready for download:"
+                    )
+                    export_csms_xifdr_download = st.download_button(
+                        label="Download in xiFDR format!",
+                        data=dataframe_to_csv_stream(
+                            st.session_state["export_csms_xifdr"],
+                            sep=",",
+                            index=False,
+                        ),
+                        file_name="crosslink-spectrum-matches_xifdr.csv",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/csv",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the exported crosslink-spectrum-matches in xiFDR format.",
+                    )
+            else:
+                pass
 
         if st.session_state["pr"]["crosslinks"] is not None:
             crosslinks = st.session_state["pr"]["crosslinks"]
