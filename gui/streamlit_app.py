@@ -863,7 +863,10 @@ def export_tab():
                     + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
                 )
                 export_csms_impxfdr_button = st.button(
-                    "Export to IMP-X-FDR!", type="primary", use_container_width=True
+                    "Export to IMP-X-FDR!",
+                    type="primary",
+                    use_container_width=True,
+                    key="export_csms_impxfdr_button",
                 )
                 if export_csms_impxfdr_button:
                     with st.spinner(
@@ -902,12 +905,14 @@ def export_tab():
                         icon=":material/download:",
                         use_container_width=True,
                         help="Downloads the exported crosslink-spectrum-matches in IMP-X-FDR format.",
+                        key="export_csms_impxfdr_download",
                     )
             elif export_csms_picker == "MS Annika":
                 export_csms_msannika_button = st.button(
                     "Export to MS Annika format!",
                     type="primary",
                     use_container_width=True,
+                    key="export_csms_msannika_button",
                 )
                 if export_csms_msannika_button:
                     with st.spinner(
@@ -948,6 +953,7 @@ def export_tab():
                             icon=":material/download:",
                             use_container_width=True,
                             help="Downloads the exported crosslink-spectrum-matches in MS Annika comma-separated-values (.csv) format.",
+                            key="export_csms_msannika_download_csv",
                         )
                     with r_csms_msannika:
                         export_csms_msannika_download_xlsx = st.download_button(
@@ -964,6 +970,7 @@ def export_tab():
                             icon=":material/download:",
                             use_container_width=True,
                             help="Downloads the exported crosslink-spectrum-matches in MS Annika Microsoft Excel (.xlsx) format.",
+                            key="export_csms_msannika_download_xlsx",
                         )
             elif export_csms_picker == "xiFDR":
                 export_csms_xifdr_info = st.info(
@@ -979,7 +986,10 @@ def export_tab():
                     + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
                 )
                 export_csms_xifdr_button = st.button(
-                    "Export to xiFDR!", type="primary", use_container_width=True
+                    "Export to xiFDR!",
+                    type="primary",
+                    use_container_width=True,
+                    key="export_csms_xifdr_button",
                 )
                 if export_csms_xifdr_button:
                     with st.spinner(
@@ -1018,6 +1028,7 @@ def export_tab():
                         icon=":material/download:",
                         use_container_width=True,
                         help="Downloads the exported crosslink-spectrum-matches in xiFDR format.",
+                        key="export_csms_xifdr_download",
                     )
             else:
                 pass
