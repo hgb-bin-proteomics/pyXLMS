@@ -898,6 +898,68 @@ def export_tab():
                         use_container_width=True,
                         help="Downloads the exported crosslink-spectrum-matches in IMP-X-FDR format.",
                     )
+            elif export_csms_picker == "MS Annika":
+                export_csms_msannika_button = st.button(
+                    "Export to MS Annika format!",
+                    type="primary",
+                    use_container_width=True,
+                )
+                if export_csms_msannika_button:
+                    with st.spinner(
+                        "Exporting crosslink-spectrum-matches to MS Annika format...",
+                        show_time=True,
+                    ):
+                        try:
+                            st.session_state["export_csms_msannika"] = (
+                                exporter.to_msannika(csms, filename=None)
+                            )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+                if (
+                    "export_csms_msannika" in st.session_state
+                    and st.session_state["export_csms_msannika"] is not None
+                ):
+                    export_csms_msannika_download_info = st.markdown(
+                        "Your exported crosslink-spectrum-matches in MS Annika format are ready for download:"
+                    )
+                    l_csms_msannika, r_csms_msannika = st.columns(2)
+                    with l_csms_msannika:
+                        export_csms_msannika_download_csv = st.download_button(
+                            label="Download in MS Annika .csv format!",
+                            data=dataframe_to_csv_stream(
+                                st.session_state["export_csms_msannika"],
+                                sep=",",
+                                index=False,
+                            ),
+                            file_name="crosslink-spectrum-matches_ms-annika.csv",
+                            on_click="ignore",
+                            type="primary",
+                            mime="text/csv",
+                            icon=":material/download:",
+                            use_container_width=True,
+                            help="Downloads the exported crosslink-spectrum-matches in MS Annika comma-separated-values (.csv) format.",
+                        )
+                    with r_csms_msannika:
+                        export_csms_msannika_download_xlsx = st.download_button(
+                            label="Download in MS Annika .xlsx format!",
+                            data=dataframe_to_xlsx_stream(
+                                st.session_state["export_csms_msannika"],
+                                sheet_name="msannika",
+                                index=False,
+                            ),
+                            file_name="crosslink-spectrum-matches_ms-annika.xlsx",
+                            on_click="ignore",
+                            type="primary",
+                            mime="application/vnd.ms-excel",
+                            icon=":material/download:",
+                            use_container_width=True,
+                            help="Downloads the exported crosslink-spectrum-matches in MS Annika Microsoft Excel (.xlsx) format.",
+                        )
 
         if st.session_state["pr"]["crosslinks"] is not None:
             crosslinks = st.session_state["pr"]["crosslinks"]
