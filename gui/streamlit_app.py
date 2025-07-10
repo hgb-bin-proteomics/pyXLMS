@@ -1106,6 +1106,72 @@ def export_tab():
                         help="Downloads the exported crosslinks in IMP-X-FDR format.",
                         key="export_crosslinks_impxfdr_download",
                     )
+            elif export_crosslinks_picker == "MS Annika":
+                export_crosslinks_msannika_button = st.button(
+                    "Export to MS Annika format!",
+                    type="primary",
+                    use_container_width=True,
+                    key="export_crosslinks_msannika_button",
+                )
+                if export_crosslinks_msannika_button:
+                    with st.spinner(
+                        "Exporting crosslinks to MS Annika format...",
+                        show_time=True,
+                    ):
+                        try:
+                            st.session_state["export_crosslinks_msannika"] = (
+                                exporter.to_msannika(crosslinks, filename=None)
+                            )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+                if (
+                    "export_crosslinks_msannika" in st.session_state
+                    and st.session_state["export_crosslinks_msannika"] is not None
+                ):
+                    export_crosslinks_msannika_download_info = st.markdown(
+                        "Your exported crosslinks in MS Annika format are ready for download:"
+                    )
+                    l_crosslinks_msannika, r_crosslinks_msannika = st.columns(2)
+                    with l_crosslinks_msannika:
+                        export_crosslinks_msannika_download_csv = st.download_button(
+                            label="Download in MS Annika .csv format!",
+                            data=dataframe_to_csv_stream(
+                                st.session_state["export_crosslinks_msannika"],
+                                sep=",",
+                                index=False,
+                            ),
+                            file_name="crosslinks_ms-annika.csv",
+                            on_click="ignore",
+                            type="primary",
+                            mime="text/csv",
+                            icon=":material/download:",
+                            use_container_width=True,
+                            help="Downloads the exported crosslinks in MS Annika comma-separated-values (.csv) format.",
+                            key="export_crosslinks_msannika_download_csv",
+                        )
+                    with r_crosslinks_msannika:
+                        export_crosslinks_msannika_download_xlsx = st.download_button(
+                            label="Download in MS Annika .xlsx format!",
+                            data=dataframe_to_xlsx_stream(
+                                st.session_state["export_crosslinks_msannika"],
+                                sheet_name="msannika",
+                                index=False,
+                            ),
+                            file_name="crosslinks_ms-annika.xlsx",
+                            on_click="ignore",
+                            type="primary",
+                            mime="application/vnd.ms-excel",
+                            icon=":material/download:",
+                            use_container_width=True,
+                            help="Downloads the exported crosslinks in MS Annika Microsoft Excel (.xlsx) format.",
+                            key="export_crosslinks_msannika_download_xlsx",
+                        )
+
     if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
         aggregated_crosslinks = st.session_state["aggregated"]
         export_aggregated_crosslinks_header = st.subheader(
