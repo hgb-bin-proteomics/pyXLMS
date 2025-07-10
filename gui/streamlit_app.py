@@ -1179,7 +1179,20 @@ def export_tab():
                             key="export_crosslinks_msannika_download_xlsx",
                         )
             elif export_crosslinks_picker == "PyXlinkViewer":
-                pass
+                crosslinks_pdb_code = st.text_input(
+                    "Specify the PDB identification code of your protein(-complex) of interest:",
+                    value=None,
+                    max_chars=4,
+                    key="crosslinks_pdb_code",
+                    help="",
+                )
+                crosslinks_pdb_file = st.file_uploader(
+                    "Alternatively, upload a PDB file of your protein(-complex) of interest:",
+                    type="pdb",
+                    accept_multiple_files=False,
+                    key="crosslinks_pdb_file",
+                    help="",
+                )
             elif export_crosslinks_picker == "xiNET":
                 pass
             elif export_crosslinks_picker == "xiVIEW":
