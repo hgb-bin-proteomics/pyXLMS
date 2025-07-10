@@ -845,7 +845,9 @@ def export_tab():
     if "pr" in st.session_state and st.session_state["pr"] is not None:
         if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
             csms = st.session_state["pr"]["crosslink-spectrum-matches"]
-            export_csms_header = st.subheader("Export Crosslink-Spectrum-Matches")
+            export_csms_header = st.subheader(
+                "Export Crosslink-Spectrum-Matches", divider="grey"
+            )
             export_csms_options = ["IMP-X-FDR", "MS Annika", "xiFDR"]
             export_csms_picker = st.selectbox(
                 "Export crosslink-spectrum-matches to:",
@@ -1035,7 +1037,7 @@ def export_tab():
 
         if st.session_state["pr"]["crosslinks"] is not None:
             crosslinks = st.session_state["pr"]["crosslinks"]
-            export_crosslinks_header = st.subheader("Export Crosslinks")
+            export_crosslinks_header = st.subheader("Export Crosslinks", divider="grey")
             export_crosslinks_options = [
                 "IMP-X-FDR",
                 "MS Annika",
@@ -1175,7 +1177,7 @@ def export_tab():
     if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
         aggregated_crosslinks = st.session_state["aggregated"]
         export_aggregated_crosslinks_header = st.subheader(
-            "Export Aggregated Crosslinks"
+            "Export Aggregated Crosslinks", divider="grey"
         )
 
 
