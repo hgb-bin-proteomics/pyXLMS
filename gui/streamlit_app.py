@@ -361,6 +361,11 @@ def input_tab():
         )
 
     if read_file_button:
+        # reset any exported files
+        st.session_state["export_csms_impxfdr"] = None
+        st.session_state["export_csms_msannika"] = None
+        st.session_state["export_csms_xifdr"] = None
+        # check what is uploaded and set
         if uploaded_file is None:
             _ = st.error("You need to upload a result file first!")
         if search_engine is None:
