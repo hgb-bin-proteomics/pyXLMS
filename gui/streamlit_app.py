@@ -249,6 +249,13 @@ def input_tab():
             help="If aggregated crosslinks should be validated via false discovery rate estimation.",
         )
 
+    if parse_modifications:
+        parse_modifications_warning = st.warning(
+            "pyXLMS is only able to parse a limited number of the most common post-translational modifications! "
+            + "If parsing fails it is safer to leave option 'parse_modifications' turned off! More nuanced control "
+            + "for additional and custom modifications is available in the pyXLMS python package!"
+        )
+
     crosslinker_name = None
     crosslinker_mass = None
     if crosslinker == "Custom":
