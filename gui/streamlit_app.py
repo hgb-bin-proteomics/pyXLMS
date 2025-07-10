@@ -852,10 +852,10 @@ def export_tab():
                 pass
             elif export_csms_picker == "IMP-X-FDR":
                 export_csms_impxfdr_info = st.info(
-                    "To export to IMP-X-FDR your crosslink-spectrum-matches and crosslinks should be unique and not "
-                    + "contain any decoy matches! Usually you would also want to filter for high-confidence matches "
+                    "To export to IMP-X-FDR your crosslink-spectrum-matches should be **unique** and **not** "
+                    + "**contain any decoy matches**! Usually you would also want to filter for high-confidence matches "
                     + "to compare FDR estimation to the experimentally validated FDR! You can check this in the "
-                    + "'Load Data' tab in the 'Summary Statistics' of your loaded result!"
+                    + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
                 )
                 export_csms_impxfdr_button = st.button(
                     "Export to IMP-X-FDR!", type="primary", use_container_width=True
