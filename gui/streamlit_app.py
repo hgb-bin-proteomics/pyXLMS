@@ -46,6 +46,11 @@ from typing import Any
 
 
 @st.cache_data
+def to_text(data: str) -> bytes:
+    return data.encode("utf-8")
+
+
+@st.cache_data
 def to_json(data: Dict[str, Any]) -> bytes:
     return json.dumps(data).encode("utf-8")
 
@@ -1173,6 +1178,20 @@ def export_tab():
                             help="Downloads the exported crosslinks in MS Annika Microsoft Excel (.xlsx) format.",
                             key="export_crosslinks_msannika_download_xlsx",
                         )
+            elif export_crosslinks_picker == "PyXlinkViewer":
+                pass
+            elif export_crosslinks_picker == "xiNET":
+                pass
+            elif export_crosslinks_picker == "xiVIEW":
+                pass
+            elif export_crosslinks_picker == "XlinkDB":
+                pass
+            elif export_crosslinks_picker == "xlms-tools":
+                pass
+            elif export_crosslinks_picker == "XMAS":
+                pass
+            else:
+                pass
 
     if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
         aggregated_crosslinks = st.session_state["aggregated"]
