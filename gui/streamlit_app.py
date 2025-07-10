@@ -966,7 +966,7 @@ def about_tab():
     with center_1:
         link_button_2 = st.link_button(
             "User Guide",
-            url="https://pyxlms.vercel.app",
+            url="https://hgb-bin-proteomics.github.io/pyXLMS-docs",
             type="primary",
             help="Link to the pyXLMS user guide page.",
             use_container_width=True,

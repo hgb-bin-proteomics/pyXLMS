@@ -62,7 +62,7 @@ The web application is currently in development.
 
 ## User Guide, Examples and Documentation
 
-- A user guide that documents all available functionality is available via [pyxlms.vercel.app/](https://pyxlms.vercel.app/).
+- A user guide that documents all available functionality is available via [hgb-bin-proteomics.github.io/pyXLMS-docs](https://hgb-bin-proteomics.github.io/pyXLMS-docs).
 - Example jupyter notebooks can be found in `/examples`.
 - A full documentation of the python package can be accessed via [hgb-bin-proteomics.github.io/pyXLMS](https://hgb-bin-proteomics.github.io/pyXLMS).
 
