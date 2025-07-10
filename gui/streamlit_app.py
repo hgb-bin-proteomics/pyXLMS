@@ -199,6 +199,7 @@ def input_tab():
     with l2:
         parse_modifications = st.toggle(
             "Parse modifications",
+            value=False,
             key="parse_modifications",
             help="If post-translational-modifications should be parsed or not.",
         )
@@ -206,6 +207,7 @@ def input_tab():
     with center_2:
         reannotate_positions = st.toggle(
             "(Re-)Annotate crosslink positions",
+            value=False,
             key="reannotate_positions",
             help="If crosslink positions in proteins should be (re-)annotated.",
         )
@@ -213,6 +215,7 @@ def input_tab():
     with r2:
         unique = st.toggle(
             "Filter for unique crosslink spectrum matches and crosslinks",
+            value=False,
             key="unique",
             help="If crosslink spectrum matches and crosslinks should be filtered for unique matches only.",
         )
@@ -222,6 +225,7 @@ def input_tab():
     with l3:
         validate = st.toggle(
             "Validate via FDR estimation",
+            value=False,
             key="validate",
             help="If crosslink spectrum matches and crosslinks should be validated via false discovery rate estimation.",
         )
@@ -229,6 +233,7 @@ def input_tab():
     with center_3:
         targets_only = st.toggle(
             "Filter for target matches only",
+            value=False,
             key="targets_only",
             help="If crosslink spectrum matches and crosslinks should be filtered to contain only target-target matches.",
         )
@@ -236,6 +241,7 @@ def input_tab():
     with r3:
         aggregate = st.toggle(
             "Aggregate crosslink spectrum matches to crosslinks",
+            value=False,
             key="aggregate",
             help="If crosslink spectrum matches should be aggregated and grouped to crosslinks/residue pairs.",
         )
@@ -245,6 +251,7 @@ def input_tab():
     with l4:
         validate_aggregated = st.toggle(
             "Validate aggregated crosslinks via FDR estimation",
+            value=False,
             key="validate_aggregated",
             help="If aggregated crosslinks should be validated via false discovery rate estimation.",
         )
