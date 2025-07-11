@@ -14,6 +14,7 @@ RUN pip install --upgrade pip
 RUN pip install --upgrade setuptools
 RUN pip install --no-cache-dir .
 RUN pip install --no-cache-dir streamlit
+RUN pip install --no-cache-dir xlsxwriter
 
 WORKDIR gui
 
