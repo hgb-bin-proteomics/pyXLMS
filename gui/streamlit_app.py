@@ -402,6 +402,7 @@ def input_tab():
         st.session_state["export_crosslinks_impxfdr"] = None
         st.session_state["export_crosslinks_msannika"] = None
         st.session_state["export_crosslinks_pyxlinkviewer"] = None
+        st.session_state["export_crosslinks_xinet"] = None
         # check what is uploaded and set
         if uploaded_file is None:
             _ = st.error("You need to upload a result file first!")
@@ -1367,35 +1368,62 @@ def export_tab():
                             help="Downloads the parsed PDB annotation.",
                             key="export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation",
                         )
-                            )
-                            export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation = st.download_button(
-                                label="Download parsed PDB annotation!",
-                                data=dataframe_to_csv_stream(
-                                    pyxlinkviewer_get_annotation(
-                                        st.session_state[
-                                            "export_crosslinks_pyxlinkviewer"
-                                        ]["Parsed PDB sequence"],
-                                        st.session_state[
-                                            "export_crosslinks_pyxlinkviewer"
-                                        ]["Parsed PDB chains"],
-                                        st.session_state[
-                                            "export_crosslinks_pyxlinkviewer"
-                                        ]["Parsed PDB residue numbers"],
-                                    ),
-                                    sep=",",
-                                    index=False,
-                                ),
-                                file_name="crosslinks_pyxlinkviewer_pdb_annotation.csv",
-                                on_click="ignore",
-                                type="primary",
-                                mime="text/csv",
-                                icon=":material/download:",
-                                use_container_width=True,
-                                help="Downloads the parsed PDB annotation.",
-                                key="export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation",
-                            )
             elif export_crosslinks_picker == "xiNET":
-                pass
+                export_crosslinks_xinet_info = st.info(
+                    "To export to xiNET your crosslinks should be **unique** and **not** "
+                    + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks!"
+                    + "It is also required that all crosslinks have "
+                    + "associated proteins for the alpha and beta peptide as well as the corresponding crosslink "
+                    + "positions in those proteins! It is **not necessary to check this preemptively** as the exporter "
+                    + "automatically checks that this information is available and will throw an error otherwise! "
+                    + "You can additionally check this yourself in the "
+                    + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+                )
+                export_crosslinks_xinet_button = st.button(
+                    "Export to xiNET!",
+                    type="primary",
+                    use_container_width=True,
+                    key="export_crosslinks_xinet_button",
+                )
+                if export_crosslinks_xinet_button:
+                    with st.spinner(
+                        "Exporting crosslinks to xiNET...",
+                        show_time=True,
+                    ):
+                        try:
+                            st.session_state["export_crosslinks_xinet"] = (
+                                exporter.to_xinet(crosslinks, filename=None)
+                            )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+                if (
+                    "export_crosslinks_xinet" in st.session_state
+                    and st.session_state["export_crosslinks_xinet"] is not None
+                ):
+                    export_crosslinks_xinet_download_info = st.markdown(
+                        "Your exported crosslinks in xiNET format are ready for download:"
+                    )
+                    export_crosslinks_xinet_download = st.download_button(
+                        label="Download in xiNET format!",
+                        data=dataframe_to_csv_stream(
+                            st.session_state["export_crosslinks_xinet"],
+                            sep=",",
+                            index=False,
+                        ),
+                        file_name="crosslinks_xinet.csv",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/csv",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the exported crosslinks in xiNET format.",
+                        key="export_crosslinks_xinet_download",
+                    )
             elif export_crosslinks_picker == "xiVIEW":
                 pass
             elif export_crosslinks_picker == "XlinkDB":
