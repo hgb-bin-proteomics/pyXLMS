@@ -403,6 +403,7 @@ def input_tab():
         st.session_state["export_crosslinks_msannika"] = None
         st.session_state["export_crosslinks_pyxlinkviewer"] = None
         st.session_state["export_crosslinks_xinet"] = None
+        st.session_state["export_crosslinks_xiview"] = None
         # check what is uploaded and set
         if uploaded_file is None:
             _ = st.error("You need to upload a result file first!")
@@ -1465,7 +1466,69 @@ def export_tab():
                         use_container_width=True,
                     )
             elif export_crosslinks_picker == "xiVIEW":
-                pass
+                export_crosslinks_xiview_info = st.info(
+                    "To export to xiVIEW your crosslinks should be **unique** and **not** "
+                    + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks!"
+                    + "It is also required that all crosslinks have "
+                    + "associated proteins for the alpha and beta peptide as well as the corresponding crosslink "
+                    + "positions in those proteins! It is **not necessary to check this preemptively** as the exporter "
+                    + "automatically checks that this information is available and will throw an error otherwise! "
+                    + "You can additionally check this yourself in the "
+                    + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+                )
+                export_crosslinks_xiview_button = st.button(
+                    "Export to xiVIEW!",
+                    type="primary",
+                    use_container_width=True,
+                    key="export_crosslinks_xiview_button",
+                )
+                if export_crosslinks_xiview_button:
+                    with st.spinner(
+                        "Exporting crosslinks to xiVIEW...",
+                        show_time=True,
+                    ):
+                        try:
+                            st.session_state["export_crosslinks_xiview"] = (
+                                exporter.to_xiview(crosslinks, filename=None)
+                            )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+                if (
+                    "export_crosslinks_xiview" in st.session_state
+                    and st.session_state["export_crosslinks_xiview"] is not None
+                ):
+                    export_crosslinks_xiview_download_info = st.markdown(
+                        "Your exported crosslinks in xiVIEW format are ready for download:"
+                    )
+                    export_crosslinks_xiview_download = st.download_button(
+                        label="Download in xiVIEW format!",
+                        data=dataframe_to_csv_stream(
+                            st.session_state["export_crosslinks_xiview"],
+                            sep=",",
+                            index=False,
+                        ),
+                        file_name="crosslinks_xiview.csv",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/csv",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the exported crosslinks in xiVIEW format.",
+                        key="export_crosslinks_xiview_download",
+                    )
+                    export_crosslinks_xiview_download_goto_tool = st.link_button(
+                        "Go to xiVIEW!",
+                        url="https://xiview.org/",
+                        help="Go to the xiVIEW website.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
+                    )
             elif export_crosslinks_picker == "XlinkDB":
                 pass
             elif export_crosslinks_picker == "xlms-tools":
