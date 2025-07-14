@@ -62,7 +62,7 @@ The web app is publicly accessible for free via [hgb-bin-proteomics.github.io/py
 
 Additionally, it can be run locally or self-hosted via:
 
-- Running the streamlit app locally:
+- Running the [streamlit](https://streamlit.io/) app locally:
   - `cd gui`
   - `pip install -r requirements.txt`
   - `streamlit run streamlit_app.py`
