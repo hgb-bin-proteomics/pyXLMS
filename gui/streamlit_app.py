@@ -56,8 +56,10 @@ def to_json(data: Dict[str, Any]) -> bytes:
 
 
 @st.cache_data
-def dataframe_to_csv_stream(dataframe: pd.DataFrame, sep: str, index: bool) -> bytes:
-    return dataframe.to_csv(sep=sep, index=index).encode("utf-8")
+def dataframe_to_csv_stream(
+    dataframe: pd.DataFrame, sep: str, index: bool, header: bool = True
+) -> bytes:
+    return dataframe.to_csv(sep=sep, index=index, header=header).encode("utf-8")
 
 
 @st.cache_data
@@ -404,6 +406,7 @@ def input_tab():
         st.session_state["export_crosslinks_pyxlinkviewer"] = None
         st.session_state["export_crosslinks_xinet"] = None
         st.session_state["export_crosslinks_xiview"] = None
+        st.session_state["export_crosslinks_xlinkdb"] = None
         # check what is uploaded and set
         if uploaded_file is None:
             _ = st.error("You need to upload a result file first!")
@@ -1530,7 +1533,70 @@ def export_tab():
                         use_container_width=True,
                     )
             elif export_crosslinks_picker == "XlinkDB":
-                pass
+                export_crosslinks_xlinkdb_info = st.info(
+                    "To export to XlinkDB your crosslinks should be **unique** and **not** "
+                    + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks!"
+                    + "It is also required that all crosslinks have "
+                    + "associated proteins for the alpha and beta peptide! "
+                    + "It is **not necessary to check this preemptively** as the exporter "
+                    + "automatically checks that this information is available and will throw an error otherwise! "
+                    + "You can additionally check this yourself in the "
+                    + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+                )
+                export_crosslinks_xlinkdb_button = st.button(
+                    "Export to XlinkDB!",
+                    type="primary",
+                    use_container_width=True,
+                    key="export_crosslinks_xlinkdb_button",
+                )
+                if export_crosslinks_xlinkdb_button:
+                    with st.spinner(
+                        "Exporting crosslinks to XlinkDB...",
+                        show_time=True,
+                    ):
+                        try:
+                            st.session_state["export_crosslinks_xlinkdb"] = (
+                                exporter.to_xlinkdb(crosslinks, filename=None)
+                            )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+                if (
+                    "export_crosslinks_xlinkdb" in st.session_state
+                    and st.session_state["export_crosslinks_xlinkdb"] is not None
+                ):
+                    export_crosslinks_xlinkdb_download_info = st.markdown(
+                        "Your exported crosslinks in XlinkDB format are ready for download:"
+                    )
+                    export_crosslinks_xlinkdb_download = st.download_button(
+                        label="Download in XlinkDB format!",
+                        data=dataframe_to_csv_stream(
+                            st.session_state["export_crosslinks_xlinkdb"],
+                            sep="\t",
+                            index=False,
+                            header=False,
+                        ),
+                        file_name="crosslinksForXlinkDB.tsv",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/csv",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the exported crosslinks in XlinkDB format.",
+                        key="export_crosslinks_xlinkdb_download",
+                    )
+                    export_crosslinks_xlinkdb_download_goto_tool = st.link_button(
+                        "Go to XlinkDB!",
+                        url="https://xlinkdb.gs.washington.edu/xlinkdb/index.php",
+                        help="Go to the XlinkDB website.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
+                    )
             elif export_crosslinks_picker == "xlms-tools":
                 pass
             elif export_crosslinks_picker == "XMAS":
