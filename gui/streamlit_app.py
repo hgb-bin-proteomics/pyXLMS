@@ -409,6 +409,7 @@ def input_tab():
             "Read file!", type="primary", use_container_width=True
         )
 
+    # read in all inputs
     if read_file_button:
         # reset any exported files
         # CSMs
@@ -656,6 +657,7 @@ def input_tab():
                     with st.expander("Show exception"):
                         _ = st.exception(e)
 
+    # display read data and summary [CSMs]
     if "pr" in st.session_state:
         if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
             csms_header = st.subheader(
@@ -721,6 +723,7 @@ def input_tab():
                     help="Download crosslink-spectrum-matches in JavaScript Object Notation (JSON) format.",
                 )
 
+        # display read data and summary [crosslinks]
         if st.session_state["pr"]["crosslinks"] is not None:
             crosslinks_header = st.subheader("Read Crosslinks", divider="grey")
             crosslinks = st.session_state["pr"]["crosslinks"]
@@ -783,6 +786,7 @@ def input_tab():
                     help="Download crosslinks in JavaScript Object Notation (JSON) format.",
                 )
 
+    # display read data and summary [aggregated crosslinks]
     if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
         aggregated_crosslinks_header = st.subheader(
             "Aggregated Crosslinks", divider="grey"
@@ -850,6 +854,7 @@ def input_tab():
             )
 
 
+# visualize tab
 def visualize_tab():
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
         no_data = st.info("You need to upload a result file first!")
@@ -907,10 +912,12 @@ def visualize_tab():
             )
 
 
+# export tab
 def export_tab():
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
         no_data = st.info("You need to upload a result file first!")
     if "pr" in st.session_state and st.session_state["pr"] is not None:
+        # exporting CSMs
         if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
             csms = st.session_state["pr"]["crosslink-spectrum-matches"]
             export_csms_header = st.subheader(
@@ -925,6 +932,7 @@ def export_tab():
             )
             if export_csms_picker is None:
                 pass
+            # IMP-X-FDR
             elif export_csms_picker == "IMP-X-FDR":
                 export_csms_impxfdr_info = st.info(
                     "To export to IMP-X-FDR your crosslink-spectrum-matches should be **unique** and **not** "
@@ -985,6 +993,7 @@ def export_tab():
                         icon="🔗",
                         use_container_width=True,
                     )
+            # MS Annika
             elif export_csms_picker == "MS Annika":
                 export_csms_msannika_button = st.button(
                     "Export to MS Annika format!",
@@ -1050,6 +1059,7 @@ def export_tab():
                             help="Downloads the exported crosslink-spectrum-matches in MS Annika Microsoft Excel (.xlsx) format.",
                             key="export_csms_msannika_download_xlsx",
                         )
+            # xiFDR
             elif export_csms_picker == "xiFDR":
                 export_csms_xifdr_info = st.info(
                     "To export to xiFDR your crosslink-spectrum-matches should be **unique** and **must** "
@@ -1119,6 +1129,7 @@ def export_tab():
             else:
                 pass
 
+        # exporting crosslinks
         if st.session_state["pr"]["crosslinks"] is not None:
             crosslinks = st.session_state["pr"]["crosslinks"]
             export_crosslinks_header = st.subheader("Export Crosslinks", divider="grey")
@@ -1140,6 +1151,7 @@ def export_tab():
             )
             if export_crosslinks_picker is None:
                 pass
+            # IMP-X-FDR
             elif export_crosslinks_picker == "IMP-X-FDR":
                 export_crosslinks_impxfdr_info = st.info(
                     "To export to IMP-X-FDR your crosslinks should be **unique** and **not** "
@@ -1200,6 +1212,7 @@ def export_tab():
                         icon="🔗",
                         use_container_width=True,
                     )
+            # MS Annika
             elif export_crosslinks_picker == "MS Annika":
                 export_crosslinks_msannika_button = st.button(
                     "Export to MS Annika format!",
@@ -1265,6 +1278,7 @@ def export_tab():
                             help="Downloads the exported crosslinks in MS Annika Microsoft Excel (.xlsx) format.",
                             key="export_crosslinks_msannika_download_xlsx",
                         )
+            # PyXlinkViewer
             elif export_crosslinks_picker == "PyXlinkViewer":
                 crosslinks_pdb_code = st.text_input(
                     "Specify the PDB identification code of your protein(-complex) of interest:",
@@ -1430,6 +1444,7 @@ def export_tab():
                         icon="🔗",
                         use_container_width=True,
                     )
+            # xiNET
             elif export_crosslinks_picker == "xiNET":
                 export_crosslinks_xinet_info = st.info(
                     "To export to xiNET your crosslinks should be **unique** and **not** "
@@ -1494,6 +1509,7 @@ def export_tab():
                         icon="🔗",
                         use_container_width=True,
                     )
+            # xiVIEW
             elif export_crosslinks_picker == "xiVIEW":
                 export_crosslinks_xiview_info = st.info(
                     "To export to xiVIEW your crosslinks should be **unique** and **not** "
@@ -1558,6 +1574,7 @@ def export_tab():
                         icon="🔗",
                         use_container_width=True,
                     )
+            # XlinkDB
             elif export_crosslinks_picker == "XlinkDB":
                 export_crosslinks_xlinkdb_info = st.info(
                     "To export to XlinkDB your crosslinks should be **unique** and **not** "
@@ -1623,6 +1640,7 @@ def export_tab():
                         icon="🔗",
                         use_container_width=True,
                     )
+            # xlms-tools
             elif export_crosslinks_picker == "xlms-tools":
                 xlmstools_crosslinks_pdb_code = st.text_input(
                     "Specify the PDB identification code of your protein(-complex) of interest:",
@@ -1794,6 +1812,7 @@ def export_tab():
                         icon="🔗",
                         use_container_width=True,
                     )
+            # XMAS
             elif export_crosslinks_picker == "XMAS":
                 export_crosslinks_xmas_button = st.button(
                     "Export to XMAS format!",
@@ -1851,6 +1870,7 @@ def export_tab():
             else:
                 pass
 
+    # exporting aggregated crosslinks
     if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
         aggregated_crosslinks = st.session_state["aggregated"]
         export_aggregated_crosslinks_header = st.subheader(
@@ -1874,6 +1894,7 @@ def export_tab():
         )
         if export_aggregated_crosslinks_picker is None:
             pass
+        # IMP-X-FDR
         elif export_aggregated_crosslinks_picker == "IMP-X-FDR":
             export_aggregated_crosslinks_impxfdr_info = st.info(
                 "To export to IMP-X-FDR your aggregated crosslinks should be **unique** and **not** "
@@ -1936,6 +1957,7 @@ def export_tab():
                         use_container_width=True,
                     )
                 )
+        # MS Annika
         elif export_aggregated_crosslinks_picker == "MS Annika":
             export_aggregated_crosslinks_msannika_button = st.button(
                 "Export to MS Annika format!",
@@ -2004,6 +2026,7 @@ def export_tab():
                         help="Downloads the exported aggregated crosslinks in MS Annika Microsoft Excel (.xlsx) format.",
                         key="export_aggregated_crosslinks_msannika_download_xlsx",
                     )
+        # PyXlinkViewer
         elif export_aggregated_crosslinks_picker == "PyXlinkViewer":
             aggregated_crosslinks_pdb_code = st.text_input(
                 "Specify the PDB identification code of your protein(-complex) of interest:",
@@ -2176,6 +2199,7 @@ def export_tab():
                         use_container_width=True,
                     )
                 )
+        # xiNET
         elif export_aggregated_crosslinks_picker == "xiNET":
             export_aggregated_crosslinks_xinet_info = st.info(
                 "To export to xiNET your aggregated crosslinks should be **unique** and **not** "
@@ -2240,6 +2264,7 @@ def export_tab():
                     icon="🔗",
                     use_container_width=True,
                 )
+        # xiVIEW
         elif export_aggregated_crosslinks_picker == "xiVIEW":
             export_aggregated_crosslinks_xiview_info = st.info(
                 "To export to xiVIEW your aggregated crosslinks should be **unique** and **not** "
@@ -2304,6 +2329,7 @@ def export_tab():
                     icon="🔗",
                     use_container_width=True,
                 )
+        # XlinkDB
         elif export_aggregated_crosslinks_picker == "XlinkDB":
             export_aggregated_crosslinks_xlinkdb_info = st.info(
                 "To export to XlinkDB your aggregated crosslinks should be **unique** and **not** "
@@ -2371,6 +2397,7 @@ def export_tab():
                         use_container_width=True,
                     )
                 )
+        # xlms-tools
         elif export_aggregated_crosslinks_picker == "xlms-tools":
             xlmstools_aggregated_crosslinks_pdb_code = st.text_input(
                 "Specify the PDB identification code of your protein(-complex) of interest:",
@@ -2548,6 +2575,7 @@ def export_tab():
                         use_container_width=True,
                     )
                 )
+        # XMAS
         elif export_aggregated_crosslinks_picker == "XMAS":
             export_aggregated_crosslinks_xmas_button = st.button(
                 "Export to XMAS format!",
@@ -2606,6 +2634,7 @@ def export_tab():
             pass
 
 
+# about tab
 def about_tab():
     general_description = """
         **pyXLMS** is a python package and web application with graphical user interface that aims to simplify and streamline the intermediate step of
