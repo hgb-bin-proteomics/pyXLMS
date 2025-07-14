@@ -7,3 +7,5 @@ biopython
 biopandas
 matplotlib
 matplotlib-venn
+streamlit
+xlsxwriter
