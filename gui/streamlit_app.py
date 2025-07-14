@@ -947,6 +947,14 @@ def export_tab():
                         help="Downloads the exported crosslink-spectrum-matches in IMP-X-FDR format.",
                         key="export_csms_impxfdr_download",
                     )
+                    export_csms_impxfdr_download_goto_tool = st.link_button(
+                        "Go to IMP-X-FDR!",
+                        url="https://github.com/vbc-proteomics-org/imp-x-fdr",
+                        help="Go to the IMP-X-FDR download page.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
+                    )
             elif export_csms_picker == "MS Annika":
                 export_csms_msannika_button = st.button(
                     "Export to MS Annika format!",
@@ -1070,6 +1078,14 @@ def export_tab():
                         help="Downloads the exported crosslink-spectrum-matches in xiFDR format.",
                         key="export_csms_xifdr_download",
                     )
+                    export_csms_xifdr_download_goto_tool = st.link_button(
+                        "Go to xiFDR!",
+                        url="https://www.rappsilberlab.org/software/xifdr/",
+                        help="Go to the xiFDR download page.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
+                    )
             else:
                 pass
 
@@ -1145,6 +1161,14 @@ def export_tab():
                         use_container_width=True,
                         help="Downloads the exported crosslinks in IMP-X-FDR format.",
                         key="export_crosslinks_impxfdr_download",
+                    )
+                    export_crosslinks_impxfdr_download_goto_tool = st.link_button(
+                        "Go to IMP-X-FDR!",
+                        url="https://github.com/vbc-proteomics-org/imp-x-fdr",
+                        help="Go to the IMP-X-FDR download page.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
                     )
             elif export_crosslinks_picker == "MS Annika":
                 export_crosslinks_msannika_button = st.button(
@@ -1368,6 +1392,14 @@ def export_tab():
                             help="Downloads the parsed PDB annotation.",
                             key="export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation",
                         )
+                    export_crosslinks_pyxlinkviewer_download_goto_tool = st.link_button(
+                        "Go to PyXlinkViewer!",
+                        url="https://github.com/BobSchiffrin/PyXlinkViewer",
+                        help="Go to the PyXlinkViewer download page.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
+                    )
             elif export_crosslinks_picker == "xiNET":
                 export_crosslinks_xinet_info = st.info(
                     "To export to xiNET your crosslinks should be **unique** and **not** "
@@ -1423,6 +1455,14 @@ def export_tab():
                         use_container_width=True,
                         help="Downloads the exported crosslinks in xiNET format.",
                         key="export_crosslinks_xinet_download",
+                    )
+                    export_crosslinks_xinet_download_goto_tool = st.link_button(
+                        "Go to xiNET!",
+                        url="https://crosslinkviewer.org/",
+                        help="Go to the xiNET website.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
                     )
             elif export_crosslinks_picker == "xiVIEW":
                 pass
