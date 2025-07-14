@@ -38,7 +38,8 @@ dependencies = [
 
 [project.optional-dependencies]
 gui = [
-  "streamlit"
+  "streamlit",
+  "xlsxwriter"
 ]
 
 [project.urls]
