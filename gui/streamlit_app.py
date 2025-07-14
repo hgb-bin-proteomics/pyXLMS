@@ -1748,7 +1748,7 @@ def export_tab():
                             help="Downloads the parsed PDB sequence.",
                             key="export_crosslinks_xlmstools_download_meta_pdb_sequence",
                         )
-                        export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation = st.download_button(
+                        export_crosslinks_xlmstools_download_meta_pdb_annotation = st.download_button(
                             label="Download parsed PDB annotation!",
                             data=dataframe_to_csv_stream(
                                 pyxlinkviewer_get_annotation(
@@ -1774,7 +1774,7 @@ def export_tab():
                             help="Downloads the parsed PDB annotation.",
                             key="export_crosslinks_xlmstools_download_meta_pdb_annotation",
                         )
-                    export_crosslinks_pyxlinkviewer_download_goto_tool = st.link_button(
+                    export_crosslinks_xlmstools_download_goto_tool = st.link_button(
                         "Go to xlms-tools!",
                         url="https://gitlab.com/topf-lab/xlms-tools",
                         help="Go to the xlms-tools project page.",
