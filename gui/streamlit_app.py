@@ -421,6 +421,7 @@ def input_tab():
         st.session_state["export_crosslinks_xiview"] = None
         st.session_state["export_crosslinks_xlinkdb"] = None
         st.session_state["export_crosslinks_xlmstools"] = None
+        st.session_state["export_crosslinks_xmas"] = None
         # check what is uploaded and set
         if uploaded_file is None:
             _ = st.error("You need to upload a result file first!")
