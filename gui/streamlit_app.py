@@ -1225,6 +1225,12 @@ def export_tab():
                     key="crosslinks_pdb_file",
                     help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
                 )
+                export_crosslinks_pyxlinkviewer_info = st.info(
+                    "To export to PyXlinkViewer your crosslinks should be **unique** and **not** "
+                    + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
+                    + "You can check this in the "
+                    + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+                )
                 export_crosslinks_pyxlinkviewer_button = st.button(
                     "Export to PyXlinkViewer format!",
                     type="primary",
