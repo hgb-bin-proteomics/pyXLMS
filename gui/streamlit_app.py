@@ -411,9 +411,11 @@ def input_tab():
 
     if read_file_button:
         # reset any exported files
+        # CSMs
         st.session_state["export_csms_impxfdr"] = None
         st.session_state["export_csms_msannika"] = None
         st.session_state["export_csms_xifdr"] = None
+        # crosslinks
         st.session_state["export_crosslinks_impxfdr"] = None
         st.session_state["export_crosslinks_msannika"] = None
         st.session_state["export_crosslinks_pyxlinkviewer"] = None
@@ -422,6 +424,15 @@ def input_tab():
         st.session_state["export_crosslinks_xlinkdb"] = None
         st.session_state["export_crosslinks_xlmstools"] = None
         st.session_state["export_crosslinks_xmas"] = None
+        # aggregated crosslinks
+        st.session_state["export_aggregated_crosslinks_impxfdr"] = None
+        st.session_state["export_aggregated_crosslinks_msannika"] = None
+        st.session_state["export_aggregated_crosslinks_pyxlinkviewer"] = None
+        st.session_state["export_aggregated_crosslinks_xinet"] = None
+        st.session_state["export_aggregated_crosslinks_xiview"] = None
+        st.session_state["export_aggregated_crosslinks_xlinkdb"] = None
+        st.session_state["export_aggregated_crosslinks_xlmstools"] = None
+        st.session_state["export_aggregated_crosslinks_xmas"] = None
         # check what is uploaded and set
         if uploaded_file is None:
             _ = st.error("You need to upload a result file first!")
