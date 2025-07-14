@@ -1279,68 +1279,94 @@ def export_tab():
                                 )
                                 with st.expander("Show exception"):
                                     _ = st.exception(e)
-                    if (
-                        "export_crosslinks_pyxlinkviewer" in st.session_state
-                        and st.session_state["export_crosslinks_pyxlinkviewer"]
-                        is not None
-                    ):
-                        export_crosslinks_msannika_download_info = st.markdown(
-                            "Your exported crosslinks in PyXlinkViewer format are ready for download:"
+                if (
+                    "export_crosslinks_pyxlinkviewer" in st.session_state
+                    and st.session_state["export_crosslinks_pyxlinkviewer"] is not None
+                ):
+                    export_crosslinks_msannika_download_info = st.markdown(
+                        "Your exported crosslinks in PyXlinkViewer format are ready for download:"
+                    )
+                    export_crosslinks_pyxlinkviewer_download = st.download_button(
+                        label="Download in PyXlinkViewer format!",
+                        data=to_text(
+                            st.session_state["export_crosslinks_pyxlinkviewer"][
+                                "PyXlinkViewer"
+                            ]
+                        ),
+                        file_name="crosslinks_pyxlinkviewer.txt",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/plain",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the exported crosslinks in PyXlinkViewer format.",
+                        key="export_crosslinks_pyxlinkviewer_download",
+                    )
+                    with st.expander("Download Meta-data"):
+                        export_crosslinks_pyxlinkviewer_download_meta_nr_xl = st.markdown(
+                            "**Number of mapped crosslinks:** "
+                            + f"{st.session_state['export_crosslinks_pyxlinkviewer']['Number of mapped crosslinks']}"
                         )
-                        export_crosslinks_pyxlinkviewer_download = st.download_button(
-                            label="Download in PyXlinkViewer format!",
+                        export_crosslinks_pyxlinkviewer_download_meta_mapping = st.download_button(
+                            label="Download crosslink mapping!",
                             data=to_text(
                                 st.session_state["export_crosslinks_pyxlinkviewer"][
-                                    "PyXlinkViewer"
+                                    "Mapping"
                                 ]
                             ),
-                            file_name="crosslinks_pyxlinkviewer.txt",
+                            file_name="crosslinks_pyxlinkviewer_mapping.txt",
                             on_click="ignore",
                             type="primary",
                             mime="text/plain",
                             icon=":material/download:",
                             use_container_width=True,
-                            help="Downloads the exported crosslinks in PyXlinkViewer format.",
-                            key="export_crosslinks_pyxlinkviewer_download",
+                            help="Downloads the mapping of crosslinks to the PDB structure.",
+                            key="export_crosslinks_pyxlinkviewer_download_meta_mapping",
                         )
-                        with st.expander("Download Meta-data"):
-                            export_crosslinks_pyxlinkviewer_download_meta_nr_xl = st.markdown(
-                                "**Number of mapped crosslinks:** "
-                                + f"{st.session_state['export_crosslinks_pyxlinkviewer']['Number of mapped crosslinks']}"
-                            )
-                            export_crosslinks_pyxlinkviewer_download_meta_mapping = st.download_button(
-                                label="Download crosslink mapping!",
-                                data=to_text(
+                        export_crosslinks_pyxlinkviewer_download_meta_pdb_sequence = st.download_button(
+                            label="Download parsed PDB sequence!",
+                            data=to_text(
+                                pyxlinkviewer_get_fasta(
                                     st.session_state["export_crosslinks_pyxlinkviewer"][
-                                        "Mapping"
+                                        "Parsed PDB sequence"
                                     ]
+                                )
+                            ),
+                            file_name="crosslinks_pyxlinkviewer_pdb_sequence.fasta",
+                            on_click="ignore",
+                            type="primary",
+                            mime="chemical/seq-aa-fasta",
+                            icon=":material/download:",
+                            use_container_width=True,
+                            help="Downloads the parsed PDB sequence.",
+                            key="export_crosslinks_pyxlinkviewer_download_meta_pdb_sequence",
+                        )
+                        export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation = st.download_button(
+                            label="Download parsed PDB annotation!",
+                            data=dataframe_to_csv_stream(
+                                pyxlinkviewer_get_annotation(
+                                    st.session_state["export_crosslinks_pyxlinkviewer"][
+                                        "Parsed PDB sequence"
+                                    ],
+                                    st.session_state["export_crosslinks_pyxlinkviewer"][
+                                        "Parsed PDB chains"
+                                    ],
+                                    st.session_state["export_crosslinks_pyxlinkviewer"][
+                                        "Parsed PDB residue numbers"
+                                    ],
                                 ),
-                                file_name="crosslinks_pyxlinkviewer_mapping.txt",
-                                on_click="ignore",
-                                type="primary",
-                                mime="text/plain",
-                                icon=":material/download:",
-                                use_container_width=True,
-                                help="Downloads the mapping of crosslinks to the PDB structure.",
-                                key="export_crosslinks_pyxlinkviewer_download_meta_mapping",
-                            )
-                            export_crosslinks_pyxlinkviewer_download_meta_pdb_sequence = st.download_button(
-                                label="Download parsed PDB sequence!",
-                                data=to_text(
-                                    pyxlinkviewer_get_fasta(
-                                        st.session_state[
-                                            "export_crosslinks_pyxlinkviewer"
-                                        ]["Parsed PDB sequence"]
-                                    )
-                                ),
-                                file_name="crosslinks_pyxlinkviewer_pdb_sequence.fasta",
-                                on_click="ignore",
-                                type="primary",
-                                mime="chemical/seq-aa-fasta",
-                                icon=":material/download:",
-                                use_container_width=True,
-                                help="Downloads the parsed PDB sequence.",
-                                key="export_crosslinks_pyxlinkviewer_download_meta_pdb_sequence",
+                                sep=",",
+                                index=False,
+                            ),
+                            file_name="crosslinks_pyxlinkviewer_pdb_annotation.csv",
+                            on_click="ignore",
+                            type="primary",
+                            mime="text/csv",
+                            icon=":material/download:",
+                            use_container_width=True,
+                            help="Downloads the parsed PDB annotation.",
+                            key="export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation",
+                        )
                             )
                             export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation = st.download_button(
                                 label="Download parsed PDB annotation!",
