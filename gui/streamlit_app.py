@@ -1845,6 +1845,754 @@ def export_tab():
         export_aggregated_crosslinks_header = st.subheader(
             "Export Aggregated Crosslinks", divider="grey"
         )
+        export_aggregated_crosslinks_options = [
+            "IMP-X-FDR",
+            "MS Annika",
+            "PyXlinkViewer",
+            "xiNET",
+            "xiVIEW",
+            "XlinkDB",
+            "xlms-tools",
+            "XMAS",
+        ]
+        export_aggregated_crosslinks_picker = st.selectbox(
+            "Export aggregated crosslinks to:",
+            options=export_aggregated_crosslinks_options,
+            index=None,
+            help="Chose a format to export the aggregated crosslinks to.",
+        )
+        if export_aggregated_crosslinks_picker is None:
+            pass
+        elif export_aggregated_crosslinks_picker == "IMP-X-FDR":
+            export_aggregated_crosslinks_impxfdr_info = st.info(
+                "To export to IMP-X-FDR your aggregated crosslinks should be **unique** and **not** "
+                + "**contain any decoy matches**! Usually you would also want to filter for high-confidence matches "
+                + "to compare FDR estimation to the experimentally validated FDR! You can check this in the "
+                + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+            )
+            export_aggregated_crosslinks_impxfdr_button = st.button(
+                "Export to IMP-X-FDR!",
+                type="primary",
+                use_container_width=True,
+                key="export_aggregated_crosslinks_impxfdr_button",
+            )
+            if export_aggregated_crosslinks_impxfdr_button:
+                with st.spinner(
+                    "Exporting aggregated crosslinks to IMP-X-FDR...",
+                    show_time=True,
+                ):
+                    try:
+                        st.session_state["export_aggregated_crosslinks_impxfdr"] = (
+                            exporter.to_impxfdr(aggregated_crosslinks, filename=None)
+                        )
+                    except Exception as e:
+                        _ = st.error(
+                            "Something went wrong! This is most likely due to missing information in the results!",
+                            icon="⚠️",
+                        )
+                        with st.expander("Show exception"):
+                            _ = st.exception(e)
+            if (
+                "export_aggregated_crosslinks_impxfdr" in st.session_state
+                and st.session_state["export_aggregated_crosslinks_impxfdr"] is not None
+            ):
+                export_aggregated_crosslinks_impxfdr_download_info = st.markdown(
+                    "Your exported aggregated crosslinks in IMP-X-FDR format are ready for download:"
+                )
+                export_aggregated_crosslinks_impxfdr_download = st.download_button(
+                    label="Download in IMP-X-FDR format!",
+                    data=dataframe_to_xlsx_stream(
+                        st.session_state["export_aggregated_crosslinks_impxfdr"],
+                        sheet_name="imp-x-fdr",
+                        index=False,
+                    ),
+                    file_name="aggregated_crosslinks_imp-x-fdr.xlsx",
+                    on_click="ignore",
+                    type="primary",
+                    mime="application/vnd.ms-excel",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Downloads the exported aggregated crosslinks in IMP-X-FDR format.",
+                    key="export_aggregated_crosslinks_impxfdr_download",
+                )
+                export_aggregated_crosslinks_impxfdr_download_goto_tool = (
+                    st.link_button(
+                        "Go to IMP-X-FDR!",
+                        url="https://github.com/vbc-proteomics-org/imp-x-fdr",
+                        help="Go to the IMP-X-FDR download page.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
+                    )
+                )
+        elif export_aggregated_crosslinks_picker == "MS Annika":
+            export_aggregated_crosslinks_msannika_button = st.button(
+                "Export to MS Annika format!",
+                type="primary",
+                use_container_width=True,
+                key="export_aggregated_crosslinks_msannika_button",
+            )
+            if export_aggregated_crosslinks_msannika_button:
+                with st.spinner(
+                    "Exporting aggregated crosslinks to MS Annika format...",
+                    show_time=True,
+                ):
+                    try:
+                        st.session_state["export_aggregated_crosslinks_msannika"] = (
+                            exporter.to_msannika(aggregated_crosslinks, filename=None)
+                        )
+                    except Exception as e:
+                        _ = st.error(
+                            "Something went wrong! This is most likely due to missing information in the results!",
+                            icon="⚠️",
+                        )
+                        with st.expander("Show exception"):
+                            _ = st.exception(e)
+            if (
+                "export_aggregated_crosslinks_msannika" in st.session_state
+                and st.session_state["export_aggregated_crosslinks_msannika"]
+                is not None
+            ):
+                export_aggregated_crosslinks_msannika_download_info = st.markdown(
+                    "Your exported aggregated crosslinks in MS Annika format are ready for download:"
+                )
+                l_aggregated_crosslinks_msannika, r_aggregated_crosslinks_msannika = (
+                    st.columns(2)
+                )
+                with l_aggregated_crosslinks_msannika:
+                    export_aggregated_crosslinks_msannika_download_csv = st.download_button(
+                        label="Download in MS Annika .csv format!",
+                        data=dataframe_to_csv_stream(
+                            st.session_state["export_aggregated_crosslinks_msannika"],
+                            sep=",",
+                            index=False,
+                        ),
+                        file_name="aggregated_crosslinks_ms-annika.csv",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/csv",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the exported aggregated crosslinks in MS Annika comma-separated-values (.csv) format.",
+                        key="export_aggregated_crosslinks_msannika_download_csv",
+                    )
+                with r_aggregated_crosslinks_msannika:
+                    export_aggregated_crosslinks_msannika_download_xlsx = st.download_button(
+                        label="Download in MS Annika .xlsx format!",
+                        data=dataframe_to_xlsx_stream(
+                            st.session_state["export_aggregated_crosslinks_msannika"],
+                            sheet_name="msannika",
+                            index=False,
+                        ),
+                        file_name="aggregated_crosslinks_ms-annika.xlsx",
+                        on_click="ignore",
+                        type="primary",
+                        mime="application/vnd.ms-excel",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the exported aggregated crosslinks in MS Annika Microsoft Excel (.xlsx) format.",
+                        key="export_aggregated_crosslinks_msannika_download_xlsx",
+                    )
+        elif export_aggregated_crosslinks_picker == "PyXlinkViewer":
+            aggregated_crosslinks_pdb_code = st.text_input(
+                "Specify the PDB identification code of your protein(-complex) of interest:",
+                value=None,
+                max_chars=4,
+                key="aggregated_crosslinks_pdb_code",
+                help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
+            )
+            aggregated_crosslinks_pdb_file = st.file_uploader(
+                "Alternatively, upload a PDB file of your protein(-complex) of interest:",
+                type="pdb",
+                accept_multiple_files=False,
+                key="aggregated_crosslinks_pdb_file",
+                help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
+            )
+            export_aggregated_crosslinks_pyxlinkviewer_info = st.info(
+                "To export to PyXlinkViewer your aggregated crosslinks should be **unique** and **not** "
+                + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
+                + "You can check this in the "
+                + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+            )
+            export_aggregated_crosslinks_pyxlinkviewer_button = st.button(
+                "Export to PyXlinkViewer format!",
+                type="primary",
+                use_container_width=True,
+                key="export_aggregated_crosslinks_pyxlinkviewer_button",
+            )
+            if export_aggregated_crosslinks_pyxlinkviewer_button:
+                if (
+                    aggregated_crosslinks_pdb_code is None
+                    and aggregated_crosslinks_pdb_file is None
+                ):
+                    _ = st.error(
+                        "Can't export to PyXlinkViewer when neither PDB code nor file are given!",
+                        icon="⚠️",
+                    )
+                else:
+                    with st.spinner(
+                        "Exporting aggregated crosslinks to PyXlinkViewer format...",
+                        show_time=True,
+                    ):
+                        try:
+                            if aggregated_crosslinks_pdb_file is not None:
+                                st.session_state[
+                                    "export_aggregated_crosslinks_pyxlinkviewer"
+                                ] = export_pyxlinkviewer_using_pdbfile(
+                                    aggregated_crosslinks,
+                                    aggregated_crosslinks_pdb_file,
+                                )
+                            else:
+                                if aggregated_crosslinks_pdb_code is not None:
+                                    if len(aggregated_crosslinks_pdb_code.strip()) != 4:
+                                        raise ValueError(
+                                            "Specified PDB code is not a valid 4-letter PDB identification code!"
+                                        )
+                                    st.session_state[
+                                        "export_aggregated_crosslinks_pyxlinkviewer"
+                                    ] = exporter.to_pyxlinkviewer(
+                                        aggregated_crosslinks,
+                                        aggregated_crosslinks_pdb_code.strip(),
+                                        filename_prefix=None,
+                                    )
+                                else:
+                                    raise RuntimeError(
+                                        "Can't export to PyXlinkViewer when neither PDB code nor file are given!"
+                                    )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+            if (
+                "export_aggregated_crosslinks_pyxlinkviewer" in st.session_state
+                and st.session_state["export_aggregated_crosslinks_pyxlinkviewer"]
+                is not None
+            ):
+                export_aggregated_crosslinks_pyxlinkviewer_download_info = st.markdown(
+                    "Your exported aggregated crosslinks in PyXlinkViewer format are ready for download:"
+                )
+                export_aggregated_crosslinks_pyxlinkviewer_download = st.download_button(
+                    label="Download in PyXlinkViewer format!",
+                    data=to_text(
+                        st.session_state["export_aggregated_crosslinks_pyxlinkviewer"][
+                            "PyXlinkViewer"
+                        ]
+                    ),
+                    file_name="aggregated_crosslinks_pyxlinkviewer.txt",
+                    on_click="ignore",
+                    type="primary",
+                    mime="text/plain",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Downloads the exported aggregated crosslinks in PyXlinkViewer format.",
+                    key="export_aggregated_crosslinks_pyxlinkviewer_download",
+                )
+                with st.expander("Download Meta-data"):
+                    export_aggregated_crosslinks_pyxlinkviewer_download_meta_nr_xl = st.markdown(
+                        "**Number of mapped crosslinks:** "
+                        + f"{st.session_state['export_aggregated_crosslinks_pyxlinkviewer']['Number of mapped crosslinks']}"
+                    )
+                    export_aggregated_crosslinks_pyxlinkviewer_download_meta_mapping = st.download_button(
+                        label="Download crosslink mapping!",
+                        data=to_text(
+                            st.session_state[
+                                "export_aggregated_crosslinks_pyxlinkviewer"
+                            ]["Mapping"]
+                        ),
+                        file_name="aggregated_crosslinks_pyxlinkviewer_mapping.txt",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/plain",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the mapping of aggregated crosslinks to the PDB structure.",
+                        key="export_aggregated_crosslinks_pyxlinkviewer_download_meta_mapping",
+                    )
+                    export_aggregated_crosslinks_pyxlinkviewer_download_meta_pdb_sequence = st.download_button(
+                        label="Download parsed PDB sequence!",
+                        data=to_text(
+                            pyxlinkviewer_get_fasta(
+                                st.session_state[
+                                    "export_aggregated_crosslinks_pyxlinkviewer"
+                                ]["Parsed PDB sequence"]
+                            )
+                        ),
+                        file_name="aggregated_crosslinks_pyxlinkviewer_pdb_sequence.fasta",
+                        on_click="ignore",
+                        type="primary",
+                        mime="chemical/seq-aa-fasta",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the parsed PDB sequence.",
+                        key="export_aggregated_crosslinks_pyxlinkviewer_download_meta_pdb_sequence",
+                    )
+                    export_aggregated_crosslinks_pyxlinkviewer_download_meta_pdb_annotation = st.download_button(
+                        label="Download parsed PDB annotation!",
+                        data=dataframe_to_csv_stream(
+                            pyxlinkviewer_get_annotation(
+                                st.session_state[
+                                    "export_aggregated_crosslinks_pyxlinkviewer"
+                                ]["Parsed PDB sequence"],
+                                st.session_state[
+                                    "export_aggregated_crosslinks_pyxlinkviewer"
+                                ]["Parsed PDB chains"],
+                                st.session_state[
+                                    "export_aggregated_crosslinks_pyxlinkviewer"
+                                ]["Parsed PDB residue numbers"],
+                            ),
+                            sep=",",
+                            index=False,
+                        ),
+                        file_name="aggregated_crosslinks_pyxlinkviewer_pdb_annotation.csv",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/csv",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the parsed PDB annotation.",
+                        key="export_aggregated_crosslinks_pyxlinkviewer_download_meta_pdb_annotation",
+                    )
+                export_aggregated_crosslinks_pyxlinkviewer_download_goto_tool = (
+                    st.link_button(
+                        "Go to PyXlinkViewer!",
+                        url="https://github.com/BobSchiffrin/PyXlinkViewer",
+                        help="Go to the PyXlinkViewer download page.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
+                    )
+                )
+        elif export_aggregated_crosslinks_picker == "xiNET":
+            export_aggregated_crosslinks_xinet_info = st.info(
+                "To export to xiNET your aggregated crosslinks should be **unique** and **not** "
+                + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks!"
+                + "It is also required that all crosslinks have "
+                + "associated proteins for the alpha and beta peptide as well as the corresponding crosslink "
+                + "positions in those proteins! It is **not necessary to check this preemptively** as the exporter "
+                + "automatically checks that this information is available and will throw an error otherwise! "
+                + "You can additionally check this yourself in the "
+                + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+            )
+            export_aggregated_crosslinks_xinet_button = st.button(
+                "Export to xiNET!",
+                type="primary",
+                use_container_width=True,
+                key="export_aggregated_crosslinks_xinet_button",
+            )
+            if export_aggregated_crosslinks_xinet_button:
+                with st.spinner(
+                    "Exporting aggregated crosslinks to xiNET...",
+                    show_time=True,
+                ):
+                    try:
+                        st.session_state["export_aggregated_crosslinks_xinet"] = (
+                            exporter.to_xinet(aggregated_crosslinks, filename=None)
+                        )
+                    except Exception as e:
+                        _ = st.error(
+                            "Something went wrong! This is most likely due to missing information in the results!",
+                            icon="⚠️",
+                        )
+                        with st.expander("Show exception"):
+                            _ = st.exception(e)
+            if (
+                "export_aggregated_crosslinks_xinet" in st.session_state
+                and st.session_state["export_aggregated_crosslinks_xinet"] is not None
+            ):
+                export_aggregated_crosslinks_xinet_download_info = st.markdown(
+                    "Your exported aggregated crosslinks in xiNET format are ready for download:"
+                )
+                export_aggregated_crosslinks_xinet_download = st.download_button(
+                    label="Download in xiNET format!",
+                    data=dataframe_to_csv_stream(
+                        st.session_state["export_aggregated_crosslinks_xinet"],
+                        sep=",",
+                        index=False,
+                    ),
+                    file_name="aggregated_crosslinks_xinet.csv",
+                    on_click="ignore",
+                    type="primary",
+                    mime="text/csv",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Downloads the exported aggregated crosslinks in xiNET format.",
+                    key="export_aggregated_crosslinks_xinet_download",
+                )
+                export_aggregated_crosslinks_xinet_download_goto_tool = st.link_button(
+                    "Go to xiNET!",
+                    url="https://crosslinkviewer.org/",
+                    help="Go to the xiNET website.",
+                    type="primary",
+                    icon="🔗",
+                    use_container_width=True,
+                )
+        elif export_aggregated_crosslinks_picker == "xiVIEW":
+            export_aggregated_crosslinks_xiview_info = st.info(
+                "To export to xiVIEW your aggregated crosslinks should be **unique** and **not** "
+                + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks!"
+                + "It is also required that all crosslinks have "
+                + "associated proteins for the alpha and beta peptide as well as the corresponding crosslink "
+                + "positions in those proteins! It is **not necessary to check this preemptively** as the exporter "
+                + "automatically checks that this information is available and will throw an error otherwise! "
+                + "You can additionally check this yourself in the "
+                + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+            )
+            export_aggregated_crosslinks_xiview_button = st.button(
+                "Export to xiVIEW!",
+                type="primary",
+                use_container_width=True,
+                key="export_aggregated_crosslinks_xiview_button",
+            )
+            if export_aggregated_crosslinks_xiview_button:
+                with st.spinner(
+                    "Exporting aggregated crosslinks to xiVIEW...",
+                    show_time=True,
+                ):
+                    try:
+                        st.session_state["export_aggregated_crosslinks_xiview"] = (
+                            exporter.to_xiview(aggregated_crosslinks, filename=None)
+                        )
+                    except Exception as e:
+                        _ = st.error(
+                            "Something went wrong! This is most likely due to missing information in the results!",
+                            icon="⚠️",
+                        )
+                        with st.expander("Show exception"):
+                            _ = st.exception(e)
+            if (
+                "export_aggregated_crosslinks_xiview" in st.session_state
+                and st.session_state["export_aggregated_crosslinks_xiview"] is not None
+            ):
+                export_aggregated_crosslinks_xiview_download_info = st.markdown(
+                    "Your exported aggregated crosslinks in xiVIEW format are ready for download:"
+                )
+                export_aggregated_crosslinks_xiview_download = st.download_button(
+                    label="Download in xiVIEW format!",
+                    data=dataframe_to_csv_stream(
+                        st.session_state["export_aggregated_crosslinks_xiview"],
+                        sep=",",
+                        index=False,
+                    ),
+                    file_name="aggregated_crosslinks_xiview.csv",
+                    on_click="ignore",
+                    type="primary",
+                    mime="text/csv",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Downloads the exported aggregated crosslinks in xiVIEW format.",
+                    key="export_aggregated_crosslinks_xiview_download",
+                )
+                export_aggregated_crosslinks_xiview_download_goto_tool = st.link_button(
+                    "Go to xiVIEW!",
+                    url="https://xiview.org/",
+                    help="Go to the xiVIEW website.",
+                    type="primary",
+                    icon="🔗",
+                    use_container_width=True,
+                )
+        elif export_aggregated_crosslinks_picker == "XlinkDB":
+            export_aggregated_crosslinks_xlinkdb_info = st.info(
+                "To export to XlinkDB your aggregated crosslinks should be **unique** and **not** "
+                + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks!"
+                + "It is also required that all crosslinks have "
+                + "associated proteins for the alpha and beta peptide! "
+                + "It is **not necessary to check this preemptively** as the exporter "
+                + "automatically checks that this information is available and will throw an error otherwise! "
+                + "You can additionally check this yourself in the "
+                + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+            )
+            export_aggregated_crosslinks_xlinkdb_button = st.button(
+                "Export to XlinkDB!",
+                type="primary",
+                use_container_width=True,
+                key="export_aggregated_crosslinks_xlinkdb_button",
+            )
+            if export_aggregated_crosslinks_xlinkdb_button:
+                with st.spinner(
+                    "Exporting aggregated crosslinks to XlinkDB...",
+                    show_time=True,
+                ):
+                    try:
+                        st.session_state["export_aggregated_crosslinks_xlinkdb"] = (
+                            exporter.to_xlinkdb(aggregated_crosslinks, filename=None)
+                        )
+                    except Exception as e:
+                        _ = st.error(
+                            "Something went wrong! This is most likely due to missing information in the results!",
+                            icon="⚠️",
+                        )
+                        with st.expander("Show exception"):
+                            _ = st.exception(e)
+            if (
+                "export_aggregated_crosslinks_xlinkdb" in st.session_state
+                and st.session_state["export_aggregated_crosslinks_xlinkdb"] is not None
+            ):
+                export_aggregated_crosslinks_xlinkdb_download_info = st.markdown(
+                    "Your exported aggregated crosslinks in XlinkDB format are ready for download:"
+                )
+                export_aggregated_crosslinks_xlinkdb_download = st.download_button(
+                    label="Download in XlinkDB format!",
+                    data=dataframe_to_csv_stream(
+                        st.session_state["export_aggregated_crosslinks_xlinkdb"],
+                        sep="\t",
+                        index=False,
+                        header=False,
+                    ),
+                    file_name="aggregatedCrosslinksForXlinkDB.tsv",
+                    on_click="ignore",
+                    type="primary",
+                    mime="text/csv",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Downloads the exported aggregated crosslinks in XlinkDB format.",
+                    key="export_aggregated_crosslinks_xlinkdb_download",
+                )
+                export_aggregated_crosslinks_xlinkdb_download_goto_tool = (
+                    st.link_button(
+                        "Go to XlinkDB!",
+                        url="https://xlinkdb.gs.washington.edu/xlinkdb/index.php",
+                        help="Go to the XlinkDB website.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
+                    )
+                )
+        elif export_aggregated_crosslinks_picker == "xlms-tools":
+            xlmstools_aggregated_crosslinks_pdb_code = st.text_input(
+                "Specify the PDB identification code of your protein(-complex) of interest:",
+                value=None,
+                max_chars=4,
+                key="xlmstools_aggregated_crosslinks_pdb_code",
+                help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
+            )
+            xlmstools_aggregated_crosslinks_pdb_file = st.file_uploader(
+                "Alternatively, upload a PDB file of your protein(-complex) of interest:",
+                type="pdb",
+                accept_multiple_files=False,
+                key="xlmstools_aggregated_crosslinks_pdb_file",
+                help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
+            )
+            export_aggregated_crosslinks_xlmstools_info = st.info(
+                "To export to xlms-tools your aggregated crosslinks should be **unique** and **not** "
+                + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
+                + "You can check this in the "
+                + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+            )
+            export_aggregated_crosslinks_xlmstools_button = st.button(
+                "Export to xlms-tools format!",
+                type="primary",
+                use_container_width=True,
+                key="export_aggregated_crosslinks_xlmstools_button",
+            )
+            if export_aggregated_crosslinks_xlmstools_button:
+                if (
+                    xlmstools_aggregated_crosslinks_pdb_code is None
+                    and xlmstools_aggregated_crosslinks_pdb_file is None
+                ):
+                    _ = st.error(
+                        "Can't export to xlms-tools when neither PDB code nor file are given!",
+                        icon="⚠️",
+                    )
+                else:
+                    with st.spinner(
+                        "Exporting aggregated crosslinks to xlms-tools format...",
+                        show_time=True,
+                    ):
+                        try:
+                            if xlmstools_aggregated_crosslinks_pdb_file is not None:
+                                st.session_state[
+                                    "export_aggregated_crosslinks_xlmstools"
+                                ] = export_xlmstools_using_pdbfile(
+                                    aggregated_crosslinks,
+                                    xlmstools_aggregated_crosslinks_pdb_file,
+                                )
+                            else:
+                                if xlmstools_aggregated_crosslinks_pdb_code is not None:
+                                    if (
+                                        len(
+                                            xlmstools_aggregated_crosslinks_pdb_code.strip()
+                                        )
+                                        != 4
+                                    ):
+                                        raise ValueError(
+                                            "Specified PDB code is not a valid 4-letter PDB identification code!"
+                                        )
+                                    st.session_state[
+                                        "export_aggregated_crosslinks_xlmstools"
+                                    ] = exporter.to_xlmstools(
+                                        aggregated_crosslinks,
+                                        xlmstools_aggregated_crosslinks_pdb_code.strip(),
+                                        filename_prefix=None,
+                                    )
+                                else:
+                                    raise RuntimeError(
+                                        "Can't export to xlms-tools when neither PDB code nor file are given!"
+                                    )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+            if (
+                "export_aggregated_crosslinks_xlmstools" in st.session_state
+                and st.session_state["export_aggregated_crosslinks_xlmstools"]
+                is not None
+            ):
+                export_aggregated_crosslinks_xlmstools_download_info = st.markdown(
+                    "Your exported aggregated crosslinks in xlms-tools format are ready for download:"
+                )
+                export_aggregated_crosslinks_xlmstools_download = st.download_button(
+                    label="Download in xlms-tools format!",
+                    data=to_text(
+                        st.session_state["export_aggregated_crosslinks_xlmstools"][
+                            "xlms-tools"
+                        ]
+                    ),
+                    file_name="aggregated_crosslinks_xlmstools.txt",
+                    on_click="ignore",
+                    type="primary",
+                    mime="text/plain",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Downloads the exported aggregated crosslinks in xlms-tools format.",
+                    key="export_aggregated_crosslinks_xlmstools_download",
+                )
+                with st.expander("Download Meta-data"):
+                    export_aggregated_crosslinks_xlmstools_download_meta_nr_xl = st.markdown(
+                        "**Number of mapped crosslinks:** "
+                        + f"{st.session_state['export_aggregated_crosslinks_xlmstools']['Number of mapped crosslinks']}"
+                    )
+                    export_aggregated_crosslinks_xlmstools_download_meta_mapping = st.download_button(
+                        label="Download crosslink mapping!",
+                        data=to_text(
+                            st.session_state["export_aggregated_crosslinks_xlmstools"][
+                                "Mapping"
+                            ]
+                        ),
+                        file_name="aggregated_crosslinks_xlmstools_mapping.txt",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/plain",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the mapping of aggregated crosslinks to the PDB structure.",
+                        key="export_aggregated_crosslinks_xlmstools_download_meta_mapping",
+                    )
+                    export_aggregated_crosslinks_xlmstools_download_meta_pdb_sequence = st.download_button(
+                        label="Download parsed PDB sequence!",
+                        data=to_text(
+                            pyxlinkviewer_get_fasta(
+                                st.session_state[
+                                    "export_aggregated_crosslinks_xlmstools"
+                                ]["Parsed PDB sequence"]
+                            )
+                        ),
+                        file_name="aggregated_crosslinks_xlmstools_pdb_sequence.fasta",
+                        on_click="ignore",
+                        type="primary",
+                        mime="chemical/seq-aa-fasta",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the parsed PDB sequence.",
+                        key="export_aggregated_crosslinks_xlmstools_download_meta_pdb_sequence",
+                    )
+                    export_aggregated_crosslinks_xlmstools_download_meta_pdb_annotation = st.download_button(
+                        label="Download parsed PDB annotation!",
+                        data=dataframe_to_csv_stream(
+                            pyxlinkviewer_get_annotation(
+                                st.session_state[
+                                    "export_aggregated_crosslinks_xlmstools"
+                                ]["Parsed PDB sequence"],
+                                st.session_state[
+                                    "export_aggregated_crosslinks_xlmstools"
+                                ]["Parsed PDB chains"],
+                                st.session_state[
+                                    "export_aggregated_crosslinks_xlmstools"
+                                ]["Parsed PDB residue numbers"],
+                            ),
+                            sep=",",
+                            index=False,
+                        ),
+                        file_name="aggregated_crosslinks_xlmstools_pdb_annotation.csv",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/csv",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the parsed PDB annotation.",
+                        key="export_aggregated_crosslinks_xlmstools_download_meta_pdb_annotation",
+                    )
+                export_aggregated_crosslinks_xlmstools_download_goto_tool = (
+                    st.link_button(
+                        "Go to xlms-tools!",
+                        url="https://gitlab.com/topf-lab/xlms-tools",
+                        help="Go to the xlms-tools project page.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
+                    )
+                )
+        elif export_aggregated_crosslinks_picker == "XMAS":
+            export_aggregated_crosslinks_xmas_button = st.button(
+                "Export to XMAS format!",
+                type="primary",
+                use_container_width=True,
+                key="export_aggregated_crosslinks_xmas_button",
+            )
+            if export_aggregated_crosslinks_xmas_button:
+                with st.spinner(
+                    "Exporting aggregated crosslinks to XMAS format...",
+                    show_time=True,
+                ):
+                    try:
+                        st.session_state["export_aggregated_crosslinks_xmas"] = (
+                            exporter.to_xmas(aggregated_crosslinks, filename=None)
+                        )
+                    except Exception as e:
+                        _ = st.error(
+                            "Something went wrong! This is most likely due to missing information in the results!",
+                            icon="⚠️",
+                        )
+                        with st.expander("Show exception"):
+                            _ = st.exception(e)
+            if (
+                "export_aggregated_crosslinks_xmas" in st.session_state
+                and st.session_state["export_aggregated_crosslinks_xmas"] is not None
+            ):
+                export_aggregated_crosslinks_xmas_download_info = st.markdown(
+                    "Your exported aggregated crosslinks in XMAS format are ready for download:"
+                )
+                export_aggregated_crosslinks_xmas_download = st.download_button(
+                    label="Download in XMAS format!",
+                    data=dataframe_to_xlsx_stream(
+                        st.session_state["export_aggregated_crosslinks_xmas"],
+                        sheet_name="xmas",
+                        index=False,
+                    ),
+                    file_name="aggregated_crosslinks_xmas.xlsx",
+                    on_click="ignore",
+                    type="primary",
+                    mime="application/vnd.ms-excel",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Downloads the exported aggregated crosslinks in XMAS format.",
+                    key="export_aggregated_crosslinks_xmas_download",
+                )
+                export_aggregated_crosslinks_xmas_download_goto_tool = st.link_button(
+                    "Go to XMAS!",
+                    url="https://github.com/ScheltemaLab/ChimeraX_XMAS_bundle",
+                    help="Go to the XMAS project page.",
+                    type="primary",
+                    icon="🔗",
+                    use_container_width=True,
+                )
+        else:
+            pass
 
 
 def about_tab():
