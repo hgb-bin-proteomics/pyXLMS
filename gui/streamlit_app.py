@@ -122,6 +122,35 @@ def reannotating_positions(
         return transform.reannotate_positions(pr, f.name)
 
 
+@st.cache_data
+def export_pyxlinkviewer_using_pdbfile(
+    crosslinks: List[Dict[str, Any]], uploaded_pdb_file: io.BytesIO
+) -> Dict[str, Any]:
+    #
+    with NamedTemporaryFile(
+        suffix=os.path.splitext(uploaded_pdb_file.name)[1], delete_on_close=False
+    ) as f:  # pyright: ignore[reportCallIssue]
+        f.write(uploaded_pdb_file.getbuffer())
+        f.close()
+        return exporter.to_pyxlinkviewer(crosslinks, f.name, filename_prefix=None)
+
+
+def pyxlinkviewer_get_fasta(sequence: str) -> str:
+    return f">db|PARSEDPDB|sequence parsed from PDB file\n{sequence}"
+
+
+def pyxlinkviewer_get_annotation(
+    sequence: str, chains: str, residue_numbers: List[Any]
+) -> pd.DataFrame:
+    return pd.DataFrame(
+        {
+            "Amino Acid": [c for c in sequence],
+            "Chain": [c for c in chains],
+            "Residue Number": residue_numbers,
+        }
+    )
+
+
 # input tab
 def input_tab():
     general_description = """
@@ -370,6 +399,9 @@ def input_tab():
         st.session_state["export_csms_impxfdr"] = None
         st.session_state["export_csms_msannika"] = None
         st.session_state["export_csms_xifdr"] = None
+        st.session_state["export_crosslinks_impxfdr"] = None
+        st.session_state["export_crosslinks_msannika"] = None
+        st.session_state["export_crosslinks_pyxlinkviewer"] = None
         # check what is uploaded and set
         if uploaded_file is None:
             _ = st.error("You need to upload a result file first!")
@@ -1184,15 +1216,152 @@ def export_tab():
                     value=None,
                     max_chars=4,
                     key="crosslinks_pdb_code",
-                    help="",
+                    help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
                 )
                 crosslinks_pdb_file = st.file_uploader(
                     "Alternatively, upload a PDB file of your protein(-complex) of interest:",
                     type="pdb",
                     accept_multiple_files=False,
                     key="crosslinks_pdb_file",
-                    help="",
+                    help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
                 )
+                export_crosslinks_pyxlinkviewer_button = st.button(
+                    "Export to PyXlinkViewer format!",
+                    type="primary",
+                    use_container_width=True,
+                    key="export_crosslinks_pyxlinkviewer_button",
+                )
+                if export_crosslinks_pyxlinkviewer_button:
+                    if crosslinks_pdb_code is None and crosslinks_pdb_file is None:
+                        _ = st.error(
+                            "Can't export to PyXlinkViewer when neither PDB code nor file are given!",
+                            icon="⚠️",
+                        )
+                    else:
+                        with st.spinner(
+                            "Exporting crosslinks to PyXlinkViewer format...",
+                            show_time=True,
+                        ):
+                            try:
+                                if crosslinks_pdb_file is not None:
+                                    st.session_state[
+                                        "export_crosslinks_pyxlinkviewer"
+                                    ] = export_pyxlinkviewer_using_pdbfile(
+                                        crosslinks, crosslinks_pdb_file
+                                    )
+                                else:
+                                    if crosslinks_pdb_code is not None:
+                                        if len(crosslinks_pdb_code.strip()) != 4:
+                                            raise ValueError(
+                                                "Specified PDB code is not a valid 4-letter PDB identification code!"
+                                            )
+                                        st.session_state[
+                                            "export_crosslinks_pyxlinkviewer"
+                                        ] = exporter.to_pyxlinkviewer(
+                                            crosslinks,
+                                            crosslinks_pdb_code.strip(),
+                                            filename_prefix=None,
+                                        )
+                                    else:
+                                        raise RuntimeError(
+                                            "Can't export to PyXlinkViewer when neither PDB code nor file are given!"
+                                        )
+                            except Exception as e:
+                                _ = st.error(
+                                    "Something went wrong! This is most likely due to missing information in the results!",
+                                    icon="⚠️",
+                                )
+                                with st.expander("Show exception"):
+                                    _ = st.exception(e)
+                    if (
+                        "export_crosslinks_pyxlinkviewer" in st.session_state
+                        and st.session_state["export_crosslinks_pyxlinkviewer"]
+                        is not None
+                    ):
+                        export_crosslinks_msannika_download_info = st.markdown(
+                            "Your exported crosslinks in PyXlinkViewer format are ready for download:"
+                        )
+                        export_crosslinks_pyxlinkviewer_download = st.download_button(
+                            label="Download in PyXlinkViewer format!",
+                            data=to_text(
+                                st.session_state["export_crosslinks_pyxlinkviewer"][
+                                    "PyXlinkViewer"
+                                ]
+                            ),
+                            file_name="crosslinks_pyxlinkviewer.txt",
+                            on_click="ignore",
+                            type="primary",
+                            mime="text/plain",
+                            icon=":material/download:",
+                            use_container_width=True,
+                            help="Downloads the exported crosslinks in PyXlinkViewer format.",
+                            key="export_crosslinks_pyxlinkviewer_download",
+                        )
+                        with st.expander("Download Meta-data"):
+                            export_crosslinks_pyxlinkviewer_download_meta_nr_xl = st.markdown(
+                                "**Number of mapped crosslinks:** "
+                                + f"{st.session_state['export_crosslinks_pyxlinkviewer']['Number of mapped crosslinks']}"
+                            )
+                            export_crosslinks_pyxlinkviewer_download_meta_mapping = st.download_button(
+                                label="Download crosslink mapping!",
+                                data=to_text(
+                                    st.session_state["export_crosslinks_pyxlinkviewer"][
+                                        "Mapping"
+                                    ]
+                                ),
+                                file_name="crosslinks_pyxlinkviewer_mapping.txt",
+                                on_click="ignore",
+                                type="primary",
+                                mime="text/plain",
+                                icon=":material/download:",
+                                use_container_width=True,
+                                help="Downloads the mapping of crosslinks to the PDB structure.",
+                                key="export_crosslinks_pyxlinkviewer_download_meta_mapping",
+                            )
+                            export_crosslinks_pyxlinkviewer_download_meta_pdb_sequence = st.download_button(
+                                label="Download parsed PDB sequence!",
+                                data=to_text(
+                                    pyxlinkviewer_get_fasta(
+                                        st.session_state[
+                                            "export_crosslinks_pyxlinkviewer"
+                                        ]["Parsed PDB sequence"]
+                                    )
+                                ),
+                                file_name="crosslinks_pyxlinkviewer_pdb_sequence.fasta",
+                                on_click="ignore",
+                                type="primary",
+                                mime="chemical/seq-aa-fasta",
+                                icon=":material/download:",
+                                use_container_width=True,
+                                help="Downloads the parsed PDB sequence.",
+                                key="export_crosslinks_pyxlinkviewer_download_meta_pdb_sequence",
+                            )
+                            export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation = st.download_button(
+                                label="Download parsed PDB annotation!",
+                                data=dataframe_to_csv_stream(
+                                    pyxlinkviewer_get_annotation(
+                                        st.session_state[
+                                            "export_crosslinks_pyxlinkviewer"
+                                        ]["Parsed PDB sequence"],
+                                        st.session_state[
+                                            "export_crosslinks_pyxlinkviewer"
+                                        ]["Parsed PDB chains"],
+                                        st.session_state[
+                                            "export_crosslinks_pyxlinkviewer"
+                                        ]["Parsed PDB residue numbers"],
+                                    ),
+                                    sep=",",
+                                    index=False,
+                                ),
+                                file_name="crosslinks_pyxlinkviewer_pdb_annotation.csv",
+                                on_click="ignore",
+                                type="primary",
+                                mime="text/csv",
+                                icon=":material/download:",
+                                use_container_width=True,
+                                help="Downloads the parsed PDB annotation.",
+                                key="export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation",
+                            )
             elif export_crosslinks_picker == "xiNET":
                 pass
             elif export_crosslinks_picker == "xiVIEW":
