@@ -153,6 +153,19 @@ def pyxlinkviewer_get_annotation(
     )
 
 
+@st.cache_data
+def export_xlmstools_using_pdbfile(
+    crosslinks: List[Dict[str, Any]], uploaded_pdb_file: io.BytesIO
+) -> Dict[str, Any]:
+    #
+    with NamedTemporaryFile(
+        suffix=os.path.splitext(uploaded_pdb_file.name)[1], delete_on_close=False
+    ) as f:  # pyright: ignore[reportCallIssue]
+        f.write(uploaded_pdb_file.getbuffer())
+        f.close()
+        return exporter.to_xlmstools(crosslinks, f.name, filename_prefix=None)
+
+
 # input tab
 def input_tab():
     general_description = """
@@ -407,6 +420,7 @@ def input_tab():
         st.session_state["export_crosslinks_xinet"] = None
         st.session_state["export_crosslinks_xiview"] = None
         st.session_state["export_crosslinks_xlinkdb"] = None
+        st.session_state["export_crosslinks_xlmstools"] = None
         # check what is uploaded and set
         if uploaded_file is None:
             _ = st.error("You need to upload a result file first!")
@@ -1312,7 +1326,7 @@ def export_tab():
                     "export_crosslinks_pyxlinkviewer" in st.session_state
                     and st.session_state["export_crosslinks_pyxlinkviewer"] is not None
                 ):
-                    export_crosslinks_msannika_download_info = st.markdown(
+                    export_crosslinks_pyxlinkviewer_download_info = st.markdown(
                         "Your exported crosslinks in PyXlinkViewer format are ready for download:"
                     )
                     export_crosslinks_pyxlinkviewer_download = st.download_button(
@@ -1598,7 +1612,176 @@ def export_tab():
                         use_container_width=True,
                     )
             elif export_crosslinks_picker == "xlms-tools":
-                pass
+                xlmstools_crosslinks_pdb_code = st.text_input(
+                    "Specify the PDB identification code of your protein(-complex) of interest:",
+                    value=None,
+                    max_chars=4,
+                    key="xlmstools_crosslinks_pdb_code",
+                    help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
+                )
+                xlmstools_crosslinks_pdb_file = st.file_uploader(
+                    "Alternatively, upload a PDB file of your protein(-complex) of interest:",
+                    type="pdb",
+                    accept_multiple_files=False,
+                    key="xlmstools_crosslinks_pdb_file",
+                    help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
+                )
+                export_crosslinks_xlmstools_info = st.info(
+                    "To export to xlms-tools your crosslinks should be **unique** and **not** "
+                    + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
+                    + "You can check this in the "
+                    + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+                )
+                export_crosslinks_xlmstools_button = st.button(
+                    "Export to xlms-tools format!",
+                    type="primary",
+                    use_container_width=True,
+                    key="export_crosslinks_xlmstools_button",
+                )
+                if export_crosslinks_xlmstools_button:
+                    if (
+                        xlmstools_crosslinks_pdb_code is None
+                        and xlmstools_crosslinks_pdb_file is None
+                    ):
+                        _ = st.error(
+                            "Can't export to xlms-tools when neither PDB code nor file are given!",
+                            icon="⚠️",
+                        )
+                    else:
+                        with st.spinner(
+                            "Exporting crosslinks to xlms-tools format...",
+                            show_time=True,
+                        ):
+                            try:
+                                if xlmstools_crosslinks_pdb_file is not None:
+                                    st.session_state["export_crosslinks_xlmstools"] = (
+                                        export_xlmstools_using_pdbfile(
+                                            crosslinks, xlmstools_crosslinks_pdb_file
+                                        )
+                                    )
+                                else:
+                                    if xlmstools_crosslinks_pdb_code is not None:
+                                        if (
+                                            len(xlmstools_crosslinks_pdb_code.strip())
+                                            != 4
+                                        ):
+                                            raise ValueError(
+                                                "Specified PDB code is not a valid 4-letter PDB identification code!"
+                                            )
+                                        st.session_state[
+                                            "export_crosslinks_xlmstools"
+                                        ] = exporter.to_xlmstools(
+                                            crosslinks,
+                                            xlmstools_crosslinks_pdb_code.strip(),
+                                            filename_prefix=None,
+                                        )
+                                    else:
+                                        raise RuntimeError(
+                                            "Can't export to xlms-tools when neither PDB code nor file are given!"
+                                        )
+                            except Exception as e:
+                                _ = st.error(
+                                    "Something went wrong! This is most likely due to missing information in the results!",
+                                    icon="⚠️",
+                                )
+                                with st.expander("Show exception"):
+                                    _ = st.exception(e)
+                if (
+                    "export_crosslinks_xlmstools" in st.session_state
+                    and st.session_state["export_crosslinks_xlmstools"] is not None
+                ):
+                    export_crosslinks_xlmstools_download_info = st.markdown(
+                        "Your exported crosslinks in xlms-tools format are ready for download:"
+                    )
+                    export_crosslinks_xlmstools_download = st.download_button(
+                        label="Download in xlms-tools format!",
+                        data=to_text(
+                            st.session_state["export_crosslinks_xlmstools"][
+                                "xlms-tools"
+                            ]
+                        ),
+                        file_name="crosslinks_xlmstools.txt",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/plain",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the exported crosslinks in xlms-tools format.",
+                        key="export_crosslinks_xlmstools_download",
+                    )
+                    with st.expander("Download Meta-data"):
+                        export_crosslinks_xlmstools_download_meta_nr_xl = st.markdown(
+                            "**Number of mapped crosslinks:** "
+                            + f"{st.session_state['export_crosslinks_xlmstools']['Number of mapped crosslinks']}"
+                        )
+                        export_crosslinks_xlmstools_download_meta_mapping = st.download_button(
+                            label="Download crosslink mapping!",
+                            data=to_text(
+                                st.session_state["export_crosslinks_xlmstools"][
+                                    "Mapping"
+                                ]
+                            ),
+                            file_name="crosslinks_xlmstools_mapping.txt",
+                            on_click="ignore",
+                            type="primary",
+                            mime="text/plain",
+                            icon=":material/download:",
+                            use_container_width=True,
+                            help="Downloads the mapping of crosslinks to the PDB structure.",
+                            key="export_crosslinks_xlmstools_download_meta_mapping",
+                        )
+                        export_crosslinks_xlmstools_download_meta_pdb_sequence = st.download_button(
+                            label="Download parsed PDB sequence!",
+                            data=to_text(
+                                pyxlinkviewer_get_fasta(
+                                    st.session_state["export_crosslinks_xlmstools"][
+                                        "Parsed PDB sequence"
+                                    ]
+                                )
+                            ),
+                            file_name="crosslinks_xlmstools_pdb_sequence.fasta",
+                            on_click="ignore",
+                            type="primary",
+                            mime="chemical/seq-aa-fasta",
+                            icon=":material/download:",
+                            use_container_width=True,
+                            help="Downloads the parsed PDB sequence.",
+                            key="export_crosslinks_xlmstools_download_meta_pdb_sequence",
+                        )
+                        export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation = st.download_button(
+                            label="Download parsed PDB annotation!",
+                            data=dataframe_to_csv_stream(
+                                pyxlinkviewer_get_annotation(
+                                    st.session_state["export_crosslinks_xlmstools"][
+                                        "Parsed PDB sequence"
+                                    ],
+                                    st.session_state["export_crosslinks_xlmstools"][
+                                        "Parsed PDB chains"
+                                    ],
+                                    st.session_state["export_crosslinks_xlmstools"][
+                                        "Parsed PDB residue numbers"
+                                    ],
+                                ),
+                                sep=",",
+                                index=False,
+                            ),
+                            file_name="crosslinks_xlmstools_pdb_annotation.csv",
+                            on_click="ignore",
+                            type="primary",
+                            mime="text/csv",
+                            icon=":material/download:",
+                            use_container_width=True,
+                            help="Downloads the parsed PDB annotation.",
+                            key="export_crosslinks_xlmstools_download_meta_pdb_annotation",
+                        )
+                    export_crosslinks_pyxlinkviewer_download_goto_tool = st.link_button(
+                        "Go to xlms-tools!",
+                        url="https://gitlab.com/topf-lab/xlms-tools",
+                        help="Go to the xlms-tools project page.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
+                    )
             elif export_crosslinks_picker == "XMAS":
                 pass
             else:
