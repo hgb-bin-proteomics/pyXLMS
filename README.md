@@ -58,7 +58,19 @@ Maximum CSM score: 452.99
 
 ## Web App
 
-The web application is currently in development.
+The web app is publicly accessible for free via [hgb-bin-proteomics.github.io/pyXLMS-app](https://hgb-bin-proteomics.github.io/pyXLMS-app).
+
+Additionally, it can be run locally or self-hosted via:
+
+- Running the streamlit app locally:
+  - `cd gui`
+  - `pip install -r requirements.txt`
+  - `streamlit run streamlit_app.py`
+- Building the [Docker](https://docs.docker.com/get-started/get-docker/) container yourself:
+  - `docker build . -f Dockerfile -t pyxlms`
+  - `docker run -p 8501:8501 pyxlms`
+- _or_ by pulling the provided image from Docker Hub:
+  - `docker run -p 8501:8501 michabirklbauer/pyxlms:latest`
 
 ## User Guide, Examples and Documentation
 
