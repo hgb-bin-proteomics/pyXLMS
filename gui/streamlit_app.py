@@ -1783,7 +1783,59 @@ def export_tab():
                         use_container_width=True,
                     )
             elif export_crosslinks_picker == "XMAS":
-                pass
+                export_crosslinks_xmas_button = st.button(
+                    "Export to XMAS format!",
+                    type="primary",
+                    use_container_width=True,
+                    key="export_crosslinks_xmas_button",
+                )
+                if export_crosslinks_xmas_button:
+                    with st.spinner(
+                        "Exporting crosslinks to XMAS format...",
+                        show_time=True,
+                    ):
+                        try:
+                            st.session_state["export_crosslinks_xmas"] = (
+                                exporter.to_xmas(crosslinks, filename=None)
+                            )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+                if (
+                    "export_crosslinks_xmas" in st.session_state
+                    and st.session_state["export_crosslinks_xmas"] is not None
+                ):
+                    export_crosslinks_xmas_download_info = st.markdown(
+                        "Your exported crosslinks in XMAS format are ready for download:"
+                    )
+                    export_crosslinks_xmas_download = st.download_button(
+                        label="Download in XMAS format!",
+                        data=dataframe_to_xlsx_stream(
+                            st.session_state["export_crosslinks_xmas"],
+                            sheet_name="xmas",
+                            index=False,
+                        ),
+                        file_name="crosslinks_xmas.xlsx",
+                        on_click="ignore",
+                        type="primary",
+                        mime="application/vnd.ms-excel",
+                        icon=":material/download:",
+                        use_container_width=True,
+                        help="Downloads the exported crosslinks in XMAS format.",
+                        key="export_crosslinks_xmas_download",
+                    )
+                    export_crosslinks_xmas_download_goto_tool = st.link_button(
+                        "Go to XMAS!",
+                        url="https://github.com/ScheltemaLab/ChimeraX_XMAS_bundle",
+                        help="Go to the XMAS project page.",
+                        type="primary",
+                        icon="🔗",
+                        use_container_width=True,
+                    )
             else:
                 pass
 
