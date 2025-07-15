@@ -691,6 +691,7 @@ def input_tab():
                     icon=":material/download:",
                     use_container_width=True,
                     help="Download crosslink-spectrum-matches in comma-separated format.",
+                    key="csms_dl_csv",
                 )
 
             with center_8:
@@ -708,6 +709,7 @@ def input_tab():
                     icon=":material/download:",
                     use_container_width=True,
                     help="Download crosslink-spectrum-matches in Microsoft Excel format.",
+                    key="csms_dl_excel",
                 )
 
             with r8:
@@ -721,6 +723,7 @@ def input_tab():
                     icon=":material/download:",
                     use_container_width=True,
                     help="Download crosslink-spectrum-matches in JavaScript Object Notation (JSON) format.",
+                    key="csms_dl_json",
                 )
 
         # display read data and summary [crosslinks]
@@ -754,6 +757,7 @@ def input_tab():
                     icon=":material/download:",
                     use_container_width=True,
                     help="Download crosslinks in comma-separated format.",
+                    key="crosslinks_dl_csv",
                 )
 
             with center_9:
@@ -771,6 +775,7 @@ def input_tab():
                     icon=":material/download:",
                     use_container_width=True,
                     help="Download crosslinks in Microsoft Excel format.",
+                    key="crosslinks_dl_excel",
                 )
 
             with r9:
@@ -784,6 +789,7 @@ def input_tab():
                     icon=":material/download:",
                     use_container_width=True,
                     help="Download crosslinks in JavaScript Object Notation (JSON) format.",
+                    key="crosslinks_dl_json",
                 )
 
     # display read data and summary [aggregated crosslinks]
@@ -821,6 +827,7 @@ def input_tab():
                 icon=":material/download:",
                 use_container_width=True,
                 help="Download aggregated crosslinks in comma-separated format.",
+                key="aggregated_crosslinks_dl_csv",
             )
 
         with center_10:
@@ -838,6 +845,7 @@ def input_tab():
                 icon=":material/download:",
                 use_container_width=True,
                 help="Download aggregated crosslinks in Microsoft Excel format.",
+                key="aggregated_crosslinks_dl_excel",
             )
 
         with r10:
@@ -851,6 +859,8 @@ def input_tab():
                 icon=":material/download:",
                 use_container_width=True,
                 help="Download aggregated crosslinks in JavaScript Object Notation (JSON) format.",
+                key="aggregated_crosslinks_dl_json",
+            )
             )
 
 
