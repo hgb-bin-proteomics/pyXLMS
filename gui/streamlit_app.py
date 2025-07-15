@@ -42,6 +42,7 @@ import streamlit as st
 from typing import Optional
 from typing import Dict
 from typing import List
+from typing import Set
 from typing import Any
 
 
@@ -164,6 +165,14 @@ def export_xlmstools_using_pdbfile(
         f.write(uploaded_pdb_file.getbuffer())
         f.close()
         return exporter.to_xlmstools(crosslinks, f.name, filename_prefix=None)
+
+
+@st.cache_data
+def filter_proteins(
+    data: List[Dict[str, Any]], proteins: Set[str] | List[str]
+) -> List[Dict[str, Any]]:
+    filtered = transform.filter_proteins(data, proteins)
+    return filtered["Both"] + filtered["One"]
 
 
 # input tab
@@ -861,6 +870,435 @@ def input_tab():
                 help="Download aggregated crosslinks in JavaScript Object Notation (JSON) format.",
                 key="aggregated_crosslinks_dl_json",
             )
+
+
+# filter tab
+def filter_tab():
+    if "pr" not in st.session_state and "aggregated" not in st.session_state:
+        no_data = st.info("You need to upload a result file first!")
+    else:
+        # filters
+        # protein filter
+        possible_proteins = set()
+        if "pr" in st.session_state and st.session_state["pr"] is not None:
+            if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
+                for csm in st.session_state["pr"]["crosslink-spectrum-matches"]:
+                    if csm["alpha_proteins"] is not None:
+                        for protein in csm["alpha_proteins"]:
+                            possible_proteins.add(protein)
+                    if csm["beta_proteins"] is not None:
+                        for protein in csm["beta_proteins"]:
+                            possible_proteins.add(protein)
+            if st.session_state["pr"]["crosslinks"] is not None:
+                for xl in st.session_state["pr"]["crosslinks"]:
+                    if xl["alpha_proteins"] is not None:
+                        for protein in xl["alpha_proteins"]:
+                            possible_proteins.add(protein)
+                    if xl["beta_proteins"] is not None:
+                        for protein in xl["beta_proteins"]:
+                            possible_proteins.add(protein)
+        protein_filter_header = st.subheader(
+            "Filter by Protein Accession", divider="grey"
+        )
+        protein_filter = st.multiselect(
+            "Select the protein accessions that you want to keep:",
+            options=possible_proteins,
+            default=None,
+            key="protein_filter",
+            help="Select the protein accessions that you want to keep. "
+            + "Crosslink-spectrum-matches and crosslinks containing none of the proteins will be filtered out. "
+            + "Leaving this filter blank will keep everything.",
+            max_selections=25,
+        )
+        # crosslink type filter
+        crosslink_type_filter_header = st.subheader(
+            "Filter by Crosslink Type", divider="grey"
+        )
+        crosslink_type_filter = st.multiselect(
+            "Select the crosslink types that you want to keep:",
+            options=["Intra", "Inter"],
+            default=["Intra", "Inter"],
+            key="crosslink_type_filter",
+            help="Select the crosslink types that you want to keep. "
+            + "Crosslink-spectrum-matches and crosslinks that are not of these types will be filtered out.",
+            max_selections=2,
+        )
+        # target decoy filter
+        target_decoy_filter_header = st.subheader(
+            "Filter by Target-Decoy Type", divider="grey"
+        )
+        target_decoy_filter = st.multiselect(
+            "Select the crosslink types that you want to keep:",
+            options=["Target-Target", "Target-Decoy", "Decoy-Decoy"],
+            default=["Target-Target", "Target-Decoy", "Decoy-Decoy"],
+            key="target_decoy_filter",
+            help="Select the target-decoy types that you want to keep. "
+            + "Crosslink-spectrum-matches and crosslinks that are not of these types will be filtered out.",
+            max_selections=3,
+        )
+        # filter action
+        left_c, center_c, right_c = st.columns(3)
+
+        with center_c:
+            filter_button = st.button(
+                "Filter results!", type="primary", use_container_width=True
+            )
+
+        # filter in all inputs
+        if filter_button:
+            # reset any exported files
+            # CSMs
+            st.session_state["export_csms_impxfdr"] = None
+            st.session_state["export_csms_msannika"] = None
+            st.session_state["export_csms_xifdr"] = None
+            # crosslinks
+            st.session_state["export_crosslinks_impxfdr"] = None
+            st.session_state["export_crosslinks_msannika"] = None
+            st.session_state["export_crosslinks_pyxlinkviewer"] = None
+            st.session_state["export_crosslinks_xinet"] = None
+            st.session_state["export_crosslinks_xiview"] = None
+            st.session_state["export_crosslinks_xlinkdb"] = None
+            st.session_state["export_crosslinks_xlmstools"] = None
+            st.session_state["export_crosslinks_xmas"] = None
+            # aggregated crosslinks
+            st.session_state["export_aggregated_crosslinks_impxfdr"] = None
+            st.session_state["export_aggregated_crosslinks_msannika"] = None
+            st.session_state["export_aggregated_crosslinks_pyxlinkviewer"] = None
+            st.session_state["export_aggregated_crosslinks_xinet"] = None
+            st.session_state["export_aggregated_crosslinks_xiview"] = None
+            st.session_state["export_aggregated_crosslinks_xlinkdb"] = None
+            st.session_state["export_aggregated_crosslinks_xlmstools"] = None
+            st.session_state["export_aggregated_crosslinks_xmas"] = None
+
+            with st.spinner("Filtering results...", show_time=True):
+                try:
+                    if protein_filter is not None and len(protein_filter) > 0:
+                        if "pr" in st.session_state:
+                            if (
+                                st.session_state["pr"]["crosslink-spectrum-matches"]
+                                is not None
+                            ):
+                                st.session_state["pr"]["crosslink-spectrum-matches"] = (
+                                    filter_proteins(
+                                        st.session_state["pr"][
+                                            "crosslink-spectrum-matches"
+                                        ],
+                                        protein_filter,
+                                    )
+                                )
+                            if st.session_state["pr"]["crosslinks"] is not None:
+                                st.session_state["pr"]["crosslinks"] = filter_proteins(
+                                    st.session_state["pr"]["crosslinks"],
+                                    protein_filter,
+                                )
+                        if (
+                            "aggregated" in st.session_state
+                            and st.session_state["aggregated"] is not None
+                        ):
+                            st.session_state["aggregated"] = filter_proteins(
+                                st.session_state["aggregated"], protein_filter
+                            )
+                    if crosslink_type_filter is not None:
+                        if "pr" in st.session_state:
+                            if (
+                                st.session_state["pr"]["crosslink-spectrum-matches"]
+                                is not None
+                            ):
+                                intra_inter = transform.filter_crosslink_type(
+                                    st.session_state["pr"]["crosslink-spectrum-matches"]
+                                )
+                                keep = list()
+                                if "Intra" in crosslink_type_filter:
+                                    keep += intra_inter["Intra"]
+                                if "Inter" in crosslink_type_filter:
+                                    keep += intra_inter["Inter"]
+                                st.session_state["pr"]["crosslink-spectrum-matches"] = (
+                                    keep
+                                )
+                            if st.session_state["pr"]["crosslinks"] is not None:
+                                intra_inter = transform.filter_crosslink_type(
+                                    st.session_state["pr"]["crosslinks"]
+                                )
+                                keep = list()
+                                if "Intra" in crosslink_type_filter:
+                                    keep += intra_inter["Intra"]
+                                if "Inter" in crosslink_type_filter:
+                                    keep += intra_inter["Inter"]
+                                st.session_state["pr"]["crosslinks"] = keep
+                        if (
+                            "aggregated" in st.session_state
+                            and st.session_state["aggregated"] is not None
+                        ):
+                            intra_inter = transform.filter_crosslink_type(
+                                st.session_state["aggregated"]
+                            )
+                            keep = list()
+                            if "Intra" in crosslink_type_filter:
+                                keep += intra_inter["Intra"]
+                            if "Inter" in crosslink_type_filter:
+                                keep += intra_inter["Inter"]
+                            st.session_state["aggregated"] = keep
+                    if target_decoy_filter is not None:
+                        if "pr" in st.session_state:
+                            if (
+                                st.session_state["pr"]["crosslink-spectrum-matches"]
+                                is not None
+                            ):
+                                tt_td_dd = transform.filter_target_decoy(
+                                    st.session_state["pr"]["crosslink-spectrum-matches"]
+                                )
+                                keep = list()
+                                if "Target-Target" in target_decoy_filter:
+                                    keep += tt_td_dd["Target-Target"]
+                                if "Target-Decoy" in target_decoy_filter:
+                                    keep += tt_td_dd["Target-Decoy"]
+                                if "Decoy-Decoy" in target_decoy_filter:
+                                    keep += tt_td_dd["Decoy-Decoy"]
+                                st.session_state["pr"]["crosslink-spectrum-matches"] = (
+                                    keep
+                                )
+                            if st.session_state["pr"]["crosslinks"] is not None:
+                                tt_td_dd = transform.filter_target_decoy(
+                                    st.session_state["pr"]["crosslinks"]
+                                )
+                                keep = list()
+                                if "Target-Target" in target_decoy_filter:
+                                    keep += tt_td_dd["Target-Target"]
+                                if "Target-Decoy" in target_decoy_filter:
+                                    keep += tt_td_dd["Target-Decoy"]
+                                if "Decoy-Decoy" in target_decoy_filter:
+                                    keep += tt_td_dd["Decoy-Decoy"]
+                                st.session_state["pr"]["crosslinks"] = keep
+                        if (
+                            "aggregated" in st.session_state
+                            and st.session_state["aggregated"] is not None
+                        ):
+                            tt_td_dd = transform.filter_target_decoy(
+                                st.session_state["aggregated"]
+                            )
+                            keep = list()
+                            if "Target-Target" in target_decoy_filter:
+                                keep += tt_td_dd["Target-Target"]
+                            if "Target-Decoy" in target_decoy_filter:
+                                keep += tt_td_dd["Target-Decoy"]
+                            if "Decoy-Decoy" in target_decoy_filter:
+                                keep += tt_td_dd["Decoy-Decoy"]
+                            st.session_state["aggregated"] = keep
+                except Exception as e:
+                    _ = st.error(
+                        "Something went wrong! This is most likely due to missing information in the results!",
+                        icon="⚠️",
+                    )
+                    with st.expander("Show exception"):
+                        _ = st.exception(e)
+
+    # display filtered data and summary [CSMs]
+    if "pr" in st.session_state:
+        if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
+            csms_header = st.subheader(
+                "Current Crosslink-Spectrum-Matches", divider="grey"
+            )
+            csms = st.session_state["pr"]["crosslink-spectrum-matches"]
+            csms_info = st.markdown(
+                f"**Currently {len(csms)} crosslink-spectrum-matches:**"
+            )
+            csms_df = st.dataframe(
+                transform.to_dataframe(csms), use_container_width=True
+            )
+            summary_stats = transform.summary(csms)
+            summary_stats_md = st.markdown("**Summary Statistics:**")
+            summary_stats_df = st.dataframe(
+                pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
+            )
+
+            l1, center_1, r1 = st.columns(3)
+
+            with l1:
+                filter_csms_dl_csv = st.download_button(
+                    label="Download crosslink-spectrum-matches as .csv!",
+                    data=dataframe_to_csv_stream(
+                        transform.to_dataframe(csms),
+                        sep=",",
+                        index=False,
+                    ),
+                    file_name="crosslink-spectrum-matches.csv",
+                    on_click="ignore",
+                    type="primary",
+                    mime="text/csv",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslink-spectrum-matches in comma-separated format.",
+                    key="filter_csms_dl_csv",
+                )
+
+            with center_1:
+                filter_csms_dl_excel = st.download_button(
+                    label="Download crosslink-spectrum-matches as .xlsx!",
+                    data=dataframe_to_xlsx_stream(
+                        transform.to_dataframe(csms),
+                        sheet_name="crosslink-spectrum-matches",
+                        index=False,
+                    ),
+                    file_name="crosslink-spectrum-matches.xlsx",
+                    on_click="ignore",
+                    type="primary",
+                    mime="application/vnd.ms-excel",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslink-spectrum-matches in Microsoft Excel format.",
+                    key="filter_csms_dl_excel",
+                )
+
+            with r1:
+                filter_csms_dl_json = st.download_button(
+                    label="Download crosslink-spectrum-matches as .json!",
+                    data=to_json(csms),
+                    file_name="crosslink-spectrum-matches.json",
+                    on_click="ignore",
+                    type="primary",
+                    mime="application/json",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslink-spectrum-matches in JavaScript Object Notation (JSON) format.",
+                    key="filter_csms_dl_json",
+                )
+
+        # display filtered data and summary [crosslinks]
+        if st.session_state["pr"]["crosslinks"] is not None:
+            crosslinks_header = st.subheader("Current Crosslinks", divider="grey")
+            crosslinks = st.session_state["pr"]["crosslinks"]
+            crosslinks_info = st.markdown(
+                f"**Currently {len(crosslinks)} crosslinks:**"
+            )
+            crosslinks_df = st.dataframe(
+                transform.to_dataframe(crosslinks), use_container_width=True
+            )
+            summary_stats = transform.summary(crosslinks)
+            summary_stats_md = st.markdown("**Summary Statistics:**")
+            summary_stats_df = st.dataframe(
+                pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
+            )
+
+            l2, center_2, r2 = st.columns(3)
+
+            with l2:
+                filter_crosslinks_dl_csv = st.download_button(
+                    label="Download crosslinks as .csv!",
+                    data=dataframe_to_csv_stream(
+                        transform.to_dataframe(crosslinks),
+                        sep=",",
+                        index=False,
+                    ),
+                    file_name="crosslinks.csv",
+                    on_click="ignore",
+                    type="primary",
+                    mime="text/csv",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslinks in comma-separated format.",
+                    key="filter_crosslinks_dl_csv",
+                )
+
+            with center_2:
+                filter_crosslinks_dl_excel = st.download_button(
+                    label="Download crosslinks as .xlsx!",
+                    data=dataframe_to_xlsx_stream(
+                        transform.to_dataframe(crosslinks),
+                        sheet_name="crosslinks",
+                        index=False,
+                    ),
+                    file_name="crosslinks.xlsx",
+                    on_click="ignore",
+                    type="primary",
+                    mime="application/vnd.ms-excel",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslinks in Microsoft Excel format.",
+                    key="filter_crosslinks_dl_excel",
+                )
+
+            with r2:
+                filter_crosslinks_dl_json = st.download_button(
+                    label="Download crosslinks as .json!",
+                    data=to_json(crosslinks),
+                    file_name="crosslinks.json",
+                    on_click="ignore",
+                    type="primary",
+                    mime="application/json",
+                    icon=":material/download:",
+                    use_container_width=True,
+                    help="Download crosslinks in JavaScript Object Notation (JSON) format.",
+                    key="filter_crosslinks_dl_json",
+                )
+
+    # display filtered data and summary [aggregated crosslinks]
+    if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
+        aggregated_crosslinks_header = st.subheader(
+            "Current Aggregated Crosslinks", divider="grey"
+        )
+        aggregated_crosslinks = st.session_state["aggregated"]
+        aggregated_crosslinks_info = st.markdown(
+            f"**Currently aggregated {len(aggregated_crosslinks)} crosslinks:**"
+        )
+        aggregated_crosslinks_df = st.dataframe(
+            transform.to_dataframe(aggregated_crosslinks), use_container_width=True
+        )
+        summary_stats = transform.summary(aggregated_crosslinks)
+        summary_stats_md = st.markdown("**Summary Statistics:**")
+        summary_stats_df = st.dataframe(
+            pd.DataFrame(pd.Series(summary_stats)).T, hide_index=True
+        )
+
+        l3, center_3, r3 = st.columns(3)
+
+        with l3:
+            filter_aggregated_crosslinks_dl_csv = st.download_button(
+                label="Download aggregated crosslinks as .csv!",
+                data=dataframe_to_csv_stream(
+                    transform.to_dataframe(aggregated_crosslinks),
+                    sep=",",
+                    index=False,
+                ),
+                file_name="aggregated_crosslinks.csv",
+                on_click="ignore",
+                type="primary",
+                mime="text/csv",
+                icon=":material/download:",
+                use_container_width=True,
+                help="Download aggregated crosslinks in comma-separated format.",
+                key="filter_aggregated_crosslinks_dl_csv",
+            )
+
+        with center_3:
+            filter_aggregated_crosslinks_dl_excel = st.download_button(
+                label="Download aggregated crosslinks as .xlsx!",
+                data=dataframe_to_xlsx_stream(
+                    transform.to_dataframe(aggregated_crosslinks),
+                    sheet_name="aggregated crosslinks",
+                    index=False,
+                ),
+                file_name="aggregated_crosslinks.xlsx",
+                on_click="ignore",
+                type="primary",
+                mime="application/vnd.ms-excel",
+                icon=":material/download:",
+                use_container_width=True,
+                help="Download aggregated crosslinks in Microsoft Excel format.",
+                key="filter_aggregated_crosslinks_dl_excel",
+            )
+
+        with r3:
+            filter_aggregated_crosslinks_dl_json = st.download_button(
+                label="Download aggregated crosslinks as .json!",
+                data=to_json(aggregated_crosslinks),
+                file_name="aggregated_crosslinks.json",
+                on_click="ignore",
+                type="primary",
+                mime="application/json",
+                icon=":material/download:",
+                use_container_width=True,
+                help="Download aggregated crosslinks in JavaScript Object Notation (JSON) format.",
+                key="filter_aggregated_crosslinks_dl_json",
             )
 
 
@@ -2732,18 +3170,23 @@ def about_tab():
 def main_page():
     title = st.title("pyXLMS")
 
-    tab1, tab2, tab3, tab4 = st.tabs(["Load Data", "Visualize", "Export", "About"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(
+        ["Load Data", "Filter", "Visualize", "Export", "About"]
+    )
 
     with tab1:
         input_tab()
 
     with tab2:
-        visualize_tab()
+        filter_tab()
 
     with tab3:
-        export_tab()
+        visualize_tab()
 
     with tab4:
+        export_tab()
+
+    with tab5:
         about_tab()
 
 
