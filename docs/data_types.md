@@ -41,3 +41,27 @@ may be `None`:
 | "retention_time"                     | `float`                               | ❌ | The retention time of the corresponding mass spectrum of the crosslink-spectrum-match in seconds. |
 | "ion_mobility"                       | `float`                               | ❌ | The ion mobility or compensation voltage of the corresponding mass spectrum of the crosslink-spectrum-match. |
 | "additional_information"             | `Dict[str, Any]`                      | ❌ | A dictionary with additional information associated with the crosslink-spectrum-match. |
+
+## Crosslinks
+
+Any method that returns or expects a crosslink refers to a
+dictionary with the following keys and values, values that are not guaranteed
+may be `None`:
+
+| Key                                  | Value Type                            | Value Guaranteed | Value Description |
+|:-------------------------------------|:--------------------------------------|:-----------------|:------------------|
+| "data_type"                          | `Literal["crosslink"]`                | ✅ | Data type of the dictionary. |
+| "completeness"                       | `Literal["full", "partial"]`          | ✅ | Full crosslinks have all their values set, partial crosslinks have one or more missing values. |
+| "alpha_peptide"                      | `str`                                 | ✅ | The unmodified amino acid sequence of the alpha peptide. |
+| "alpha_peptide_crosslink_position"   | `int`                                 | ✅ | The position of the crosslinker in the sequence of the alpha peptide (1-based). |
+| "alpha_proteins"                     | `List[str]`                           | ❌ | The accessions of proteins that the alpha peptide is associated with. |
+| "alpha_proteins_crosslink_positions" | `List[int]`                           | ❌ | Positions of the crosslink in the proteins of the alpha peptide (1-based). |
+| "alpha_decoy"                        | `bool`                                | ❌ | Whether the alpha peptide is from the decoy database or not. |
+| "beta_peptide"                       | `str`                                 | ✅ | The unmodified amino acid sequence of the beta peptide. |
+| "beta_peptide_crosslink_position"    | `int`                                 | ✅ | The position of the crosslinker in the sequence of the beta peptide (1-based). |
+| "beta_proteins"                      | `List[str]`                           | ❌ | The accessions of proteins that the beta peptide is associated with. |
+| "beta_proteins_crosslink_positions"  | `List[int]`                           | ❌ | Positions of the crosslink in the proteins of the beta peptide (1-based). |
+| "beta_decoy"                         | `bool`                                | ❌ | Whether the beta peptide is from the decoy database or not. |
+| "crosslink_type"                     | `Literal["inter", "intra"]`           | ✅ | If it is an inter- or intra-crosslink. |
+| "score"                              | `float`                               | ❌ | Score of the crosslink. |
+| "additional_information"             | `Dict[str, Any]`                      | ❌ | A dictionary with additional information associated with the crosslink. |
