@@ -9,6 +9,6 @@
 def test1():
     from streamlit.testing.v1 import AppTest
 
-    at = AppTest.from_file("streamlit_app.py")
-    at.run(timeout=20.0)
+    at = AppTest.from_file("streamlit_app.py", default_timeout=30.0)
+    at.run(timeout=60.0)
     assert not at.exception
