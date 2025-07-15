@@ -4,8 +4,16 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
-__all__ = ["constants", "data", "exporter", "parser", "pipelines", "transform"]
-__version__ = "1.0.0"
+__all__ = [
+    "constants",
+    "data",
+    "exporter",
+    "parser",
+    "pipelines",
+    "transform",
+    "plotting",
+]
+__version__ = "1.1.0"
 __author__ = "Micha Johannes Birklbauer"
 
 from . import constants
@@ -14,3 +22,4 @@ from . import exporter
 from . import parser
 from . import pipelines
 from . import transform
+from . import plotting

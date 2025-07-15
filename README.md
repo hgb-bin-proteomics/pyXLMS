@@ -58,11 +58,23 @@ Maximum CSM score: 452.99
 
 ## Web App
 
-The web application is currently in development.
+The web app is publicly accessible for free via [hgb-bin-proteomics.github.io/pyXLMS-app](https://hgb-bin-proteomics.github.io/pyXLMS-app).
+
+Additionally, it can be run locally or self-hosted via:
+
+- Running the [streamlit](https://streamlit.io/) app locally:
+  - `cd gui`
+  - `pip install -r requirements.txt`
+  - `streamlit run streamlit_app.py`
+- Building the [Docker](https://docs.docker.com/get-started/get-docker/) container yourself:
+  - `docker build . -f Dockerfile -t pyxlms`
+  - `docker run -p 8501:8501 pyxlms`
+- _or_ by pulling the provided image from Docker Hub:
+  - `docker run -p 8501:8501 michabirklbauer/pyxlms:latest`
 
 ## User Guide, Examples and Documentation
 
-- A user guide that documents all available functionality is available via [pyxlms.vercel.app/](https://pyxlms.vercel.app/).
+- A user guide that documents all available functionality is available via [hgb-bin-proteomics.github.io/pyXLMS-docs](https://hgb-bin-proteomics.github.io/pyXLMS-docs).
 - Example jupyter notebooks can be found in `/examples`.
 - A full documentation of the python package can be accessed via [hgb-bin-proteomics.github.io/pyXLMS](https://hgb-bin-proteomics.github.io/pyXLMS).
 
