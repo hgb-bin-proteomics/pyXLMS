@@ -156,6 +156,14 @@ def reannotate_positions(
     else:
         title_to_accession = fasta_title_to_accession
     if isinstance(data, list):
+        _ok = check_input(data, "data", list, dict)
+        if len(data) == 0:
+            return data
+        if "data_type" not in data[0]:
+            raise TypeError(
+                "Can't annotate positions for input data. Input data has to be a list of crosslink-spectrum-matches or crosslinks "
+                "or a 'parser_result'!"
+            )
         _ok = assert_data_type_same(data)
         protein_db = dict()
         reannoted = list()
