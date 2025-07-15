@@ -880,6 +880,7 @@ def filter_tab():
         # filters
         # protein filter
         possible_proteins = set()
+        _ = st.toast("Loading proteins...", icon="🔄")
         if "pr" in st.session_state and st.session_state["pr"] is not None:
             if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
                 for csm in st.session_state["pr"]["crosslink-spectrum-matches"]:
@@ -897,6 +898,7 @@ def filter_tab():
                     if xl["beta_proteins"] is not None:
                         for protein in xl["beta_proteins"]:
                             possible_proteins.add(protein)
+        _ = st.toast("Successfully loaded proteins!", icon="✅")
         protein_filter_header = st.subheader(
             "Filter by Protein Accession", divider="grey"
         )
