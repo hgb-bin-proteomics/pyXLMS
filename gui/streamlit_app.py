@@ -443,6 +443,8 @@ def input_tab():
         st.session_state["export_aggregated_crosslinks_xlinkdb"] = None
         st.session_state["export_aggregated_crosslinks_xlmstools"] = None
         st.session_state["export_aggregated_crosslinks_xmas"] = None
+        # reset proteins
+        st.session_state["possible_proteins"] = None
         # check what is uploaded and set
         if uploaded_file is None:
             _ = st.error("You need to upload a result file first!")
@@ -879,32 +881,37 @@ def filter_tab():
     else:
         # filters
         # protein filter
-        possible_proteins = set()
-        _ = st.toast("Loading proteins...", icon="🔄")
-        if "pr" in st.session_state and st.session_state["pr"] is not None:
-            if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
-                for csm in st.session_state["pr"]["crosslink-spectrum-matches"]:
-                    if csm["alpha_proteins"] is not None:
-                        for protein in csm["alpha_proteins"]:
-                            possible_proteins.add(protein)
-                    if csm["beta_proteins"] is not None:
-                        for protein in csm["beta_proteins"]:
-                            possible_proteins.add(protein)
-            if st.session_state["pr"]["crosslinks"] is not None:
-                for xl in st.session_state["pr"]["crosslinks"]:
-                    if xl["alpha_proteins"] is not None:
-                        for protein in xl["alpha_proteins"]:
-                            possible_proteins.add(protein)
-                    if xl["beta_proteins"] is not None:
-                        for protein in xl["beta_proteins"]:
-                            possible_proteins.add(protein)
-        _ = st.toast("Successfully loaded proteins!", icon="✅")
+        if (
+            "possible_proteins" not in st.session_state
+            or st.session_state["possible_proteins"] is None
+        ):
+            possible_proteins = set()
+            _ = st.toast("Loading proteins...", icon="🔄")
+            if "pr" in st.session_state and st.session_state["pr"] is not None:
+                if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
+                    for csm in st.session_state["pr"]["crosslink-spectrum-matches"]:
+                        if csm["alpha_proteins"] is not None:
+                            for protein in csm["alpha_proteins"]:
+                                possible_proteins.add(protein)
+                        if csm["beta_proteins"] is not None:
+                            for protein in csm["beta_proteins"]:
+                                possible_proteins.add(protein)
+                if st.session_state["pr"]["crosslinks"] is not None:
+                    for xl in st.session_state["pr"]["crosslinks"]:
+                        if xl["alpha_proteins"] is not None:
+                            for protein in xl["alpha_proteins"]:
+                                possible_proteins.add(protein)
+                        if xl["beta_proteins"] is not None:
+                            for protein in xl["beta_proteins"]:
+                                possible_proteins.add(protein)
+            st.session_state["possible_proteins"] = possible_proteins
+            _ = st.toast("Successfully loaded proteins!", icon="✅")
         protein_filter_header = st.subheader(
             "Filter by Protein Accession", divider="grey"
         )
         protein_filter = st.multiselect(
             "Select the protein accessions that you want to keep:",
-            options=possible_proteins,
+            options=st.session_state["possible_proteins"],
             default=None,
             key="protein_filter",
             help="Select the protein accessions that you want to keep. "
@@ -971,6 +978,8 @@ def filter_tab():
             st.session_state["export_aggregated_crosslinks_xlinkdb"] = None
             st.session_state["export_aggregated_crosslinks_xlmstools"] = None
             st.session_state["export_aggregated_crosslinks_xmas"] = None
+            # reset proteins
+            st.session_state["possible_proteins"] = None
 
             with st.spinner("Filtering results...", show_time=True):
                 try:
