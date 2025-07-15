@@ -65,3 +65,17 @@ may be `None`:
 | "crosslink_type"                     | `Literal["inter", "intra"]`           | ✅ | If it is an inter- or intra-crosslink. |
 | "score"                              | `float`                               | ❌ | Score of the crosslink. |
 | "additional_information"             | `Dict[str, Any]`                      | ❌ | A dictionary with additional information associated with the crosslink. |
+
+## Parser Results
+
+Any method that returns or expects a parser result (or `parser_result`) refers to a
+dictionary with the following keys and values, values that are not guaranteed
+may be `None`:
+
+| Key                                  | Value Type                            | Value Guaranteed | Value Description |
+|:-------------------------------------|:--------------------------------------|:-----------------|:------------------|
+| "data_type"                          | `Literal["parser_result"]`            | ✅ | Data type of the dictionary. |
+| "completeness"                       | `Literal["full", "partial", "empty"]` | ✅ | Full parser results have all their values set, partial parser results have one missing value, empty parser results contain no crosslink-spectrum-matches or crosslinks. |
+| "search_engine"                      | `str`                                 | ✅ | Name of the identifying crosslink search engine. |
+| "crosslink-spectrum-matches"         | `List[Dict[str, Any]]`                | ❌ | List of parsed crosslink-spectrum-matches. |
+| "crosslinks"                         | `List[Dict[str, Any]]`                | ❌ | List of parsed crosslinks. |
