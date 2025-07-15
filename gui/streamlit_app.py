@@ -3236,7 +3236,7 @@ def main():
     div_2 = st.sidebar.divider()
 
     info_str = ""
-    info_str += "- **Documentation:**  \n [hgb-bin-proteomics.github.io/pyXLMS-docs/](hgb-bin-proteomics.github.io/pyXLMS-docs/)\n"
+    info_str += "- **Documentation:**  \n [hgb-bin-proteomics.github.io/pyXLMS-docs/](https://hgb-bin-proteomics.github.io/pyXLMS-docs/)\n"
     info_str += "- **Contact:**  \n  [micha.birklbauer@fh-hagenberg.at](mailto:micha.birklbauer@fh-hagenberg.at)\n"
     info_str += "- **License:**  \n  [MIT License](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/LICENSE)\n"
     info_str += "- **Project Page:**  \n  [GitHub](https://github.com/hgb-bin-proteomics/pyXLMS/)"
