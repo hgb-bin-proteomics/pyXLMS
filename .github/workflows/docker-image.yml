@@ -1,0 +1,21 @@
+name: Docker Image Build and Push to Docker Hub
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: |
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username michabirklbauer --password-stdin
+        docker build . --file Dockerfile --tag michabirklbauer/pyxlms:latest
+        docker push michabirklbauer/pyxlms:latest
+        GIT_SHA="$(git rev-parse --short HEAD)"
+        docker tag michabirklbauer/pyxlms:latest michabirklbauer/pyxlms:$GIT_SHA
+        docker push michabirklbauer/pyxlms:$GIT_SHA
