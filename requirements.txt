@@ -5,3 +5,7 @@ tqdm
 pyteomics[XML]
 biopython
 biopandas
+matplotlib
+matplotlib-venn
+streamlit
+xlsxwriter

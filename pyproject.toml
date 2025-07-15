@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyXLMS"
-version = "0.0.4"
+version = "1.1.0"
 authors = [
   { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
 ]
@@ -31,12 +31,15 @@ dependencies = [
   "tqdm",
   "pyteomics[XML]",
   "biopython",
-  "biopandas"
+  "biopandas",
+  "matplotlib",
+  "matplotlib-venn"
 ]
 
 [project.optional-dependencies]
 gui = [
-  "streamlit"
+  "streamlit",
+  "xlsxwriter"
 ]
 
 [project.urls]

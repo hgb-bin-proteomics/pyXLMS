@@ -1,0 +1,17 @@
+name: Master Branch Protection
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check that PR comes from develop
+        run: |
+          if [[ ${GITHUB_HEAD_REF} != develop ]]; 
+          then
+            echo "Error: Pull request must come from 'develop' branch!"
+            exit 1
+          fi
