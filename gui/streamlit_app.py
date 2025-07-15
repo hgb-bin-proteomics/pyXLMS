@@ -2760,7 +2760,7 @@ def main():
         page_title="pyXLMS",
         page_icon=":dna:",
         layout="wide",
-        initial_sidebar_state="expanded",
+        initial_sidebar_state="auto",
         menu_items={
             "Get Help": "https://github.com/hgb-bin-proteomics/pyXLMS/discussions",
             "Report a bug": "https://github.com/hgb-bin-proteomics/pyXLMS/issues",
