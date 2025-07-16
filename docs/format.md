@@ -34,7 +34,7 @@ Data required for parsing crosslink-spectrum-matches:
 | Ion Mobility                       | ❌       | float     | 170.41    | -50.0         | Ion mobility, CCS, or compensation voltage of the crosslink spectrum |
 
 Additional resources:
-- [API Documentation of the parser](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#module-pyXLMS.parser)
+- [API Documentation of the parser](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.parser.html#pyXLMS.parser.read)
 - [API Documentation of the crosslink-spectrum-match creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.data.create_csm)
 
 ## Modification Encoding
@@ -74,5 +74,5 @@ Data required for parsing crosslinks:
 | Crosslink Score                    | ❌       | float     | 0.99513   | 170.3         | Score of the crosslink |
 
 Additional resources:
-- [API Documentation of the parser](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#module-pyXLMS.parser)
+- [API Documentation of the parser](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.parser.html#pyXLMS.parser.read)
 - [API Documentation of the crosslink creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.data.create_crosslink)
