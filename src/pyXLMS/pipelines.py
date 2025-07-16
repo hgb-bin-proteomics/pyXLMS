@@ -7,10 +7,10 @@
 from __future__ import annotations
 
 from .parser import read
-from .transform_summary import summary as transform_summary
-from .transform_aggregate import unique as transform_unique
-from .transform_validate import validate as transform_validate
-from .transform_targets_only import targets_only as transform_targets_only
+from .transform.summary import summary as transform_summary
+from .transform.aggregate import unique as transform_unique
+from .transform.validate import validate as transform_validate
+from .transform.targets_only import targets_only as transform_targets_only
 
 from typing import Optional
 from typing import BinaryIO
