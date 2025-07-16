@@ -121,8 +121,8 @@ def plot_score_distribution(
 
     ax.hist(
         [tt, td, dd],
-        bins=25,
-        density=False,
+        bins=bins,
+        density=density,
         histtype="step",
         fill=False,
         color=colors,
