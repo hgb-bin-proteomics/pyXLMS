@@ -42,6 +42,9 @@ may be `None`:
 | "ion_mobility"                       | `float`                               | ❌ | The ion mobility or compensation voltage of the corresponding mass spectrum of the crosslink-spectrum-match. |
 | "additional_information"             | `Dict[str, Any]`                      | ❌ | A dictionary with additional information associated with the crosslink-spectrum-match. |
 
+Additional resources:
+- [API Documentation of the crosslink-spectrum-match creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.data.create_csm)
+
 ## Crosslinks
 
 Any method that returns or expects a crosslink refers to a
@@ -66,6 +69,9 @@ may be `None`:
 | "score"                              | `float`                               | ❌ | Score of the crosslink. |
 | "additional_information"             | `Dict[str, Any]`                      | ❌ | A dictionary with additional information associated with the crosslink. |
 
+Additional resources:
+- [API Documentation of the crosslink creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.data.create_crosslink)
+
 ## Parser Results
 
 Any method that returns or expects a parser result (or `parser_result`) refers to a
@@ -79,3 +85,6 @@ may be `None`:
 | "search_engine"                      | `str`                                 | ✅ | Name of the identifying crosslink search engine. |
 | "crosslink-spectrum-matches"         | `List[Dict[str, Any]]`                | ❌ | List of parsed crosslink-spectrum-matches. |
 | "crosslinks"                         | `List[Dict[str, Any]]`                | ❌ | List of parsed crosslinks. |
+
+Additional resources:
+- [API Documentation of the parser result creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.data.create_parser_result)
