@@ -9,31 +9,32 @@ import pytest
 
 
 def test1():
-    from pyXLMS import transform_to_dataframe
+    from pyXLMS.transform.to_dataframe import __cc
 
-    assert transform_to_dataframe.__cc([1, 2, 3]) == "1;2;3"
+    assert __cc([1, 2, 3]) == "1;2;3"
 
 
 def test6():
-    from pyXLMS import transform_to_dataframe
+    from pyXLMS.transform.to_dataframe import __cc
 
-    assert transform_to_dataframe.__cc([1, 2, 3], ",") == "1,2,3"
+    assert __cc([1, 2, 3], ",") == "1,2,3"
 
 
 def test7():
-    from pyXLMS import transform_to_dataframe
+    from pyXLMS.transform.to_dataframe import __cc
 
-    assert transform_to_dataframe.__cc([]) == ""
+    assert __cc([]) == ""
 
 
 def test8():
-    from pyXLMS import transform_to_dataframe
+    from pyXLMS.transform.to_dataframe import __cc
 
-    assert transform_to_dataframe.__cc(None) is None
+    assert __cc(None) is None
 
 
 def test9():
-    from pyXLMS import data, transform_to_dataframe
+    from pyXLMS import data
+    from pyXLMS.transform.to_dataframe import __crosslinks_to_dataframe
 
     c1 = data.create_crosslink(
         "PEPTIDE",
@@ -62,7 +63,7 @@ def test9():
         123.7,
     )
     crosslinks = [c1, c2]
-    df = transform_to_dataframe.__crosslinks_to_dataframe(crosslinks)
+    df = __crosslinks_to_dataframe(crosslinks)
 
     assert df.shape[0] == 2
     assert df.shape[1] == 13
@@ -228,7 +229,8 @@ def test11():
 
 
 def test12():
-    from pyXLMS import data, transform_to_dataframe
+    from pyXLMS import data
+    from pyXLMS.transform.to_dataframe import __csms_to_dataframe
 
     c1 = data.create_csm(
         "PEPTIDE",
@@ -279,7 +281,7 @@ def test12():
         im_cv=-70.0,
     )
     csms = [c1, c2]
-    df = transform_to_dataframe.__csms_to_dataframe(csms)
+    df = __csms_to_dataframe(csms)
 
     assert df.shape[0] == 2
     assert df.shape[1] == 24
