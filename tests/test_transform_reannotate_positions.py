@@ -28,7 +28,7 @@ def build_protein_db(fasta: str):
 
 
 def test1():
-    from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+    from pyXLMS.transform.reannotate_positions import __get_proteins_and_positions
 
     peptide = "ADANLDK"
     with pytest.raises(RuntimeError, match=f"No match found for peptide {peptide}!"):
@@ -36,7 +36,7 @@ def test1():
 
 
 def test2():
-    from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+    from pyXLMS.transform.reannotate_positions import __get_proteins_and_positions
 
     peptide = "ADANLDK"
     with pytest.raises(RuntimeError, match=f"No match found for peptide {peptide}!"):
@@ -44,7 +44,7 @@ def test2():
 
 
 def test3():
-    from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+    from pyXLMS.transform.reannotate_positions import __get_proteins_and_positions
 
     protein_db = build_protein_db(FASTA_SMALL)
 
@@ -55,7 +55,7 @@ def test3():
 
 
 def test4():
-    from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+    from pyXLMS.transform.reannotate_positions import __get_proteins_and_positions
 
     protein_db = build_protein_db(FASTA_SMALL)
 
@@ -66,7 +66,7 @@ def test4():
 
 
 def test5():
-    from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+    from pyXLMS.transform.reannotate_positions import __get_proteins_and_positions
 
     protein_db = build_protein_db(FASTA_SMALL)
 
@@ -77,7 +77,7 @@ def test5():
 
 
 def test6():
-    from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+    from pyXLMS.transform.reannotate_positions import __get_proteins_and_positions
 
     protein_db = build_protein_db(FASTA_LARGE)
 
@@ -88,7 +88,7 @@ def test6():
 
 
 def test7():
-    from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+    from pyXLMS.transform.reannotate_positions import __get_proteins_and_positions
 
     protein_db = build_protein_db(FASTA_LARGE)
 
@@ -99,7 +99,7 @@ def test7():
 
 
 def test8():
-    from pyXLMS.transform_reannotate_positions import __get_proteins_and_positions
+    from pyXLMS.transform.reannotate_positions import __get_proteins_and_positions
 
     protein_db = build_protein_db(FASTA_LARGE)
 

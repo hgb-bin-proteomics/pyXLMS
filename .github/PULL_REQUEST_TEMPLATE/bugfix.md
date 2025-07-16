@@ -25,6 +25,7 @@
 - [ ] I have read and accept the [Code of Conduct](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/CODE_OF_CONDUCT.md).
 - [ ] I have self-reviewed my code.
 - [ ] I have added documentation and comments where necessary.
+- [ ] My pull request targets the 'develop' branch.
 
 ******
 

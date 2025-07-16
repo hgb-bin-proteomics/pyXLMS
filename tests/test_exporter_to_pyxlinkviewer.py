@@ -32,7 +32,7 @@ def helper_get_crosslink_position(pep_seq: str) -> int:
 
 def helper_get_crosslinks(f: str) -> pd.DataFrame:
     from pyXLMS.data import create_crosslink_min
-    from pyXLMS.parser_util import format_sequence
+    from pyXLMS.parser.util import format_sequence
 
     df = pd.read_excel(f)
     xls = list()
