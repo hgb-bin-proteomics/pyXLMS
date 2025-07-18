@@ -497,13 +497,14 @@ def read_merox(
                 decoy_b=__get_merox_protein(str(row["Protein 2"]))[0].startswith(
                     decoy_prefix
                 ),
-                score=float(row["xLinkScore"]),
+                score=float(row["Score"]),
                 spectrum_file=__get_merox_spectrum_file(str(row["Scan number"])),
                 scan_nr=__get_merox_scan_number(str(row["Scan number"])),
                 charge=int(row["Charge"]),
                 rt=float(row["Retention time in sec"]),
                 im_cv=None,
                 additional_information={
+                    "xLinkScore": row["xLinkScore"],
                     "Protein 1": row["Protein 1"],
                     "Protein 2": row["Protein 2"],
                     "MS1intensity": row["MS1intensity"],
