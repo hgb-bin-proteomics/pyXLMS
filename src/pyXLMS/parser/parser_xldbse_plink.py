@@ -359,11 +359,11 @@ def detect_plink_filetype(
     Examples
     --------
     >>> from pyXLMS.parser import detect_plink_filetype
-    >>> detect_plink_filetype("data/pLink2/Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv")
+    >>> detect_plink_filetype("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv")
     'crosslinks'
 
     >>> from pyXLMS.parser import detect_plink_filetype
-    >>> detect_plink_filetype("data/pLink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv")
+    >>> detect_plink_filetype("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv")
     'crosslink-spectrum-matches'
     """
     # parse file

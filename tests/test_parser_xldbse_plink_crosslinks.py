@@ -18,7 +18,7 @@ def test1():
 
     assert (
         detect_plink_filetype(
-            "data/pLink2/Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv"
+            "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv"
         )
         == "crosslinks"
     )
@@ -29,7 +29,7 @@ def test2():
 
     assert (
         detect_plink_filetype(
-            "data/pLink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv"
+            "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv"
         )
         == "crosslink-spectrum-matches"
     )
