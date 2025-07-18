@@ -44,6 +44,14 @@ FILES = {
         "engine": "pLink",
         "crosslinker": "DSS",
     },
+    "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv": {
+        "engine": "pLink",
+        "crosslinker": "DSS",
+    },
+    "data/plink3/Cas10_plus10_2025.04.07.filtered_cross-linked_peptides.csv": {
+        "engine": "pLink",
+        "crosslinker": "DSS",
+    },
     "data/pyxlms/csm.txt": {"engine": "Custom", "crosslinker": "DSS"},
     "data/pyxlms/xl.txt": {"engine": "Custom", "crosslinker": "DSS"},
     "data/scout/Cas9_Filtered_CSMs.csv": {"engine": "Scout", "crosslinker": "DSSO"},

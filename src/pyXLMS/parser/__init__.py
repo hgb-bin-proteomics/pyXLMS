@@ -22,6 +22,7 @@ __all__ = [
     "parse_scan_nr_from_mzid",
     "parse_scan_nr_from_plink",
     "parse_spectrum_file_from_plink",
+    "detect_plink_filetype",
     "detect_scout_filetype",
     "parse_modifications_from_scout_sequence",
     "pyxlms_modification_str_parser",
@@ -47,6 +48,7 @@ from .parser_xldbse_xi import parse_modifications_from_xi_sequence
 from .parser_xldbse_mzid import parse_scan_nr_from_mzid
 from .parser_xldbse_plink import parse_scan_nr_from_plink
 from .parser_xldbse_plink import parse_spectrum_file_from_plink
+from .parser_xldbse_plink import detect_plink_filetype
 from .parser_xldbse_scout import detect_scout_filetype
 from .parser_xldbse_scout import parse_modifications_from_scout_sequence
 from .parser_xldbse_custom import pyxlms_modification_str_parser
