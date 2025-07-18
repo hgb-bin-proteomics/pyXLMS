@@ -464,7 +464,9 @@ def read_merox(
                     crosslinker,
                     crosslinker_mass,
                     modifications,
-                ),
+                )
+                if parse_modifications
+                else None,
                 xl_position_peptide_a=__get_merox_position(
                     str(row["best linkage position peptide 1"])
                 ),
@@ -488,7 +490,9 @@ def read_merox(
                     crosslinker,
                     crosslinker_mass,
                     modifications,
-                ),
+                )
+                if parse_modifications
+                else None,
                 xl_position_peptide_b=__get_merox_position(
                     str(row["best linkage position peptide 2"])
                 ),
