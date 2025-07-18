@@ -89,6 +89,10 @@ def __read_merox_file(
     -----
     This function should not be called directly, it is called from ``read_merox()``.
     """
+    # safety
+    if not isinstance(file, str):
+        file.seek(0)
+    # this shifts file pointer
     if zipfile.is_zipfile(file):
         with zipfile.ZipFile(file, "r") as f:
             return pd.read_csv(
@@ -99,6 +103,8 @@ def __read_merox_file(
                 decimal=decimal,
                 low_memory=False,
             )
+    if not isinstance(file, str):
+        file.seek(0)
     return pd.read_csv(file, sep=sep, decimal=decimal, low_memory=False)
 
 
