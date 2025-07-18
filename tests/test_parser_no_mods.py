@@ -12,6 +12,14 @@ FILES = {
         "engine": "MaxQuant",
         "crosslinker": "DSS",
     },
+    "data/merox/XLpeplib_Beveridge_QEx-HFX_DSS_R1.csv": {
+        "engine": "MeroX",
+        "crosslinker": "DSS",
+    },
+    "data/merox/XLpeplib_Beveridge_QEx-HFX_DSS_R1.zhrm": {
+        "engine": "MeroX",
+        "crosslinker": "DSS",
+    },
     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult": {
         "engine": "MS Annika",
         "crosslinker": "DSS",
