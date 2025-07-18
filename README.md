@@ -5,6 +5,7 @@ _a python package to process protein cross-linking data_
 connecting crosslink search engine results with down-stream analysis tools, enabling researchers even without bioinformatics knowledge to
 conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
 insight. Currently pyXLMS supports input from six different crosslink search engines: [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
+[MeroX](https://www.stavrox.com/),
 [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
 [pLink 2 and pLink 3](http://pfind.ict.ac.cn/se/plink/),
 [Scout](https://github.com/diogobor/Scout),
@@ -31,6 +32,8 @@ pyXLMS can easily be installed via pip:
 ```
 pip install pyxlms
 ```
+
+\[[view project on PyPI](https://pypi.org/project/pyXLMS/)\]
 
 ## Quick Start
 
