@@ -3,7 +3,7 @@
 # requires-python = ">=3.12"
 # dependencies = [
 #   "streamlit",
-#   "pyxlms>=1.1",
+#   "pyxlms>=1.2",
 #   "xlsxwriter",
 # ]
 # ///
@@ -36,6 +36,7 @@ from pyXLMS import transform
 from pyXLMS import constants
 from pyXLMS import plotting
 from pyXLMS import exporter
+from pyXLMS import __version__ as __pyxlms_version__
 
 import streamlit as st
 
@@ -44,6 +45,9 @@ from typing import Dict
 from typing import List
 from typing import Set
 from typing import Any
+
+
+__version__ = "1.0.1"
 
 
 @st.cache_data
@@ -187,6 +191,7 @@ def input_tab():
 
     Currently pyXLMS supports input from six different crosslink search engines:
     [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
+    [MeroX](https://www.stavrox.com/),
     [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
     [pLink 2 and pLink 3](http://pfind.ict.ac.cn/se/plink/),
     [Scout](https://github.com/diogobor/Scout),
@@ -231,6 +236,7 @@ def input_tab():
                 "Custom",
                 "MaxQuant",
                 "MaxLynx",
+                "MeroX",
                 "MS Annika",
                 "mzIdentML",
                 "pLink",
@@ -3103,6 +3109,7 @@ def about_tab():
 
         Currently pyXLMS supports input from six different crosslink search engines:
         [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
+        [MeroX](https://www.stavrox.com/),
         [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
         [pLink 2 and pLink 3](http://pfind.ict.ac.cn/se/plink/),
         [Scout](https://github.com/diogobor/Scout),
@@ -3241,6 +3248,12 @@ def main():
     info_str += "- **License:**  \n  [MIT License](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/LICENSE)\n"
     info_str += "- **Project Page:**  \n  [GitHub](https://github.com/hgb-bin-proteomics/pyXLMS/)"
     info = st.sidebar.markdown(info_str)
+
+    div_3 = st.sidebar.divider()
+
+    version_info = st.markdown(
+        f"Server is running web app version {__version__} and pyXLMS version {__pyxlms_version__}."
+    )
 
     main_page()
 
