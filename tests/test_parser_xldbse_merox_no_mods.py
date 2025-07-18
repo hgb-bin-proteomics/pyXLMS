@@ -15,7 +15,9 @@ MEROX3 = "data/merox/cas11.csv"
 def test1():
     from pyXLMS.parser import read_merox
 
-    pr = read_merox(MEROX1, crosslinker="DSS", parse_modifications=False)
+    pr = read_merox(
+        MEROX1, crosslinker="DSS", parse_modifications=False, modifications={}
+    )
     assert pr["data_type"] == "parser_result"
     assert pr["completeness"] == "partial"
     assert pr["search_engine"] == "MeroX"
@@ -36,7 +38,7 @@ def test1():
     assert csm["alpha_proteins_peptide_positions"] == [869]
     assert csm["alpha_score"] == pytest.approx(13.14747)
     assert not csm["alpha_decoy"]
-    assert csm["beta_peptide"] == "VKYVTEGMR"
+    assert csm["beta_peptide"] == "VKYVTEGmR"
     assert csm["beta_modifications"] is None
     assert csm["beta_peptide_crosslink_position"] == 2
     assert csm["beta_proteins"] == ["Cas9"]
@@ -83,7 +85,9 @@ def test1():
 def test2():
     from pyXLMS.parser import read_merox
 
-    pr = read_merox(MEROX2, crosslinker="DSS", parse_modifications=False)
+    pr = read_merox(
+        MEROX2, crosslinker="DSS", parse_modifications=False, modifications={}
+    )
     assert pr["data_type"] == "parser_result"
     assert pr["completeness"] == "partial"
     assert pr["search_engine"] == "MeroX"
@@ -104,7 +108,7 @@ def test2():
     assert csm["alpha_proteins_peptide_positions"] == [869]
     assert csm["alpha_score"] == pytest.approx(13.14747)
     assert not csm["alpha_decoy"]
-    assert csm["beta_peptide"] == "VKYVTEGMR"
+    assert csm["beta_peptide"] == "VKYVTEGmR"
     assert csm["beta_modifications"] is None
     assert csm["beta_peptide_crosslink_position"] == 2
     assert csm["beta_proteins"] == ["Cas9"]
@@ -151,7 +155,9 @@ def test2():
 def test3():
     from pyXLMS.parser import read_merox
 
-    pr = read_merox(MEROX3, crosslinker="DSS", parse_modifications=False)
+    pr = read_merox(
+        MEROX3, crosslinker="DSS", parse_modifications=False, modifications={}
+    )
     assert pr["data_type"] == "parser_result"
     assert pr["completeness"] == "partial"
     assert pr["search_engine"] == "MeroX"
@@ -172,7 +178,7 @@ def test3():
     assert csm["alpha_proteins_peptide_positions"] == [869]
     assert csm["alpha_score"] == pytest.approx(13.14747)
     assert not csm["alpha_decoy"]
-    assert csm["beta_peptide"] == "VKYVTEGMR"
+    assert csm["beta_peptide"] == "VKYVTEGmR"
     assert csm["beta_modifications"] is None
     assert csm["beta_peptide_crosslink_position"] == 2
     assert csm["beta_proteins"] == ["Cas9"]
@@ -220,7 +226,9 @@ def test4():
     from pyXLMS.parser import read_merox
 
     with open(MEROX1, "r", encoding="utf-8") as f:
-        pr = read_merox(f, crosslinker="DSS", parse_modifications=False)
+        pr = read_merox(
+            f, crosslinker="DSS", parse_modifications=False, modifications={}
+        )
         f.close()
 
     assert pr["data_type"] == "parser_result"
@@ -243,7 +251,7 @@ def test4():
     assert csm["alpha_proteins_peptide_positions"] == [869]
     assert csm["alpha_score"] == pytest.approx(13.14747)
     assert not csm["alpha_decoy"]
-    assert csm["beta_peptide"] == "VKYVTEGMR"
+    assert csm["beta_peptide"] == "VKYVTEGmR"
     assert csm["beta_modifications"] is None
     assert csm["beta_peptide_crosslink_position"] == 2
     assert csm["beta_proteins"] == ["Cas9"]
@@ -291,7 +299,9 @@ def test5():
     from pyXLMS.parser import read_merox
 
     with open(MEROX2, "rb") as f:
-        pr = read_merox(f, crosslinker="DSS", parse_modifications=False)
+        pr = read_merox(
+            f, crosslinker="DSS", parse_modifications=False, modifications={}
+        )
         f.close()
 
     assert pr["data_type"] == "parser_result"
@@ -314,7 +324,7 @@ def test5():
     assert csm["alpha_proteins_peptide_positions"] == [869]
     assert csm["alpha_score"] == pytest.approx(13.14747)
     assert not csm["alpha_decoy"]
-    assert csm["beta_peptide"] == "VKYVTEGMR"
+    assert csm["beta_peptide"] == "VKYVTEGmR"
     assert csm["beta_modifications"] is None
     assert csm["beta_peptide_crosslink_position"] == 2
     assert csm["beta_proteins"] == ["Cas9"]
@@ -362,7 +372,9 @@ def test6():
     from pyXLMS.parser import read_merox
 
     with open(MEROX3, "r", encoding="utf-8") as f:
-        pr = read_merox(f, crosslinker="DSS", parse_modifications=False)
+        pr = read_merox(
+            f, crosslinker="DSS", parse_modifications=False, modifications={}
+        )
         f.close()
 
     assert pr["data_type"] == "parser_result"
@@ -385,7 +397,7 @@ def test6():
     assert csm["alpha_proteins_peptide_positions"] == [869]
     assert csm["alpha_score"] == pytest.approx(13.14747)
     assert not csm["alpha_decoy"]
-    assert csm["beta_peptide"] == "VKYVTEGMR"
+    assert csm["beta_peptide"] == "VKYVTEGmR"
     assert csm["beta_modifications"] is None
     assert csm["beta_peptide_crosslink_position"] == 2
     assert csm["beta_proteins"] == ["Cas9"]
