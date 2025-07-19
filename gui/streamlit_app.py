@@ -3251,7 +3251,7 @@ def main():
 
     div_3 = st.sidebar.divider()
 
-    version_info = st.markdown(
+    version_info = st.sidebar.markdown(
         f"Server is running web app version {__version__} and pyXLMS version {__pyxlms_version__}."
     )
 
