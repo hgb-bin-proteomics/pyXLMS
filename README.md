@@ -33,8 +33,6 @@ pyXLMS can easily be installed via pip:
 pip install pyxlms
 ```
 
-\[[view project on PyPI](https://pypi.org/project/pyXLMS/)\]
-
 ## Quick Start
 
 After installation you can use pyXLMS in python like this:
