@@ -73,7 +73,7 @@ def __read_merox_file(
 
     Parameters
     ----------
-    file : str, list of str, or file stream
+    file : str, or file stream
         The name/path of the MeroX result file or a file-like object/stream.
     sep : str, default = ";"
         Seperator used in the ``.csv`` or ``.zhrm`` file.
@@ -225,7 +225,7 @@ def __get_merox_position(position_str: str) -> int:
     Parameters
     ----------
     position_str : str
-        The position string from Merox e.g. from column "best linkage position peptide 1".
+        The position string from MeroX e.g. from column "best linkage position peptide 1".
 
     Returns
     -------
@@ -323,7 +323,7 @@ def __get_merox_spectrum_file(scan_nr_and_file: str) -> str:
 
     Returns
     -------
-    int
+    str
         The parsed spectrum file.
 
     Raises
