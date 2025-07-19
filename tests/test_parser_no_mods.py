@@ -12,6 +12,14 @@ FILES = {
         "engine": "MaxQuant",
         "crosslinker": "DSS",
     },
+    "data/merox/XLpeplib_Beveridge_QEx-HFX_DSS_R1.csv": {
+        "engine": "MeroX",
+        "crosslinker": "DSS",
+    },
+    "data/merox/XLpeplib_Beveridge_QEx-HFX_DSS_R1.zhrm": {
+        "engine": "MeroX",
+        "crosslinker": "DSS",
+    },
     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult": {
         "engine": "MS Annika",
         "crosslinker": "DSS",
@@ -37,6 +45,14 @@ FILES = {
         "crosslinker": "DSS",
     },
     "data/plink3/Cas10_plus10_2025.04.07.filtered_cross-linked_spectra.csv": {
+        "engine": "pLink",
+        "crosslinker": "DSS",
+    },
+    "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv": {
+        "engine": "pLink",
+        "crosslinker": "DSS",
+    },
+    "data/plink3/Cas10_plus10_2025.04.07.filtered_cross-linked_peptides.csv": {
         "engine": "pLink",
         "crosslinker": "DSS",
     },

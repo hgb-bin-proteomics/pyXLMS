@@ -224,6 +224,7 @@ def read_msannika(
     _ok = check_input(format, "format", str)
     _ok = check_input(sep, "sep", str)
     _ok = check_input(decimal, "decimal", str)
+    _ok = check_input(unsafe, "unsafe", bool)
     _ok = check_input(verbose, "verbose", int)
     if verbose not in [0, 1, 2]:
         raise TypeError("Verbose level has to be one of 0, 1, or 2!")
