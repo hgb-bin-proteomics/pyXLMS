@@ -1,12 +1,12 @@
-# Support pyXLMS I/O
+# Supported pyXLMS I/O
 
 The following section gives an overview of the supported crosslink search engines
 and input file formats for reading crosslink results, as well as the supported
 export options.
 
 The following abbreviations are used:
-- CSMs: crosslink-spectrum-matches
-- XLs: crosslinks/residue pairs
+- **CSMs:** crosslink-spectrum-matches
+- **XLs:** crosslinks/residue pairs
 
 ## Supported Search Engines and Formats
 
@@ -33,7 +33,7 @@ The following export options are currently available:
 | Tool/Format                             | Exporter                      | CSMs | XLs | API Docs | Tool Link |
 |:----------------------------------------|:------------------------------|:----:|:---:|:---------|:----------|
 | pandas.DataFrame/`.csv`/`.xlsx`/`.json` | `transform.to_dataframe()`    | ✅  | ✅  | [link](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.transform.html#pyXLMS.transform.to_dataframe.to_dataframe) |   |
-| IMP-X-FDR                               | `exporter.to_impxfdr(https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.exporter.html#pyXLMS.exporter.to_impxfdr.to_impxfdr)`       | ✅  | ✅  | [link]() | [link](https://github.com/vbc-proteomics-org/imp-x-fdr) |
+| IMP-X-FDR                               | `exporter.to_impxfdr()`       | ✅  | ✅  | [link](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.exporter.html#pyXLMS.exporter.to_impxfdr.to_impxfdr) | [link](https://github.com/vbc-proteomics-org/imp-x-fdr) |
 | MS Annika                               | `exporter.to_msannika()`      | ✅  | ✅  | [link](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.exporter.html#pyXLMS.exporter.to_msannika.to_msannika) | [link](https://github.com/hgb-bin-proteomics/MSAnnika) |
 | PyXlinkViewer (pyMOL)                   | `exporter.to_pyxlinkviewer()` | ❌  | ✅  | [link](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.exporter.html#pyXLMS.exporter.to_pyxlinkviewer.to_pyxlinkviewer) | [link](https://github.com/BobSchiffrin/PyXlinkViewer) |
 | xiFDR                                   | `exporter.to_xifdr()`         | ✅  | ❌  | [link](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.exporter.html#pyXLMS.exporter.to_xifdr.to_xifdr) | [link](https://www.rappsilberlab.org/software/xifdr/) |
