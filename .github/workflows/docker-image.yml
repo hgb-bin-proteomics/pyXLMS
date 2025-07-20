@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build the Docker image
       run: |
-        echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username michabirklbauer --password-stdin
+        echo ${{ secrets.DOCKER_ACCESS_TOKEN }} | docker login --username michabirklbauer --password-stdin
         docker build . --file Dockerfile --tag michabirklbauer/pyxlms:latest
         docker push michabirklbauer/pyxlms:latest
         GIT_SHA="$(git rev-parse --short HEAD)"
