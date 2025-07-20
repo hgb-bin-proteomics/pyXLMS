@@ -108,7 +108,7 @@ def test8():
     crosslinks = read_plink(
         "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv"
     )
-    assert len(crosslinks) > 0
+    assert len(crosslinks["crosslinks"]) > 0
 
 
 def test9():
