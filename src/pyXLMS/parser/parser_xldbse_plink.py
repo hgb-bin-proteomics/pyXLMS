@@ -446,7 +446,7 @@ def read_plink(
     r"""Read a pLink result file.
 
     Reads a pLink crosslink-spectrum-matches result file "\*cross-linked_spectra.csv"
-    in ``.csv`` (comma delimited) format or pLink crosslinks result file
+    in ``.csv`` (comma delimited) format or a pLink crosslinks result file
     "\*cross-linked_peptides.csv" in ``.csv`` (comma delimited) format and
     returns a ``parser_result``.
 
