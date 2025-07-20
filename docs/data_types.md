@@ -14,7 +14,7 @@ dictionary with the following keys and values, values that are not guaranteed
 may be `None`:
 
 | Key                                  | Value Type                            | Value Guaranteed | Value Description |
-|:-------------------------------------|:--------------------------------------|:-----------------|:------------------|
+|:-------------------------------------|:--------------------------------------|:----------------:|:------------------|
 | "data_type"                          | `Literal["crosslink-spectrum-match"]` | ✅ | Data type of the dictionary. |
 | "completeness"                       | `Literal["full", "partial"]`          | ✅ | Full crosslink-spectrum-matches have all their values set, partial crosslink-spectrum-matches have one or more missing values. |
 | "alpha_peptide"                      | `str`                                 | ✅ | The unmodified amino acid sequence of the alpha peptide. |
@@ -52,7 +52,7 @@ dictionary with the following keys and values, values that are not guaranteed
 may be `None`:
 
 | Key                                  | Value Type                            | Value Guaranteed | Value Description |
-|:-------------------------------------|:--------------------------------------|:-----------------|:------------------|
+|:-------------------------------------|:--------------------------------------|:----------------:|:------------------|
 | "data_type"                          | `Literal["crosslink"]`                | ✅ | Data type of the dictionary. |
 | "completeness"                       | `Literal["full", "partial"]`          | ✅ | Full crosslinks have all their values set, partial crosslinks have one or more missing values. |
 | "alpha_peptide"                      | `str`                                 | ✅ | The unmodified amino acid sequence of the alpha peptide. |
@@ -79,7 +79,7 @@ dictionary with the following keys and values, values that are not guaranteed
 may be `None`:
 
 | Key                                  | Value Type                            | Value Guaranteed | Value Description |
-|:-------------------------------------|:--------------------------------------|:-----------------|:------------------|
+|:-------------------------------------|:--------------------------------------|:----------------:|:------------------|
 | "data_type"                          | `Literal["parser_result"]`            | ✅ | Data type of the dictionary. |
 | "completeness"                       | `Literal["full", "partial", "empty"]` | ✅ | Full parser results have all their values set, partial parser results have one missing value, empty parser results contain no crosslink-spectrum-matches or crosslinks. |
 | "search_engine"                      | `str`                                 | ✅ | Name of the identifying crosslink search engine. |

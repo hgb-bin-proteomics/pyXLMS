@@ -189,3 +189,27 @@ Examples
 
 SCOUT_CROSSLINKER_MAPPING = {k: (k, v) for k, v in CROSSLINKERS.items()}
 SCOUT_MODIFICATION_MAPPING.update(SCOUT_CROSSLINKER_MAPPING)
+
+MEROX_MODIFICATION_MAPPING = {
+    "B": {"Amino Acid": "C", "Modification": ("Carbamidomethyl", 57.021464)},
+    "m": {"Amino Acid": "M", "Modification": ("Oxidation", 15.994915)},
+}
+r"""Dictionary that maps MeroX modification symbols to their corresponding amino acids and post-translational-modifications.
+
+Dictionary that maps MeroX modification symbols (e.g. `"B"`) to their corresponding amino acids and post-translational-modifications
+(e.g. ``{"Amino Acid": "C", "Modification": ("Carbamidomethyl", 57.021464)}``).
+
+Examples
+--------
+>>> from pyXLMS.constants import MEROX_MODIFICATION_MAPPING
+>>> MEROX_MODIFICATION_MAPPING["B"]
+{'Amino Acid': 'C', 'Modification': ('Carbamidomethyl', 57.021464)}
+
+>>> from pyXLMS.constants import MEROX_MODIFICATION_MAPPING
+>>> MEROX_MODIFICATION_MAPPING["m"]
+{'Amino Acid': 'M', 'Modification': ('Oxidation', 15.994915)}
+
+>>> from pyXLMS.constants import MEROX_MODIFICATION_MAPPING
+>>> MEROX_MODIFICATION_MAPPING
+{'B': {'Amino Acid': 'C', 'Modification': ('Carbamidomethyl', 57.021464)}, 'm': {'Amino Acid': 'M', 'Modification': ('Oxidation', 15.994915)}}
+"""

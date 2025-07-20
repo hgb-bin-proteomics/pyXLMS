@@ -13,6 +13,7 @@ __all__ = [
     "read_scout",
     "read_xlinkx",
     "read_custom",
+    "read_merox",
     "read_msannika",
     "read_maxquant",
     "read_maxlynx",
@@ -22,6 +23,7 @@ __all__ = [
     "parse_scan_nr_from_mzid",
     "parse_scan_nr_from_plink",
     "parse_spectrum_file_from_plink",
+    "detect_plink_filetype",
     "detect_scout_filetype",
     "parse_modifications_from_scout_sequence",
     "pyxlms_modification_str_parser",
@@ -36,6 +38,7 @@ from .parser_xldbse_plink import read_plink
 from .parser_xldbse_scout import read_scout
 from .parser_xldbse_xlinkx import read_xlinkx
 from .parser_xldbse_custom import read_custom
+from .parser_xldbse_merox import read_merox
 from .parser_xldbse_msannika import read_msannika
 from .parser_xldbse_maxquant import read_maxquant
 from .parser_xldbse_maxquant import read_maxlynx
@@ -47,6 +50,7 @@ from .parser_xldbse_xi import parse_modifications_from_xi_sequence
 from .parser_xldbse_mzid import parse_scan_nr_from_mzid
 from .parser_xldbse_plink import parse_scan_nr_from_plink
 from .parser_xldbse_plink import parse_spectrum_file_from_plink
+from .parser_xldbse_plink import detect_plink_filetype
 from .parser_xldbse_scout import detect_scout_filetype
 from .parser_xldbse_scout import parse_modifications_from_scout_sequence
 from .parser_xldbse_custom import pyxlms_modification_str_parser
@@ -70,6 +74,7 @@ def read(
         "Custom",
         "MaxQuant",
         "MaxLynx",
+        "MeroX",
         "MS Annika",
         "mzIdentML",
         "pLink",
@@ -86,7 +91,7 @@ def read(
     r"""Read a crosslink result file.
 
     Reads a crosslink or crosslink-spectrum-match result file from any of the supported crosslink search engines or formats.
-    Currently supports results files from MaxLynx/MaxQuant, MS Annika, pLink 2 and pLink 3, Scout, xiSearch and xiFDR,
+    Currently supports results files from MaxLynx/MaxQuant, MeroX, MS Annika, pLink 2 and pLink 3, Scout, xiSearch and xiFDR,
     XlinkX, and the mzIdentML format. Additionally supports parsing from custom ``.csv`` files in pyXLMS format, see more
     about the custom format in ``parser.read_custom()`` and in here:
     `docs <https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/format.md>`_.
@@ -95,7 +100,7 @@ def read(
     ----------
     files : str, list of str, or file stream
         The name/path of the result file(s) or a file-like object/stream.
-    engine : "Custom", "MaxQuant", "MaxLynx", "MS Annika", "mzIdentML", "pLink", "Scout", "xiSearch/xiFDR", or "XlinkX"
+    engine : "Custom", "MaxQuant", "MaxLynx", "MeroX", "MS Annika", "mzIdentML", "pLink", "Scout", "xiSearch/xiFDR", or "XlinkX"
         Crosslink search engine or format of the result file.
     crosslinker : str
         Name of the used cross-linking reagent, for example "DSSO".
@@ -134,6 +139,7 @@ def read(
         "Custom",
         "MaxQuant",
         "MaxLynx",
+        "MeroX",
         "MS Annika",
         "mzIdentML",
         "pLink",
@@ -154,6 +160,13 @@ def read(
         )
     if ff in ["maxlynx", "max lynx"]:
         return read_maxlynx(
+            files,
+            crosslinker=crosslinker,
+            parse_modifications=parse_modifications,
+            **kwargs,
+        )
+    if ff in ["merox", "stavrox"]:
+        return read_merox(
             files,
             crosslinker=crosslinker,
             parse_modifications=parse_modifications,

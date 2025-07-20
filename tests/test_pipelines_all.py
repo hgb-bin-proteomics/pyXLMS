@@ -101,21 +101,18 @@ FILES = {
 }
 
 
-def test1():
-    from pyXLMS import parser as p
-
-    with pytest.raises(ValueError):
-        _r = p.read(
-            "data/maxquant/run1/crosslinkMsms.txt",
-            engine="MS Amanda",
-            crosslinker="DSS",
-        )
-
-
 @pytest.mark.slow
-def test2():
-    from pyXLMS import parser as p
+def test1():
+    from pyXLMS.pipelines import pipeline
 
     for k, v in FILES.items():
-        pr = p.read(k, engine=v["engine"], crosslinker=v["crosslinker"], verbose=0)
+        pr = pipeline(
+            k,
+            engine=v["engine"],
+            crosslinker=v["crosslinker"],
+            verbose=0,
+            unique=False,
+            validate=False,
+            targets_only=False,
+        )
         assert pr["search_engine"] == v["engine"]
