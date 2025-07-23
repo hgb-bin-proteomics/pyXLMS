@@ -40,6 +40,11 @@ def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
     TypeError
         If an unsupported data type is provided.
 
+    Notes
+    -----
+    Any crosslinks or crosslink-spectrum-matches with missing 'alpha_decoy' or 'beta_decoy' attributes will be
+    filtered out and not returned.
+
     Examples
     --------
     >>> from pyXLMS.parser import read
@@ -116,6 +121,11 @@ def filter_proteins(
     ------
     TypeError
         If an unsupported data type is provided.
+
+    Notes
+    -----
+    Any crosslinks or crosslink-spectrum-matches with missing 'alpha_proteins' or 'beta_proteins' attributes will be
+    filtered out and not returned.
 
     Examples
     --------
