@@ -116,3 +116,47 @@ def test7():
         assert p in proteins_found
     cas9 = len(proteins_csms["Cas9"])  # number of CSMs for protein Cas9
     assert cas9 == 728
+
+
+def test8():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import filter_peptide_pair_distribution
+
+    result = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    peptide_pairs = filter_peptide_pair_distribution(
+        result["crosslink-spectrum-matches"]
+    )
+    peptide_pairs_found = list(peptide_pairs.keys())[:5]  # first 5 found peptide pairs
+    peptide_pairs_should = [
+        "GQKNSR-GQKNSR",
+        "GQKNSR-GSQKDR",
+        "SDKNR-SDKNR",
+        "DKQSGK-DKQSGK",
+        "DKQSGK-HSIKK",
+    ]
+    for p in peptide_pairs_should:
+        assert p in peptide_pairs_found
+    MTNFDKNLPNEK_SKLVSDFR = len(
+        peptide_pairs["MTNFDKNLPNEK-SKLVSDFR"]
+    )  # number of CSMs for peptide pair MTNFDKNLPNEK-SKLVSDFR
+    assert MTNFDKNLPNEK_SKLVSDFR == 21
+
+
+def test9():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import filter_peptide_pair_distribution
+    from pyXLMS.transform import aggregate
+
+    result = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    peptide_pairs = filter_peptide_pair_distribution(
+        result["crosslink-spectrum-matches"]
+    )
+    assert len(peptide_pairs) == len(aggregate(result["crosslink-spectrum-matches"]))
