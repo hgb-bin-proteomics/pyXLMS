@@ -39,7 +39,7 @@ def plot_target_decoy_distribution(
     colors : list of str, default = ["#00a087", "#3c5488", "#e64b35"]
         Colors of the bars.
     title : str, default = "Target and Decoy Distribution"
-        The title of the histogram.
+        The title of the barplot.
     figsize : tuple of float, float, default = (16.0, 9.0)
         Width, height in inches.
     filename_prefix : str, or None
