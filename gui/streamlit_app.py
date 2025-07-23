@@ -47,7 +47,7 @@ from typing import Set
 from typing import Any
 
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 
 @st.cache_data
@@ -1406,7 +1406,7 @@ def visualize_tab():
                             )
             else:
                 csms_not_enough_data = st.info(
-                    "Not enough data to plot score distribution for crosslink-spectrum-matches!"
+                    "Not enough data to plot anything for crosslink-spectrum-matches!"
                 )
         if st.session_state["pr"]["crosslinks"] is not None:
             crosslinks = st.session_state["pr"]["crosslinks"]
@@ -1462,7 +1462,7 @@ def visualize_tab():
                         )
             else:
                 crosslinks_not_enough_data = st.info(
-                    "Not enough data to plot score distribution for crosslinks!"
+                    "Not enough data to plot anything for crosslinks!"
                 )
     if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
         aggregated_crosslinks = st.session_state["aggregated"]
@@ -1518,7 +1518,7 @@ def visualize_tab():
                     )
         else:
             aggregated_crosslinks_not_enough_data = st.info(
-                "Not enough data to plot score distribution for aggregated crosslinks!"
+                "Not enough data to plot anything for aggregated crosslinks!"
             )
 
 
