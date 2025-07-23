@@ -47,7 +47,7 @@ from typing import Set
 from typing import Any
 
 
-__version__ = "1.0.1"
+__version__ = "1.1.0"
 
 
 @st.cache_data
@@ -1321,62 +1321,201 @@ def filter_tab():
 
 # visualize tab
 def visualize_tab():
+    visualization_header = st.subheader("Visualization Parameters", divider="grey")
+    bins = st.select_slider(
+        "Number of histogram bins:",
+        range(5, 105, 5),
+        value=25,
+        help="The number of histogram bins to use for the score distribution plot.",
+    )
+    top_n = st.number_input(
+        "Maximum number of proteins and peptide pairs to display:",
+        min_value=1,
+        max_value=None,
+        value=25,
+        step=1,
+        help="Maximum number of proteins and peptide pairs to display. Proteins and peptide pairs are sorted by the number of associated elements.",
+    )
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
         no_data = st.info("You need to upload a result file first!")
     if "pr" in st.session_state and st.session_state["pr"] is not None:
         if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
             csms = st.session_state["pr"]["crosslink-spectrum-matches"]
+            csms_viz_header = st.subheader(
+                "Visualizations for Crosslink-Spectrum-Matches", divider="grey"
+            )
             available_keys = transform.get_available_keys(csms)
+            plots = list()
+            if available_keys["alpha_decoy"] and available_keys["beta_decoy"]:
+                fig, ax = plotting.plot_target_decoy_distribution(
+                    csms, figsize=(8.0, 4.5)
+                )
+                plots.append(fig)
             if (
                 available_keys["score"]
                 and available_keys["alpha_decoy"]
                 and available_keys["beta_decoy"]
             ):
-                csms_score_dist_header = st.subheader(
-                    "Crosslink-Spectrum-Match Score Distribution", divider="grey"
+                fig, ax = plotting.plot_score_distribution(
+                    csms, bins=bins, figsize=(8.0, 4.5)
                 )
-                fig, ax = plotting.plot_score_distribution(csms)
-                csms_score_dist = st.pyplot(
-                    fig, transparent=True, bbox_inches="tight", use_container_width=True
+                plots.append(fig)
+            if available_keys["alpha_proteins"] and available_keys["beta_proteins"]:
+                fig, ax = plotting.plot_protein_distribution(
+                    csms, top_n=top_n, figsize=(8.0, 4.5)
                 )
+                plots.append(fig)
+            # peptide pair distribution plot is always possible
+            fig, ax = plotting.plot_peptide_pair_distribution(
+                csms, top_n=top_n, figsize=(8.0, 4.5)
+            )
+            plots.append(fig)
+            if len(plots) > 0:
+                l1, r1 = st.columns(2)
+                with l1:
+                    plot1 = st.pyplot(
+                        plots[0],
+                        transparent=True,
+                        bbox_inches="tight",
+                        use_container_width=True,
+                    )
+                if len(plots) > 1:
+                    with r1:
+                        plot2 = st.pyplot(
+                            plots[1],
+                            transparent=True,
+                            bbox_inches="tight",
+                            use_container_width=True,
+                        )
+                if len(plots) > 2:
+                    l2, r2 = st.columns(2)
+                    with l2:
+                        plot3 = st.pyplot(
+                            plots[2],
+                            transparent=True,
+                            bbox_inches="tight",
+                            use_container_width=True,
+                        )
+                    if len(plots) > 3:
+                        with r2:
+                            plot4 = st.pyplot(
+                                plots[3],
+                                transparent=True,
+                                bbox_inches="tight",
+                                use_container_width=True,
+                            )
             else:
                 csms_not_enough_data = st.info(
                     "Not enough data to plot score distribution for crosslink-spectrum-matches!"
                 )
         if st.session_state["pr"]["crosslinks"] is not None:
             crosslinks = st.session_state["pr"]["crosslinks"]
+            crosslinks_viz_header = st.subheader(
+                "Visualizations for Crosslinks", divider="grey"
+            )
             available_keys = transform.get_available_keys(crosslinks)
+            plots = list()
+            if available_keys["alpha_decoy"] and available_keys["beta_decoy"]:
+                fig, ax = plotting.plot_target_decoy_distribution(
+                    crosslinks, figsize=(8.0, 4.5)
+                )
+                plots.append(fig)
             if (
                 available_keys["score"]
                 and available_keys["alpha_decoy"]
                 and available_keys["beta_decoy"]
             ):
-                crosslinks_score_dist_header = st.subheader(
-                    "Crosslink Score Distribution", divider="grey"
+                fig, ax = plotting.plot_score_distribution(
+                    crosslinks, bins=bins, figsize=(8.0, 4.5)
                 )
-                fig, ax = plotting.plot_score_distribution(crosslinks)
-                crosslinks_score_dist = st.pyplot(
-                    fig, transparent=True, bbox_inches="tight", use_container_width=True
+                plots.append(fig)
+            if available_keys["alpha_proteins"] and available_keys["beta_proteins"]:
+                fig, ax = plotting.plot_protein_distribution(
+                    crosslinks, top_n=top_n, figsize=(8.0, 4.5)
                 )
+                plots.append(fig)
+            if len(plots) > 0:
+                l3, r3 = st.columns(2)
+                with l3:
+                    plot5 = st.pyplot(
+                        plots[0],
+                        transparent=True,
+                        bbox_inches="tight",
+                        use_container_width=True,
+                    )
+                if len(plots) > 1:
+                    with r3:
+                        plot6 = st.pyplot(
+                            plots[1],
+                            transparent=True,
+                            bbox_inches="tight",
+                            use_container_width=True,
+                        )
+                if len(plots) > 2:
+                    l4, r4 = st.columns(2)
+                    with l4:
+                        plot7 = st.pyplot(
+                            plots[2],
+                            transparent=True,
+                            bbox_inches="tight",
+                            use_container_width=True,
+                        )
             else:
                 crosslinks_not_enough_data = st.info(
                     "Not enough data to plot score distribution for crosslinks!"
                 )
     if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
         aggregated_crosslinks = st.session_state["aggregated"]
+        aggregated_crosslinks_viz_header = st.subheader(
+            "Visualizations for Aggregated Crosslinks", divider="grey"
+        )
         available_keys = transform.get_available_keys(aggregated_crosslinks)
+        plots = list()
+        if available_keys["alpha_decoy"] and available_keys["beta_decoy"]:
+            fig, ax = plotting.plot_target_decoy_distribution(
+                aggregated_crosslinks, figsize=(8.0, 4.5)
+            )
+            plots.append(fig)
         if (
             available_keys["score"]
             and available_keys["alpha_decoy"]
             and available_keys["beta_decoy"]
         ):
-            aggregated_crosslinks_score_dist_header = st.subheader(
-                "Aggregated Crosslink Score Distribution", divider="grey"
+            fig, ax = plotting.plot_score_distribution(
+                aggregated_crosslinks, bins=bins, figsize=(8.0, 4.5)
             )
-            fig, ax = plotting.plot_score_distribution(aggregated_crosslinks)
-            aggregated_crosslinks_score_dist = st.pyplot(
-                fig, transparent=True, bbox_inches="tight", use_container_width=True
+            plots.append(fig)
+        if available_keys["alpha_proteins"] and available_keys["beta_proteins"]:
+            fig, ax = plotting.plot_protein_distribution(
+                aggregated_crosslinks, top_n=top_n, figsize=(8.0, 4.5)
             )
+            plots.append(fig)
+        if len(plots) > 0:
+            l5, r5 = st.columns(2)
+            with l5:
+                plot8 = st.pyplot(
+                    plots[0],
+                    transparent=True,
+                    bbox_inches="tight",
+                    use_container_width=True,
+                )
+            if len(plots) > 1:
+                with r5:
+                    plot9 = st.pyplot(
+                        plots[1],
+                        transparent=True,
+                        bbox_inches="tight",
+                        use_container_width=True,
+                    )
+            if len(plots) > 2:
+                l6, r6 = st.columns(2)
+                with l6:
+                    plot10 = st.pyplot(
+                        plots[2],
+                        transparent=True,
+                        bbox_inches="tight",
+                        use_container_width=True,
+                    )
         else:
             aggregated_crosslinks_not_enough_data = st.info(
                 "Not enough data to plot score distribution for aggregated crosslinks!"
