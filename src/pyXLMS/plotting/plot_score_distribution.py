@@ -128,7 +128,7 @@ def plot_score_distribution(
         color=colors,
         label=["Target-Target", "Target-Decoy", "Decoy-Decoy"],
     )
-    ax.legend()
+    ax.legend(loc="upper right")
     ax.set_ylabel(f"Number of {ylabel}")
     ax.set_xlabel("Score")
 
