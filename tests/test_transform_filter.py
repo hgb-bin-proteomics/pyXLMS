@@ -94,3 +94,25 @@ def test6():
     crosslink_type_filtered_crosslinks = filter_crosslink_type(result["crosslinks"])
     assert len(crosslink_type_filtered_crosslinks["Intra"]) == 279
     assert len(crosslink_type_filtered_crosslinks["Inter"]) == 21
+
+
+def test7():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import filter_protein_distribution
+
+    result = read(
+        "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
+    )
+    proteins_csms = filter_protein_distribution(result["crosslink-spectrum-matches"])
+    proteins_found = list(proteins_csms.keys())  # proteins found
+    proteins = [
+        "Cas9",
+        "sp|MYG_HUMAN|",
+        "sp|CAH1_HUMAN|",
+        "sp|RETBP_HUMAN|",
+        "sp|K1C15_SHEEP|",
+    ]
+    for p in proteins:
+        assert p in proteins_found
+    cas9 = len(proteins_csms["Cas9"])  # number of CSMs for protein Cas9
+    assert cas9 == 728
