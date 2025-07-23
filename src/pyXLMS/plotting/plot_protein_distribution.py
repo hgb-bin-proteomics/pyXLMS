@@ -146,6 +146,7 @@ def plot_protein_distribution(
     bottom = protein_inter
     ax.bar_label(bar, label_type="center")
 
+    ax.set_xticks(range(len(protein_names)), protein_names, rotation=45, ha="right")
     ax.legend(loc="upper right")
     ax.set_ylabel(f"Number of {ylabel}")
     ax.set_xlabel("Protein")
