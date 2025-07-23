@@ -1336,7 +1336,9 @@ def visualize_tab():
                     "Crosslink-Spectrum-Match Score Distribution", divider="grey"
                 )
                 fig, ax = plotting.plot_score_distribution(csms)
-                csms_score_dist = st.pyplot(fig, use_container_width=True)
+                csms_score_dist = st.pyplot(
+                    fig, transparent=True, bbox_inches="tight", use_container_width=True
+                )
             else:
                 csms_not_enough_data = st.info(
                     "Not enough data to plot score distribution for crosslink-spectrum-matches!"
@@ -1353,7 +1355,9 @@ def visualize_tab():
                     "Crosslink Score Distribution", divider="grey"
                 )
                 fig, ax = plotting.plot_score_distribution(crosslinks)
-                crosslinks_score_dist = st.pyplot(fig, use_container_width=True)
+                crosslinks_score_dist = st.pyplot(
+                    fig, transparent=True, bbox_inches="tight", use_container_width=True
+                )
             else:
                 crosslinks_not_enough_data = st.info(
                     "Not enough data to plot score distribution for crosslinks!"
@@ -1370,7 +1374,9 @@ def visualize_tab():
                 "Aggregated Crosslink Score Distribution", divider="grey"
             )
             fig, ax = plotting.plot_score_distribution(aggregated_crosslinks)
-            aggregated_crosslinks_score_dist = st.pyplot(fig, use_container_width=True)
+            aggregated_crosslinks_score_dist = st.pyplot(
+                fig, transparent=True, bbox_inches="tight", use_container_width=True
+            )
         else:
             aggregated_crosslinks_not_enough_data = st.info(
                 "Not enough data to plot score distribution for aggregated crosslinks!"
