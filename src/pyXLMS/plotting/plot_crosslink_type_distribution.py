@@ -18,12 +18,19 @@ from typing import Dict
 from typing import Tuple
 from typing import Any
 
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
 
 def plot_crosslink_type_distribution(
     data: List[Dict[str, Any]],
+    plot_type: Literal["bar", "pie"] = "bar",
     colors: List[str] = ["#6d4bff", "#ac99ff"],
     title: str = "Crosslink Type Distribution",
-    figsize: Tuple[float, float] = (10.0, 10.0),
+    figsize: Tuple[float, float] = (16.0, 9.0),
     filename_prefix: Optional[str] = None,
 ) -> Tuple[Figure, Any]:
     r"""Plot the crosslink type distribution for a set of crosslink-spectrum-matches or crosslinks.
@@ -35,11 +42,13 @@ def plot_crosslink_type_distribution(
     ----------
     data : list of dict of str, any
         A list of crosslink-spectrum-matches or crosslinks.
+    plot_type : str, one of "bar" or "pie", default = "bar"
+        Plot type, whether to plot as a bar or pie chart.
     colors : list of str, default = ["#6d4bff", "#ac99ff"]
-        Colors of the pie slices (intra-link and inter-link).
+        Colors of the bars/pie slices (intra-link and inter-link).
     title : str, default = "Crosslink Type Distribution"
-        The title of the pie chart.
-    figsize : tuple of float, float, default = (10.0, 10.0)
+        The title of the plot.
+    figsize : tuple of float, float, default = (16.0, 9.0)
         Width, height in inches.
     filename_prefix : str, or None
         If given, plot will be saved with and without title in .png and .svg format with the given
@@ -56,6 +65,8 @@ def plot_crosslink_type_distribution(
         If a wrong data type is provided.
     ValueError
         If parameter data does not contain any crosslink-spectrum-matches or crosslinks.
+    ValueError
+        If parameter plot type was set incorrectly.
     IndexError
         If not enough colors where specified.
 
@@ -68,6 +79,7 @@ def plot_crosslink_type_distribution(
     >>> fig, ax = plotting.plot_crosslink_type_distribution(csms)
     """
     _ok = check_input(data, "data", list, dict)
+    _ok = check_input(plot_type, "plot_type", str)
     _ok = check_input(colors, "colors", list, str)
     _ok = check_input(title, "title", str)
     _ok = check_input(figsize, "figsize", tuple)
@@ -76,6 +88,8 @@ def plot_crosslink_type_distribution(
         if filename_prefix is not None
         else True
     )
+    if plot_type not in ["bar", "pie"]:
+        raise ValueError("Plot type needs to be one of 'bar' or 'pie'!")
     if len(colors) < 2:
         raise IndexError("At least two colors need to be given for the plot!")
     if len(data) == 0:
@@ -89,25 +103,35 @@ def plot_crosslink_type_distribution(
         raise TypeError(
             "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
         )
-    xlabel = (
+    axis_label = (
         "crosslink-spectrum-matches"
         if data[0]["data_type"] == "crosslink-spectrum-match"
         else "crosslinks"
     )
     intra_inter = filter_crosslink_type(data)
+    values = [len(intra_inter["Intra"]), len(intra_inter["Inter"])]
+    labels = ["intra-links", "inter-links"]
 
     fig, ax = plt.subplots(figsize=figsize)
 
-    ax.pie(
-        [len(intra_inter["Intra"]), len(intra_inter["Inter"])],
-        labels=["intra-links", "inter-links"],
-        colors=colors,
-        autopct="%1.1f%%",
-    )
+    if plot_type == "pie":
+        ax.pie(
+            values,
+            labels=labels,
+            colors=colors,
+            autopct="%1.1f%%",
+        )
 
-    ax.set_xlabel(
-        f"Total number of {xlabel}: {sum([len(intra_inter['Intra']), len(intra_inter['Inter'])])}"
-    )
+        ax.set_xlabel(
+            f"Total number of {axis_label}: {sum([len(intra_inter['Intra']), len(intra_inter['Inter'])])}"
+        )
+    else:
+        bar = ax.bar(labels, values, color=colors)
+        ax.bar_label(bar, padding=3.0)
+
+        ax.set_xticks(range(len(labels)), labels, rotation=45, ha="right")
+        ax.set_ylabel(f"Number of {axis_label}")
+        ax.set_xlabel("Crosslink Type")
 
     if filename_prefix is not None:
         plt.savefig(

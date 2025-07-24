@@ -36,7 +36,79 @@ def test2():
     assert ax is not None
 
 
+@pytest.mark.filterwarnings("ignore:'mode' parameter is deprecated")
 def test3():
+    from pyXLMS import parser
+    from pyXLMS import plotting
+
+    pr = parser.read_msannika(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx"
+    )
+    csms = pr["crosslink-spectrum-matches"]
+    fig, ax = plotting.plot_crosslink_type_distribution(csms, plot_type="bar")
+    assert fig is not None
+    assert ax is not None
+
+
+@pytest.mark.filterwarnings("ignore:'mode' parameter is deprecated")
+def test4():
+    from pyXLMS import parser
+    from pyXLMS import plotting
+
+    pr = parser.read_msannika(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx"
+    )
+    crosslinks = pr["crosslinks"]
+    fig, ax = plotting.plot_crosslink_type_distribution(crosslinks, plot_type="bar")
+    assert fig is not None
+    assert ax is not None
+
+
+@pytest.mark.filterwarnings("ignore:'mode' parameter is deprecated")
+def test5():
+    from pyXLMS import parser
+    from pyXLMS import plotting
+
+    pr = parser.read_msannika(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx"
+    )
+    csms = pr["crosslink-spectrum-matches"]
+    fig, ax = plotting.plot_crosslink_type_distribution(csms, plot_type="pie")
+    assert fig is not None
+    assert ax is not None
+
+
+@pytest.mark.filterwarnings("ignore:'mode' parameter is deprecated")
+def test6():
+    from pyXLMS import parser
+    from pyXLMS import plotting
+
+    pr = parser.read_msannika(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx"
+    )
+    crosslinks = pr["crosslinks"]
+    fig, ax = plotting.plot_crosslink_type_distribution(crosslinks, plot_type="pie")
+    assert fig is not None
+    assert ax is not None
+
+
+def test7():
+    from pyXLMS import parser
+    from pyXLMS.plotting import plot_crosslink_type_distribution
+
+    pr = parser.read_msannika(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx"
+    )
+    csms = pr["crosslink-spectrum-matches"]
+
+    with pytest.raises(
+        ValueError,
+        match=r"Plot type needs to be one of 'bar' or 'pie'!",
+    ):
+        _plot = plot_crosslink_type_distribution(csms, plot_type="hist")
+
+
+def test8():
     from pyXLMS import parser
     from pyXLMS.plotting import plot_crosslink_type_distribution
 
@@ -52,7 +124,7 @@ def test3():
         _plot = plot_crosslink_type_distribution(csms, colors=["#6d4bff"])
 
 
-def test4():
+def test9():
     from pyXLMS.plotting import plot_crosslink_type_distribution
 
     with pytest.raises(
@@ -62,7 +134,7 @@ def test4():
         _plot = plot_crosslink_type_distribution([])
 
 
-def test5():
+def test10():
     from pyXLMS.parser import read
     from pyXLMS.plotting import plot_crosslink_type_distribution
 
