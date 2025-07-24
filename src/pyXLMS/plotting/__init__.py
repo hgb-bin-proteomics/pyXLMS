@@ -11,6 +11,7 @@ __all__ = [
     "plot_target_decoy_distribution",
     "plot_protein_distribution",
     "plot_peptide_pair_distribution",
+    "plot_crosslink_type_distribution",
 ]
 
 from .plot_venn_diagram import venn
@@ -19,3 +20,4 @@ from .plot_score_distribution import plot_score_distribution
 from .plot_target_decoy_distribution import plot_target_decoy_distribution
 from .plot_protein_distribution import plot_protein_distribution
 from .plot_peptide_pair_distribution import plot_peptide_pair_distribution
+from .plot_crosslink_type_distribution import plot_crosslink_type_distribution
