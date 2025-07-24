@@ -10,7 +10,9 @@ __all__ = [
     "get_available_keys",
     "filter_target_decoy",
     "filter_proteins",
+    "filter_protein_distribution",
     "filter_crosslink_type",
+    "filter_peptide_pair_distribution",
     "summary",
     "unique",
     "aggregate",
@@ -27,7 +29,9 @@ from .util import assert_data_type_same
 from .util import get_available_keys
 from .filter import filter_target_decoy
 from .filter import filter_proteins
+from .filter import filter_protein_distribution
 from .filter import filter_crosslink_type
+from .filter import filter_peptide_pair_distribution
 from .summary import summary
 from .aggregate import unique
 from .aggregate import aggregate

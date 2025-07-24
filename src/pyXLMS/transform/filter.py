@@ -40,6 +40,11 @@ def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
     TypeError
         If an unsupported data type is provided.
 
+    Notes
+    -----
+    Any crosslinks or crosslink-spectrum-matches with missing 'alpha_decoy' or 'beta_decoy' attributes will be
+    filtered out and not returned.
+
     Examples
     --------
     >>> from pyXLMS.parser import read
@@ -117,6 +122,11 @@ def filter_proteins(
     TypeError
         If an unsupported data type is provided.
 
+    Notes
+    -----
+    Any crosslinks or crosslink-spectrum-matches with missing 'alpha_proteins' or 'beta_proteins' attributes will be
+    filtered out and not returned.
+
     Examples
     --------
     >>> from pyXLMS.parser import read
@@ -167,6 +177,70 @@ def filter_proteins(
             else:
                 inter.append(item)
     return {"Proteins": list(proteins), "Both": intra, "One": inter}
+
+
+def filter_protein_distribution(
+    data: List[Dict[str, Any]],
+) -> Dict[str, List[Dict[str, Any]]]:
+    r"""Get all crosslinks or crosslink-spectrum-matches sorted by their associated proteins.
+
+    Sorts all crosslinks or crosslink-spectrum-matches into a dictionary that maps protein
+    accessions to all crosslinks or crosslink-spectrum-matches that are associated with that
+    protein.
+
+    Parameters
+    ----------
+    data : list of dict of str, any
+        A list of pyXLMS crosslinks or crosslink-spectrum-matches.
+
+    Returns
+    -------
+    dict of str, list of dict of str, any
+        Returns a dictionary that maps proteins accessions (keys) to a list of crosslinks or
+        crosslink-spectrum-matches (values) that are associated with that protein.
+
+    Raises
+    ------
+    TypeError
+        If an unsupported data type is provided.
+
+    Notes
+    -----
+    Any crosslinks or crosslink-spectrum-matches with missing 'alpha_proteins' or 'beta_proteins' attributes will be
+    filtered out and not returned. Please also note that the total number of crosslinks or crosslink-spectrum-matches
+    returned will be greater than the size of the input because they might match to more than one protein.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import filter_protein_distribution
+    >>> result = read("data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS")
+    >>> proteins_csms = filter_protein_distribution(result["crosslink-spectrum-matches"])
+    >>> list(proteins_csms.keys()) # proteins found
+    ['Cas9', 'sp|MYG_HUMAN|', 'sp|CAH1_HUMAN|', 'sp|RETBP_HUMAN|', 'sp|K1C15_SHEEP|']
+    >>> len(proteins_csms["Cas9"]) # number of CSMs for protein Cas9
+    728
+    """
+    _ok = check_input(data, "data", list, dict)
+    proteins = dict()
+    for item in data:
+        if "data_type" not in item or item["data_type"] not in [
+            "crosslink",
+            "crosslink-spectrum-match",
+        ]:
+            raise TypeError(
+                "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
+            )
+        if item["alpha_proteins"] is not None and item["beta_proteins"] is not None:
+            current_proteins = set(item["alpha_proteins"]).union(
+                set(item["beta_proteins"])
+            )
+            for protein in current_proteins:
+                if protein in proteins:
+                    proteins[protein].append(item)
+                else:
+                    proteins[protein] = [item]
+    return proteins
 
 
 def filter_crosslink_type(data: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
@@ -228,3 +302,54 @@ def filter_crosslink_type(data: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
         else:
             inter.append(item)
     return {"Intra": intra, "Inter": inter}
+
+
+def filter_peptide_pair_distribution(
+    data: List[Dict[str, Any]],
+) -> Dict[str, List[Dict[str, Any]]]:
+    r"""Get all crosslink-spectrum-matches sorted by their peptide pair.
+
+    Sorts all crosslink-spectrum-matches into a dictionary that maps peptide pairs denoted as their
+    amino acid sequences delimited by a hyphen (e.g. "MTNFDKNLPNEK-SKLVSDFR") to their associated
+    crosslink-spectrum-matches.
+
+    Parameters
+    ----------
+    data : list of dict of str, any
+        A list of pyXLMS crosslink-spectrum-matches.
+
+    Returns
+    -------
+    dict of str, list of dict
+        Returns a dictionary that maps peptide pairs denoted as their amino acid sequences delimited by a
+        hyphen to their associated crosslink-spectrum-matches.
+
+    Raises
+    ------
+    TypeError
+        If an unsupported data type is provided.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import filter_peptide_pair_distribution
+    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> peptide_pairs = filter_peptide_pair_distribution(result["crosslink-spectrum-matches"])
+    >>> list(peptide_pairs.keys())[:5] # first 5 found peptide pairs
+    ['GQKNSR-GQKNSR', 'GQKNSR-GSQKDR', 'SDKNR-SDKNR', 'DKQSGK-DKQSGK', 'DKQSGK-HSIKK']
+    >>> len(peptide_pairs["MTNFDKNLPNEK-SKLVSDFR"]) # number of CSMs for peptide pair MTNFDKNLPNEK-SKLVSDFR
+    21
+    """
+    _ok = check_input(data, "data", list, dict)
+    peptide_pairs = dict()
+    for item in data:
+        if "data_type" not in item or item["data_type"] != "crosslink-spectrum-match":
+            raise TypeError(
+                "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
+            )
+        peptide_pair = f"{item['alpha_peptide']}-{item['beta_peptide']}"
+        if peptide_pair in peptide_pairs:
+            peptide_pairs[peptide_pair].append(item)
+        else:
+            peptide_pairs[peptide_pair] = [item]
+    return peptide_pairs
