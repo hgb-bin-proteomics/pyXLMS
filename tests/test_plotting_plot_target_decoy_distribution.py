@@ -12,6 +12,7 @@ import pytest
 def cleanup_figures():
     yield
     import matplotlib.pyplot as plt
+
     plt.close(fig="all")
 
 
