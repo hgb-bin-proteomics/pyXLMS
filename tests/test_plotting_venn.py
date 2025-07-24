@@ -8,6 +8,14 @@
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def cleanup_figures():
+    yield
+    import matplotlib.pyplot as plt
+
+    plt.close(fig="all")
+
+
 @pytest.mark.filterwarnings("ignore:'mode' parameter is deprecated")
 def test1():
     from pyXLMS.plotting import venn

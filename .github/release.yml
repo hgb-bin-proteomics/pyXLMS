@@ -1,0 +1,19 @@
+changelog:
+  categories:
+    - title: "🚀 Features"
+      labels:
+        - feature-request
+        - enhancement
+    - title: "📖 Documentation"
+      labels:
+        - documentation
+    - title: "🐛 Bug Fixes"
+      labels:
+        - bugfix
+        - bug
+    - title: "🧰 Maintenance"
+      labels:
+        - maintenance
+    - title: "📝 Other Changes"
+      labels:
+        - "*"

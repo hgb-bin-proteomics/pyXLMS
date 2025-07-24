@@ -10,8 +10,7 @@ from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
 from ..data import check_input
-from ..transform.util import get_available_keys
-from ..transform.filter import filter_target_decoy
+from ..transform.filter import filter_crosslink_type
 
 from typing import Optional
 from typing import List
@@ -19,35 +18,36 @@ from typing import Dict
 from typing import Tuple
 from typing import Any
 
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
-def plot_score_distribution(
+
+def plot_crosslink_type_distribution(
     data: List[Dict[str, Any]],
-    bins: int = 25,
-    density: bool = False,
-    colors: List[str] = ["#00a087", "#3c5488", "#e64b35"],
-    title: str = "Target and Decoy Score Distribution",
+    plot_type: Literal["bar", "pie"] = "bar",
+    colors: List[str] = ["#6d4bff", "#ac99ff"],
+    title: str = "Crosslink Type Distribution",
     figsize: Tuple[float, float] = (16.0, 9.0),
     filename_prefix: Optional[str] = None,
 ) -> Tuple[Figure, Any]:
-    r"""Plot the score distribution for a set of crosslink-spectrum-matches or crosslinks.
+    r"""Plot the crosslink type distribution for a set of crosslink-spectrum-matches or crosslinks.
 
-    Plot the target-target, target-decoy, and decoy-decoy score distribution as a histogram for a
-    set of crosslink-spectrum-matches or crosslinks.
+    Plot the crosslink type distribution (intra- and inter-links) as a bar or pie chart for a set of
+    crosslink-spectrum-matches or crosslinks.
 
     Parameters
     ----------
     data : list of dict of str, any
         A list of crosslink-spectrum-matches or crosslinks.
-    bins : int, default = 25
-        The number of equal-width bins in the histogram.
-    density : bool, default = False
-        If True, draw and return a probability density: each bin will display the bin's raw count
-        divided by the total number of counts and the bin width, so that the area under the histogram
-        integrates to 1.
-    colors : list of str, default = ["#00a087", "#3c5488", "#e64b35"]
-        Colors of the histogram lines.
-    title : str, default = "Target and Decoy Score Distribution"
-        The title of the histogram.
+    plot_type : str, one of "bar" or "pie", default = "bar"
+        Plot type, whether to plot as a bar or pie chart.
+    colors : list of str, default = ["#6d4bff", "#ac99ff"]
+        Colors of the bars/pie slices (intra-link and inter-link).
+    title : str, default = "Crosslink Type Distribution"
+        The title of the plot.
     figsize : tuple of float, float, default = (16.0, 9.0)
         Width, height in inches.
     filename_prefix : str, or None
@@ -66,7 +66,9 @@ def plot_score_distribution(
     ValueError
         If parameter data does not contain any crosslink-spectrum-matches or crosslinks.
     ValueError
-        If attribute 'score', 'alpha_decoy', or 'beta_decoy' is not available for any of the data.
+        If parameter plot type was set incorrectly.
+    IndexError
+        If not enough colors where specified.
 
     Examples
     --------
@@ -74,11 +76,10 @@ def plot_score_distribution(
     >>> from pyXLMS import plotting
     >>> pr = parser.read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx")
     >>> csms = pr["crosslink-spectrum-matches"]
-    >>> fig, ax = plotting.plot_score_distribution(csms)
+    >>> fig, ax = plotting.plot_crosslink_type_distribution(csms)
     """
     _ok = check_input(data, "data", list, dict)
-    _ok = check_input(bins, "bins", int)
-    _ok = check_input(density, "density", bool)
+    _ok = check_input(plot_type, "plot_type", str)
     _ok = check_input(colors, "colors", list, str)
     _ok = check_input(title, "title", str)
     _ok = check_input(figsize, "figsize", tuple)
@@ -87,9 +88,13 @@ def plot_score_distribution(
         if filename_prefix is not None
         else True
     )
+    if plot_type not in ["bar", "pie"]:
+        raise ValueError("Plot type needs to be one of 'bar' or 'pie'!")
+    if len(colors) < 2:
+        raise IndexError("At least two colors need to be given for the plot!")
     if len(data) == 0:
         raise ValueError(
-            "Can't plot score distribution if no crosslink-spectrum-matches or crosslinks are given!"
+            "Can't plot crosslink type distribution if no crosslink-spectrum-matches or crosslinks are given!"
         )
     if "data_type" not in data[0] or data[0]["data_type"] not in [
         "crosslink",
@@ -98,39 +103,35 @@ def plot_score_distribution(
         raise TypeError(
             "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
         )
-    available_keys = get_available_keys(data)
-    if (
-        not available_keys["score"]
-        or not available_keys["alpha_decoy"]
-        or not available_keys["beta_decoy"]
-    ):
-        raise ValueError(
-            "Can't plot score distribution if 'score' or target/decoy labels are missing!"
-        )
-    ylabel = (
+    axis_label = (
         "crosslink-spectrum-matches"
         if data[0]["data_type"] == "crosslink-spectrum-match"
         else "crosslinks"
     )
-    filtered = filter_target_decoy(data)
-    tt = [item["score"] for item in filtered["Target-Target"]]
-    td = [item["score"] for item in filtered["Target-Decoy"]]
-    dd = [item["score"] for item in filtered["Decoy-Decoy"]]
+    intra_inter = filter_crosslink_type(data)
+    values = [len(intra_inter["Intra"]), len(intra_inter["Inter"])]
+    labels = ["intra-links", "inter-links"]
 
     fig, ax = plt.subplots(figsize=figsize)
 
-    ax.hist(
-        [tt, td, dd],
-        bins=bins,
-        density=density,
-        histtype="step",
-        fill=False,
-        color=colors,
-        label=["Target-Target", "Target-Decoy", "Decoy-Decoy"],
-    )
-    ax.legend(loc="upper right")
-    ax.set_ylabel(f"Number of {ylabel}")
-    ax.set_xlabel("Score")
+    if plot_type == "pie":
+        ax.pie(
+            values,
+            labels=labels,
+            colors=colors,
+            autopct="%1.1f%%",
+        )
+
+        ax.set_xlabel(
+            f"Total number of {axis_label}: {sum([len(intra_inter['Intra']), len(intra_inter['Inter'])])}"
+        )
+    else:
+        bar = ax.bar(labels, values, color=colors)
+        ax.bar_label(bar, padding=3.0)
+
+        ax.set_xticks(range(len(labels)), labels, rotation=45, ha="right")
+        ax.set_ylabel(f"Number of {axis_label}")
+        ax.set_xlabel("Crosslink Type")
 
     if filename_prefix is not None:
         plt.savefig(
