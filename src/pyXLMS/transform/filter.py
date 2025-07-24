@@ -307,7 +307,7 @@ def filter_crosslink_type(data: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
 def filter_peptide_pair_distribution(
     data: List[Dict[str, Any]],
 ) -> Dict[str, List[Dict[str, Any]]]:
-    r"""Sort crosslink-spectrum-matches by their peptide pair.
+    r"""Get all crosslink-spectrum-matches sorted by their peptide pair.
 
     Sorts all crosslink-spectrum-matches into a dictionary that maps peptide pairs denoted as their
     amino acid sequences delimited by a hyphen (e.g. "MTNFDKNLPNEK-SKLVSDFR") to their associated

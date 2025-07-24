@@ -35,7 +35,7 @@ def plot_crosslink_type_distribution(
 ) -> Tuple[Figure, Any]:
     r"""Plot the crosslink type distribution for a set of crosslink-spectrum-matches or crosslinks.
 
-    Plot the crosslink type distribution (intra- and inter-links) as a pie chart for a set of
+    Plot the crosslink type distribution (intra- and inter-links) as a bar or pie chart for a set of
     crosslink-spectrum-matches or crosslinks.
 
     Parameters
