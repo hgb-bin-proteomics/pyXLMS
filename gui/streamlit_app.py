@@ -47,7 +47,7 @@ from typing import Set
 from typing import Any
 
 
-__version__ = "1.1.1"
+__version__ = "1.1.2"
 
 
 @st.cache_data
@@ -177,6 +177,28 @@ def filter_proteins(
 ) -> List[Dict[str, Any]]:
     filtered = transform.filter_proteins(data, proteins)
     return filtered["Both"] + filtered["One"]
+
+
+def layout_plots(plots: List[Any]) -> None:
+    for i in range(0, len(plots), 2):
+        l_col, r_col = st.columns(2)
+        if i < len(plots):
+            with l_col:
+                plot1 = st.pyplot(
+                    plots[i],
+                    transparent=True,
+                    bbox_inches="tight",
+                    use_container_width=True,
+                )
+        if i + 1 < len(plots):
+            with r_col:
+                plot1 = st.pyplot(
+                    plots[i + 1],
+                    transparent=True,
+                    bbox_inches="tight",
+                    use_container_width=True,
+                )
+    return
 
 
 # input tab
@@ -1346,11 +1368,13 @@ def visualize_tab():
             )
             available_keys = transform.get_available_keys(csms)
             plots = list()
+            # target decoy distribution
             if available_keys["alpha_decoy"] and available_keys["beta_decoy"]:
                 fig, ax = plotting.plot_target_decoy_distribution(
                     csms, figsize=(8.0, 4.5)
                 )
                 plots.append(fig)
+            # score distribution
             if (
                 available_keys["score"]
                 and available_keys["alpha_decoy"]
@@ -1360,6 +1384,12 @@ def visualize_tab():
                     csms, bins=bins, figsize=(8.0, 4.5)
                 )
                 plots.append(fig)
+            # crosslink type distribution plot is always possible
+            fig, ax = plotting.plot_crosslink_type_distribution(
+                csms, plot_type="bar", figsize=(8.0, 4.5)
+            )
+            plots.append(fig)
+            # protein distribution
             if available_keys["alpha_proteins"] and available_keys["beta_proteins"]:
                 fig, ax = plotting.plot_protein_distribution(
                     csms, top_n=top_n, figsize=(8.0, 4.5)
@@ -1371,40 +1401,9 @@ def visualize_tab():
             )
             plots.append(fig)
             if len(plots) > 0:
-                l1, r1 = st.columns(2)
-                with l1:
-                    plot1 = st.pyplot(
-                        plots[0],
-                        transparent=True,
-                        bbox_inches="tight",
-                        use_container_width=True,
-                    )
-                if len(plots) > 1:
-                    with r1:
-                        plot2 = st.pyplot(
-                            plots[1],
-                            transparent=True,
-                            bbox_inches="tight",
-                            use_container_width=True,
-                        )
-                if len(plots) > 2:
-                    l2, r2 = st.columns(2)
-                    with l2:
-                        plot3 = st.pyplot(
-                            plots[2],
-                            transparent=True,
-                            bbox_inches="tight",
-                            use_container_width=True,
-                        )
-                    if len(plots) > 3:
-                        with r2:
-                            plot4 = st.pyplot(
-                                plots[3],
-                                transparent=True,
-                                bbox_inches="tight",
-                                use_container_width=True,
-                            )
+                layout_plots(plots)
             else:
+                # technically impossible
                 csms_not_enough_data = st.info(
                     "Not enough data to plot anything for crosslink-spectrum-matches!"
                 )
@@ -1415,11 +1414,13 @@ def visualize_tab():
             )
             available_keys = transform.get_available_keys(crosslinks)
             plots = list()
+            # target decoy distribution
             if available_keys["alpha_decoy"] and available_keys["beta_decoy"]:
                 fig, ax = plotting.plot_target_decoy_distribution(
                     crosslinks, figsize=(8.0, 4.5)
                 )
                 plots.append(fig)
+            # score distribution
             if (
                 available_keys["score"]
                 and available_keys["alpha_decoy"]
@@ -1429,38 +1430,21 @@ def visualize_tab():
                     crosslinks, bins=bins, figsize=(8.0, 4.5)
                 )
                 plots.append(fig)
+            # crosslink type distribution plot is always possible
+            fig, ax = plotting.plot_crosslink_type_distribution(
+                crosslinks, plot_type="bar", figsize=(8.0, 4.5)
+            )
+            plots.append(fig)
+            # protein distribution
             if available_keys["alpha_proteins"] and available_keys["beta_proteins"]:
                 fig, ax = plotting.plot_protein_distribution(
                     crosslinks, top_n=top_n, figsize=(8.0, 4.5)
                 )
                 plots.append(fig)
             if len(plots) > 0:
-                l3, r3 = st.columns(2)
-                with l3:
-                    plot5 = st.pyplot(
-                        plots[0],
-                        transparent=True,
-                        bbox_inches="tight",
-                        use_container_width=True,
-                    )
-                if len(plots) > 1:
-                    with r3:
-                        plot6 = st.pyplot(
-                            plots[1],
-                            transparent=True,
-                            bbox_inches="tight",
-                            use_container_width=True,
-                        )
-                if len(plots) > 2:
-                    l4, r4 = st.columns(2)
-                    with l4:
-                        plot7 = st.pyplot(
-                            plots[2],
-                            transparent=True,
-                            bbox_inches="tight",
-                            use_container_width=True,
-                        )
+                layout_plots(plots)
             else:
+                # technically impossible
                 crosslinks_not_enough_data = st.info(
                     "Not enough data to plot anything for crosslinks!"
                 )
@@ -1471,11 +1455,13 @@ def visualize_tab():
         )
         available_keys = transform.get_available_keys(aggregated_crosslinks)
         plots = list()
+        # target decoy distribution
         if available_keys["alpha_decoy"] and available_keys["beta_decoy"]:
             fig, ax = plotting.plot_target_decoy_distribution(
                 aggregated_crosslinks, figsize=(8.0, 4.5)
             )
             plots.append(fig)
+        # score distribution
         if (
             available_keys["score"]
             and available_keys["alpha_decoy"]
@@ -1485,38 +1471,21 @@ def visualize_tab():
                 aggregated_crosslinks, bins=bins, figsize=(8.0, 4.5)
             )
             plots.append(fig)
+        # crosslink type distribution plot is always possible
+        fig, ax = plotting.plot_crosslink_type_distribution(
+            aggregated_crosslinks, plot_type="bar", figsize=(8.0, 4.5)
+        )
+        plots.append(fig)
+        # protein distribution
         if available_keys["alpha_proteins"] and available_keys["beta_proteins"]:
             fig, ax = plotting.plot_protein_distribution(
                 aggregated_crosslinks, top_n=top_n, figsize=(8.0, 4.5)
             )
             plots.append(fig)
         if len(plots) > 0:
-            l5, r5 = st.columns(2)
-            with l5:
-                plot8 = st.pyplot(
-                    plots[0],
-                    transparent=True,
-                    bbox_inches="tight",
-                    use_container_width=True,
-                )
-            if len(plots) > 1:
-                with r5:
-                    plot9 = st.pyplot(
-                        plots[1],
-                        transparent=True,
-                        bbox_inches="tight",
-                        use_container_width=True,
-                    )
-            if len(plots) > 2:
-                l6, r6 = st.columns(2)
-                with l6:
-                    plot10 = st.pyplot(
-                        plots[2],
-                        transparent=True,
-                        bbox_inches="tight",
-                        use_container_width=True,
-                    )
+            layout_plots(plots)
         else:
+            # technically impossible
             aggregated_crosslinks_not_enough_data = st.info(
                 "Not enough data to plot anything for aggregated crosslinks!"
             )
