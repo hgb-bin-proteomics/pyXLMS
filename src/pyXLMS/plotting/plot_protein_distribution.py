@@ -76,6 +76,7 @@ def plot_protein_distribution(
     >>> fig, ax = plotting.plot_protein_distribution(csms)
     """
     _ok = check_input(data, "data", list, dict)
+    _ok = check_input(top_n, "top_n", int)
     _ok = check_input(colors, "colors", list, str)
     _ok = check_input(title, "title", str)
     _ok = check_input(figsize, "figsize", tuple)
