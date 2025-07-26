@@ -91,6 +91,10 @@ If you are using pyXLMS please cite the following publication:
   (wip)
   ```
 
+## Acknowledgements
+
+We thank Melanie Birklbauer for designing the logo.
+
 ## Contact
 
 - [proteomics@fh-hagenberg.at](mailto:proteomics@fh-hagenberg.at)
