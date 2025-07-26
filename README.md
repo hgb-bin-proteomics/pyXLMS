@@ -1,10 +1,13 @@
 # pyXLMS
 _a python package to process protein cross-linking data_
 
+<img src="docs/logo/logo_padded_shadow.png" align="left" width="200px" style="padding: 5px 20px 10px 20px;"/>
+
 **pyXLMS** is a python package and web application with graphical user interface that aims to simplify and streamline the intermediate step of
 connecting crosslink search engine results with down-stream analysis tools, enabling researchers even without bioinformatics knowledge to
 conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
-insight. Currently pyXLMS supports input from six different crosslink search engines: [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
+insight. Currently pyXLMS supports input from seven different crosslink search engines:
+[MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
 [MeroX](https://www.stavrox.com/),
 [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
 [pLink 2 and pLink 3](http://pfind.ict.ac.cn/se/plink/),
@@ -87,6 +90,10 @@ If you are using pyXLMS please cite the following publication:
   ```
   (wip)
   ```
+
+## Acknowledgements
+
+We thank Melanie Birklbauer for designing the logo.
 
 ## Contact
 
