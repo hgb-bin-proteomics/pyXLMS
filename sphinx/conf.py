@@ -40,27 +40,27 @@ python_maximum_signature_line_length = 88
 
 html_title = "pyXLMS - A python package to process protein cross-linking data"
 html_short_title = "pyXLMS"
-html_logo = (
-    "https://github.com/hgb-bin-proteomics/MSAnnika/raw/master/logo/icons/icon.png"
-)
-html_favicon = (
-    "https://github.com/hgb-bin-proteomics/MSAnnika/raw/master/logo/icons/favicon.png"
-)
+html_logo = "icons/icon.png"
+html_favicon = "icons/favicon.png"
 html_theme = "pydata_sphinx_theme"
 html_theme_options = {
     "logo": {
         "alt_text": "pyXLMS",
         "text": "pyXLMS",
-        "image_light": "https://github.com/hgb-bin-proteomics/MSAnnika/raw/master/logo/icons/icon.png",
-        "image_dark": "https://github.com/hgb-bin-proteomics/MSAnnika/raw/master/logo/icons/icon.png",
+        "image_light": "icons/icon.png",
+        "image_dark": "icons/icon.png",
     },
     "external_links": [
+        {
+            "name": "Documentation",
+            "url": "https://hgb-bin-proteomics.github.io/pyXLMS/modules.html",
+        },
         {
             "name": "Web App",
             "url": "https://hgb-bin-proteomics.github.io/pyXLMS-app",
         },
         {
-            "name": "Documentation",
+            "name": "User Guide",
             "url": "https://hgb-bin-proteomics.github.io/pyXLMS-docs",
         },
         {

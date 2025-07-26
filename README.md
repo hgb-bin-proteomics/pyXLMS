@@ -1,6 +1,8 @@
 # pyXLMS
 _a python package to process protein cross-linking data_
 
+<img src="docs/logo/logo_padded_shadow.png" align="left" width="200px" style="padding: 5px 20px 10px 20px;"/>
+
 **pyXLMS** is a python package and web application with graphical user interface that aims to simplify and streamline the intermediate step of
 connecting crosslink search engine results with down-stream analysis tools, enabling researchers even without bioinformatics knowledge to
 conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
