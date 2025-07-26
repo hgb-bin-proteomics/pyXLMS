@@ -211,7 +211,7 @@ def input_tab():
     conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
     insight.
 
-    Currently pyXLMS supports input from six different crosslink search engines:
+    Currently pyXLMS supports input from seven different crosslink search engines:
     [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
     [MeroX](https://www.stavrox.com/),
     [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
@@ -3221,7 +3221,7 @@ def about_tab():
         conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
         insight.
 
-        Currently pyXLMS supports input from six different crosslink search engines:
+        Currently pyXLMS supports input from seven different crosslink search engines:
         [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
         [MeroX](https://www.stavrox.com/),
         [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
