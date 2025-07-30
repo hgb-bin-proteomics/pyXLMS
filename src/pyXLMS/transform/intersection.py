@@ -34,9 +34,27 @@ def intersection(
     score: Literal["higher_better", "lower_better"] = "higher_better",
     verbose: Literal[0, 1, 2] = 1,
 ) -> List[Dict[str, Any]]:
-    r"""
+    r"""Get the intersection of two lists of crosslinks.
+
+    Returns the intersection of two lists of crosslinks (or crosslink-spectrum-matches). Crosslink intersection is calculated
+    by creating unique keys based on peptide sequence and peptide crosslink position or based on protein crosslink position.
+    For crosslink-spectrum-match intersection the intersection is calculated by creating unique keys based on peptide sequence
+    and peptide crosslink position and the corresponding scan number. For any unique key in the intersection, either the best
+    (by score) crosslink or crosslink-spectrum-match is returned, or the one from the first or second list, based on user
+    preference.
+
     Parameters
     ----------
+    data_a : list of dict of str, any
+        List of crosslinks (or crosslink-spectrum-matches).
+    data_b : list of dict of str, any
+        List of crosslinks (or crosslink-spectrum-matches) to intersect with. Note that the data types for 'data_a' and
+        'data_b' have to be the same.
+    use : str, one of "better_score", "data_a", or "data_b", default = "better_score"
+        Which element to use for the returned intersection. Option "better_score" will return the element (crosslink or
+        crosslink-spectrum-match) with the higher score, option "data_a" will return the element from ``data_a``, and
+        option "data_b" will return the element from ``data_b``. Please note that attribute ``score`` needs to be
+        available for all elements if "better_score" is selected.
     by : str, one of "peptide" or "protein", default = "peptide"
         If peptide or protein crosslink position should be used for determining if a crosslink is unique.
         Only affects filtering for unique crosslinks and not crosslink-spectrum-matches. If protein crosslink
@@ -49,6 +67,87 @@ def intersection(
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
+
+    Returns
+    -------
+    list of dict of str, any
+        The list of crosslinks or crosslink-spectrum-matches in the intersection.
+
+    Raises
+    ------
+    TypeError
+        If a wrong data type is provided for 'data_a' or 'data_b'.
+    TypeError
+        If 'data_a' and 'data_b' are not of the same data type.
+    TypeError
+        If parameter use is not one of 'better_score', 'data_a' or 'data_b'.
+    TypeError
+        If parameter by is not one of 'peptide' or 'protein'.
+    TypeError
+        If parameter score is not one of 'higher_better' or 'lower_better'.
+    TypeError
+        If parameter verbose was not set correctly.
+    ValueError
+        If parameter use is set to 'better_score' but scores are not available.
+    ValueError
+        If parameter by is set to 'protein' but protein crosslink positions are not available.
+    RuntimeError
+        If crosslink-spectrum-matches are provided as data but verbose level is set to 2.
+
+    Warns
+    -----
+    RuntimeWarning
+        If crosslink-spectrum-matches are provided as data but verbose level is set to 1.
+
+    Notes
+    -----
+    While technically the intersection of crosslink-spectrum-matches is supported, please be aware that this mostly only makes
+    sense when searching the same mass spectrometry file several times, as the crosslink-spectrum-match intersection takes into
+    account the scan numbers, e.g. two crosslinks with the same peptide sequences but different scan numbers will not be considered
+    the same and therefore will not be in the intersection. If you want to get the intersection of crosslink-spectrum-matches using
+    their crosslinked peptide sequences or protein positions, you can aggregate them first with ``transform.aggregate()`` or create
+    crosslinks with ``data.create_crosslink_from_csm()``. Please also note that when intersecting all duplicates are removed and
+    aggregated the same way as in ``transform.unique()``. To intersect more than two lists please repeatedly call ``intersection()``
+    on itself.
+
+    Examples
+    --------
+    >>> from pyXLMS.pipelines import pipeline
+    >>> from pyXLMS.transform import aggregate
+    >>> from pyXLMS.transform import intersection
+    >>> msannika = pipeline("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt", engine="MS Annika", crosslinker="DSS")
+    >>> msannika = aggregate(msannika["crosslink-spectrum-matches"])
+    >>> len(msannika)
+    235
+    >>> maxquant = pipeline("data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS")
+    >>> maxquant = aggregate(maxquant["crosslink-spectrum-matches"])
+    >>> len(maxquant)
+    226
+    >>> crosslinks_intersection = intersection(msannika, maxquant)
+    >>> len(crosslinks_intersection)
+    206
+
+    >>> from pyXLMS.pipelines import pipeline
+    >>> from pyXLMS.transform import aggregate
+    >>> from pyXLMS.transform import intersection
+    >>> msannika = pipeline("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt", engine="MS Annika", crosslinker="DSS")
+    >>> msannika = aggregate(msannika["crosslink-spectrum-matches"])
+    >>> len(msannika)
+    235
+    >>> maxquant = pipeline("data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS")
+    >>> maxquant = aggregate(maxquant["crosslink-spectrum-matches"])
+    >>> len(maxquant)
+    226
+    >>> crosslinks_intersection = intersection(msannika, maxquant)
+    >>> len(crosslinks_intersection)
+    206
+    >>> plink = pipeline("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv", engine="pLink", crosslinker="DSS")
+    >>> plink = aggregate(plink["crosslink-spectrum-matches"])
+    >>> len(plink)
+    252
+    >>> crosslinks_intersection = intersection(crosslinks_intersection, plink)
+    >>> len(crosslinks_intersection)
+    203
     """
     _ok = check_input(data_a, "data_a", list, dict)
     _ok = check_input(data_b, "data_b", list, dict)
