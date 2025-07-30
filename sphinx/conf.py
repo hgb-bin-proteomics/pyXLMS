@@ -43,6 +43,7 @@ html_short_title = "pyXLMS"
 html_logo = "icons/icon.png"
 html_favicon = "icons/favicon.png"
 html_theme = "pydata_sphinx_theme"
+html_show_sourcelink = False
 html_theme_options = {
     "logo": {
         "alt_text": "pyXLMS",
@@ -50,6 +51,7 @@ html_theme_options = {
         "image_light": "icons/icon.png",
         "image_dark": "icons/icon.png",
     },
+    "header_links_before_dropdown": 4,
     "external_links": [
         {
             "name": "Documentation",
@@ -75,9 +77,15 @@ html_theme_options = {
             "url": "https://github.com/hgb-bin-proteomics/pyXLMS",
             "icon": "fa-brands fa-github",
             "type": "fontawesome",
-        }
+        },
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/pyxlms",
+            "icon": "fa-brands fa-python",
+        },
     ],
-    "use_edit_page_button": True,
+    "show_toc_level": 2,
+    "use_edit_page_button": False,
     "primary_sidebar_end": ["indices.html"],
 }
 html_context = {
@@ -86,4 +94,5 @@ html_context = {
     "github_repo": "pyXLMS",
     "github_version": "master",
     "doc_path": "sphinx",
+    "default_mode": "light",
 }
