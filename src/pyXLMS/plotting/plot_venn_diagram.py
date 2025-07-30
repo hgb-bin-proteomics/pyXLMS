@@ -323,7 +323,7 @@ def plot_venn_diagram(
     parameter by = "peptide" or by looking at protein crosslink position by using parameter by = "protein".
     Please note that crosslink-spectrum-matches are automatically aggregated to crosslinks, and scan numbers
     do not influence the creation of the venn diagram. For more nuanced control over intersecting
-    crosslink-spectrum-matches with scan number please refer to ``transform.intersection()``.
+    crosslink-spectrum-matches with scan numbers please refer to ``transform.intersection()``.
 
     Parameters
     ----------
@@ -376,7 +376,7 @@ def plot_venn_diagram(
     -----
     Please note that crosslink-spectrum-matches are automatically aggregated to crosslinks, and scan numbers
     do not influence the creation of the venn diagram. For more nuanced control over intersecting
-    crosslink-spectrum-matches with scan number please refer to ``transform.intersection()``.
+    crosslink-spectrum-matches with scan numbers please refer to ``transform.intersection()``.
 
     Examples
     --------
