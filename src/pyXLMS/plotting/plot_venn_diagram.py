@@ -321,6 +321,9 @@ def plot_venn_diagram(
     Plot the venn diagram for two or three sets of crosslink-spectrum-matches or crosslinks. Overlaps
     are calculated by either looking at peptide sequence and crosslink position in the peptide using
     parameter by = "peptide" or by looking at protein crosslink position by using parameter by = "protein".
+    Please note that crosslink-spectrum-matches are automatically aggregated to crosslinks, and scan numbers
+    do not influence the creation of the venn diagram. For more nuanced control over intersecting
+    crosslink-spectrum-matches with scan numbers please refer to ``transform.intersection()``.
 
     Parameters
     ----------
@@ -368,6 +371,12 @@ def plot_venn_diagram(
         If attribute 'alpha_proteins', 'alpha_proteins_crosslink_positions', 'beta_proteins', or
         'beta_proteins_crosslink_positions' is not available for any of the data and parameter 'by'
         was set to 'protein'.
+
+    Notes
+    -----
+    Please note that crosslink-spectrum-matches are automatically aggregated to crosslinks, and scan numbers
+    do not influence the creation of the venn diagram. For more nuanced control over intersecting
+    crosslink-spectrum-matches with scan numbers please refer to ``transform.intersection()``.
 
     Examples
     --------
