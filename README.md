@@ -17,7 +17,7 @@ insight. Currently pyXLMS supports input from seven different crosslink search e
 as well as the [mzIdentML format](https://www.psidev.info/mzidentml)
 of the HUPO Proteomics Standards Initiative, and a well-documented and
 [human-readable custom tabular format](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/format.md).
-Down-stream analysis is facilitated by functionality that is directly available within pyXLMS such as validation, annotation, aggregation, and filtering of crosslink-spectrum-matches and crosslinks. In addition, the data can easily be exported to the required data format of the various available down-stream analysis tools such as
+Down-stream analysis is facilitated by functionality that is directly available within pyXLMS such as validation, annotation, aggregation, filtering, and visualization - and [much more](https://hgb-bin-proteomics.github.io/pyXLMS/modules.html) - of crosslink-spectrum-matches and crosslinks. In addition, the data can easily be exported to the required data format of the various available down-stream analysis tools such as
 [xiNET](https://crosslinkviewer.org/index.php),
 [xiVIEW](https://www.xiview.org/index.php),
 [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
