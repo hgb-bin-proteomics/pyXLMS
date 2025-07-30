@@ -22,6 +22,7 @@ __all__ = [
     "targets_only",
     "fasta_title_to_accession",
     "reannotate_positions",
+    "intersection",
 ]
 
 from .util import modifications_to_str
@@ -41,3 +42,4 @@ from .to_dataframe import to_dataframe
 from .targets_only import targets_only
 from .reannotate_positions import fasta_title_to_accession
 from .reannotate_positions import reannotate_positions
+from .intersection import intersection
