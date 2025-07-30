@@ -41,6 +41,12 @@ gui = [
   "streamlit",
   "xlsxwriter"
 ]
+docs = [
+  "sphinx",
+  "pydata-sphinx-theme",
+  "myst-parser",
+  "sphinx-copybutton"
+]
 
 [project.urls]
 Homepage = "https://github.com/hgb-bin-proteomics/pyXLMS"
