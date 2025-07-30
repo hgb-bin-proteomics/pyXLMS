@@ -48,8 +48,8 @@ def intersection(
     data_a : list of dict of str, any
         List of crosslinks (or crosslink-spectrum-matches).
     data_b : list of dict of str, any
-        List of crosslinks (or crosslink-spectrum-matches) to intersect with. Note that the data types for 'data_a' and
-        'data_b' have to be the same.
+        List of crosslinks (or crosslink-spectrum-matches) to intersect with. Note that the data types for ``data_a`` and
+        ``data_b`` have to be the same.
     use : str, one of "better_score", "data_a", or "data_b", default = "better_score"
         Which element to use for the returned intersection. Option "better_score" will return the element (crosslink or
         crosslink-spectrum-match) with the higher score, option "data_a" will return the element from ``data_a``, and
