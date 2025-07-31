@@ -10,7 +10,6 @@ import warnings
 
 from ..data import check_input
 from .aggregate import __score_better
-from .aggregate import __get_csm_key
 from .aggregate import __get_xl_key
 from .aggregate import unique
 from .util import get_available_keys
@@ -26,6 +25,28 @@ except ImportError:
     from typing_extensions import Literal
 
 
+def __get_csm_key(csm: Dict[str, Any]) -> str:
+    r"""Get the unique intersection key for a crosslink-spectrum-match.
+
+    Parameters
+    ----------
+    csm : dict of str, any
+        A pyXLMS crosslink-spectrum-match object.
+
+    Returns
+    -------
+    str
+        The unique intersection key for the crosslink-spectrum-match.
+    """
+    k1 = csm["alpha_peptide"]
+    k2 = csm["alpha_peptide_crosslink_position"]
+    k3 = csm["beta_peptide"]
+    k4 = csm["beta_peptide_crosslink_position"]
+    k5 = csm["spectrum_file"]
+    k6 = csm["scan_nr"]
+    return f"{k1}{k2}-{k3}{k4}_{k5}_{k6}"
+
+
 def intersection(
     data_a: List[Dict[str, Any]],
     data_b: List[Dict[str, Any]],
@@ -39,9 +60,9 @@ def intersection(
     Returns the intersection of two lists of crosslinks (or crosslink-spectrum-matches). Crosslink intersection is calculated
     by creating unique keys based on peptide sequence and peptide crosslink position or based on protein crosslink position.
     For crosslink-spectrum-match intersection the intersection is calculated by creating unique keys based on peptide sequence
-    and peptide crosslink position and the corresponding scan number. For any unique key in the intersection, either the best
-    (by score) crosslink or crosslink-spectrum-match is returned, or the one from the first or second list, based on user
-    preference.
+    and peptide crosslink position as well as the corresponding spectrum file and scan number. For any unique key in the intersection,
+    either the best (by score) crosslink or crosslink-spectrum-match is returned, or the one from the first or second list, based
+    on user preference.
 
     Parameters
     ----------
@@ -103,9 +124,9 @@ def intersection(
     -----
     While technically the intersection of crosslink-spectrum-matches is supported, please be aware that this mostly only makes
     sense when searching the same mass spectrometry file several times, as the crosslink-spectrum-match intersection takes into
-    account the scan numbers, e.g. two crosslinks with the same peptide sequences but different scan numbers will not be considered
-    the same and therefore will not be in the intersection. If you want to get the intersection of crosslink-spectrum-matches using
-    their crosslinked peptide sequences or protein positions, you can aggregate them first with ``transform.aggregate()`` or create
+    account the spectrum files and scan numbers, e.g. two crosslinks with the same peptide sequences but different scan numbers will
+    not be considered the same and therefore will not be in the intersection. If you want to get the intersection of crosslink-spectrum-matches
+    using their crosslinked peptide sequences or protein positions, you can aggregate them first with ``transform.aggregate()`` or create
     crosslinks with ``data.create_crosslink_from_csm()``. Please also note that when intersecting all duplicates are removed and
     aggregated the same way as in ``transform.unique()``. To intersect more than two lists please repeatedly call ``intersection()``
     on itself.
