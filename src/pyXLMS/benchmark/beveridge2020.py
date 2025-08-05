@@ -11,6 +11,7 @@ PROTEOMEXCHANGE_URL = (
 PUBLICATION_URL = "https://doi.org/10.1038/s41467-020-14608-2"
 DATASETS = [
     {
+        "description": "Triplicate measurement of Cas9 crosslinked with DSS.",
         "files": [
             {
                 "filename": "XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw",
@@ -25,6 +26,11 @@ DATASETS = [
                 "url": "https://ftp.pride.ebi.ac.uk/pride/data/archive/2020/07/PXD014337/XLpeplib_Beveridge_QEx-HFX_DSS_R3.raw",
             },
         ],
+        "fasta": {
+            "filename": "Cas9_plus10.fasta",
+            "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-020-14608-2/MediaObjects/41467_2020_14608_MOESM4_ESM.zip",
+            "alt_url": "https://github.com/hgb-bin-proteomics/MSAnnika_NC_Results/raw/master/Peplib_Beveridge/Cas9_plus10.fasta",
+        },
         "library": "standard",
         "settings": {
             "MS1 Tolerance": "5 ppm",
@@ -40,12 +46,18 @@ DATASETS = [
         },
     },
     {
+        "description": "",
         "files": [
             {
                 "filename": "XLpeplib_Beveridge_QEx-HFX_DSSO_stHCD.raw",
                 "url": "https://ftp.pride.ebi.ac.uk/pride/data/archive/2020/07/PXD014337/XLpeplib_Beveridge_QEx-HFX_DSSO_stHCD.raw",
             },
         ],
+        "fasta": {
+            "filename": "cas9_crapome.fasta",
+            "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-020-14608-2/MediaObjects/41467_2020_14608_MOESM4_ESM.zip",
+            "alt_url": "https://github.com/hgb-bin-proteomics/MSAnnika_MS3_Results/raw/master/PXD014337/cas9_crapome.fasta",
+        },
         "library": "standard",
         "settings": {
             "MS1 Tolerance": "",
@@ -61,12 +73,18 @@ DATASETS = [
         },
     },
     {
+        "description": "",
         "files": [
             {
                 "filename": "XLpeplib_Beveridge_QEx-HFX_DSBU_stHCD.raw",
                 "url": "https://ftp.pride.ebi.ac.uk/pride/data/archive/2020/07/PXD014337/XLpeplib_Beveridge_QEx-HFX_DSBU_stHCD.raw",
             },
         ],
+        "fasta": {
+            "filename": "cas9_crapome.fasta",
+            "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-020-14608-2/MediaObjects/41467_2020_14608_MOESM4_ESM.zip",
+            "alt_url": "https://github.com/hgb-bin-proteomics/MSAnnika_MS3_Results/raw/master/PXD014337/cas9_crapome.fasta",
+        },
         "library": "standard",
         "settings": {
             "MS1 Tolerance": "",
@@ -82,12 +100,18 @@ DATASETS = [
         },
     },
     {
+        "description": "",
         "files": [
             {
                 "filename": "XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw",
                 "url": "https://ftp.pride.ebi.ac.uk/pride/data/archive/2020/07/PXD014337/XLpeplib_Beveridge_Lumos_DSSO_stHCD-MS2.raw",
             },
         ],
+        "fasta": {
+            "filename": "cas9_crapome.fasta",
+            "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-020-14608-2/MediaObjects/41467_2020_14608_MOESM4_ESM.zip",
+            "alt_url": "https://github.com/hgb-bin-proteomics/MSAnnika_MS3_Results/raw/master/PXD014337/cas9_crapome.fasta",
+        },
         "library": "standard",
         "settings": {
             "MS1 Tolerance": "",
@@ -103,12 +127,18 @@ DATASETS = [
         },
     },
     {
+        "description": "",
         "files": [
             {
                 "filename": "XLpeplib_Beveridge_Lumos_DSSO_MS3.raw",
                 "url": "https://ftp.pride.ebi.ac.uk/pride/data/archive/2020/07/PXD014337/XLpeplib_Beveridge_Lumos_DSSO_MS3.raw",
             },
         ],
+        "fasta": {
+            "filename": "cas9_crapome.fasta",
+            "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-020-14608-2/MediaObjects/41467_2020_14608_MOESM4_ESM.zip",
+            "alt_url": "https://github.com/hgb-bin-proteomics/MSAnnika_MS3_Results/raw/master/PXD014337/cas9_crapome.fasta",
+        },
         "library": "standard",
         "settings": {
             "MS1 Tolerance": "",
@@ -125,12 +155,18 @@ DATASETS = [
         },
     },
     {
+        "description": "",
         "files": [
             {
                 "filename": "XLpeplib_Beveridge_Lumos_DSSO_MS3-EThcD.raw",
                 "url": "https://ftp.pride.ebi.ac.uk/pride/data/archive/2020/07/PXD014337/XLpeplib_Beveridge_Lumos_DSSO_MS3-EThcD.raw",
             },
         ],
+        "fasta": {
+            "filename": "cas9_crapome.fasta",
+            "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-020-14608-2/MediaObjects/41467_2020_14608_MOESM4_ESM.zip",
+            "alt_url": "https://github.com/hgb-bin-proteomics/MSAnnika_MS3_Results/raw/master/PXD014337/cas9_crapome.fasta",
+        },
         "library": "standard",
         "settings": {
             "MS1 Tolerance": "",
@@ -147,12 +183,18 @@ DATASETS = [
         },
     },
     {
+        "description": "",
         "files": [
             {
                 "filename": "XLpeplib_Beveridge_Lumos_DSSO_CID-ETD.raw",
                 "url": "https://ftp.pride.ebi.ac.uk/pride/data/archive/2020/07/PXD014337/XLpeplib_Beveridge_Lumos_DSSO_CID-ETD.raw",
             },
         ],
+        "fasta": {
+            "filename": "cas9_crapome.fasta",
+            "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-020-14608-2/MediaObjects/41467_2020_14608_MOESM4_ESM.zip",
+            "alt_url": "https://github.com/hgb-bin-proteomics/MSAnnika_MS3_Results/raw/master/PXD014337/cas9_crapome.fasta",
+        },
         "library": "standard",
         "settings": {
             "MS1 Tolerance": "",
