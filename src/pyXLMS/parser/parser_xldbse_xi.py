@@ -225,6 +225,48 @@ def parse_modifications_from_xi_sequence(sequence: str) -> Dict[int, str]:
     return modifications
 
 
+def __parse_int(value: Any) -> int:
+    r"""Parses an integer from the given value.
+
+    Parses an integer from the given value. If it is a string it will try to replace any comma
+    (thousands seperator) with an empty string.
+
+    Parameters
+    ----------
+    value : any
+        The value to be converted to int.
+
+    Returns
+    -------
+    int
+        The converted integer value.
+    """
+    if isinstance(value, str):
+        return int(value.replace(",", ""))
+    return int(value)
+
+
+def __parse_float(value: Any) -> float:
+    r"""Parses a float from the given value.
+
+    Parses a float from the given value. If it is a string it will try to replace any comma
+    (thousands seperator) with an empty string.
+
+    Parameters
+    ----------
+    value : any
+        The value to be converted to float.
+
+    Returns
+    -------
+    float
+        The converted float value.
+    """
+    if isinstance(value, str):
+        return float(value.replace(",", ""))
+    return float(value)
+
+
 def __parse_xisearch_modifications(
     row: pd.Series,
     alpha: bool,
@@ -279,18 +321,22 @@ def __parse_xisearch_modifications(
         return "".join([c for c in mod if not c.isupper()]).strip()
 
     crosslinker = str(row["Crosslinker"]).strip()
-    crosslinker_mass = float(row["CrosslinkerMass"])
+    crosslinker_mass = __parse_float(row["CrosslinkerMass"])
     parsed_modifications = dict()
     # parse from Modifications
     if alpha:
-        parsed_modifications[int(row["Link1"])] = (crosslinker, crosslinker_mass)
+        parsed_modifications[__parse_int(row["Link1"])] = (
+            crosslinker,
+            crosslinker_mass,
+        )
         if not pd.isna(row["Modifications1"]):  # pyright: ignore [reportGeneralTypeIssues]
             if ";" in str(row["Modifications1"]):
                 mods = [
                     preprocess_mod(mod) for mod in str(row["Modifications1"]).split(";")
                 ]
                 positions = [
-                    int(pos) for pos in str(row["ModificationPositions1"]).split(";")
+                    __parse_int(pos)
+                    for pos in str(row["ModificationPositions1"]).split(";")
                 ]
                 if len(mods) != len(positions):
                     err_str = "Parsed modifications and their positions are not of the same length!\n"
@@ -351,7 +397,7 @@ def __parse_xisearch_modifications(
                                 raise KeyError(err_str)
             else:
                 mod = preprocess_mod(str(row["Modifications1"]))
-                pos = int(row["ModificationPositions1"])
+                pos = __parse_int(row["ModificationPositions1"])
                 if pos in parsed_modifications:
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
@@ -393,14 +439,18 @@ def __parse_xisearch_modifications(
                             )
                             raise KeyError(err_str)
     else:
-        parsed_modifications[int(row["Link2"])] = (crosslinker, crosslinker_mass)
+        parsed_modifications[__parse_int(row["Link2"])] = (
+            crosslinker,
+            crosslinker_mass,
+        )
         if not pd.isna(row["Modifications2"]):  # pyright: ignore [reportGeneralTypeIssues]
             if ";" in str(row["Modifications2"]):
                 mods = [
                     preprocess_mod(mod) for mod in str(row["Modifications2"]).split(";")
                 ]
                 positions = [
-                    int(pos) for pos in str(row["ModificationPositions2"]).split(";")
+                    __parse_int(pos)
+                    for pos in str(row["ModificationPositions2"]).split(";")
                 ]
                 if len(mods) != len(positions):
                     err_str = "Parsed modifications and their positions are not of the same length!\n"
@@ -459,7 +509,7 @@ def __parse_xisearch_modifications(
                                 raise KeyError(err_str)
             else:
                 mod = preprocess_mod(str(row["Modifications2"]))
-                pos = int(row["ModificationPositions2"])
+                pos = __parse_int(row["ModificationPositions2"])
                 if pos in parsed_modifications:
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
@@ -646,7 +696,7 @@ def __read_xisearch(
             )
             if parse_modifications
             else None,
-            xl_position_peptide_a=int(row["Link1"]),
+            xl_position_peptide_a=__parse_int(row["Link1"]),
             proteins_a=[
                 p.strip()
                 if p.strip()[: len(decoy_prefix)] != decoy_prefix
@@ -654,12 +704,13 @@ def __read_xisearch(
                 for p in str(row["Protein1"]).split(";")
             ],
             xl_position_proteins_a=[
-                int(float(p)) for p in str(row["ProteinLink1"]).split(";")
+                __parse_int(__parse_float(p))
+                for p in str(row["ProteinLink1"]).split(";")
             ],
             pep_position_proteins_a=[
-                int(float(p)) for p in str(row["Start1"]).split(";")
+                __parse_int(__parse_float(p)) for p in str(row["Start1"]).split(";")
             ],
-            score_a=float(row["Pep1Score"]),
+            score_a=__parse_float(row["Pep1Score"]),
             decoy_a=get_bool_from_value(int(row["Protein1decoy"])),
             peptide_b=format_sequence(str(row["BasePeptide2"])),
             modifications_b=__parse_xisearch_modifications(
@@ -667,7 +718,7 @@ def __read_xisearch(
             )
             if parse_modifications
             else None,
-            xl_position_peptide_b=int(row["Link2"]),
+            xl_position_peptide_b=__parse_int(row["Link2"]),
             proteins_b=[
                 p.strip()
                 if p.strip()[: len(decoy_prefix)] != decoy_prefix
@@ -675,21 +726,22 @@ def __read_xisearch(
                 for p in str(row["Protein2"]).split(";")
             ],
             xl_position_proteins_b=[
-                int(float(p)) for p in str(row["ProteinLink2"]).split(";")
+                __parse_int(__parse_float(p))
+                for p in str(row["ProteinLink2"]).split(";")
             ],
             pep_position_proteins_b=[
-                int(float(p)) for p in str(row["Start2"]).split(";")
+                __parse_int(__parse_float(p)) for p in str(row["Start2"]).split(";")
             ],
-            score_b=float(row["Pep2Score"]),
+            score_b=__parse_float(row["Pep2Score"]),
             decoy_b=get_bool_from_value(int(row["Protein2decoy"])),
-            score=float(row["match score"]),
+            score=__parse_float(row["match score"]),
             spectrum_file=str(row["peakListFileName"]).strip(),
-            scan_nr=int(row["Scan"]),
-            charge=int(row["PrecoursorCharge"]),
+            scan_nr=__parse_int(row["Scan"]),
+            charge=__parse_int(row["PrecoursorCharge"]),
             rt=None,
             im_cv=None,
             additional_information={
-                "spectrum quality score": float(row["spectrum quality score"]),
+                "spectrum quality score": __parse_float(row["spectrum quality score"]),
             },
         )
         csms.append(csm)
@@ -740,10 +792,13 @@ def __parse_xifdr_modifications(
     This function should not be called directly, it is called from ``__read_xifdr_csms()``.
     """
     crosslinker = str(row["Crosslinker"]).strip()
-    crosslinker_mass = float(row["CrosslinkerModMass"])
+    crosslinker_mass = __parse_float(row["CrosslinkerModMass"])
     parsed_modifications = dict()
     if alpha:
-        parsed_modifications[int(row["LinkPos1"])] = (crosslinker, crosslinker_mass)
+        parsed_modifications[__parse_int(row["LinkPos1"])] = (
+            crosslinker,
+            crosslinker_mass,
+        )
         for pos, mod in parse_modifications_from_xi_sequence(
             str(row["PepSeq1"]).strip()
         ).items():
@@ -782,7 +837,10 @@ def __parse_xifdr_modifications(
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     raise KeyError(err_str)
     else:
-        parsed_modifications[int(row["LinkPos2"])] = (crosslinker, crosslinker_mass)
+        parsed_modifications[__parse_int(row["LinkPos2"])] = (
+            crosslinker,
+            crosslinker_mass,
+        )
         for pos, mod in parse_modifications_from_xi_sequence(
             str(row["PepSeq2"]).strip()
         ).items():
@@ -875,7 +933,7 @@ def __read_xifdr_csms(
             )
             if parse_modifications
             else None,
-            xl_position_peptide_a=int(row["LinkPos1"]),
+            xl_position_peptide_a=__parse_int(row["LinkPos1"]),
             proteins_a=[
                 p.strip()
                 if p.strip()[: len(decoy_prefix)] != decoy_prefix
@@ -883,9 +941,11 @@ def __read_xifdr_csms(
                 for p in str(row["Protein1"]).split(";")
             ],
             xl_position_proteins_a=[
-                int(p) for p in str(row["ProteinLinkPos1"]).split(";")
+                __parse_int(p) for p in str(row["ProteinLinkPos1"]).split(";")
             ],
-            pep_position_proteins_a=[int(p) for p in str(row["PepPos1"]).split(";")],
+            pep_position_proteins_a=[
+                __parse_int(p) for p in str(row["PepPos1"]).split(";")
+            ],
             score_a=None,
             decoy_a=get_bool_from_value(row["Decoy1"]),
             peptide_b=format_sequence(str(row["PepSeq2"])),
@@ -894,7 +954,7 @@ def __read_xifdr_csms(
             )
             if parse_modifications
             else None,
-            xl_position_peptide_b=int(row["LinkPos2"]),
+            xl_position_peptide_b=__parse_int(row["LinkPos2"]),
             proteins_b=[
                 p.strip()
                 if p.strip()[: len(decoy_prefix)] != decoy_prefix
@@ -902,15 +962,17 @@ def __read_xifdr_csms(
                 for p in str(row["Protein2"]).split(";")
             ],
             xl_position_proteins_b=[
-                int(p) for p in str(row["ProteinLinkPos2"]).split(";")
+                __parse_int(p) for p in str(row["ProteinLinkPos2"]).split(";")
             ],
-            pep_position_proteins_b=[int(p) for p in str(row["PepPos2"]).split(";")],
+            pep_position_proteins_b=[
+                __parse_int(p) for p in str(row["PepPos2"]).split(";")
+            ],
             score_b=None,
             decoy_b=get_bool_from_value(row["Decoy2"]),
-            score=float(row["Score"]),
+            score=__parse_float(row["Score"]),
             spectrum_file=str(row["PeakListFileName"]).strip(),
-            scan_nr=int(row["scan"]),
-            charge=int(row["exp charge"]),
+            scan_nr=__parse_int(row["scan"]),
+            charge=__parse_int(row["exp charge"]),
             rt=None,
             im_cv=None,
             additional_information=None,
@@ -951,8 +1013,8 @@ def __read_xifdr_crosslinks(
         p1 = parse_peptide(s1)
         s2 = psmid.split("P2_")[1].split(" ")[0]
         p2 = parse_peptide(s2)
-        pos1 = int(psmid.split("P2_")[1].split(" ")[1])
-        pos2 = int(psmid.split("P2_")[1].split(" ")[2])
+        pos1 = __parse_int(psmid.split("P2_")[1].split(" ")[1])
+        pos2 = __parse_int(psmid.split("P2_")[1].split(" ")[2])
         crosslink = create_crosslink(
             peptide_a=format_sequence(p1),
             xl_position_peptide_a=pos1,
@@ -962,7 +1024,9 @@ def __read_xifdr_crosslinks(
                 else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein1"]).split(";")
             ],
-            xl_position_proteins_a=[int(p) for p in str(row["fromSite"]).split(";")],
+            xl_position_proteins_a=[
+                __parse_int(p) for p in str(row["fromSite"]).split(";")
+            ],
             decoy_a=get_bool_from_value(row["Decoy1"]),
             peptide_b=format_sequence(p2),
             xl_position_peptide_b=pos2,
@@ -972,9 +1036,11 @@ def __read_xifdr_crosslinks(
                 else p.strip()[len(decoy_prefix) :]
                 for p in str(row["Protein2"]).split(";")
             ],
-            xl_position_proteins_b=[int(p) for p in str(row["ToSite"]).split(";")],
+            xl_position_proteins_b=[
+                __parse_int(p) for p in str(row["ToSite"]).split(";")
+            ],
             decoy_b=get_bool_from_value(row["Decoy2"]),
-            score=float(row["Score"]),
+            score=__parse_float(row["Score"]),
             additional_information=None,
         )
         crosslinks.append(crosslink)
