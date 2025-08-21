@@ -19,6 +19,7 @@ __all__ = [
     "validate",
     "to_proforma",
     "to_dataframe",
+    "from_dataframe",
     "targets_only",
     "fasta_title_to_accession",
     "reannotate_positions",
@@ -39,6 +40,7 @@ from .aggregate import aggregate
 from .validate import validate
 from .to_proforma import to_proforma
 from .to_dataframe import to_dataframe
+from .from_dataframe import from_dataframe
 from .targets_only import targets_only
 from .reannotate_positions import fasta_title_to_accession
 from .reannotate_positions import reannotate_positions
