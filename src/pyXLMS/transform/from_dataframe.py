@@ -86,12 +86,12 @@ def from_dataframe(
     --------
     >>> from pyXLMS import parser, transform
     >>> csms_from_pyxlms = parser.read_custom("data/pyxlms/csm.txt")
-    >>> csms_df = transform.to_dataframe(csms_from_pyxlms)
+    >>> csms_df = transform.to_dataframe(csms_from_pyxlms["crosslink-spectrum-matches"])
     >>> csms_from_pyxlms = transform.from_dataframe(csms_df)
 
     >>> from pyXLMS import parser, transform
     >>> crosslinks_from_pyxlms = parser.read_custom("data/pyxlms/xl.txt")
-    >>> crosslinks_df = transform.to_dataframe(crosslinks_from_pyxlms)
+    >>> crosslinks_df = transform.to_dataframe(crosslinks_from_pyxlms["crosslinks"])
     >>> crosslinks_from_pyxlms = transform.from_dataframe(crosslinks_df)
     """
     ## check input
