@@ -102,7 +102,9 @@ def to_xlmstools(
     >>> from pyXLMS.parser import read_custom
     >>> pr = read_custom("data/_test/exporter/xlms-tools/unique_links_all_pyxlms.csv")
     >>> crosslinks = pr["crosslinks"]
-    >>> xlmstools_result = to_xlmstools(crosslinks, pdb_file="6YHU", filename_prefix="6YHU")
+    >>> xlmstools_result = to_xlmstools(
+    ...     crosslinks, pdb_file="6YHU", filename_prefix="6YHU"
+    ... )
     >>> xlmstools_output_file_str = xlmstools_result["xlms-tools"]
     >>> xlmstools_dataframe = xlmstools_result["xlms-tools DataFrame"]
     >>> nr_mapped_crosslinks = xlmstools_result["Number of mapped crosslinks"]

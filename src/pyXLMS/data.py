@@ -243,8 +243,22 @@ def create_crosslink(
     Examples
     --------
     >>> from pyXLMS.data import create_crosslink
-    >>> minimal_crosslink = create_crosslink("PEPTIDEA", 1, None, None, None, "PEPTIDEB", 5, None, None, None, None)
-    >>> crosslink = create_crosslink("PEPTIDEA", 1, ["PROTEINA"], [1], False, "PEPTIDEB", 5, ["PROTEINB"], [3], False, 34.5)
+    >>> minimal_crosslink = create_crosslink(
+    ...     "PEPTIDEA", 1, None, None, None, "PEPTIDEB", 5, None, None, None, None
+    ... )
+    >>> crosslink = create_crosslink(
+    ...     "PEPTIDEA",
+    ...     1,
+    ...     ["PROTEINA"],
+    ...     [1],
+    ...     False,
+    ...     "PEPTIDEB",
+    ...     5,
+    ...     ["PROTEINB"],
+    ...     [3],
+    ...     False,
+    ...     34.5,
+    ... )
     """
     ## input checks
     full = check_input(peptide_a, "peptide_a", str)
@@ -592,8 +606,54 @@ def create_csm(
     Examples
     --------
     >>> from pyXLMS.data import create_csm
-    >>> minimal_csm = create_csm("PEPTIDEA", {}, 1, None, None, None, None, None, "PEPTIDEB", {}, 5, None, None, None, None, None, None, "MS_EXP1", 1, None, None, None)
-    >>> csm = create_csm("PEPTIDEA", {1: ("Oxidation", 15.994915)}, 1, ["PROTEINA"], [1], [1], 20.1, False, "PEPTIDEB", {}, 5, ["PROTEINB"], [3], [1], 33.7, False, 20.1, "MS_EXP1", 1, 3, 13.5, -50)
+    >>> minimal_csm = create_csm(
+    ...     "PEPTIDEA",
+    ...     {},
+    ...     1,
+    ...     None,
+    ...     None,
+    ...     None,
+    ...     None,
+    ...     None,
+    ...     "PEPTIDEB",
+    ...     {},
+    ...     5,
+    ...     None,
+    ...     None,
+    ...     None,
+    ...     None,
+    ...     None,
+    ...     None,
+    ...     "MS_EXP1",
+    ...     1,
+    ...     None,
+    ...     None,
+    ...     None,
+    ... )
+    >>> csm = create_csm(
+    ...     "PEPTIDEA",
+    ...     {1: ("Oxidation", 15.994915)},
+    ...     1,
+    ...     ["PROTEINA"],
+    ...     [1],
+    ...     [1],
+    ...     20.1,
+    ...     False,
+    ...     "PEPTIDEB",
+    ...     {},
+    ...     5,
+    ...     ["PROTEINB"],
+    ...     [3],
+    ...     [1],
+    ...     33.7,
+    ...     False,
+    ...     20.1,
+    ...     "MS_EXP1",
+    ...     1,
+    ...     3,
+    ...     13.5,
+    ...     -50,
+    ... )
     """
     ## input checks
     full = check_input(peptide_a, "peptide_a", str)

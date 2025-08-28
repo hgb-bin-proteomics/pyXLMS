@@ -136,11 +136,17 @@ def intersection(
     >>> from pyXLMS.pipelines import pipeline
     >>> from pyXLMS.transform import aggregate
     >>> from pyXLMS.transform import intersection
-    >>> msannika = pipeline("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt", engine="MS Annika", crosslinker="DSS")
+    >>> msannika = pipeline(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> msannika = aggregate(msannika["crosslink-spectrum-matches"])
     >>> len(msannika)
     235
-    >>> maxquant = pipeline("data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS")
+    >>> maxquant = pipeline(
+    ...     "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
+    ... )
     >>> maxquant = aggregate(maxquant["crosslink-spectrum-matches"])
     >>> len(maxquant)
     226
@@ -151,18 +157,28 @@ def intersection(
     >>> from pyXLMS.pipelines import pipeline
     >>> from pyXLMS.transform import aggregate
     >>> from pyXLMS.transform import intersection
-    >>> msannika = pipeline("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt", engine="MS Annika", crosslinker="DSS")
+    >>> msannika = pipeline(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> msannika = aggregate(msannika["crosslink-spectrum-matches"])
     >>> len(msannika)
     235
-    >>> maxquant = pipeline("data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS")
+    >>> maxquant = pipeline(
+    ...     "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
+    ... )
     >>> maxquant = aggregate(maxquant["crosslink-spectrum-matches"])
     >>> len(maxquant)
     226
     >>> crosslinks_intersection = intersection(msannika, maxquant)
     >>> len(crosslinks_intersection)
     206
-    >>> plink = pipeline("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv", engine="pLink", crosslinker="DSS")
+    >>> plink = pipeline(
+    ...     "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv",
+    ...     engine="pLink",
+    ...     crosslinker="DSS",
+    ... )
     >>> plink = aggregate(plink["crosslink-spectrum-matches"])
     >>> len(plink)
     252

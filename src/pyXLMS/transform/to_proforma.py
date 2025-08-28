@@ -218,25 +218,62 @@ def to_proforma(
 
     >>> from pyXLMS.data import create_csm_min
     >>> from pyXLMS.transform import to_proforma
-    >>> csm = create_csm_min("PEPKTIDE", 4, "KPMEPTIDE", 1, "RUN_1", 1, modifications_b={3:("Oxidation", 15.994915)})
+    >>> csm = create_csm_min(
+    ...     "PEPKTIDE",
+    ...     4,
+    ...     "KPMEPTIDE",
+    ...     1,
+    ...     "RUN_1",
+    ...     1,
+    ...     modifications_b={3: ("Oxidation", 15.994915)},
+    ... )
     >>> to_proforma(csm, crosslinker="Xlink:DSSO")
     'K[Xlink:DSSO]PM[+15.994915]EPTIDE//PEPK[Xlink:DSSO]TIDE'
 
     >>> from pyXLMS.data import create_csm_min
     >>> from pyXLMS.transform import to_proforma
-    >>> csm = create_csm_min("PEPKTIDE", 4, "KPMEPTIDE", 1, "RUN_1", 1, modifications_b={3:("Oxidation", 15.994915)}, charge=3)
+    >>> csm = create_csm_min(
+    ...     "PEPKTIDE",
+    ...     4,
+    ...     "KPMEPTIDE",
+    ...     1,
+    ...     "RUN_1",
+    ...     1,
+    ...     modifications_b={3: ("Oxidation", 15.994915)},
+    ...     charge=3,
+    ... )
     >>> to_proforma(csm, crosslinker="Xlink:DSSO")
     'K[Xlink:DSSO]PM[+15.994915]EPTIDE//PEPK[Xlink:DSSO]TIDE/3'
 
     >>> from pyXLMS.data import create_csm_min
     >>> from pyXLMS.transform import to_proforma
-    >>> csm = create_csm_min("PEPKTIDE", 4, "KPMEPTIDE", 1, "RUN_1", 1, modifications_a={4:("DSSO", 158.00376)}, modifications_b={1:("DSSO", 158.00376), 3:("Oxidation", 15.994915)}, charge=3)
+    >>> csm = create_csm_min(
+    ...     "PEPKTIDE",
+    ...     4,
+    ...     "KPMEPTIDE",
+    ...     1,
+    ...     "RUN_1",
+    ...     1,
+    ...     modifications_a={4: ("DSSO", 158.00376)},
+    ...     modifications_b={1: ("DSSO", 158.00376), 3: ("Oxidation", 15.994915)},
+    ...     charge=3,
+    ... )
     >>> to_proforma(csm)
     'K[+158.00376]PM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE/3'
 
     >>> from pyXLMS.data import create_csm_min
     >>> from pyXLMS.transform import to_proforma
-    >>> csm = create_csm_min("PEPKTIDE", 4, "KPMEPTIDE", 1, "RUN_1", 1, modifications_a={4:("DSSO", 158.00376)}, modifications_b={1:("DSSO", 158.00376), 3:("Oxidation", 15.994915)}, charge=3)
+    >>> csm = create_csm_min(
+    ...     "PEPKTIDE",
+    ...     4,
+    ...     "KPMEPTIDE",
+    ...     1,
+    ...     "RUN_1",
+    ...     1,
+    ...     modifications_a={4: ("DSSO", 158.00376)},
+    ...     modifications_b={1: ("DSSO", 158.00376), 3: ("Oxidation", 15.994915)},
+    ...     charge=3,
+    ... )
     >>> to_proforma(csm, crosslinker="Xlink:DSSO")
     'K[+158.00376]PM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE/3'
     """

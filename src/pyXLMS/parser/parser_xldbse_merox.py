@@ -407,10 +407,14 @@ def read_merox(
     Examples
     --------
     >>> from pyXLMS.parser import read_merox
-    >>> csms_from_csv = read_merox("data/merox/XLpeplib_Beveridge_QEx-HFX_DSS_R1.csv", crosslinker="DSS")
+    >>> csms_from_csv = read_merox(
+    ...     "data/merox/XLpeplib_Beveridge_QEx-HFX_DSS_R1.csv", crosslinker="DSS"
+    ... )
 
     >>> from pyXLMS.parser import read_merox
-    >>> csms_from_zhrm = read_merox("data/merox/XLpeplib_Beveridge_QEx-HFX_DSS_R1.zhrm", crosslinker="DSS")
+    >>> csms_from_zhrm = read_merox(
+    ...     "data/merox/XLpeplib_Beveridge_QEx-HFX_DSS_R1.zhrm", crosslinker="DSS"
+    ... )
     """
     ## check input
     _ok = check_input(crosslinker, "crosslinker", str)

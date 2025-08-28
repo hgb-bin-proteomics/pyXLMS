@@ -91,12 +91,14 @@ def pipeline(
     Examples
     --------
     >>> from pyXLMS.pipelines import pipeline
-    >>> pr = pipeline("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
-    ...               engine="MS Annika",
-    ...               crosslinker="DSS",
-    ...               unique=True,
-    ...               validate={"fdr": 0.05, "formula":"(TD-DD)/TT"},
-    ...               targets_only=True)
+    >>> pr = pipeline(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ...     unique=True,
+    ...     validate={"fdr": 0.05, "formula": "(TD-DD)/TT"},
+    ...     targets_only=True,
+    ... )
     Reading MS Annika CSMs...: 100%|██████████████████████████████████████████████████| 826/826 [00:00<00:00, 10337.98it/s]
     ---- Summary statistics before pipeline ----
     Number of CSMs: 826.0

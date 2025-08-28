@@ -402,7 +402,7 @@ def to_msannika(
     >>> xl1 = create_crosslink_min("KPEPTIDE", 1, "PKEPTIDE", 2)
     >>> xl2 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
     >>> crosslinks = [xl1, xl2]
-    >>> df = to_msannika(crosslinks, filename = "crosslinks.csv", format = "csv")
+    >>> df = to_msannika(crosslinks, filename="crosslinks.csv", format="csv")
 
     >>> from pyXLMS.exporter import to_msannika
     >>> from pyXLMS.data import create_csm_min
@@ -420,7 +420,7 @@ def to_msannika(
     >>> csm1 = create_csm_min("KPEPTIDE", 1, "PKEPTIDE", 2, "RUN_1", 1)
     >>> csm2 = create_csm_min("PEKPTIDE", 3, "PEPKTIDE", 4, "RUN_1", 2)
     >>> csms = [csm1, csm2]
-    >>> df = to_msannika(csms, filename = "csms.csv", format = "csv")
+    >>> df = to_msannika(csms, filename="csms.csv", format="csv")
     """
     _ok = check_input(data, "data", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True

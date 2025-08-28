@@ -133,7 +133,12 @@ def venn(
     Examples
     --------
     >>> from pyXLMS.plotting import venn
-    >>> fig, ax = venn({"A", "B", "C"}, {"B", "C", "D", "E", "F"}, labels=["A", "F"], colors=["orange", "blue"])
+    >>> fig, ax = venn(
+    ...     {"A", "B", "C"},
+    ...     {"B", "C", "D", "E", "F"},
+    ...     labels=["A", "F"],
+    ...     colors=["orange", "blue"],
+    ... )
 
     >>> from pyXLMS.plotting import venn
     >>> fig, ax = venn({"A", "B", "C"}, {"B", "C", "D", "E", "F"}, {"F", "G"})
@@ -382,21 +387,41 @@ def plot_venn_diagram(
     --------
     >>> from pyXLMS import parser
     >>> from pyXLMS import plotting
-    >>> a = parser.read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt", engine="MS Annika", crosslinker="DSS")
+    >>> a = parser.read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> a = a["crosslink-spectrum-matches"]
-    >>> b = parser.read("data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS")
+    >>> b = parser.read(
+    ...     "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
+    ... )
     >>> b = b["crosslink-spectrum-matches"]
-    >>> fig, ax = plotting.plot_venn_diagram(a, b, labels=["MS Annika", "MaxQuant"], colors=["orange", "blue"])
+    >>> fig, ax = plotting.plot_venn_diagram(
+    ...     a, b, labels=["MS Annika", "MaxQuant"], colors=["orange", "blue"]
+    ... )
 
     >>> from pyXLMS import parser
     >>> from pyXLMS import plotting
-    >>> a = parser.read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt", engine="MS Annika", crosslinker="DSS")
+    >>> a = parser.read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> a = a["crosslink-spectrum-matches"]
-    >>> b = parser.read("data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS")
+    >>> b = parser.read(
+    ...     "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
+    ... )
     >>> b = b["crosslink-spectrum-matches"]
-    >>> c = parser.read("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv", engine="pLink", crosslinker="DSS")
+    >>> c = parser.read(
+    ...     "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv",
+    ...     engine="pLink",
+    ...     crosslinker="DSS",
+    ... )
     >>> c = c["crosslink-spectrum-matches"]
-    >>> fig, ax = plotting.plot_venn_diagram(a, b, c, labels=["MS Annika", "MaxQuant", "pLink"], contour=True)
+    >>> fig, ax = plotting.plot_venn_diagram(
+    ...     a, b, c, labels=["MS Annika", "MaxQuant", "pLink"], contour=True
+    ... )
     """
     _ok = check_input(data_1, "data_1", list, dict)
     _ok = check_input(data_2, "data_2", list, dict)

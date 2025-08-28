@@ -70,7 +70,11 @@ def to_impxfdr(
     --------
     >>> from pyXLMS.exporter import to_impxfdr
     >>> from pyXLMS.parser import read
-    >>> pr = read("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv", engine="xiSearch/xiFDR", crosslinker="DSS")
+    >>> pr = read(
+    ...     "data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv",
+    ...     engine="xiSearch/xiFDR",
+    ...     crosslinker="DSS",
+    ... )
     >>> crosslinks = pr["crosslinks"]
     >>> to_impxfdr(crosslinks, filename="crosslinks.xlsx")
         Crosslink Type             Sequence A  Position A Accession A In protein A  ... Position B  Accession B In protein B Best CSM Score  Decoy
@@ -89,7 +93,11 @@ def to_impxfdr(
 
     >>> from pyXLMS.exporter import to_impxfdr
     >>> from pyXLMS.parser import read
-    >>> pr = read("data/xi/1perc_xl_boost_CSM_xiFDR2.2.1.csv", engine="xiSearch/xiFDR", crosslinker="DSS")
+    >>> pr = read(
+    ...     "data/xi/1perc_xl_boost_CSM_xiFDR2.2.1.csv",
+    ...     engine="xiSearch/xiFDR",
+    ...     crosslinker="DSS",
+    ... )
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> to_impxfdr(csms, filename="csms.xlsx")
         Crosslink Type          Sequence A  Position A Accession A In protein A  ... Position B  Accession B In protein B Best CSM Score  Decoy

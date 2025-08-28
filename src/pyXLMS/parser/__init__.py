@@ -130,10 +130,14 @@ def read(
     Examples
     --------
     >>> from pyXLMS.parser import read
-    >>> csms_from_xiSearch = read("data/xi/r1_Xi1.7.6.7.csv", engine="xiSearch/xiFDR", crosslinker="DSS")
+    >>> csms_from_xiSearch = read(
+    ...     "data/xi/r1_Xi1.7.6.7.csv", engine="xiSearch/xiFDR", crosslinker="DSS"
+    ... )
 
     >>> from pyXLMS.parser import read
-    >>> csms_from_MaxQuant = read("data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS")
+    >>> csms_from_MaxQuant = read(
+    ...     "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
+    ... )
     """
     supported = [
         "Custom",
