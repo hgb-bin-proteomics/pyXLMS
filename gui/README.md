@@ -27,6 +27,9 @@ Additionally, the web application can also be run locally or self-hosted. **This
     cd gui
     ```
   - ```bash
+    pip install uv
+    ```
+  - ```bash
     uv run -- streamlit run streamlit_app.py
     ```
 - _or_ running the [streamlit](https://streamlit.io/) app natively locally:
