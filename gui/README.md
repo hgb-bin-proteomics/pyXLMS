@@ -22,7 +22,7 @@ Additionally, the web application can also be run locally or self-hosted. **This
   - ```bash
     cd pyXLMS
     ```
-- Running the [streamlit](https://streamlit.io/) app via [uv](https://docs.astral.sh/uv/) locally (**recommended**):
+-  \[**Recommended**\] Running the [streamlit](https://streamlit.io/) app via [uv](https://docs.astral.sh/uv/) locally:
   - ```bash
     cd gui
     ```
