@@ -34,7 +34,9 @@ def modifications_to_str(
     Examples
     --------
     >>> from pyXLMS.transform import modifications_to_str
-    >>> modifications_to_str({1: ("Oxidation", 15.994915), 5: ("Carbamidomethyl", 57.021464)})
+    >>> modifications_to_str(
+    ...     {1: ("Oxidation", 15.994915), 5: ("Carbamidomethyl", 57.021464)}
+    ... )
     '(1:[Oxidation|15.994915]);(5:[Carbamidomethyl|57.021464])'
     """
     ## check input
@@ -71,13 +73,19 @@ def assert_data_type_same(data_list: List[Dict[str, Any]]) -> bool:
     --------
     >>> from pyXLMS.transform import assert_data_type_same
     >>> from pyXLMS import data
-    >>> data_list = [data.create_crosslink_min("PEPK", 4, "PKEP", 2), data.create_crosslink_min("KPEP", 1, "PEKP", 3)]
+    >>> data_list = [
+    ...     data.create_crosslink_min("PEPK", 4, "PKEP", 2),
+    ...     data.create_crosslink_min("KPEP", 1, "PEKP", 3),
+    ... ]
     >>> assert_data_type_same(data_list)
     True
 
     >>> from pyXLMS.transform import assert_data_type_same
     >>> from pyXLMS import data
-    >>> data_list = [data.create_crosslink_min("PEPK", 4, "PKEP", 2), data.create_csm_min("KPEP", 1, "PEKP", 3, "RUN_1", 1)]
+    >>> data_list = [
+    ...     data.create_crosslink_min("PEPK", 4, "PKEP", 2),
+    ...     data.create_csm_min("KPEP", 1, "PEKP", 3, "RUN_1", 1),
+    ... ]
     >>> assert_data_type_same(data_list)
     False
     """
@@ -128,7 +136,10 @@ def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
     --------
     >>> from pyXLMS.transform import get_available_keys
     >>> from pyXLMS import data
-    >>> data_list = [data.create_crosslink_min("PEPK", 4, "PKEP", 2), data.create_crosslink_min("KPEP", 1, "PEKP", 3)]
+    >>> data_list = [
+    ...     data.create_crosslink_min("PEPK", 4, "PKEP", 2),
+    ...     data.create_crosslink_min("KPEP", 1, "PEKP", 3),
+    ... ]
     >>> available_keys = get_available_keys(data_list)
     >>> available_keys["alpha_peptide"]
     True

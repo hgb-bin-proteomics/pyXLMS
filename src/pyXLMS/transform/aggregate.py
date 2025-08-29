@@ -257,7 +257,11 @@ def unique(
     --------
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import unique
-    >>> pr = read(["data/_test/aggregate/csms.txt", "data/_test/aggregate/xls.txt"], engine="custom", crosslinker="DSS")
+    >>> pr = read(
+    ...     ["data/_test/aggregate/csms.txt", "data/_test/aggregate/xls.txt"],
+    ...     engine="custom",
+    ...     crosslinker="DSS",
+    ... )
     >>> len(pr["crosslink-spectrum-matches"])
     10
     >>> len(pr["crosslinks"])
@@ -270,7 +274,11 @@ def unique(
 
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import unique
-    >>> pr = read(["data/_test/aggregate/csms.txt", "data/_test/aggregate/xls.txt"], engine="custom", crosslinker="DSS")
+    >>> pr = read(
+    ...     ["data/_test/aggregate/csms.txt", "data/_test/aggregate/xls.txt"],
+    ...     engine="custom",
+    ...     crosslinker="DSS",
+    ... )
     >>> len(pr["crosslink-spectrum-matches"])
     10
     >>> len(pr["crosslinks"])

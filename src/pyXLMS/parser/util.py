@@ -48,7 +48,7 @@ def format_sequence(
     'PEPKTIDE'
 
     >>> from pyXLMS.parser_util import format_sequence
-    >>> format_sequence("peptide", remove_lower = False)
+    >>> format_sequence("peptide", remove_lower=False)
     'PEPTIDE'
     """
     fmt_seq = ""

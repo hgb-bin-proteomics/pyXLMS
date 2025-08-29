@@ -120,7 +120,11 @@ def to_xlinkdb(
     --------
     >>> from pyXLMS.exporter import to_xlinkdb
     >>> from pyXLMS.parser import read
-    >>> pr = read("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv", engine="xiSearch/xiFDR", crosslinker="DSS")
+    >>> pr = read(
+    ...     "data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv",
+    ...     engine="xiSearch/xiFDR",
+    ...     crosslinker="DSS",
+    ... )
     >>> crosslinks = pr["crosslinks"]
     >>> to_xlinkdb(crosslinks, filename="crosslinksForXlinkDB")
                    Peptide A Protein A  Labeled Position A      Peptide B Protein B  Labeled Position B  Probability
@@ -139,7 +143,11 @@ def to_xlinkdb(
 
     >>> from pyXLMS.exporter import to_xlinkdb
     >>> from pyXLMS.parser import read
-    >>> pr = read("data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv", engine="xiSearch/xiFDR", crosslinker="DSS")
+    >>> pr = read(
+    ...     "data/xi/1perc_xl_boost_Links_xiFDR2.2.1.csv",
+    ...     engine="xiSearch/xiFDR",
+    ...     crosslinker="DSS",
+    ... )
     >>> crosslinks = pr["crosslinks"]
     >>> df = to_xlinkdb(crosslinks, filename=None)
     """

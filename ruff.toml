@@ -61,7 +61,7 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 # Enable auto-formatting of code examples in docstrings.
-docstring-code-format = false
+docstring-code-format = true
 
 # Set the line length limit used when formatting code snippets in
 # docstrings.
