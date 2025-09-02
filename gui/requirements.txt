@@ -1,3 +1,3 @@
 streamlit
-pyxlms>=1.3
+pyxlms>=1.4.3
 xlsxwriter
