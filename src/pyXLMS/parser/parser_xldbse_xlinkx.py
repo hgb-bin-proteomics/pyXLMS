@@ -187,19 +187,29 @@ def read_xlinkx(
     Examples
     --------
     >>> from pyXLMS.parser import read_xlinkx
-    >>> csms_from_xlsx = read_xlinkx("data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_CSMs.xlsx")
+    >>> csms_from_xlsx = read_xlinkx(
+    ...     "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_CSMs.xlsx"
+    ... )
 
     >>> from pyXLMS.parser import read_xlinkx
-    >>> crosslinks_from_xlsx = read_xlinkx("data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_Crosslinks.xlsx")
+    >>> crosslinks_from_xlsx = read_xlinkx(
+    ...     "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_Crosslinks.xlsx"
+    ... )
 
     >>> from pyXLMS.parser import read_xlinkx
-    >>> csms_from_tsv = read_xlinkx("data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_CSMs.txt")
+    >>> csms_from_tsv = read_xlinkx(
+    ...     "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_CSMs.txt"
+    ... )
 
     >>> from pyXLMS.parser import read_xlinkx
-    >>> crosslinks_from_tsv = read_xlinkx("data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_Crosslinks.txt")
+    >>> crosslinks_from_tsv = read_xlinkx(
+    ...     "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3_Crosslinks.txt"
+    ... )
 
     >>> from pyXLMS.parser import read_xlinkx
-    >>> csms_and_crosslinks_from_pdresult = read_xlinkx("data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3.pdResult")
+    >>> csms_and_crosslinks_from_pdresult = read_xlinkx(
+    ...     "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3.pdResult"
+    ... )
     """
     ## check input
     _ok = check_input(decoy, "decoy", bool) if decoy is not None else True

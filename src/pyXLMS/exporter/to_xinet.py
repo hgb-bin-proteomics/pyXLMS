@@ -158,7 +158,11 @@ def to_xinet(
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import targets_only
     >>> from pyXLMS.transform import filter_proteins
-    >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> pr = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> crosslinks = targets_only(pr)["crosslinks"]
     >>> cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
     >>> to_xinet(cas9, filename="crosslinks_xiNET.csv")
@@ -180,7 +184,11 @@ def to_xinet(
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import targets_only
     >>> from pyXLMS.transform import filter_proteins
-    >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> pr = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> crosslinks = targets_only(pr)["crosslinks"]
     >>> cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
     >>> df = to_xinet(cas9, filename=None)

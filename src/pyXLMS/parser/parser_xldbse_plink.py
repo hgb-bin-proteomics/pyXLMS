@@ -296,7 +296,9 @@ def parse_spectrum_file_from_plink(title: str) -> str:
     Examples
     --------
     >>> from pyXLMS.parser import parse_spectrum_file_from_plink
-    >>> parse_spectrum_file_from_plink("XLpeplib_Beveridge_QEx-HFX_DSS_R1.20588.20588.3.0.dta")
+    >>> parse_spectrum_file_from_plink(
+    ...     "XLpeplib_Beveridge_QEx-HFX_DSS_R1.20588.20588.3.0.dta"
+    ... )
     'XLpeplib_Beveridge_QEx-HFX_DSS_R1'
     """
     return str(title).split(".")[0].strip()
@@ -318,7 +320,9 @@ def parse_scan_nr_from_plink(title: str) -> int:
     Examples
     --------
     >>> from pyXLMS.parser import parse_scan_nr_from_plink
-    >>> parse_scan_nr_from_plink("XLpeplib_Beveridge_QEx-HFX_DSS_R1.20588.20588.3.0.dta")
+    >>> parse_scan_nr_from_plink(
+    ...     "XLpeplib_Beveridge_QEx-HFX_DSS_R1.20588.20588.3.0.dta"
+    ... )
     20588
     """
     return int(str(title).split(".")[1])
@@ -359,11 +363,15 @@ def detect_plink_filetype(
     Examples
     --------
     >>> from pyXLMS.parser import detect_plink_filetype
-    >>> detect_plink_filetype("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv")
+    >>> detect_plink_filetype(
+    ...     "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv"
+    ... )
     'crosslinks'
 
     >>> from pyXLMS.parser import detect_plink_filetype
-    >>> detect_plink_filetype("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv")
+    >>> detect_plink_filetype(
+    ...     "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv"
+    ... )
     'crosslink-spectrum-matches'
     """
     # parse file
@@ -496,10 +504,14 @@ def read_plink(
     Examples
     --------
     >>> from pyXLMS.parser import read_plink
-    >>> csms = read_plink("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv")
+    >>> csms = read_plink(
+    ...     "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv"
+    ... )
 
     >>> from pyXLMS.parser import read_plink
-    >>> crosslinks = read_plink("data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv")
+    >>> crosslinks = read_plink(
+    ...     "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv"
+    ... )
     """
     ## check input
     _ok = (

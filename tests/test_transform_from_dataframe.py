@@ -25,17 +25,28 @@ ANNIKA_CSM = "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx"
 
 
 def test1():
-    from pyXLMS.parser import pyxlms_modification_str_parser as mp
+    import pandas as pd
+    from pyXLMS import parser, transform
 
-    assert mp("(1:[DSS|138.06808])") == {1: ("DSS", 138.06808)}
-    assert mp("(1:[DSS|138.06808]);(7:[Oxidation|15.994915])") == {
-        1: ("DSS", 138.06808),
-        7: ("Oxidation", 15.994915),
-    }
+    csms_from_pyxlms = parser.read_custom("data/pyxlms/csm.txt")
+    csms_df = transform.to_dataframe(csms_from_pyxlms["crosslink-spectrum-matches"])
+    csms_from_pyxlms = transform.from_dataframe(csms_df)
+    assert isinstance(csms_df, pd.DataFrame)
+    assert csms_df.shape[0] == 2
+    assert isinstance(csms_from_pyxlms, list)
+    assert len(csms_from_pyxlms) == 2
+    crosslinks_from_pyxlms = parser.read_custom("data/pyxlms/xl.txt")
+    crosslinks_df = transform.to_dataframe(crosslinks_from_pyxlms["crosslinks"])
+    crosslinks_from_pyxlms = transform.from_dataframe(crosslinks_df)
+    assert isinstance(crosslinks_df, pd.DataFrame)
+    assert crosslinks_df.shape[0] == 2
+    assert isinstance(crosslinks_from_pyxlms, list)
+    assert len(crosslinks_from_pyxlms) == 2
 
 
 def test2():
     from pyXLMS import parser as p
+    from pyXLMS import transform
 
     parser_result = p.read_custom(XL_MIN)
     assert parser_result["data_type"] == "parser_result"
@@ -45,6 +56,8 @@ def test2():
     assert parser_result["crosslinks"] is not None
 
     crosslinks = parser_result["crosslinks"]
+    df = transform.to_dataframe(crosslinks)
+    crosslinks = transform.from_dataframe(df)
     assert len(crosslinks) == 2
 
     first_crosslink = crosslinks[0]
@@ -83,6 +96,7 @@ def test2():
 
 def test3():
     from pyXLMS import parser as p
+    from pyXLMS import transform
 
     parser_result = p.read_custom(XL)
     assert parser_result["data_type"] == "parser_result"
@@ -92,6 +106,8 @@ def test3():
     assert parser_result["crosslinks"] is not None
 
     crosslinks = parser_result["crosslinks"]
+    df = transform.to_dataframe(crosslinks)
+    crosslinks = transform.from_dataframe(df)
     assert len(crosslinks) == 2
 
     first_crosslink = crosslinks[0]
@@ -130,6 +146,7 @@ def test3():
 
 def test4():
     from pyXLMS import parser as p
+    from pyXLMS import transform
 
     parser_result = p.read_custom(XL_NULL)
     assert parser_result["data_type"] == "parser_result"
@@ -139,6 +156,8 @@ def test4():
     assert parser_result["crosslinks"] is not None
 
     crosslinks = parser_result["crosslinks"]
+    df = transform.to_dataframe(crosslinks)
+    crosslinks = transform.from_dataframe(df)
     assert len(crosslinks) == 2
 
     first_crosslink = crosslinks[0]
@@ -177,6 +196,7 @@ def test4():
 
 def test5():
     from pyXLMS import parser as p
+    from pyXLMS import transform
 
     parser_result = p.read_custom(XL, column_mapping={"Sequence A": "Alpha Peptide"})
     assert parser_result["data_type"] == "parser_result"
@@ -186,6 +206,8 @@ def test5():
     assert parser_result["crosslinks"] is not None
 
     crosslinks = parser_result["crosslinks"]
+    df = transform.to_dataframe(crosslinks)
+    crosslinks = transform.from_dataframe(df)
     assert len(crosslinks) == 2
 
     first_crosslink = crosslinks[0]
@@ -224,6 +246,7 @@ def test5():
 
 def test6():
     from pyXLMS import parser as p
+    from pyXLMS import transform
 
     parser_result = p.read_custom(XL_REV1)
     assert parser_result["data_type"] == "parser_result"
@@ -233,6 +256,8 @@ def test6():
     assert parser_result["crosslinks"] is not None
 
     crosslinks = parser_result["crosslinks"]
+    df = transform.to_dataframe(crosslinks)
+    crosslinks = transform.from_dataframe(df)
     assert len(crosslinks) == 2
 
     first_crosslink = crosslinks[0]
@@ -271,6 +296,7 @@ def test6():
 
 def test7():
     from pyXLMS import parser as p
+    from pyXLMS import transform
 
     parser_result = p.read_custom(XL_REV2)
     assert parser_result["data_type"] == "parser_result"
@@ -280,6 +306,8 @@ def test7():
     assert parser_result["crosslinks"] is not None
 
     crosslinks = parser_result["crosslinks"]
+    df = transform.to_dataframe(crosslinks)
+    crosslinks = transform.from_dataframe(df)
     assert len(crosslinks) == 2
 
     first_crosslink = crosslinks[0]
@@ -319,6 +347,7 @@ def test7():
 def test8():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
+    from pyXLMS import transform
 
     parser_result = p.read_custom(CSM_MIN)
     assert parser_result["data_type"] == "parser_result"
@@ -328,6 +357,8 @@ def test8():
     assert parser_result["crosslinks"] is None
 
     csms = parser_result["crosslink-spectrum-matches"]
+    df = transform.to_dataframe(csms)
+    csms = transform.from_dataframe(df)
     assert len(csms) == 2
 
     first_csm = csms[0]
@@ -389,6 +420,7 @@ def test8():
 def test9():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
+    from pyXLMS import transform
 
     parser_result = p.read_custom(CSM)
     assert parser_result["data_type"] == "parser_result"
@@ -398,6 +430,8 @@ def test9():
     assert parser_result["crosslinks"] is None
 
     csms = parser_result["crosslink-spectrum-matches"]
+    df = transform.to_dataframe(csms)
+    csms = transform.from_dataframe(df)
     assert len(csms) == 2
 
     first_csm = csms[0]
@@ -462,6 +496,7 @@ def test9():
 def test10():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
+    from pyXLMS import transform
 
     parser_result = p.read_custom(CSM_NULL)
     assert parser_result["data_type"] == "parser_result"
@@ -471,6 +506,8 @@ def test10():
     assert parser_result["crosslinks"] is None
 
     csms = parser_result["crosslink-spectrum-matches"]
+    df = transform.to_dataframe(csms)
+    csms = transform.from_dataframe(df)
     assert len(csms) == 2
 
     first_csm = csms[0]
@@ -535,6 +572,7 @@ def test10():
 def test11():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
+    from pyXLMS import transform
 
     parser_result = p.read_custom(
         CSM_FORMAT, column_mapping={"Sequence A": "Alpha Peptide"}
@@ -546,6 +584,8 @@ def test11():
     assert parser_result["crosslinks"] is None
 
     csms = parser_result["crosslink-spectrum-matches"]
+    df = transform.to_dataframe(csms)
+    csms = transform.from_dataframe(df)
     assert len(csms) == 2
 
     first_csm = csms[0]
@@ -610,6 +650,7 @@ def test11():
 def test12():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
+    from pyXLMS import transform
 
     parser_result = p.read_custom(CSM_REV1)
     assert parser_result["data_type"] == "parser_result"
@@ -619,6 +660,8 @@ def test12():
     assert parser_result["crosslinks"] is None
 
     csms = parser_result["crosslink-spectrum-matches"]
+    df = transform.to_dataframe(csms)
+    csms = transform.from_dataframe(df)
     assert len(csms) == 2
 
     first_csm = csms[0]
@@ -683,6 +726,7 @@ def test12():
 def test13():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
+    from pyXLMS import transform
 
     parser_result = p.read_custom(CSM_REV2)
     assert parser_result["data_type"] == "parser_result"
@@ -692,6 +736,8 @@ def test13():
     assert parser_result["crosslinks"] is None
 
     csms = parser_result["crosslink-spectrum-matches"]
+    df = transform.to_dataframe(csms)
+    csms = transform.from_dataframe(df)
     assert len(csms) == 2
 
     first_csm = csms[0]
@@ -756,6 +802,7 @@ def test13():
 def test14():
     from pyXLMS import parser as p
     from pyXLMS.transform import modifications_to_str as mts
+    from pyXLMS import transform
 
     parser_result = p.read_custom([CSM, XL])
     assert parser_result["data_type"] == "parser_result"
@@ -765,6 +812,8 @@ def test14():
     assert parser_result["crosslinks"] is not None
 
     crosslinks = parser_result["crosslinks"]
+    df = transform.to_dataframe(crosslinks)
+    crosslinks = transform.from_dataframe(df)
     assert len(crosslinks) == 2
 
     first_crosslink = crosslinks[0]
@@ -801,6 +850,8 @@ def test14():
     assert last_crosslink["score"] == pytest.approx(3.14159)
 
     csms = parser_result["crosslink-spectrum-matches"]
+    df = transform.to_dataframe(csms)
+    csms = transform.from_dataframe(df)
     assert len(csms) == 2
 
     first_csm = csms[0]
@@ -865,6 +916,7 @@ def test14():
 def test15():
     from pyXLMS import parser as p
     from pyXLMS.transform import to_dataframe
+    from pyXLMS.transform import from_dataframe
     from pyXLMS.transform import modifications_to_str as mts
 
     parser_result = p.read_msannika([ANNIKA_XL, ANNIKA_CSM])
@@ -890,161 +942,13 @@ def test15():
     assert parser_result["crosslinks"] is not None
 
     crosslinks = parser_result["crosslinks"]
+    df = to_dataframe(crosslinks)
+    crosslinks = from_dataframe(df)
     assert len(crosslinks) == 300
 
     csms = parser_result["crosslink-spectrum-matches"]
-    assert len(csms) == 826
-
-    first_crosslink = crosslinks[0]
-    last_crosslink = crosslinks[-1]
-
-    first_csm = csms[0]
-    csm = csms[822]
-    last_csm = csms[-1]
-
-    assert first_crosslink["data_type"] == "crosslink"
-    assert first_crosslink["completeness"] == "full"
-    assert first_crosslink["alpha_peptide"] == "GQKNSR"
-    assert first_crosslink["alpha_peptide_crosslink_position"] == 3
-    assert first_crosslink["alpha_proteins"] == ["Cas9"]
-    assert first_crosslink["alpha_proteins_crosslink_positions"] == [779]
-    assert not first_crosslink["alpha_decoy"]
-    assert first_crosslink["beta_peptide"] == "GQKNSR"
-    assert first_crosslink["beta_peptide_crosslink_position"] == 3
-    assert first_crosslink["beta_proteins"] == ["Cas9"]
-    assert first_crosslink["beta_proteins_crosslink_positions"] == [779]
-    assert not first_crosslink["beta_decoy"]
-    assert first_crosslink["crosslink_type"] == "intra"
-    assert first_crosslink["score"] == pytest.approx(119.83)
-
-    assert last_crosslink["data_type"] == "crosslink"
-    assert last_crosslink["completeness"] == "full"
-    assert last_crosslink["alpha_peptide"] == "MEDESKLHKFKDFK"
-    assert last_crosslink["alpha_peptide_crosslink_position"] == 11
-    assert last_crosslink["alpha_proteins"] == ["sp"]
-    assert last_crosslink["alpha_proteins_crosslink_positions"] == [109]
-    assert last_crosslink["alpha_decoy"]
-    assert last_crosslink["beta_peptide"] == "SSFEKNPIDFLEAK"
-    assert last_crosslink["beta_peptide_crosslink_position"] == 5
-    assert last_crosslink["beta_proteins"] == ["Cas9"]
-    assert last_crosslink["beta_proteins_crosslink_positions"] == [1180]
-    assert last_crosslink["beta_decoy"]
-    assert last_crosslink["crosslink_type"] == "inter"
-    assert last_crosslink["score"] == pytest.approx(15.89)
-
-    assert first_csm["data_type"] == "crosslink-spectrum-match"
-    assert first_csm["completeness"] == "full"
-    assert first_csm["alpha_peptide"] == "GQKNSR"
-    assert mts(first_csm["alpha_modifications"]) == "(3:[DSS|138.06808])"
-    assert first_csm["alpha_peptide_crosslink_position"] == 3
-    assert first_csm["alpha_proteins"] == ["Cas9"]
-    assert first_csm["alpha_proteins_crosslink_positions"] == [779]
-    assert first_csm["alpha_proteins_peptide_positions"] == [777]
-    assert first_csm["alpha_score"] == pytest.approx(119.83)
-    assert not first_csm["alpha_decoy"]
-    assert first_csm["beta_peptide"] == "GQKNSR"
-    assert mts(first_csm["beta_modifications"]) == "(3:[DSS|138.06808])"
-    assert first_csm["beta_peptide_crosslink_position"] == 3
-    assert first_csm["beta_proteins"] == ["Cas9"]
-    assert first_csm["beta_proteins_crosslink_positions"] == [779]
-    assert first_csm["beta_proteins_peptide_positions"] == [777]
-    assert first_csm["beta_score"] == pytest.approx(119.83)
-    assert not first_csm["beta_decoy"]
-    assert first_csm["crosslink_type"] == "intra"
-    assert first_csm["score"] == pytest.approx(119.83)
-    assert first_csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw"
-    assert first_csm["scan_nr"] == 2257
-    assert first_csm["charge"] == 3
-    assert first_csm["retention_time"] == pytest.approx(733.188)
-    assert first_csm["ion_mobility"] == pytest.approx(0.0)
-
-    assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "full"
-    assert csm["alpha_peptide"] == "KIECFDSVEISGVEDR"
-    assert (
-        mts(csm["alpha_modifications"])
-        == "(1:[DSS|138.06808]);(4:[Carbamidomethyl|57.021464])"
-    )
-    assert csm["alpha_peptide_crosslink_position"] == 1
-    assert csm["alpha_proteins"] == ["Cas9"]
-    assert csm["alpha_proteins_crosslink_positions"] == [575]
-    assert csm["alpha_proteins_peptide_positions"] == [575]
-    assert csm["alpha_score"] == pytest.approx(376.15)
-    assert not csm["alpha_decoy"]
-    assert csm["beta_peptide"] == "TILDFLKSDGFANR"
-    assert mts(csm["beta_modifications"]) == "(7:[DSS|138.06808])"
-    assert csm["beta_peptide_crosslink_position"] == 7
-    assert csm["beta_proteins"] == ["Cas9"]
-    assert csm["beta_proteins_crosslink_positions"] == [688]
-    assert csm["beta_proteins_peptide_positions"] == [682]
-    assert csm["beta_score"] == pytest.approx(393.87)
-    assert not csm["beta_decoy"]
-    assert csm["crosslink_type"] == "intra"
-    assert csm["score"] == pytest.approx(376.15)
-    assert csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw"
-    assert csm["scan_nr"] == 23454
-    assert csm["charge"] == 4
-    assert csm["retention_time"] == pytest.approx(6278.5199999999995)
-    assert csm["ion_mobility"] == pytest.approx(0.0)
-
-    assert last_csm["data_type"] == "crosslink-spectrum-match"
-    assert last_csm["completeness"] == "full"
-    assert last_csm["alpha_peptide"] == "MEDESKLHKFKDFK"
-    assert mts(last_csm["alpha_modifications"]) == "(11:[DSS|138.06808])"
-    assert last_csm["alpha_peptide_crosslink_position"] == 11
-    assert last_csm["alpha_proteins"] == ["sp"]
-    assert last_csm["alpha_proteins_crosslink_positions"] == [109]
-    assert last_csm["alpha_proteins_peptide_positions"] == [99]
-    assert last_csm["alpha_score"] == pytest.approx(15.89)
-    assert last_csm["alpha_decoy"]
-    assert last_csm["beta_peptide"] == "SSFEKNPIDFLEAK"
-    assert mts(last_csm["beta_modifications"]) == "(5:[DSS|138.06808])"
-    assert last_csm["beta_peptide_crosslink_position"] == 5
-    assert last_csm["beta_proteins"] == ["Cas9"]
-    assert last_csm["beta_proteins_crosslink_positions"] == [1180]
-    assert last_csm["beta_proteins_peptide_positions"] == [1176]
-    assert last_csm["beta_score"] == pytest.approx(151.04)
-    assert not last_csm["beta_decoy"]
-    assert last_csm["crosslink_type"] == "inter"
-    assert last_csm["score"] == pytest.approx(15.89)
-    assert last_csm["spectrum_file"] == "XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw"
-    assert last_csm["scan_nr"] == 27087
-    assert last_csm["charge"] == 3
-    assert last_csm["retention_time"] == pytest.approx(7421.657999999999)
-    assert last_csm["ion_mobility"] == pytest.approx(0.0)
-
-
-def test16():
-    from pyXLMS import parser as p
-    from pyXLMS.transform import to_dataframe
-    from pyXLMS.transform import modifications_to_str as mts
-
-    parser_result = p.read_msannika([ANNIKA_XL, ANNIKA_CSM])
-    assert parser_result["data_type"] == "parser_result"
-    assert parser_result["completeness"] == "full"
-    assert parser_result["search_engine"] == "MS Annika"
-    assert parser_result["crosslink-spectrum-matches"] is not None
-    assert parser_result["crosslinks"] is not None
-
-    crosslinks = parser_result["crosslinks"]
-    assert len(crosslinks) == 300
-    to_dataframe(crosslinks).to_parquet("XL.parquet", index=False)
-
-    csms = parser_result["crosslink-spectrum-matches"]
-    assert len(csms) == 826
-    to_dataframe(csms).to_parquet("CSM.parquet", index=False)
-
-    parser_result = p.read_custom(["XL.parquet", "CSM.parquet"])
-    assert parser_result["data_type"] == "parser_result"
-    assert parser_result["completeness"] == "full"
-    assert parser_result["search_engine"] == "Custom"
-    assert parser_result["crosslink-spectrum-matches"] is not None
-    assert parser_result["crosslinks"] is not None
-
-    crosslinks = parser_result["crosslinks"]
-    assert len(crosslinks) == 300
-
-    csms = parser_result["crosslink-spectrum-matches"]
+    df = to_dataframe(csms)
+    csms = from_dataframe(df)
     assert len(csms) == 826
 
     first_crosslink = crosslinks[0]

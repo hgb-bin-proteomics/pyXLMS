@@ -137,7 +137,11 @@ def to_xifdr(
     --------
     >>> from pyXLMS.exporter import to_xifdr
     >>> from pyXLMS.parser import read
-    >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> pr = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> to_xifdr(csms, filename="msannika_xiFDR.csv")
                                            run   scan          peptide1  ... peptide position 1  peptide position 2   score
@@ -156,7 +160,11 @@ def to_xifdr(
 
     >>> from pyXLMS.exporter import to_xifdr
     >>> from pyXLMS.parser import read
-    >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> pr = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> df = to_xifdr(csms, filename=None)
     """

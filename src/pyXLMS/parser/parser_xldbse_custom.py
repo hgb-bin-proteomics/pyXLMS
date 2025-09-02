@@ -118,13 +118,13 @@ def read_custom(
     parse_modifications: bool = True,
     modification_parser: Optional[Callable[[str], Dict[int, Tuple[str, float]]]] = None,
     decoy_prefix: str = "REV_",
-    format: Literal["auto", "csv", "txt", "tsv", "xlsx"] = "auto",
+    format: Literal["auto", "csv", "txt", "tsv", "parquet", "xlsx"] = "auto",
     sep: str = ",",
     decimal: str = ".",
 ) -> Dict[str, Any]:
     r"""Read a custom or pyXLMS result file.
 
-    Reads a custom or pyXLMS crosslink-spectrum-matches result file or crosslink result file in ``.csv`` or ``.xlsx`` format,
+    Reads a custom or pyXLMS crosslink-spectrum-matches result file or crosslink result file in ``.csv``, ``.parquet``, or ``.xlsx`` format,
     and returns a ``parser_result``.
 
     The minimum required columns for a crosslink-spectrum-matches result file are:
@@ -161,7 +161,7 @@ def read_custom(
         given this parameter is ignored.
     decoy_prefix : str, default = "REV\_"
         The prefix that indicates that a protein is from the decoy database.
-    format : "auto", "csv", "tsv", "txt", or "xlsx", default = "auto"
+    format : "auto", "csv", "tsv", "txt", "parquet", or "xlsx", default = "auto"
         The format of the result file. ``"auto"`` is only available if the name/path to the result file is given.
     sep : str, default = ","
         Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` format.
@@ -273,20 +273,24 @@ def read_custom(
                 or file_extension == ".csv"
             ):
                 data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+            elif file_extension == ".parquet":
+                data = pd.read_parquet(input)
             elif file_extension == ".xlsx":
                 data = pd.read_excel(input, engine="openpyxl")
             else:
                 raise ValueError(
-                    f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv' or '.xlsx'!"
+                    f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv', '.parquet' or '.xlsx'!"
                 )
-        elif format in ["csv", "tsv", "txt", "xlsx"]:
+        elif format in ["csv", "tsv", "txt", "parquet", "xlsx"]:
             if format == "xlsx":
                 data = pd.read_excel(input, engine="openpyxl")
+            elif format == "parquet":
+                data = pd.read_parquet(input)
             else:
                 data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
         else:
             raise ValueError(
-                f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv' or 'xlsx'!"
+                f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv', 'parquet' or 'xlsx'!"
             )
         if data is None:
             raise RuntimeError(

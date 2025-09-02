@@ -181,7 +181,11 @@ def summary(data: List[Dict[str, Any]] | Dict[str, Any]) -> Dict[str, float]:
     --------
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import summary
-    >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> pr = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> stats = summary(csms)
     Number of CSMs: 826.0
@@ -196,7 +200,11 @@ def summary(data: List[Dict[str, Any]] | Dict[str, Any]) -> Dict[str, float]:
 
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import summary
-    >>> pr = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> pr = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> stats = summary(pr)
     Number of crosslinks: 300.0
     Number of unique crosslinks by peptide: 300.0

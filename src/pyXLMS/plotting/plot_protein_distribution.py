@@ -71,7 +71,9 @@ def plot_protein_distribution(
     --------
     >>> from pyXLMS import parser
     >>> from pyXLMS import plotting
-    >>> pr = parser.read_msannika("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx")
+    >>> pr = parser.read_msannika(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx"
+    ... )
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> fig, ax = plotting.plot_protein_distribution(csms)
     """

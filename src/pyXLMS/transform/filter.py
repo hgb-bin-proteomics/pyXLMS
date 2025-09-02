@@ -49,7 +49,11 @@ def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
     --------
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import filter_target_decoy
-    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> result = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> target_and_decoys = filter_target_decoy(result["crosslink-spectrum-matches"])
     >>> len(target_and_decoys["Target-Target"])
     786
@@ -60,7 +64,11 @@ def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
 
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import filter_target_decoy
-    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> result = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> target_and_decoys = filter_target_decoy(result["crosslinks"])
     >>> len(target_and_decoys["Target-Target"])
     265
@@ -131,7 +139,11 @@ def filter_proteins(
     --------
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import filter_proteins
-    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> result = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> proteins_csms = filter_proteins(result["crosslink-spectrum-matches"], ["Cas9"])
     >>> proteins_csms["Proteins"]
     ['Cas9']
@@ -142,7 +154,11 @@ def filter_proteins(
 
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import filter_proteins
-    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> result = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> proteins_xls = filter_proteins(result["crosslinks"], ["Cas9"])
     >>> proteins_xls["Proteins"]
     ['Cas9']
@@ -214,11 +230,15 @@ def filter_protein_distribution(
     --------
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import filter_protein_distribution
-    >>> result = read("data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS")
-    >>> proteins_csms = filter_protein_distribution(result["crosslink-spectrum-matches"])
-    >>> list(proteins_csms.keys()) # proteins found
+    >>> result = read(
+    ...     "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
+    ... )
+    >>> proteins_csms = filter_protein_distribution(
+    ...     result["crosslink-spectrum-matches"]
+    ... )
+    >>> list(proteins_csms.keys())  # proteins found
     ['Cas9', 'sp|MYG_HUMAN|', 'sp|CAH1_HUMAN|', 'sp|RETBP_HUMAN|', 'sp|K1C15_SHEEP|']
-    >>> len(proteins_csms["Cas9"]) # number of CSMs for protein Cas9
+    >>> len(proteins_csms["Cas9"])  # number of CSMs for protein Cas9
     728
     """
     _ok = check_input(data, "data", list, dict)
@@ -270,8 +290,14 @@ def filter_crosslink_type(data: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
     --------
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import filter_crosslink_type
-    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
-    >>> crosslink_type_filtered_csms = filter_crosslink_type(result["crosslink-spectrum-matches"])
+    >>> result = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
+    >>> crosslink_type_filtered_csms = filter_crosslink_type(
+    ...     result["crosslink-spectrum-matches"]
+    ... )
     >>> len(crosslink_type_filtered_csms["Intra"])
     803
     >>> len(crosslink_type_filtered_csms["Inter"])
@@ -279,7 +305,11 @@ def filter_crosslink_type(data: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
 
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import filter_crosslink_type
-    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> result = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> crosslink_type_filtered_crosslinks = filter_crosslink_type(result["crosslinks"])
     >>> len(crosslink_type_filtered_crosslinks["Intra"])
     279
@@ -333,11 +363,19 @@ def filter_peptide_pair_distribution(
     --------
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import filter_peptide_pair_distribution
-    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
-    >>> peptide_pairs = filter_peptide_pair_distribution(result["crosslink-spectrum-matches"])
-    >>> list(peptide_pairs.keys())[:5] # first 5 found peptide pairs
+    >>> result = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
+    >>> peptide_pairs = filter_peptide_pair_distribution(
+    ...     result["crosslink-spectrum-matches"]
+    ... )
+    >>> list(peptide_pairs.keys())[:5]  # first 5 found peptide pairs
     ['GQKNSR-GQKNSR', 'GQKNSR-GSQKDR', 'SDKNR-SDKNR', 'DKQSGK-DKQSGK', 'DKQSGK-HSIKK']
-    >>> len(peptide_pairs["MTNFDKNLPNEK-SKLVSDFR"]) # number of CSMs for peptide pair MTNFDKNLPNEK-SKLVSDFR
+    >>> len(
+    ...     peptide_pairs["MTNFDKNLPNEK-SKLVSDFR"]
+    ... )  # number of CSMs for peptide pair MTNFDKNLPNEK-SKLVSDFR
     21
     """
     _ok = check_input(data, "data", list, dict)

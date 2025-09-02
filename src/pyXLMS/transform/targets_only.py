@@ -50,21 +50,36 @@ def targets_only(
     --------
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import targets_only
-    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> result = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> targets = targets_only(result["crosslink-spectrum-matches"])
     >>> len(targets)
     786
 
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import targets_only
-    >>> result = read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx", engine="MS Annika", crosslinker="DSS")
+    >>> result = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> targets = targets_only(result["crosslinks"])
     >>> len(targets)
     265
 
     >>> from pyXLMS.parser import read
     >>> from pyXLMS.transform import targets_only
-    >>> result = read(["data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx"], engine="MS Annika", crosslinker="DSS")
+    >>> result = read(
+    ...     [
+    ...         "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...         "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx",
+    ...     ],
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
     >>> result_targets = targets_only(result)
     >>> len(result_targets["crosslink-spectrum-matches"])
     786

@@ -243,8 +243,34 @@ def create_crosslink(
     Examples
     --------
     >>> from pyXLMS.data import create_crosslink
-    >>> minimal_crosslink = create_crosslink("PEPTIDEA", 1, None, None, None, "PEPTIDEB", 5, None, None, None, None)
-    >>> crosslink = create_crosslink("PEPTIDEA", 1, ["PROTEINA"], [1], False, "PEPTIDEB", 5, ["PROTEINB"], [3], False, 34.5)
+    >>> minimal_crosslink = create_crosslink(
+    ...     peptide_a="PEPTIDEA",
+    ...     xl_position_peptide_a=1,
+    ...     proteins_a=None,
+    ...     xl_position_proteins_a=None,
+    ...     decoy_a=None,
+    ...     peptide_b="PEPTIDEB",
+    ...     xl_position_peptide_b=5,
+    ...     proteins_b=None,
+    ...     xl_position_proteins_b=None,
+    ...     decoy_b=None,
+    ...     score=None,
+    ... )
+
+    >>> from pyXLMS.data import create_crosslink
+    >>> crosslink = create_crosslink(
+    ...     peptide_a="PEPTIDEA",
+    ...     xl_position_peptide_a=1,
+    ...     proteins_a=["PROTEINA"],
+    ...     xl_position_proteins_a=[1],
+    ...     decoy_a=False,
+    ...     peptide_b="PEPTIDEB",
+    ...     xl_position_peptide_b=5,
+    ...     proteins_b=["PROTEINB"],
+    ...     xl_position_proteins_b=[3],
+    ...     decoy_b=False,
+    ...     score=34.5,
+    ... )
     """
     ## input checks
     full = check_input(peptide_a, "peptide_a", str)
@@ -592,8 +618,56 @@ def create_csm(
     Examples
     --------
     >>> from pyXLMS.data import create_csm
-    >>> minimal_csm = create_csm("PEPTIDEA", {}, 1, None, None, None, None, None, "PEPTIDEB", {}, 5, None, None, None, None, None, None, "MS_EXP1", 1, None, None, None)
-    >>> csm = create_csm("PEPTIDEA", {1: ("Oxidation", 15.994915)}, 1, ["PROTEINA"], [1], [1], 20.1, False, "PEPTIDEB", {}, 5, ["PROTEINB"], [3], [1], 33.7, False, 20.1, "MS_EXP1", 1, 3, 13.5, -50)
+    >>> minimal_csm = create_csm(
+    ...     peptide_a="PEPTIDEA",
+    ...     modifications_a={},
+    ...     xl_position_peptide_a=1,
+    ...     proteins_a=None,
+    ...     xl_position_proteins_a=None,
+    ...     pep_position_proteins_a=None,
+    ...     score_a=None,
+    ...     decoy_a=None,
+    ...     peptide_b="PEPTIDEB",
+    ...     modifications_b={},
+    ...     xl_position_peptide_b=5,
+    ...     proteins_b=None,
+    ...     xl_position_proteins_b=None,
+    ...     pep_position_proteins_b=None,
+    ...     score_b=None,
+    ...     decoy_b=None,
+    ...     score=None,
+    ...     spectrum_file="MS_EXP1",
+    ...     scan_nr=1,
+    ...     charge=None,
+    ...     rt=None,
+    ...     im_cv=None,
+    ... )
+
+    >>> from pyXLMS.data import create_csm
+    >>> csm = create_csm(
+    ...     peptide_a="PEPTIDEA",
+    ...     modifications_a={1: ("Oxidation", 15.994915)},
+    ...     xl_position_peptide_a=1,
+    ...     proteins_a=["PROTEINA"],
+    ...     xl_position_proteins_a=[1],
+    ...     pep_position_proteins_a=[1],
+    ...     score_a=20.1,
+    ...     decoy_a=False,
+    ...     peptide_b="PEPTIDEB",
+    ...     modifications_b={},
+    ...     xl_position_peptide_b=5,
+    ...     proteins_b=["PROTEINB"],
+    ...     xl_position_proteins_b=[3],
+    ...     pep_position_proteins_b=[1],
+    ...     score_b=33.7,
+    ...     decoy_b=False,
+    ...     score=20.1,
+    ...     spectrum_file="MS_EXP1",
+    ...     scan_nr=1,
+    ...     charge=3,
+    ...     rt=13.5,
+    ...     im_cv=-50,
+    ... )
     """
     ## input checks
     full = check_input(peptide_a, "peptide_a", str)
