@@ -35,8 +35,8 @@ there are a few guidelines for code contributions:
 - Every function and object needs to be sufficiently documented.
 - Every function and object needs to have sufficient tests.
 - Every public function and object needs to have examples.
-- Pull requests should be opened for branch 'develop' first. Merging directly
-  into 'master' is not allowed.
+- **Pull requests should be based on and target branch 'develop'. Merging directly**
+  **into 'master' is not allowed.**
 - Pull requests must pass all GitHub actions checks.
 - If a new parser is implemented, make sure to update `parser.read()` and
   `pipelines.pipeline()`.
