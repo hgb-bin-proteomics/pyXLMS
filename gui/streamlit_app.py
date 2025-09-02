@@ -3,7 +3,7 @@
 # requires-python = ">=3.12"
 # dependencies = [
 #   "streamlit",
-#   "pyxlms>=1.3",
+#   "pyxlms>=1.4.3",
 #   "xlsxwriter",
 # ]
 # ///

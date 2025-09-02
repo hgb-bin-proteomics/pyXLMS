@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyXLMS"
-version = "1.5.0"
+version = "1.5.1"
 authors = [
   { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
 ]
@@ -33,7 +33,8 @@ dependencies = [
   "biopython",
   "biopandas",
   "matplotlib",
-  "matplotlib-venn"
+  "matplotlib-venn",
+  "pyarrow"
 ]
 
 [project.optional-dependencies]
