@@ -967,7 +967,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "pyxlms", specifier = ">=1.3" },
+    { name = "pyxlms", specifier = ">=1.4.3" },
     { name = "streamlit", specifier = ">=1.49.0" },
     { name = "xlsxwriter", specifier = ">=3.2.5" },
 ]
