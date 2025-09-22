@@ -61,21 +61,23 @@ def __xls_to_xiview_minimal(
         )
         protein1.append(";".join(xl["alpha_proteins"]))
         protein2.append(";".join(xl["beta_proteins"]))
-        if xl["alpha_decoy"] is not None and xl["beta_decoy"] is not None:
-            if xl["alpha_decoy"]:
-                decoy1.append("TRUE")
+        if has_decoys:
+            if xl["alpha_decoy"] is not None and xl["beta_decoy"] is not None:
+                if xl["alpha_decoy"]:
+                    decoy1.append(";".join(["TRUE" for p in xl["alpha_proteins"]]))
+                else:
+                    decoy1.append(";".join(["FALSE" for p in xl["alpha_proteins"]]))
+                if xl["beta_decoy"]:
+                    decoy2.append(";".join(["TRUE" for p in xl["beta_proteins"]]))
+                else:
+                    decoy2.append(";".join(["FALSE" for p in xl["beta_proteins"]]))
             else:
-                decoy1.append("FALSE")
-            if xl["beta_decoy"]:
-                decoy2.append("TRUE")
+                has_decoys = False
+        if has_scores:
+            if xl["score"] is not None:
+                score.append(xl["score"])
             else:
-                decoy2.append("FALSE")
-        else:
-            has_decoys = False
-        if xl["score"] is not None:
-            score.append(xl["score"])
-        else:
-            has_scores = False
+                has_scores = False
 
     xiview_df = pd.DataFrame(
         {
@@ -181,21 +183,23 @@ def __csms_to_xiview_with_peaks(
         crosslinkermodmass.append(crosslinker_mass)
         scanid.append(csm["scan_nr"])
         peaklistfilename.append(get_PeakListFileName(csm["spectrum_file"]))
-        if csm["alpha_decoy"] is not None and csm["beta_decoy"] is not None:
-            if csm["alpha_decoy"]:
-                decoy1.append("TRUE")
+        if has_decoys:
+            if csm["alpha_decoy"] is not None and csm["beta_decoy"] is not None:
+                if csm["alpha_decoy"]:
+                    decoy1.append(";".join(["TRUE" for p in csm["alpha_proteins"]]))
+                else:
+                    decoy1.append(";".join(["FALSE" for p in csm["alpha_proteins"]]))
+                if csm["beta_decoy"]:
+                    decoy2.append(";".join(["TRUE" for p in csm["beta_proteins"]]))
+                else:
+                    decoy2.append(";".join(["FALSE" for p in csm["beta_proteins"]]))
             else:
-                decoy1.append("FALSE")
-            if csm["beta_decoy"]:
-                decoy2.append("TRUE")
+                has_decoys = False
+        if has_scores:
+            if csm["score"] is not None:
+                score.append(csm["score"])
             else:
-                decoy2.append("FALSE")
-        else:
-            has_decoys = False
-        if csm["score"] is not None:
-            score.append(csm["score"])
-        else:
-            has_scores = False
+                has_scores = False
 
     xiview_df = pd.DataFrame(
         {
