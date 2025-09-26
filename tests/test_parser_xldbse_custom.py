@@ -178,7 +178,9 @@ def test4():
 def test5():
     from pyXLMS import parser as p
 
-    parser_result = p.read_custom(XL, column_mapping={"Sequence A": "Alpha Peptide"})
+    parser_result = p.read_custom(
+        XL_FORMAT, column_mapping={"Sequence A": "Alpha Peptide"}
+    )
     assert parser_result["data_type"] == "parser_result"
     assert parser_result["completeness"] == "partial"
     assert parser_result["search_engine"] == "Custom"
