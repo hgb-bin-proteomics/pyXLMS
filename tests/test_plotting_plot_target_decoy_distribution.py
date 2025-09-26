@@ -10,8 +10,12 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def cleanup_figures():
-    yield
+    from matplotlib import use
     import matplotlib.pyplot as plt
+
+    use("agg")
+
+    yield
 
     plt.close(fig="all")
 
