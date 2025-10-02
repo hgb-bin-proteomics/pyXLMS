@@ -419,7 +419,7 @@ def validate(
     >>> validated = validate(pr)
     >>> len(validated["crosslink-spectrum-matches"])
     705
-    >> len(validated["crosslinks"])
+    >>> len(validated["crosslinks"])
     226
 
     >>> from pyXLMS.parser import read
@@ -432,7 +432,7 @@ def validate(
     >>> validated = validate(pr, fdr=0.05)
     >>> len(validated["crosslink-spectrum-matches"])
     825
-    >> len(validated["crosslinks"])
+    >>> len(validated["crosslinks"])
     260
     """
     _ok = check_input_multi(data, "data", [dict, list])
