@@ -3293,7 +3293,7 @@ def about_tab():
             "Documentation",
             url="https://hgb-bin-proteomics.github.io/pyXLMS",
             type="primary",
-            help="Link to the pyXLMS documentaion page.",
+            help="Link to the pyXLMS documentation page.",
             use_container_width=True,
         )
 
