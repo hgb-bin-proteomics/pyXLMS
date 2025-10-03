@@ -3258,7 +3258,7 @@ def about_tab():
         """
     citation = st.markdown(citation_str)
 
-    header_3 = st.header("Contact", divider="grey")
+    header_3 = st.subheader("Contact", divider="grey")
     contact_str = """
         - [proteomics@fh-hagenberg.at](mailto:proteomics@fh-hagenberg.at)
         - [micha.birklbauer@fh-hagenberg.at](mailto:micha.birklbauer@fh-hagenberg.at) (primary developer)
