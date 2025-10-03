@@ -7,10 +7,52 @@
 from __future__ import annotations
 
 import warnings
+import pandas as pd
 
 from ..constants import AMINO_ACIDS
 
+from typing import List
+from typing import Dict
 from typing import Any
+
+
+def __serialize_pandas_series(
+    pds: pd.Series, nan_values: List[str] = ["", "nan", "null", "none"]
+) -> Dict[str, Any]:
+    r"""Serialize a pandas Series to a python native dictionary with native types.
+
+    Parameters
+    ----------
+    pds : pd.Series
+        The pandas Series to serialize.
+    nan_values : list of str, default = ["", "nan", "null", "none"]
+        List of strings that should be considered as missing values.
+
+    Returns
+    -------
+    dict of str, any
+        The serialized pandas Series.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from all parsers to serialize input.
+    """
+    serialized_pds = dict()
+    for key in pds.index.tolist():
+        val = None
+        raw_val = pds[key]
+        if isinstance(raw_val, int):
+            val = int(raw_val)
+        elif isinstance(raw_val, float):
+            if not pd.isna(raw_val):  # pyright: ignore[reportGeneralTypeIssues]
+                val = float(raw_val)
+        else:
+            if not pd.isna(raw_val):  # pyright: ignore[reportGeneralTypeIssues]
+                str_val = str(val)
+                if str_val.lower().strip() not in nan_values:
+                    val = str_val
+        serialized_pds[key] = val
+    return serialized_pds
 
 
 def format_sequence(
@@ -88,7 +130,7 @@ def get_bool_from_value(value: Any) -> bool:
 
     Parameters
     ----------
-    value: Any
+    value : any
         The value to parse from.
 
     Returns

@@ -17,6 +17,7 @@ from ..data import create_parser_result
 from ..constants import AMINO_ACIDS
 from ..constants import MODIFICATIONS
 from ..constants import MEROX_MODIFICATION_MAPPING
+from .util import __serialize_pandas_series
 
 from typing import Optional
 from typing import BinaryIO
@@ -518,6 +519,7 @@ def read_merox(
                 rt=float(row["Retention time in sec"]),
                 im_cv=None,
                 additional_information={
+                    "source": __serialize_pandas_series(row),
                     "xLinkScore": row["xLinkScore"],
                     "Protein 1": row["Protein 1"],
                     "Protein 2": row["Protein 2"],

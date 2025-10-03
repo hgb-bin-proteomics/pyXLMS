@@ -16,6 +16,7 @@ from ..data import create_csm
 from ..data import create_parser_result
 from .util import format_sequence
 from .util import get_bool_from_value
+from .util import __serialize_pandas_series
 
 from typing import Optional
 from typing import BinaryIO
@@ -357,6 +358,7 @@ def read_custom(
                     else None,
                     decoy_b=get_is_decoy_value(row, decoy_prefix, False),
                     score=get_float(__get_value(row, "Crosslink Score")),
+                    additional_information={"source": __serialize_pandas_series(row)},
                 )
                 crosslinks.append(crosslink)
         else:
@@ -444,6 +446,7 @@ def read_custom(
                     charge=get_int(__get_value(row, "Precursor Charge")),
                     rt=get_float(__get_value(row, "Retention Time")),
                     im_cv=get_float(__get_value(row, "Ion Mobility")),
+                    additional_information={"source": __serialize_pandas_series(row)},
                 )
                 csms.append(csm)
     ## check results

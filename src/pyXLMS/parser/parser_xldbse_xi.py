@@ -17,6 +17,7 @@ from ..data import create_parser_result
 from ..constants import XI_MODIFICATION_MAPPING
 from .util import format_sequence
 from .util import get_bool_from_value
+from .util import __serialize_pandas_series
 
 from typing import Optional
 from typing import BinaryIO
@@ -741,6 +742,7 @@ def __read_xisearch(
             rt=None,
             im_cv=None,
             additional_information={
+                "source": __serialize_pandas_series(row),
                 "spectrum quality score": __parse_float(row["spectrum quality score"]),
             },
         )
@@ -975,7 +977,7 @@ def __read_xifdr_csms(
             charge=__parse_int(row["exp charge"]),
             rt=None,
             im_cv=None,
-            additional_information=None,
+            additional_information={"source": __serialize_pandas_series(row)},
         )
         csms.append(csm)
     return csms
@@ -1041,7 +1043,7 @@ def __read_xifdr_crosslinks(
             ],
             decoy_b=get_bool_from_value(row["Decoy2"]),
             score=__parse_float(row["Score"]),
-            additional_information=None,
+            additional_information={"source": __serialize_pandas_series(row)},
         )
         crosslinks.append(crosslink)
     return crosslinks
