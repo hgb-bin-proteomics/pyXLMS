@@ -26,7 +26,7 @@ def __serialize_pandas_series(
     pds : pd.Series
         The pandas Series to serialize.
     nan_values : list of str, default = ["", "nan", "null", "none"]
-        List of string that should be considered as missing values.
+        List of strings that should be considered as missing values.
 
     Returns
     -------
