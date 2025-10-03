@@ -22,7 +22,7 @@ The following crosslink search engines and formats are currently supported:
 | xiSearch & xiFDR     | `read_xi()`       | ✅  | ✅  | `.csv`, any text-like                       | [link](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.parser.html#pyXLMS.parser.parser_xldbse_xi.read_xi) |
 | XlinkX               | `read_xlinkx()`   | ✅  | ✅  | `.pdResult`, `.xlsx`, `.txt`, any text-like | [link](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.parser.html#pyXLMS.parser.parser_xldbse_xlinkx.read_xlinkx) |
 | mzIdentML            | `read_mzid()`     | ✅  | ❌  | `.mzid`                                     | [link](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.parser.html#pyXLMS.parser.parser_xldbse_mzid.read_mzid) |
-| pyXLMS/custom        | `read_custom()`   | ✅  | ✅  | `.xlsx`, `.csv`, any text-like              | [link](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.parser.html#pyXLMS.parser.parser_xldbse_custom.read_custom) |
+| pyXLMS/custom        | `read_custom()`   | ✅  | ✅  | `.xlsx`, `.parquet`, `.csv`, any text-like  | [link](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.parser.html#pyXLMS.parser.parser_xldbse_custom.read_custom) |
 
 _\*any text-like denotes all `.csv` like file formats that use a character delimiter e.g. `.csv`, `.tsv` and tab-delimited `.txt`._
 
