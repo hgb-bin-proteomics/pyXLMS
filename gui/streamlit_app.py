@@ -3393,11 +3393,27 @@ def main():
 
     div_3 = st.sidebar.divider()
 
+    get_help = st.sidebar.link_button(
+        "Help",
+        url="https://pyxlms.vercel.app/docs/webapp",
+        type="secondary",
+        # help="Link to the pyXLMS webapp documentation page.",
+        use_container_width=True,
+    )
+
     version_info = st.sidebar.markdown(
         f"Server is running web app version {__version__} and pyXLMS version {__pyxlms_version__}."
     )
 
     main_page()
+
+    if "display_help_toast" not in st.session_state:
+        st.session_state["display_help_toast"] = False
+        help_msg = st.toast(
+            "Need help? Read the [docs](https://pyxlms.vercel.app/docs/webapp)!",
+            icon="🤔",
+            duration="infinite",
+        )
 
 
 if __name__ == "__main__":
