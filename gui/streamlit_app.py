@@ -406,6 +406,12 @@ def input_tab():
             help="Upload a FASTA file containing protein sequences for the provided crosslink spectrum matches and crosslinks.",
         )
 
+        reannotate_positions_info = st.info(
+            "In order to (re-)annotate your crosslink-spectrum-matches or crosslinks, your results should either already be pre-filtered to only contain "
+            + "target-target matches, or you should also enable the **'Filter for target matches only'** option. The (re-)annotation of decoy "
+            + "matches is not supported by pyXLMS."
+        )
+
     if unique or aggregate:
         group_by = st.selectbox(
             "Group crosslinks by:",
