@@ -188,7 +188,7 @@ def layout_plots(plots: List[Any]) -> None:
                     plots[i],
                     transparent=True,
                     bbox_inches="tight",
-                    use_container_width=True,
+                    width="stretch",
                 )
         if i + 1 < len(plots):
             with r_col:
@@ -196,7 +196,7 @@ def layout_plots(plots: List[Any]) -> None:
                     plots[i + 1],
                     transparent=True,
                     bbox_inches="tight",
-                    use_container_width=True,
+                    width="stretch",
                 )
     return
 
@@ -470,9 +470,7 @@ def input_tab():
     l7, center_7, r7 = st.columns(3)
 
     with center_7:
-        read_file_button = st.button(
-            "Read file!", type="primary", use_container_width=True
-        )
+        read_file_button = st.button("Read file!", type="primary", width="stretch")
 
     # read in all inputs
     if read_file_button:
@@ -732,9 +730,7 @@ def input_tab():
             )
             csms = st.session_state["pr"]["crosslink-spectrum-matches"]
             csms_info = st.markdown(f"**Read {len(csms)} crosslink-spectrum-matches:**")
-            csms_df = st.dataframe(
-                transform.to_dataframe(csms), use_container_width=True
-            )
+            csms_df = st.dataframe(transform.to_dataframe(csms), width="stretch")
             summary_stats = transform.summary(csms)
             summary_stats_md = st.markdown("**Summary Statistics:**")
             summary_stats_df = st.dataframe(
@@ -756,7 +752,7 @@ def input_tab():
                     type="primary",
                     mime="text/csv",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslink-spectrum-matches in comma-separated format.",
                     key="csms_dl_csv",
                 )
@@ -774,7 +770,7 @@ def input_tab():
                     type="primary",
                     mime="application/vnd.ms-excel",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslink-spectrum-matches in Microsoft Excel format.",
                     key="csms_dl_excel",
                 )
@@ -788,7 +784,7 @@ def input_tab():
                     type="primary",
                     mime="application/json",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslink-spectrum-matches in JavaScript Object Notation (JSON) format.",
                     key="csms_dl_json",
                 )
@@ -799,7 +795,7 @@ def input_tab():
             crosslinks = st.session_state["pr"]["crosslinks"]
             crosslinks_info = st.markdown(f"**Read {len(crosslinks)} crosslinks:**")
             crosslinks_df = st.dataframe(
-                transform.to_dataframe(crosslinks), use_container_width=True
+                transform.to_dataframe(crosslinks), width="stretch"
             )
             summary_stats = transform.summary(crosslinks)
             summary_stats_md = st.markdown("**Summary Statistics:**")
@@ -822,7 +818,7 @@ def input_tab():
                     type="primary",
                     mime="text/csv",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslinks in comma-separated format.",
                     key="crosslinks_dl_csv",
                 )
@@ -840,7 +836,7 @@ def input_tab():
                     type="primary",
                     mime="application/vnd.ms-excel",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslinks in Microsoft Excel format.",
                     key="crosslinks_dl_excel",
                 )
@@ -854,7 +850,7 @@ def input_tab():
                     type="primary",
                     mime="application/json",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslinks in JavaScript Object Notation (JSON) format.",
                     key="crosslinks_dl_json",
                 )
@@ -869,7 +865,7 @@ def input_tab():
             f"**Aggregated {len(aggregated_crosslinks)} crosslinks:**"
         )
         aggregated_crosslinks_df = st.dataframe(
-            transform.to_dataframe(aggregated_crosslinks), use_container_width=True
+            transform.to_dataframe(aggregated_crosslinks), width="stretch"
         )
         summary_stats = transform.summary(aggregated_crosslinks)
         summary_stats_md = st.markdown("**Summary Statistics:**")
@@ -892,7 +888,7 @@ def input_tab():
                 type="primary",
                 mime="text/csv",
                 icon=":material/download:",
-                use_container_width=True,
+                width="stretch",
                 help="Download aggregated crosslinks in comma-separated format.",
                 key="aggregated_crosslinks_dl_csv",
             )
@@ -910,7 +906,7 @@ def input_tab():
                 type="primary",
                 mime="application/vnd.ms-excel",
                 icon=":material/download:",
-                use_container_width=True,
+                width="stretch",
                 help="Download aggregated crosslinks in Microsoft Excel format.",
                 key="aggregated_crosslinks_dl_excel",
             )
@@ -924,7 +920,7 @@ def input_tab():
                 type="primary",
                 mime="application/json",
                 icon=":material/download:",
-                use_container_width=True,
+                width="stretch",
                 help="Download aggregated crosslinks in JavaScript Object Notation (JSON) format.",
                 key="aggregated_crosslinks_dl_json",
             )
@@ -1006,7 +1002,7 @@ def filter_tab():
 
         with center_c:
             filter_button = st.button(
-                "Filter results!", type="primary", use_container_width=True
+                "Filter results!", type="primary", width="stretch"
             )
 
         # filter in all inputs
@@ -1169,9 +1165,7 @@ def filter_tab():
             csms_info = st.markdown(
                 f"**Currently {len(csms)} crosslink-spectrum-matches:**"
             )
-            csms_df = st.dataframe(
-                transform.to_dataframe(csms), use_container_width=True
-            )
+            csms_df = st.dataframe(transform.to_dataframe(csms), width="stretch")
             summary_stats = transform.summary(csms)
             summary_stats_md = st.markdown("**Summary Statistics:**")
             summary_stats_df = st.dataframe(
@@ -1193,7 +1187,7 @@ def filter_tab():
                     type="primary",
                     mime="text/csv",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslink-spectrum-matches in comma-separated format.",
                     key="filter_csms_dl_csv",
                 )
@@ -1211,7 +1205,7 @@ def filter_tab():
                     type="primary",
                     mime="application/vnd.ms-excel",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslink-spectrum-matches in Microsoft Excel format.",
                     key="filter_csms_dl_excel",
                 )
@@ -1225,7 +1219,7 @@ def filter_tab():
                     type="primary",
                     mime="application/json",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslink-spectrum-matches in JavaScript Object Notation (JSON) format.",
                     key="filter_csms_dl_json",
                 )
@@ -1238,7 +1232,7 @@ def filter_tab():
                 f"**Currently {len(crosslinks)} crosslinks:**"
             )
             crosslinks_df = st.dataframe(
-                transform.to_dataframe(crosslinks), use_container_width=True
+                transform.to_dataframe(crosslinks), width="stretch"
             )
             summary_stats = transform.summary(crosslinks)
             summary_stats_md = st.markdown("**Summary Statistics:**")
@@ -1261,7 +1255,7 @@ def filter_tab():
                     type="primary",
                     mime="text/csv",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslinks in comma-separated format.",
                     key="filter_crosslinks_dl_csv",
                 )
@@ -1279,7 +1273,7 @@ def filter_tab():
                     type="primary",
                     mime="application/vnd.ms-excel",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslinks in Microsoft Excel format.",
                     key="filter_crosslinks_dl_excel",
                 )
@@ -1293,7 +1287,7 @@ def filter_tab():
                     type="primary",
                     mime="application/json",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Download crosslinks in JavaScript Object Notation (JSON) format.",
                     key="filter_crosslinks_dl_json",
                 )
@@ -1308,7 +1302,7 @@ def filter_tab():
             f"**Currently aggregated {len(aggregated_crosslinks)} crosslinks:**"
         )
         aggregated_crosslinks_df = st.dataframe(
-            transform.to_dataframe(aggregated_crosslinks), use_container_width=True
+            transform.to_dataframe(aggregated_crosslinks), width="stretch"
         )
         summary_stats = transform.summary(aggregated_crosslinks)
         summary_stats_md = st.markdown("**Summary Statistics:**")
@@ -1331,7 +1325,7 @@ def filter_tab():
                 type="primary",
                 mime="text/csv",
                 icon=":material/download:",
-                use_container_width=True,
+                width="stretch",
                 help="Download aggregated crosslinks in comma-separated format.",
                 key="filter_aggregated_crosslinks_dl_csv",
             )
@@ -1349,7 +1343,7 @@ def filter_tab():
                 type="primary",
                 mime="application/vnd.ms-excel",
                 icon=":material/download:",
-                use_container_width=True,
+                width="stretch",
                 help="Download aggregated crosslinks in Microsoft Excel format.",
                 key="filter_aggregated_crosslinks_dl_excel",
             )
@@ -1363,7 +1357,7 @@ def filter_tab():
                 type="primary",
                 mime="application/json",
                 icon=":material/download:",
-                use_container_width=True,
+                width="stretch",
                 help="Download aggregated crosslinks in JavaScript Object Notation (JSON) format.",
                 key="filter_aggregated_crosslinks_dl_json",
             )
@@ -1550,7 +1544,7 @@ def export_tab():
                 export_csms_impxfdr_button = st.button(
                     "Export to IMP-X-FDR!",
                     type="primary",
-                    use_container_width=True,
+                    width="stretch",
                     key="export_csms_impxfdr_button",
                 )
                 if export_csms_impxfdr_button:
@@ -1588,7 +1582,7 @@ def export_tab():
                         type="primary",
                         mime="application/vnd.ms-excel",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the exported crosslink-spectrum-matches in IMP-X-FDR format.",
                         key="export_csms_impxfdr_download",
                     )
@@ -1598,14 +1592,14 @@ def export_tab():
                         help="Go to the IMP-X-FDR download page.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
             # MS Annika
             elif export_csms_picker == "MS Annika":
                 export_csms_msannika_button = st.button(
                     "Export to MS Annika format!",
                     type="primary",
-                    use_container_width=True,
+                    width="stretch",
                     key="export_csms_msannika_button",
                 )
                 if export_csms_msannika_button:
@@ -1645,7 +1639,7 @@ def export_tab():
                             type="primary",
                             mime="text/csv",
                             icon=":material/download:",
-                            use_container_width=True,
+                            width="stretch",
                             help="Downloads the exported crosslink-spectrum-matches in MS Annika comma-separated-values (.csv) format.",
                             key="export_csms_msannika_download_csv",
                         )
@@ -1662,7 +1656,7 @@ def export_tab():
                             type="primary",
                             mime="application/vnd.ms-excel",
                             icon=":material/download:",
-                            use_container_width=True,
+                            width="stretch",
                             help="Downloads the exported crosslink-spectrum-matches in MS Annika Microsoft Excel (.xlsx) format.",
                             key="export_csms_msannika_download_xlsx",
                         )
@@ -1683,7 +1677,7 @@ def export_tab():
                 export_csms_xifdr_button = st.button(
                     "Export to xiFDR!",
                     type="primary",
-                    use_container_width=True,
+                    width="stretch",
                     key="export_csms_xifdr_button",
                 )
                 if export_csms_xifdr_button:
@@ -1721,7 +1715,7 @@ def export_tab():
                         type="primary",
                         mime="text/csv",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the exported crosslink-spectrum-matches in xiFDR format.",
                         key="export_csms_xifdr_download",
                     )
@@ -1731,7 +1725,7 @@ def export_tab():
                         help="Go to the xiFDR download page.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
             else:
                 pass
@@ -1769,7 +1763,7 @@ def export_tab():
                 export_crosslinks_impxfdr_button = st.button(
                     "Export to IMP-X-FDR!",
                     type="primary",
-                    use_container_width=True,
+                    width="stretch",
                     key="export_crosslinks_impxfdr_button",
                 )
                 if export_crosslinks_impxfdr_button:
@@ -1807,7 +1801,7 @@ def export_tab():
                         type="primary",
                         mime="application/vnd.ms-excel",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the exported crosslinks in IMP-X-FDR format.",
                         key="export_crosslinks_impxfdr_download",
                     )
@@ -1817,14 +1811,14 @@ def export_tab():
                         help="Go to the IMP-X-FDR download page.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
             # MS Annika
             elif export_crosslinks_picker == "MS Annika":
                 export_crosslinks_msannika_button = st.button(
                     "Export to MS Annika format!",
                     type="primary",
-                    use_container_width=True,
+                    width="stretch",
                     key="export_crosslinks_msannika_button",
                 )
                 if export_crosslinks_msannika_button:
@@ -1864,7 +1858,7 @@ def export_tab():
                             type="primary",
                             mime="text/csv",
                             icon=":material/download:",
-                            use_container_width=True,
+                            width="stretch",
                             help="Downloads the exported crosslinks in MS Annika comma-separated-values (.csv) format.",
                             key="export_crosslinks_msannika_download_csv",
                         )
@@ -1881,7 +1875,7 @@ def export_tab():
                             type="primary",
                             mime="application/vnd.ms-excel",
                             icon=":material/download:",
-                            use_container_width=True,
+                            width="stretch",
                             help="Downloads the exported crosslinks in MS Annika Microsoft Excel (.xlsx) format.",
                             key="export_crosslinks_msannika_download_xlsx",
                         )
@@ -1910,7 +1904,7 @@ def export_tab():
                 export_crosslinks_pyxlinkviewer_button = st.button(
                     "Export to PyXlinkViewer format!",
                     type="primary",
-                    use_container_width=True,
+                    width="stretch",
                     key="export_crosslinks_pyxlinkviewer_button",
                 )
                 if export_crosslinks_pyxlinkviewer_button:
@@ -1974,7 +1968,7 @@ def export_tab():
                         type="primary",
                         mime="text/plain",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the exported crosslinks in PyXlinkViewer format.",
                         key="export_crosslinks_pyxlinkviewer_download",
                     )
@@ -1995,7 +1989,7 @@ def export_tab():
                             type="primary",
                             mime="text/plain",
                             icon=":material/download:",
-                            use_container_width=True,
+                            width="stretch",
                             help="Downloads the mapping of crosslinks to the PDB structure.",
                             key="export_crosslinks_pyxlinkviewer_download_meta_mapping",
                         )
@@ -2013,7 +2007,7 @@ def export_tab():
                             type="primary",
                             mime="chemical/seq-aa-fasta",
                             icon=":material/download:",
-                            use_container_width=True,
+                            width="stretch",
                             help="Downloads the parsed PDB sequence.",
                             key="export_crosslinks_pyxlinkviewer_download_meta_pdb_sequence",
                         )
@@ -2039,7 +2033,7 @@ def export_tab():
                             type="primary",
                             mime="text/csv",
                             icon=":material/download:",
-                            use_container_width=True,
+                            width="stretch",
                             help="Downloads the parsed PDB annotation.",
                             key="export_crosslinks_pyxlinkviewer_download_meta_pdb_annotation",
                         )
@@ -2049,7 +2043,7 @@ def export_tab():
                         help="Go to the PyXlinkViewer download page.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
             # xiNET
             elif export_crosslinks_picker == "xiNET":
@@ -2066,7 +2060,7 @@ def export_tab():
                 export_crosslinks_xinet_button = st.button(
                     "Export to xiNET!",
                     type="primary",
-                    use_container_width=True,
+                    width="stretch",
                     key="export_crosslinks_xinet_button",
                 )
                 if export_crosslinks_xinet_button:
@@ -2104,7 +2098,7 @@ def export_tab():
                         type="primary",
                         mime="text/csv",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the exported crosslinks in xiNET format.",
                         key="export_crosslinks_xinet_download",
                     )
@@ -2114,7 +2108,7 @@ def export_tab():
                         help="Go to the xiNET website.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
             # xiVIEW
             elif export_crosslinks_picker == "xiVIEW":
@@ -2131,7 +2125,7 @@ def export_tab():
                 export_crosslinks_xiview_button = st.button(
                     "Export to xiVIEW!",
                     type="primary",
-                    use_container_width=True,
+                    width="stretch",
                     key="export_crosslinks_xiview_button",
                 )
                 if export_crosslinks_xiview_button:
@@ -2169,7 +2163,7 @@ def export_tab():
                         type="primary",
                         mime="text/csv",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the exported crosslinks in xiVIEW format.",
                         key="export_crosslinks_xiview_download",
                     )
@@ -2179,7 +2173,7 @@ def export_tab():
                         help="Go to the xiVIEW website.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
             # XlinkDB
             elif export_crosslinks_picker == "XlinkDB":
@@ -2196,7 +2190,7 @@ def export_tab():
                 export_crosslinks_xlinkdb_button = st.button(
                     "Export to XlinkDB!",
                     type="primary",
-                    use_container_width=True,
+                    width="stretch",
                     key="export_crosslinks_xlinkdb_button",
                 )
                 if export_crosslinks_xlinkdb_button:
@@ -2235,7 +2229,7 @@ def export_tab():
                         type="primary",
                         mime="text/csv",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the exported crosslinks in XlinkDB format.",
                         key="export_crosslinks_xlinkdb_download",
                     )
@@ -2245,7 +2239,7 @@ def export_tab():
                         help="Go to the XlinkDB website.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
             # xlms-tools
             elif export_crosslinks_picker == "xlms-tools":
@@ -2272,7 +2266,7 @@ def export_tab():
                 export_crosslinks_xlmstools_button = st.button(
                     "Export to xlms-tools format!",
                     type="primary",
-                    use_container_width=True,
+                    width="stretch",
                     key="export_crosslinks_xlmstools_button",
                 )
                 if export_crosslinks_xlmstools_button:
@@ -2342,7 +2336,7 @@ def export_tab():
                         type="primary",
                         mime="text/plain",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the exported crosslinks in xlms-tools format.",
                         key="export_crosslinks_xlmstools_download",
                     )
@@ -2363,7 +2357,7 @@ def export_tab():
                             type="primary",
                             mime="text/plain",
                             icon=":material/download:",
-                            use_container_width=True,
+                            width="stretch",
                             help="Downloads the mapping of crosslinks to the PDB structure.",
                             key="export_crosslinks_xlmstools_download_meta_mapping",
                         )
@@ -2381,7 +2375,7 @@ def export_tab():
                             type="primary",
                             mime="chemical/seq-aa-fasta",
                             icon=":material/download:",
-                            use_container_width=True,
+                            width="stretch",
                             help="Downloads the parsed PDB sequence.",
                             key="export_crosslinks_xlmstools_download_meta_pdb_sequence",
                         )
@@ -2407,7 +2401,7 @@ def export_tab():
                             type="primary",
                             mime="text/csv",
                             icon=":material/download:",
-                            use_container_width=True,
+                            width="stretch",
                             help="Downloads the parsed PDB annotation.",
                             key="export_crosslinks_xlmstools_download_meta_pdb_annotation",
                         )
@@ -2417,14 +2411,14 @@ def export_tab():
                         help="Go to the xlms-tools project page.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
             # XMAS
             elif export_crosslinks_picker == "XMAS":
                 export_crosslinks_xmas_button = st.button(
                     "Export to XMAS format!",
                     type="primary",
-                    use_container_width=True,
+                    width="stretch",
                     key="export_crosslinks_xmas_button",
                 )
                 if export_crosslinks_xmas_button:
@@ -2462,7 +2456,7 @@ def export_tab():
                         type="primary",
                         mime="application/vnd.ms-excel",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the exported crosslinks in XMAS format.",
                         key="export_crosslinks_xmas_download",
                     )
@@ -2472,7 +2466,7 @@ def export_tab():
                         help="Go to the XMAS project page.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
             else:
                 pass
@@ -2512,7 +2506,7 @@ def export_tab():
             export_aggregated_crosslinks_impxfdr_button = st.button(
                 "Export to IMP-X-FDR!",
                 type="primary",
-                use_container_width=True,
+                width="stretch",
                 key="export_aggregated_crosslinks_impxfdr_button",
             )
             if export_aggregated_crosslinks_impxfdr_button:
@@ -2550,7 +2544,7 @@ def export_tab():
                     type="primary",
                     mime="application/vnd.ms-excel",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Downloads the exported aggregated crosslinks in IMP-X-FDR format.",
                     key="export_aggregated_crosslinks_impxfdr_download",
                 )
@@ -2561,7 +2555,7 @@ def export_tab():
                         help="Go to the IMP-X-FDR download page.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
                 )
         # MS Annika
@@ -2569,7 +2563,7 @@ def export_tab():
             export_aggregated_crosslinks_msannika_button = st.button(
                 "Export to MS Annika format!",
                 type="primary",
-                use_container_width=True,
+                width="stretch",
                 key="export_aggregated_crosslinks_msannika_button",
             )
             if export_aggregated_crosslinks_msannika_button:
@@ -2612,7 +2606,7 @@ def export_tab():
                         type="primary",
                         mime="text/csv",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the exported aggregated crosslinks in MS Annika comma-separated-values (.csv) format.",
                         key="export_aggregated_crosslinks_msannika_download_csv",
                     )
@@ -2629,7 +2623,7 @@ def export_tab():
                         type="primary",
                         mime="application/vnd.ms-excel",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the exported aggregated crosslinks in MS Annika Microsoft Excel (.xlsx) format.",
                         key="export_aggregated_crosslinks_msannika_download_xlsx",
                     )
@@ -2658,7 +2652,7 @@ def export_tab():
             export_aggregated_crosslinks_pyxlinkviewer_button = st.button(
                 "Export to PyXlinkViewer format!",
                 type="primary",
-                use_container_width=True,
+                width="stretch",
                 key="export_aggregated_crosslinks_pyxlinkviewer_button",
             )
             if export_aggregated_crosslinks_pyxlinkviewer_button:
@@ -2727,7 +2721,7 @@ def export_tab():
                     type="primary",
                     mime="text/plain",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Downloads the exported aggregated crosslinks in PyXlinkViewer format.",
                     key="export_aggregated_crosslinks_pyxlinkviewer_download",
                 )
@@ -2748,7 +2742,7 @@ def export_tab():
                         type="primary",
                         mime="text/plain",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the mapping of aggregated crosslinks to the PDB structure.",
                         key="export_aggregated_crosslinks_pyxlinkviewer_download_meta_mapping",
                     )
@@ -2766,7 +2760,7 @@ def export_tab():
                         type="primary",
                         mime="chemical/seq-aa-fasta",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the parsed PDB sequence.",
                         key="export_aggregated_crosslinks_pyxlinkviewer_download_meta_pdb_sequence",
                     )
@@ -2792,7 +2786,7 @@ def export_tab():
                         type="primary",
                         mime="text/csv",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the parsed PDB annotation.",
                         key="export_aggregated_crosslinks_pyxlinkviewer_download_meta_pdb_annotation",
                     )
@@ -2803,7 +2797,7 @@ def export_tab():
                         help="Go to the PyXlinkViewer download page.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
                 )
         # xiNET
@@ -2821,7 +2815,7 @@ def export_tab():
             export_aggregated_crosslinks_xinet_button = st.button(
                 "Export to xiNET!",
                 type="primary",
-                use_container_width=True,
+                width="stretch",
                 key="export_aggregated_crosslinks_xinet_button",
             )
             if export_aggregated_crosslinks_xinet_button:
@@ -2859,7 +2853,7 @@ def export_tab():
                     type="primary",
                     mime="text/csv",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Downloads the exported aggregated crosslinks in xiNET format.",
                     key="export_aggregated_crosslinks_xinet_download",
                 )
@@ -2869,7 +2863,7 @@ def export_tab():
                     help="Go to the xiNET website.",
                     type="primary",
                     icon="🔗",
-                    use_container_width=True,
+                    width="stretch",
                 )
         # xiVIEW
         elif export_aggregated_crosslinks_picker == "xiVIEW":
@@ -2886,7 +2880,7 @@ def export_tab():
             export_aggregated_crosslinks_xiview_button = st.button(
                 "Export to xiVIEW!",
                 type="primary",
-                use_container_width=True,
+                width="stretch",
                 key="export_aggregated_crosslinks_xiview_button",
             )
             if export_aggregated_crosslinks_xiview_button:
@@ -2924,7 +2918,7 @@ def export_tab():
                     type="primary",
                     mime="text/csv",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Downloads the exported aggregated crosslinks in xiVIEW format.",
                     key="export_aggregated_crosslinks_xiview_download",
                 )
@@ -2934,7 +2928,7 @@ def export_tab():
                     help="Go to the xiVIEW website.",
                     type="primary",
                     icon="🔗",
-                    use_container_width=True,
+                    width="stretch",
                 )
         # XlinkDB
         elif export_aggregated_crosslinks_picker == "XlinkDB":
@@ -2951,7 +2945,7 @@ def export_tab():
             export_aggregated_crosslinks_xlinkdb_button = st.button(
                 "Export to XlinkDB!",
                 type="primary",
-                use_container_width=True,
+                width="stretch",
                 key="export_aggregated_crosslinks_xlinkdb_button",
             )
             if export_aggregated_crosslinks_xlinkdb_button:
@@ -2990,7 +2984,7 @@ def export_tab():
                     type="primary",
                     mime="text/csv",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Downloads the exported aggregated crosslinks in XlinkDB format.",
                     key="export_aggregated_crosslinks_xlinkdb_download",
                 )
@@ -3001,7 +2995,7 @@ def export_tab():
                         help="Go to the XlinkDB website.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
                 )
         # xlms-tools
@@ -3029,7 +3023,7 @@ def export_tab():
             export_aggregated_crosslinks_xlmstools_button = st.button(
                 "Export to xlms-tools format!",
                 type="primary",
-                use_container_width=True,
+                width="stretch",
                 key="export_aggregated_crosslinks_xlmstools_button",
             )
             if export_aggregated_crosslinks_xlmstools_button:
@@ -3103,7 +3097,7 @@ def export_tab():
                     type="primary",
                     mime="text/plain",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Downloads the exported aggregated crosslinks in xlms-tools format.",
                     key="export_aggregated_crosslinks_xlmstools_download",
                 )
@@ -3124,7 +3118,7 @@ def export_tab():
                         type="primary",
                         mime="text/plain",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the mapping of aggregated crosslinks to the PDB structure.",
                         key="export_aggregated_crosslinks_xlmstools_download_meta_mapping",
                     )
@@ -3142,7 +3136,7 @@ def export_tab():
                         type="primary",
                         mime="chemical/seq-aa-fasta",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the parsed PDB sequence.",
                         key="export_aggregated_crosslinks_xlmstools_download_meta_pdb_sequence",
                     )
@@ -3168,7 +3162,7 @@ def export_tab():
                         type="primary",
                         mime="text/csv",
                         icon=":material/download:",
-                        use_container_width=True,
+                        width="stretch",
                         help="Downloads the parsed PDB annotation.",
                         key="export_aggregated_crosslinks_xlmstools_download_meta_pdb_annotation",
                     )
@@ -3179,7 +3173,7 @@ def export_tab():
                         help="Go to the xlms-tools project page.",
                         type="primary",
                         icon="🔗",
-                        use_container_width=True,
+                        width="stretch",
                     )
                 )
         # XMAS
@@ -3187,7 +3181,7 @@ def export_tab():
             export_aggregated_crosslinks_xmas_button = st.button(
                 "Export to XMAS format!",
                 type="primary",
-                use_container_width=True,
+                width="stretch",
                 key="export_aggregated_crosslinks_xmas_button",
             )
             if export_aggregated_crosslinks_xmas_button:
@@ -3225,7 +3219,7 @@ def export_tab():
                     type="primary",
                     mime="application/vnd.ms-excel",
                     icon=":material/download:",
-                    use_container_width=True,
+                    width="stretch",
                     help="Downloads the exported aggregated crosslinks in XMAS format.",
                     key="export_aggregated_crosslinks_xmas_download",
                 )
@@ -3235,7 +3229,7 @@ def export_tab():
                     help="Go to the XMAS project page.",
                     type="primary",
                     icon="🔗",
-                    use_container_width=True,
+                    width="stretch",
                 )
         else:
             pass
@@ -3304,7 +3298,7 @@ def about_tab():
             url="https://github.com/hgb-bin-proteomics/pyXLMS",
             type="primary",
             help="Link to the pyXLMS GitHub page.",
-            use_container_width=True,
+            width="stretch",
         )
 
     with center_1:
@@ -3313,7 +3307,7 @@ def about_tab():
             url="https://hgb-bin-proteomics.github.io/pyXLMS-docs",
             type="primary",
             help="Link to the pyXLMS user guide page.",
-            use_container_width=True,
+            width="stretch",
         )
 
     with r1:
@@ -3322,7 +3316,7 @@ def about_tab():
             url="https://hgb-bin-proteomics.github.io/pyXLMS",
             type="primary",
             help="Link to the pyXLMS documentation page.",
-            use_container_width=True,
+            width="stretch",
         )
 
 
@@ -3398,7 +3392,7 @@ def main():
         url="https://pyxlms.vercel.app/docs/webapp",
         type="secondary",
         # help="Link to the pyXLMS webapp documentation page.",
-        use_container_width=True,
+        width="stretch",
     )
 
     version_info = st.sidebar.markdown(
