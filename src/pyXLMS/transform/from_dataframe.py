@@ -16,6 +16,7 @@ from ..parser.parser_xldbse_custom import __get_value
 from ..parser.parser_xldbse_custom import pyxlms_modification_str_parser
 from ..parser.util import format_sequence
 from ..parser.util import get_bool_from_value
+from ..parser.util import __serialize_pandas_series
 
 from typing import Optional
 from typing import Dict
@@ -207,6 +208,7 @@ def from_dataframe(
                 else None,
                 decoy_b=get_is_decoy_value(row, decoy_prefix, False),
                 score=get_float(__get_value(row, "Crosslink Score")),
+                additional_information={"source": __serialize_pandas_series(row)},
             )
             crosslinks.append(crosslink)
         return crosslinks
@@ -291,6 +293,7 @@ def from_dataframe(
             charge=get_int(__get_value(row, "Precursor Charge")),
             rt=get_float(__get_value(row, "Retention Time")),
             im_cv=get_float(__get_value(row, "Ion Mobility")),
+            additional_information={"source": __serialize_pandas_series(row)},
         )
         csms.append(csm)
     return csms

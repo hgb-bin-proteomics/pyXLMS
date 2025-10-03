@@ -17,6 +17,7 @@ from ..data import create_parser_result
 from ..constants import SCOUT_MODIFICATION_MAPPING
 from .util import format_sequence
 from .util import get_bool_from_value
+from .util import __serialize_pandas_series
 
 from typing import Optional
 from typing import BinaryIO
@@ -274,6 +275,7 @@ def __read_scout_csms_unfiltered(
             rt=None,
             im_cv=None,
             additional_information={
+                "source": __serialize_pandas_series(row),
                 "ClassificationScore": float(row["ClassificationScore"]),
                 "XlinkxAlpha": float(row["XlinkxAlpha"]),
                 "XlinkxBeta": float(row["XlinkxBeta"]),
@@ -480,6 +482,7 @@ def __read_scout_csms_filtered(
             charge=int(row["Precursor charge"]),
             rt=None,
             im_cv=None,
+            additional_information={"source": __serialize_pandas_series(row)},
         )
         csms.append(csm)
     return csms
@@ -529,6 +532,7 @@ def __read_scout_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
             ],
             decoy_b=get_bool_from_value(row["IsDecoy"]),
             score=float(row["Score"]),
+            additional_information={"source": __serialize_pandas_series(row)},
         )
         crosslinks.append(crosslink)
     return crosslinks

@@ -937,7 +937,7 @@ wheels = [
 
 [[package]]
 name = "pyxlms"
-version = "1.4.3"
+version = "1.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "biopandas" },
@@ -947,12 +947,13 @@ dependencies = [
     { name = "numpy" },
     { name = "openpyxl" },
     { name = "pandas" },
+    { name = "pyarrow" },
     { name = "pyteomics", extra = ["xml"] },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/48/0c/0737f26f24c10404ac4432cb7a1a3b861193e7d0498c6f6e0b3278210f37/pyxlms-1.4.3.tar.gz", hash = "sha256:b720137259790589be72687cb868135a59f6a79146d88090f490ca28b942575d", size = 133344, upload-time = "2025-08-18T11:47:08.767Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/ad/15c3f56dd1eb33dc4e604d6096cab5bf98658b1c1e4ace3e3727aa4a3bb1/pyxlms-1.5.2.tar.gz", hash = "sha256:224c4620ef3ef51962e6d3823915169ef591ba7b7a36aca40570d06b2bc808c1", size = 139334, upload-time = "2025-09-26T16:44:56.863Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/83/3c/3ef297878a0aa8b24e7410f608b900702252acd46d87d63ab424d4ffe5c0/pyxlms-1.4.3-py3-none-any.whl", hash = "sha256:a9668636815d0fda53d1bae3a6454b0f5a7c4b105f299753e5c5ca98c96fff6c", size = 129726, upload-time = "2025-08-18T11:47:07.239Z" },
+    { url = "https://files.pythonhosted.org/packages/8d/a1/9db7908973d1b4594f66751f84058aa4272c89c70c8b228fef6f8aa855c0/pyxlms-1.5.2-py3-none-any.whl", hash = "sha256:e5942408b88bf3700da09a698e3708ea320c9be9b70588ebc7008b9172f5753d", size = 132886, upload-time = "2025-09-26T16:44:54.998Z" },
 ]
 
 [[package]]
@@ -967,8 +968,8 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "pyxlms", specifier = ">=1.4.3" },
-    { name = "streamlit", specifier = ">=1.49.0" },
+    { name = "pyxlms", specifier = ">=1.5.2" },
+    { name = "streamlit", specifier = ">=1.50.0" },
     { name = "xlsxwriter", specifier = ">=3.2.5" },
 ]
 
@@ -1167,7 +1168,7 @@ wheels = [
 
 [[package]]
 name = "streamlit"
-version = "1.49.0"
+version = "1.50.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "altair" },
@@ -1189,9 +1190,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "watchdog", marker = "sys_platform != 'darwin'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6a/06/cab0f4dcc7c092489b0ec0600fedbc3ffb219d6f1ab0d1878451a39c3da1/streamlit-1.49.0.tar.gz", hash = "sha256:22b48f9065435816405129c03e365725cc73759ed17c0efa929d40b4531f8bb0", size = 9640747, upload-time = "2025-08-26T19:40:48.33Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/f6/f7d3a0146577c1918439d3163707040f7111a7d2e7e2c73fa7adeb169c06/streamlit-1.50.0.tar.gz", hash = "sha256:87221d568aac585274a05ef18a378b03df332b93e08103fffcf3cd84d852af46", size = 9664808, upload-time = "2025-09-23T19:24:00.31Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8c/9d/fe78a94ca379aa80e0e14900ce0e6276d339710a11039ad8700dc66a8014/streamlit-1.49.0-py3-none-any.whl", hash = "sha256:4defc9bcdaa6ee214ce25c1a8f660bcc410293a9e78a82251938793c8694a5ee", size = 10044260, upload-time = "2025-08-26T19:40:45.533Z" },
+    { url = "https://files.pythonhosted.org/packages/2a/38/991bbf9fa3ed3d9c8e69265fc449bdaade8131c7f0f750dbd388c3c477dc/streamlit-1.50.0-py3-none-any.whl", hash = "sha256:9403b8f94c0a89f80cf679c2fcc803d9a6951e0fba542e7611995de3f67b4bb3", size = 10068477, upload-time = "2025-09-23T19:23:57.245Z" },
 ]
 
 [[package]]

@@ -19,6 +19,7 @@ from ..data import create_parser_result
 from ..constants import MODIFICATIONS
 from .util import format_sequence
 from .util import get_bool_from_value
+from .util import __serialize_pandas_series
 
 from typing import BinaryIO
 from typing import Dict
@@ -56,7 +57,7 @@ def __check_positions_okay(positions: List[int]) -> bool:
     return True
 
 
-def __read_msannika_pdresult(filename: str) -> List[pd.DataFrame]:
+def __read_msannika_pdresult(filename: str, drop: bool = False) -> List[pd.DataFrame]:
     r"""Read an MS Annika pdResult file and convert it to standard MS Annika result tables.
 
     Reads an MS Annika pdResult file and converts it to standard MS Annika CSM and crosslink
@@ -66,6 +67,9 @@ def __read_msannika_pdresult(filename: str) -> List[pd.DataFrame]:
     ----------
     filename : str
         Filename/path of the pdResult file.
+    drop : bool, default = False
+        Whether or not the not-needed columns should be dropped.
+        Defaults to not dropping not-needed columns.
 
     Returns
     -------
@@ -116,18 +120,21 @@ def __read_msannika_pdresult(filename: str) -> List[pd.DataFrame]:
     }
     csms.rename(columns=column_mapping_csms, inplace=True)
     xls.rename(columns=column_mapping_xls, inplace=True)
-    csms.drop(
-        columns=list(
-            set(csms.columns.values.tolist()) - set(list(column_mapping_csms.values()))
-        ),
-        inplace=True,
-    )
-    xls.drop(
-        columns=list(
-            set(xls.columns.values.tolist()) - set(list(column_mapping_xls.values()))
-        ),
-        inplace=True,
-    )
+    if drop:
+        csms.drop(
+            columns=list(
+                set(csms.columns.values.tolist())
+                - set(list(column_mapping_csms.values()))
+            ),
+            inplace=True,
+        )
+        xls.drop(
+            columns=list(
+                set(xls.columns.values.tolist())
+                - set(list(column_mapping_xls.values()))
+            ),
+            inplace=True,
+        )
     return [csms, xls]
 
 
@@ -399,6 +406,9 @@ def read_msannika(
                         xl_position_proteins_b=xl_position_proteins_b,
                         decoy_b=get_bool_from_value(row["Decoy"]),
                         score=float(row["Best CSM Score"]),
+                        additional_information={
+                            "source": __serialize_pandas_series(row)
+                        },
                     )
                     crosslinks.append(crosslink)
             else:
@@ -516,6 +526,9 @@ def read_msannika(
                         charge=int(row["Charge"]),
                         rt=float(row["RT [min]"]) * 60.0,
                         im_cv=float(row["Compensation Voltage"]),
+                        additional_information={
+                            "source": __serialize_pandas_series(row)
+                        },
                     )
                     csms.append(csm)
     ## check results
