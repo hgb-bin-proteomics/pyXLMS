@@ -363,6 +363,13 @@ def input_tab():
             + "If parsing fails it is safer to leave option 'parse_modifications' turned off! More nuanced control "
             + "for additional and custom modifications is available in the pyXLMS python package!"
         )
+        parse_modifications_info = st.info(
+            "Lists of currently supported modifications for "
+            + "[MeroX](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.constants.MEROX_MODIFICATION_MAPPING), "
+            + "[Scout](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.constants.SCOUT_MODIFICATION_MAPPING), "
+            + "[xiSearch/xiFDR](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.constants.XI_MODIFICATION_MAPPING), "
+            + "and [all other search engines](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.constants.MODIFICATIONS)."
+        )
 
     crosslinker_name = None
     crosslinker_mass = None
