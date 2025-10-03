@@ -17,6 +17,7 @@ from ..data import create_crosslink
 from ..data import create_parser_result
 from ..constants import MODIFICATIONS
 from .util import format_sequence
+from .util import __serialize_pandas_series
 
 from typing import Optional
 from typing import BinaryIO
@@ -589,6 +590,7 @@ def read_plink(
                     xl_position_proteins_b=parsed_positions["proteins_b_xl_positions"],
                     decoy_b=decoy_prefix in " ".join(parsed_positions["proteins_b"]),
                     score=None,
+                    additional_information={"source": __serialize_pandas_series(row)},
                 )
                 crosslinks.append(crosslink)
         else:
@@ -659,6 +661,7 @@ def read_plink(
                     rt=None,
                     im_cv=None,
                     additional_information={
+                        "source": __serialize_pandas_series(row),
                         "Evalue": float(row["Evalue"]),
                         "Alpha_Evalue": float(row["Alpha_Evalue"]),
                         "Beta_Evalue": float(row["Beta_Evalue"]),

@@ -14,6 +14,7 @@ from ..data import create_csm
 from ..data import create_parser_result
 from ..constants import MODIFICATIONS
 from .util import format_sequence
+from .util import __serialize_pandas_series
 
 from typing import Optional
 from typing import BinaryIO
@@ -300,6 +301,7 @@ def read_maxquant(
                 rt=None,
                 im_cv=None,
                 additional_information={
+                    "source": __serialize_pandas_series(row),
                     "Proteins1": str(row["Proteins1"]).strip(),
                     "Proteins2": str(row["Proteins2"]).strip(),
                     "Delta score": float(row["Delta score"]),

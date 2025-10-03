@@ -19,6 +19,7 @@ from ..data import create_parser_result
 from ..constants import MODIFICATIONS
 from .util import format_sequence
 from .util import get_bool_from_value
+from .util import __serialize_pandas_series
 
 from typing import Optional
 from typing import BinaryIO
@@ -34,7 +35,7 @@ except ImportError:
     from typing_extensions import Literal
 
 
-def __read_xlinkx_pdresult(filename: str) -> List[pd.DataFrame]:
+def __read_xlinkx_pdresult(filename: str, drop: bool = False) -> List[pd.DataFrame]:
     r"""Read an XlinkX pdResult file and convert it to standard XlinkX result tables.
 
     Reads an XlinkX pdResult file and converts it to standard XlinkX CSM and crosslink
@@ -44,6 +45,9 @@ def __read_xlinkx_pdresult(filename: str) -> List[pd.DataFrame]:
     ----------
     filename : str
         Filename/path of the pdResult file.
+    drop : bool, default = False
+        Whether or not the not-needed columns should be dropped.
+        Defaults to not dropping not-needed columns.
 
     Returns
     -------
@@ -93,24 +97,28 @@ def __read_xlinkx_pdresult(filename: str) -> List[pd.DataFrame]:
     csms.rename(columns=column_mapping_csms, inplace=True)
     dcsms.rename(columns=column_mapping_csms, inplace=True)
     xls.rename(columns=column_mapping_xls, inplace=True)
-    csms.drop(
-        columns=list(
-            set(csms.columns.values.tolist()) - set(list(column_mapping_csms.values()))
-        ),
-        inplace=True,
-    )
-    dcsms.drop(
-        columns=list(
-            set(dcsms.columns.values.tolist()) - set(list(column_mapping_csms.values()))
-        ),
-        inplace=True,
-    )
-    xls.drop(
-        columns=list(
-            set(xls.columns.values.tolist()) - set(list(column_mapping_xls.values()))
-        ),
-        inplace=True,
-    )
+    if drop:
+        csms.drop(
+            columns=list(
+                set(csms.columns.values.tolist())
+                - set(list(column_mapping_csms.values()))
+            ),
+            inplace=True,
+        )
+        dcsms.drop(
+            columns=list(
+                set(dcsms.columns.values.tolist())
+                - set(list(column_mapping_csms.values()))
+            ),
+            inplace=True,
+        )
+        xls.drop(
+            columns=list(
+                set(xls.columns.values.tolist())
+                - set(list(column_mapping_xls.values()))
+            ),
+            inplace=True,
+        )
     return [csms, dcsms, xls]
 
 
@@ -400,6 +408,9 @@ def read_xlinkx(
                         ],
                         decoy_b=get_bool_from_value(row["Is Decoy"]),
                         score=float(row["Max. XlinkX Score"]),
+                        additional_information={
+                            "source": __serialize_pandas_series(row)
+                        },
                     )
                     crosslinks.append(crosslink)
             else:
@@ -488,6 +499,9 @@ def read_xlinkx(
                         charge=int(row["Charge"]),
                         rt=float(row["RT [min]"]) * 60.0,
                         im_cv=None,
+                        additional_information={
+                            "source": __serialize_pandas_series(row)
+                        },
                     )
                     csms.append(csm)
     ## check results
