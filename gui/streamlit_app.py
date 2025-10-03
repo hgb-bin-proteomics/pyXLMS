@@ -249,6 +249,21 @@ def input_tab():
         help="Upload a cross-linking result file from any of the supported search engines or formats.",
     )
 
+    with st.popover(
+        "Unsure which file to upload? Click me!",
+        help="Display help for file selection.",
+        icon="💡",
+        width="stretch",
+    ):
+        uploaded_file_description = """
+        - ➡️ Check out this 🔗[**overview**](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/supported_io.md)
+        on supported input and output formats.
+        - ➡️ In our GitHub repository you can also find 🔗[**example files**](https://github.com/hgb-bin-proteomics/pyXLMS/tree/master/data).
+        - ➡️ If you need any further help, visit the web application guide which you can find 🔗[**here**](https://pyxlms.vercel.app/docs/webapp).
+        - ➡️ Still stuck? Please 📩[**send us a message**](https://github.com/hgb-bin-proteomics/pyXLMS?tab=readme-ov-file#contact).
+        """
+        uploaded_file_helper = st.markdown(uploaded_file_description)
+
     l1, r1 = st.columns(2)
 
     with l1:
