@@ -39,7 +39,7 @@ dependencies = [
 
 [project.optional-dependencies]
 gui = [
-  "streamlit",
+  "streamlit>=1.50.0",
   "xlsxwriter"
 ]
 docs = [
