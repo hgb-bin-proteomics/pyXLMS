@@ -48,7 +48,7 @@ from typing import Set
 from typing import Any
 
 
-__version__ = "1.1.3"
+__version__ = "1.1.4"
 
 
 @st.cache_data
@@ -475,6 +475,11 @@ def input_tab():
 
     # read in all inputs
     if read_file_button:
+        # reset pr and aggregated on file read
+        if "pr" in st.session_state:
+            del st.session_state["pr"]
+        if "aggregated" in st.session_state:
+            del st.session_state["aggregated"]
         # reset any exported files
         # CSMs
         st.session_state["export_csms_impxfdr"] = None
