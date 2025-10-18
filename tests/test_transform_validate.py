@@ -137,10 +137,7 @@ def test6():
         crosslinker="DSS",
     )
 
-    err_str = (
-        r"Parameter 'score' has to be one of 'higher_better' or 'lower_better'! If two identical crosslinks or crosslink-spectrum"
-        r"-matches are found, the one with the higher score is kept if 'higher_better' is selected, and vice versa."
-    )
+    err_str = r"Parameter 'score' has to be one of 'higher_better' or 'lower_better'!"
     with pytest.raises(
         TypeError,
         match=err_str,
@@ -179,7 +176,7 @@ def test8():
         crosslinker="DSS",
     )
 
-    err_str = r"Can't estimate FDR with formula '\(TD\-DD\)\/TT' when there are not TD matches! Please select the default formula instead!"
+    err_str = r"Can't estimate FDR with formula '\(TD\-DD\)\/TT' when there are no TD matches! Please select the default formula instead!"
     with pytest.raises(
         ValueError,
         match=err_str,
