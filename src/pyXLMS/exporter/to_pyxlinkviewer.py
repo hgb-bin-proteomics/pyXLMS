@@ -461,7 +461,7 @@ def to_pyxlinkviewer(
     ValueError
         If parameter min_sequence_identity is out of bounds.
     ValueError
-        If the provided data contains no elements.
+        If the provided crosslinks contain no elements.
 
     Examples
     --------
