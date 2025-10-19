@@ -36,7 +36,7 @@ def __get_proteins_and_positions(
     r"""Retrieve matching protein chains and peptide positions for a specific peptide.
 
     Matches the specified peptide against the given protein database and returns all protein chains
-    that contain the peptides, as well as the corresponding peptide positions in those protein chains.
+    that contain the peptide, as well as the corresponding peptide positions in those protein chains.
     Uses 0-based indexing.
 
     Parameters
@@ -45,7 +45,7 @@ def __get_proteins_and_positions(
         Unmodified peptide sequence.
     protein_db : dict of dict of str, str
         A dictionary that maps protein chain ids to their fasta entries, which are dictionaries
-        that map key "header" to the sequence header and "sequence" to the sequence.
+        that map key "header" to the sequence header and key "sequence" to the sequence.
 
     Returns
     -------
@@ -68,7 +68,7 @@ def __get_proteins_and_positions(
     proteins = list()
     positions = list()
     for chain, item in protein_db.items():
-        seq = item["sequence"] 
+        seq = item["sequence"]
         if peptide in seq:
             for match in re.finditer(peptide, seq):
                 proteins.append(chain)
@@ -78,12 +78,13 @@ def __get_proteins_and_positions(
     return (proteins, positions)
 
 
-def __protein_supported_by_crosslink(sequence: str, crosslinks: List[Dict[str, Any]]) -> bool:
-    r"""Retrieve matching protein chains and peptide positions for a specific peptide.
-
-    Matches the specified peptide against the given protein database and returns all protein chains
-    that contain the peptides, as well as the corresponding peptide positions in those protein chains.
-    Uses 0-based indexing.
+def __protein_supported_by_crosslink(
+    sequence: str, crosslinks: List[Dict[str, Any]]
+) -> bool:
+    r"""Check if a specific protein is supported by any of the given crosslinks.
+    
+    Checks if a specific protein that is given by its sequence is supported by any of the input
+    crosslinks.
 
     Parameters
     ----------
@@ -116,28 +117,30 @@ def to_alphalink2(
     try_use_annotated_fdr: bool = True,
     filename_prefix: Optional[str] = None,
 ) -> Dict[str, Any]:
-    r"""Reannotates protein crosslink positions for a given fasta file.
+    r"""Exports a list of crosslinks to AlphaLink2 format.
 
-    Reannotates the crosslink and peptide positions of the given cross-linked peptide pair and
-    the specified fasta file. Takes a list of crosslink-spectrum-matches or crosslinks, or a
-    parser_result as input.
+    Exports a list of crosslinks to AlphaLink2 format. The tool AlphaLink2 is accessible
+    via the link
+    `github.com/Rappsilber-Laboratory/AlphaLink2 <https://github.com/Rappsilber-Laboratory/AlphaLink2>`_.
 
     Parameters
     ----------
-    data : list of dict of str, any, or dict of str, any
-        A list of crosslink-spectrum-matches or crosslinks to annotate, or a parser_result.
+    crosslinks : list of dict of str, any
+        A list of crosslinks to export.
     fasta : str, or file stream
         The name/path of the fasta file containing protein sequences or a file-like object/stream.
-    title_to_accession : callable, or None, default = None
-        A function that parses the protein accession from the fasta title/header. If None (default)
-        the function ``fasta_title_to_accession`` is used.
+    annotated_fdr : float, or list of float, default = 0.01
+        DESC
+    try_use_annotated_fdr : bool, default = True
+        DESC
+    filename_prefix : str, or None, default = None
+        If not None, the exported data will be written to files with the specified filename prefix.
+        The full list of written files can be accessed via the returned dictionary.
 
     Returns
     -------
-    list of dict of str, any, or dict of str, any
-        If a list of crosslink-spectrum-matches or crosslinks was provided, a list of annotated
-        crosslink-spectrum-matches or crosslinks is returned. If a parser_result was provided,
-        an annotated parser_result will be returned.
+    dict of str, any
+        DESC
 
     Raises
     ------
@@ -190,19 +193,35 @@ def to_alphalink2(
         for item in SimpleFastaParser(fasta):
             fasta_items.append(item)
     if len(fasta_items) > len(CHAINS):
-        raise IndexError("Found more than the supported 62 proteins/chains in the fasta file! Please trim fasta file to a maximum of 62 sequences!")
+        raise IndexError(
+            "Found more than the supported 62 proteins/chains in the fasta file! Please trim fasta file to a maximum of 62 sequences!"
+        )
     id = 0
     for item in fasta_items:
         if __protein_supported_by_crosslink(item[1], crosslinks):
             protein_db[CHAINS[id]] = {"header": item[0], "sequence": item[1]}
             id += 1
     # prepare fdr values
-    fdr_values = annotated_fdr if isinstance(annotated_fdr, list) else [annotated_fdr for xl in crosslinks]
+    fdr_values = (
+        annotated_fdr
+        if isinstance(annotated_fdr, list)
+        else [annotated_fdr for xl in crosslinks]
+    )
     # output
     alphalink2_txt = ""
-    alphalink2_df_dict = {"residueFrom": [], "chain1": [], "residueTo": [], "chain2": [], "FDR": []}
+    alphalink2_df_dict = {
+        "residueFrom": [],
+        "chain1": [],
+        "residueTo": [],
+        "chain2": [],
+        "FDR": [],
+    }
     # export crosslinks
-    for id, xl in tqdm(enumerate(crosslinks), total=len(crosslinks), desc="Exporting crosslinks to AlphaLink2..."):
+    for id, xl in tqdm(
+        enumerate(crosslinks),
+        total=len(crosslinks),
+        desc="Exporting crosslinks to AlphaLink2...",
+    ):
         proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(
             xl["alpha_peptide"], protein_db
         )
@@ -211,16 +230,24 @@ def to_alphalink2(
         )
         for i in range(len(proteins_a)):
             for j in range(len(proteins_b)):
-                residueFrom = pep_position0_proteins_a[i] + xl["alpha_peptide_crosslink_position"]
+                residueFrom = (
+                    pep_position0_proteins_a[i] + xl["alpha_peptide_crosslink_position"]
+                )
                 chain1 = proteins_a[i]
-                residueTo = pep_position0_proteins_b[j] + xl["beta_peptide_crosslink_position"]
+                residueTo = (
+                    pep_position0_proteins_b[j] + xl["beta_peptide_crosslink_position"]
+                )
                 chain2 = proteins_b[j]
                 FDR = fdr_values[id]
                 if try_use_annotated_fdr:
                     if xl["additional_information"] is not None:
                         if "pyXLMS_annotated_FDR" in xl["additional_information"]:
-                            if not pd.isna(xl["additional_information"]["pyXLMS_annotated_FDR"]):
-                                FDR = xl["additional_information"]["pyXLMS_annotated_FDR"]
+                            if not pd.isna(
+                                xl["additional_information"]["pyXLMS_annotated_FDR"]
+                            ):
+                                FDR = xl["additional_information"][
+                                    "pyXLMS_annotated_FDR"
+                                ]
                 alphalink2_df_dict["residueFrom"].append(residueFrom)
                 alphalink2_df_dict["chain1"].append(chain1)
                 alphalink2_df_dict["residueTo"].append(residueTo)
@@ -249,5 +276,5 @@ def to_alphalink2(
         "AlphaLink2 crosslinks": alphalink2_txt,
         "AlphaLink2 FASTA": alphalink2_fasta,
         "AlphaLink2 DataFrame": alphalink2_df,
-        "Exported files": exported_files
+        "Exported files": exported_files,
     }
