@@ -129,6 +129,7 @@ def to_alphalink2(
         A list of crosslinks to export.
     fasta : str, or file stream
         The name/path of the fasta file containing protein sequences or a file-like object/stream.
+        Please keep in mind that AlphaLink2 supports a maximum of 62 proteins/chains!
     annotated_fdr : float, or list of float, default = 0.01
         DESC
     try_use_annotated_fdr : bool, default = True
@@ -140,12 +141,29 @@ def to_alphalink2(
     Returns
     -------
     dict of str, any
-        DESC
+        Returns a dictionary with key ``AlphaLink2 crosslinks`` containing the formatted crosslink input for AlphaLink2,
+        with key ``AlphaLink2 FASTA`` containing the FASTA file content for AlphaLink2,
+        with key ``AlphaLink2 DataFrame`` containing the exported crosslinks as a pandas DataFrame,
+        and with key ``Exported files`` containing a list of filenames of all files that were
+        written to disk.
 
     Raises
     ------
     TypeError
         If a wrong data type is provided.
+    ValueError
+        If the provided crosslinks contain no elements.
+    ValueError
+        If the length of annotated_fdr does not match the length of the input crosslinks.
+        Only applies if annotated_fdr is given as a list.
+    IndexError
+        If the provided crosslinks match to more than 62 proteins/chains in the FASTA file.
+
+    Notes
+    -----
+    Please note that the legacy PDB format and therefore also AlphaLink2 only supports a maximum
+    of 62 proteins/chains. If crosslinks of more than 62 proteins/chains are given, an error will
+    be thrown!
 
     Examples
     --------
