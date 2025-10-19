@@ -32,7 +32,7 @@ def __get_proteins_and_positions(
     r"""Retrieve matching proteins and peptide positions for a specific peptide.
 
     Matches the specified peptide against the given protein database and returns all proteins
-    that contain the peptides, as well as the corresponding peptide positions in those proteins.
+    that contain the peptide, as well as the corresponding peptide positions in those proteins.
     Uses 0-based indexing.
 
     Parameters
