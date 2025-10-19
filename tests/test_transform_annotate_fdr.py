@@ -387,7 +387,7 @@ def test14():
     from pyXLMS.transform import filter_crosslink_type
 
     pr = read(
-        "data/_test/validate/csms.xlsx",
+        "data/_test/validate/csms_25000.xlsx",
         engine="MS Annika",
         crosslinker="DSS",
         unsafe=True,
@@ -425,7 +425,7 @@ def test15():
     from pyXLMS.transform import filter_crosslink_type
 
     pr = read(
-        "data/_test/validate/csms.xlsx",
+        "data/_test/validate/csms_25000.xlsx",
         engine="MS Annika",
         crosslinker="DSS",
         unsafe=True,
