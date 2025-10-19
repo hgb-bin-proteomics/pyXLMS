@@ -82,7 +82,7 @@ def __protein_supported_by_crosslink(
     sequence: str, crosslinks: List[Dict[str, Any]]
 ) -> bool:
     r"""Check if a specific protein is supported by any of the given crosslinks.
-    
+
     Checks if a specific protein that is given by its sequence is supported by any of the input
     crosslinks.
 
@@ -149,18 +149,18 @@ def to_alphalink2(
 
     Examples
     --------
-    >>> from pyXLMS.data import create_crosslink_min
-    >>> from pyXLMS.transform import reannotate_positions
-    >>> xls = [create_crosslink_min("ADANLDK", 7, "GNTDRHSIK", 9)]
-    >>> xls = reannotate_positions(xls, "data/_fasta/Cas9_plus10.fasta")
-    >>> xls[0]["alpha_proteins"]
-    ["Cas9"]
-    >>> xls[0]["alpha_proteins_crosslink_positions"]
-    [1293]
-    >>> xls[0]["beta_proteins"]
-    ["Cas9"]
-    >>> xls[0]["beta_proteins_crosslink_positions"]
-    [48]
+    >>> from pyXLMS.pipelines import pipeline
+    >>> from pyXLMS.transform import filter_proteins
+    >>> from pyXLMS.exporter import to_alphalink2
+    >>> pr = pipeline(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
+    >>> cas9 = filter_proteins(pr["crosslinks"], proteins=["Cas9"])["Both"]
+    >>> _export = to_alphalink2(
+    ...     cas9, fasta="data/_fasta/Cas9_plus10.fasta", filename_prefix="Cas9"
+    ... )
     """
     _ok = check_input(crosslinks, "crosslinks", list, dict)
     _ok = check_input_multi(annotated_fdr, "annotated_fdr", [float, list], float)
