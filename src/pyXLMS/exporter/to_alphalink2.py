@@ -7,21 +7,17 @@
 from __future__ import annotations
 
 import re
-import warnings
 import pandas as pd
 from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
 from ..data import check_input
 from ..data import check_input_multi
-from ..data import create_csm
-from ..data import create_crosslink
-from ..data import create_parser_result
+from ..transform.reannotate_positions import __generate_all_sequences
 from ..transform.util import assert_data_type_same
 
 from typing import Optional
 from typing import BinaryIO
-from typing import Callable
 from typing import Dict
 from typing import Tuple
 from typing import List
@@ -68,11 +64,13 @@ def __get_proteins_and_positions(
     proteins = list()
     positions = list()
     for chain, item in protein_db.items():
-        seq = item["sequence"]
-        if peptide in seq:
-            for match in re.finditer(peptide, seq):
-                proteins.append(chain)
-                positions.append(match.start())
+        base_seq = item["sequence"]
+        seqs = __generate_all_sequences(base_seq)
+        for seq in seqs:
+            if peptide in seq:
+                for match in re.finditer(peptide, seq):
+                    proteins.append(chain)
+                    positions.append(match.start())
     if len(proteins) == 0:
         raise RuntimeError(f"No match found for peptide {peptide}!")
     return (proteins, positions)
