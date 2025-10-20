@@ -350,6 +350,16 @@ def test18():
     assert len(set(__generate_all_sequences("PXXB"))) == x * x * 2
     assert len(set(__generate_all_sequences("PXXBJ"))) == x * x * 2 * 2
     assert len(set(__generate_all_sequences("PXXBJZ"))) == x * x * 2 * 2 * 2
+    assert len(set(__generate_all_sequences("X"))) == x
+    assert len(set(__generate_all_sequences("XX"))) == x * x
+    assert len(set(__generate_all_sequences("XXB"))) == x * x * 2
+    assert len(set(__generate_all_sequences("XXBJ"))) == x * x * 2 * 2
+    assert len(set(__generate_all_sequences("XXBJZ"))) == x * x * 2 * 2 * 2
+    assert len(set(__generate_all_sequences("PXP"))) == x
+    assert len(set(__generate_all_sequences("PXPX"))) == x * x
+    assert len(set(__generate_all_sequences("PXXPB"))) == x * x * 2
+    assert len(set(__generate_all_sequences("PXXBPJ"))) == x * x * 2 * 2
+    assert len(set(__generate_all_sequences("PPXXBJZ"))) == x * x * 2 * 2 * 2
 
 
 def test19():
