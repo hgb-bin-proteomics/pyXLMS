@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# 2024 (c) Micha Johannes Birklbauer
+# 2025 (c) Micha Johannes Birklbauer
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
@@ -100,11 +100,13 @@ def __protein_supported_by_crosslink(
     -----
     This function should not be called directly, it is called from ``to_alphalink2()``.
     """
-    for crosslink in crosslinks:
-        if crosslink["alpha_peptide"] in sequence:
-            return True
-        if crosslink["beta_peptide"] in sequence:
-            return True
+    seqs = __generate_all_sequences(sequence)
+    for seq in seqs:
+        for crosslink in crosslinks:
+            if crosslink["alpha_peptide"] in seq:
+                return True
+            if crosslink["beta_peptide"] in seq:
+                return True
     return False
 
 
@@ -129,9 +131,15 @@ def to_alphalink2(
         The name/path of the fasta file containing protein sequences or a file-like object/stream.
         Please keep in mind that AlphaLink2 supports a maximum of 62 proteins/chains!
     annotated_fdr : float, or list of float, default = 0.01
-        DESC
+        Value(s) to use for the "FDR" column in the AlphaLink2 crosslink table. If a single float value
+        is given, all crosslinks will be annotated with that constant FDR value. If a list of floats is
+        given, it should be of equal length as the crosslinks and correspondingly contain FDR values for
+        all crosslinks in the same order, e.g. the FDR value for the first crosslink should be the first
+        value in the list as well, the second for the second crosslink, and so forth.
     try_use_annotated_fdr : bool, default = True
-        DESC
+        If pyXLMS annotated FDR - e.g. via ``transform.annotate_fdr()`` - should be used for the "FDR"
+        column in the AlphaLink2 crosslink table, if available. This will override the values given via
+        parameter ``annotated_fdr`` and should be ``False`` if you are passing a custom list of FDR values!
     filename_prefix : str, or None, default = None
         If not None, the exported data will be written to files with the specified filename prefix.
         The full list of written files can be accessed via the returned dictionary.
