@@ -12,7 +12,6 @@ def test1():
     from pyXLMS.constants import AMINO_ACIDS
 
     assert "A" in AMINO_ACIDS
-    assert "B" not in AMINO_ACIDS
 
 
 def test2():
@@ -77,3 +76,9 @@ def test8():
         "B": {"Amino Acid": "C", "Modification": ("Carbamidomethyl", 57.021464)},
         "m": {"Amino Acid": "M", "Modification": ("Oxidation", 15.994915)},
     }
+
+
+def test9():
+    from pyXLMS.constants import AMINO_ACIDS_REPLACEMENTS
+
+    assert "X" in AMINO_ACIDS_REPLACEMENTS

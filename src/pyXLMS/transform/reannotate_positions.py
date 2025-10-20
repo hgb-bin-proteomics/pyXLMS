@@ -11,6 +11,7 @@ import warnings
 from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
+from ..constants import AMINO_ACIDS_REPLACEMENTS
 from ..data import check_input
 from ..data import create_csm
 from ..data import create_crosslink
@@ -26,13 +27,53 @@ from typing import List
 from typing import Any
 
 
+def __generate_all_sequences(sequence: str) -> List[str]:
+    r"""Generates all possible amino acid sequences for a given amino acid sequence if it contains placeholder amino acids.
+
+    Generates all possible amino acid sequences for a given amino acid sequence if it contains placeholder amino acids. Has no
+    effect on amino acid sequences that do not contain placeholder amino acids.
+
+    Parameters
+    ----------
+    sequence : str
+        The amino acid sequence of a peptide or protein that the generation should be based on.
+
+    Returns
+    -------
+    list of str
+        List of generated amino acid sequences without placeholders. If the original sequence did not contain
+        any placeholder amino acids, the list will only contain the original sequence.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``__get_proteins_and_positions()``.
+    """
+    sequence_needs_generation = False
+    for one_letter_code in AMINO_ACIDS_REPLACEMENTS:
+        if one_letter_code in sequence:
+            sequence_needs_generation = True
+            break
+    if not sequence_needs_generation:
+        return [sequence]
+    all_sequences = [sequence]
+    for one_letter_code, replacements in AMINO_ACIDS_REPLACEMENTS.items():
+        occurences = sequence.count(one_letter_code)
+        for i in range(occurences):
+            all_sequences = [
+                seq.replace(one_letter_code, replacement, 1)
+                for seq in all_sequences
+                for replacement in replacements
+            ]
+    return all_sequences
+
+
 def __get_proteins_and_positions(
     peptide: str, protein_db: Dict[str, str]
 ) -> Tuple[List[str], List[int]]:
     r"""Retrieve matching proteins and peptide positions for a specific peptide.
 
     Matches the specified peptide against the given protein database and returns all proteins
-    that contain the peptides, as well as the corresponding peptide positions in those proteins.
+    that contain the peptide, as well as the corresponding peptide positions in those proteins.
     Uses 0-based indexing.
 
     Parameters
@@ -62,11 +103,13 @@ def __get_proteins_and_positions(
     """
     proteins = list()
     positions = list()
-    for id, seq in protein_db.items():
-        if peptide in seq:
-            for match in re.finditer(peptide, seq):
-                proteins.append(id)
-                positions.append(match.start())
+    for id, base_seq in protein_db.items():
+        seqs = __generate_all_sequences(base_seq)
+        for seq in seqs:
+            if peptide in seq:
+                for match in re.finditer(peptide, seq):
+                    proteins.append(id)
+                    positions.append(match.start())
     if len(proteins) == 0:
         raise RuntimeError(f"No match found for peptide {peptide}!")
     return (proteins, positions)

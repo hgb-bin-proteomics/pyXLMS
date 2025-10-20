@@ -15,6 +15,7 @@ __all__ = [
     "to_xinet",
     "to_xiview",
     "to_xifdr",
+    "to_alphalink2",
 ]
 
 from .to_xmas import to_xmas
@@ -27,3 +28,4 @@ from .to_xlmstools import to_xlmstools
 from .to_xinet import to_xinet
 from .to_xiview import to_xiview
 from .to_xifdr import to_xifdr
+from .to_alphalink2 import to_alphalink2

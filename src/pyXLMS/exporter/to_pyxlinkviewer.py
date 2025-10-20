@@ -461,7 +461,7 @@ def to_pyxlinkviewer(
     ValueError
         If parameter min_sequence_identity is out of bounds.
     ValueError
-        If the provided data contains no elements.
+        If the provided crosslinks contain no elements.
 
     Examples
     --------
@@ -499,10 +499,10 @@ def to_pyxlinkviewer(
             "Minimum sequence identity should be given as a fraction, e.g. 0.8 for 80% minimum sequence identity!"
         )
     if len(crosslinks) == 0:
-        raise ValueError("Provided data does not contain any crosslinks!")
+        raise ValueError("Provided crosslinks contain no elements!")
     if "data_type" not in crosslinks[0] or crosslinks[0]["data_type"] != "crosslink":
         raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslinks!"
+            "Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!"
         )
     if not assert_data_type_same(crosslinks):
         raise TypeError("Not all elements in data have the same data type!")

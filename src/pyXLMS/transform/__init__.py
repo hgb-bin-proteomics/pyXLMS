@@ -24,6 +24,7 @@ __all__ = [
     "fasta_title_to_accession",
     "reannotate_positions",
     "intersection",
+    "annotate_fdr",
 ]
 
 from .util import modifications_to_str
@@ -45,3 +46,4 @@ from .targets_only import targets_only
 from .reannotate_positions import fasta_title_to_accession
 from .reannotate_positions import reannotate_positions
 from .intersection import intersection
+from .annotate_fdr import annotate_fdr
