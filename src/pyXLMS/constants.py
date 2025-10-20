@@ -22,12 +22,17 @@ AMINO_ACIDS = {
     "P",
     "S",
     "T",
-    "U",
     "W",
     "Y",
     "V",
-    "J",
+    # non-standard
+    "U",
     "O",
+    # placeholders
+    "X",
+    "B",
+    "Z",
+    "J",
 }
 r"""List of valid amino acids.
 
@@ -40,6 +45,49 @@ Examples
 True
 >>> "B" in AMINO_ACIDS
 False
+"""
+
+AMINO_ACIDS_REPLACEMENTS = {
+    "X": {
+        "A",
+        "R",
+        "N",
+        "D",
+        "C",
+        "E",
+        "Q",
+        "G",
+        "H",
+        "I",
+        "L",
+        "K",
+        "M",
+        "F",
+        "P",
+        "S",
+        "T",
+        "W",
+        "Y",
+        "V",
+        # non-standard
+        "U",
+        "O",
+    },
+    "B": {"D", "N"},
+    "Z": {"E", "Q"},
+    "J": {"I", "L"},
+}
+r"""Mapping of placeholder amino acid codes to their respective possible amino acids.
+
+Dictionary mapping placeholder one-letter amino acid codes to their respective possible amino acids
+
+Examples
+--------
+>>> from pyXLMS.constants import AMINO_ACIDS_REPLACEMENTS
+>>> AMINO_ACIDS_REPLACEMENTS["B"]
+{'D', 'N'}
+>>> AMINO_ACIDS_REPLACEMENTS["Z"]
+{'E', 'Q'}
 """
 
 AMINO_ACIDS_3TO1 = {
@@ -63,6 +111,14 @@ AMINO_ACIDS_3TO1 = {
     "ASP": "D",
     "SER": "S",
     "THR": "T",
+    # non-standard
+    "SEC": "U",
+    "PYL": "O",
+    # placeholders
+    "XAA": "X",
+    "ASX": "B",
+    "GLX": "Z",
+    "XLE": "J",
 }
 r"""Mapping of amino acid 3-letter codes to their 1-letter codes.
 

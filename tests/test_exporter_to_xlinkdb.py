@@ -18,7 +18,7 @@ def test1():
         crosslinker="DSS",
     )
     crosslinks = pr["crosslinks"]
-    df = to_xlinkdb(crosslinks, filename="crosslinksForXlinkDB")
+    df = to_xlinkdb(crosslinks, filename="crosslinksForXLinkDB")
     assert df.shape[0] == 227
     assert df.shape[1] == 7
 
@@ -53,7 +53,7 @@ def test3():
         ValueError,
         match="Parameter filename must only contain alpha-numeric characters and no file extension!",
     ):
-        _df = to_xlinkdb(crosslinks, filename="crosslinksForXlinkDB.tsv")
+        _df = to_xlinkdb(crosslinks, filename="crosslinksForXLinkDB.tsv")
 
 
 def test4():
@@ -63,7 +63,7 @@ def test4():
         ValueError,
         match="Provided crosslinks contain no elements!",
     ):
-        _df = to_xlinkdb([], filename="crosslinksForXlinkDB")
+        _df = to_xlinkdb([], filename="crosslinksForXLinkDB")
 
 
 def test5():
@@ -76,6 +76,6 @@ def test5():
 
     with pytest.raises(
         RuntimeError,
-        match="Can't export to XlinkDB because not all necessary information is available!",
+        match="Can't export to XLinkDB because not all necessary information is available!",
     ):
         _df = to_xlinkdb(crosslinks, filename=None)

@@ -390,7 +390,7 @@ def validate(
         is set to False.
     ValueError
         If the number of DD matches exceeds the number of TD matches for formula '(TD-DD)/TT'.
-        FDR can not be estimated with the formula '(TD-DD)/TT' in these cases.
+        FDR cannot be estimated with the formula '(TD-DD)/TT' in these cases.
 
     Notes
     -----
@@ -470,8 +470,7 @@ def validate(
         )
     if score not in ["higher_better", "lower_better"]:
         raise TypeError(
-            "Parameter 'score' has to be one of 'higher_better' or 'lower_better'! If two identical crosslinks or crosslink-spectrum"
-            "-matches are found, the one with the higher score is kept if 'higher_better' is selected, and vice versa."
+            "Parameter 'score' has to be one of 'higher_better' or 'lower_better'!"
         )
     if isinstance(data, list):
         _ok = check_input(data, "data", list, dict)
@@ -504,7 +503,7 @@ def validate(
         if formula == "(TD-DD)/TT":
             if len(filter_target_decoy(data)["Target-Decoy"]) == 0:
                 raise ValueError(
-                    "Can't estimate FDR with formula '(TD-DD)/TT' when there are not TD matches! Please select the default formula instead!"
+                    "Can't estimate FDR with formula '(TD-DD)/TT' when there are no TD matches! Please select the default formula instead!"
                 )
             if separate_intra_inter:
                 separate = filter_crosslink_type(data)

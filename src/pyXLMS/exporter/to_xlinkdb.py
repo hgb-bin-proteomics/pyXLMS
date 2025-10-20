@@ -22,7 +22,7 @@ def __xls_to_xlinkdb(
     xls: List[Dict[str, Any]],
     filename: Optional[str],
 ) -> pd.DataFrame:
-    r"""Exports crosslinks to XlinkDB format.
+    r"""Exports crosslinks to XLinkDB format.
 
     Parameters
     ----------
@@ -34,7 +34,7 @@ def __xls_to_xlinkdb(
     Returns
     -------
     pd.DataFrame
-        A pandas DataFrame in XlinkDB format.
+        A pandas DataFrame in XLinkDB format.
 
     Notes
     -----
@@ -77,9 +77,9 @@ def to_xlinkdb(
     crosslinks: List[Dict[str, Any]],
     filename: Optional[str],
 ) -> pd.DataFrame:
-    r"""Exports a list of crosslinks to XlinkDB format.
+    r"""Exports a list of crosslinks to XLinkDB format.
 
-    Exports a list of crosslinks to XlinkDB format. The tool XlinkDB is accessible
+    Exports a list of crosslinks to XLinkDB format. The tool XLinkDB is accessible
     via the link
     `xlinkdb.gs.washington.edu/xlinkdb <https://xlinkdb.gs.washington.edu/xlinkdb/index.php>`_.
     Requires that ``alpha_proteins`` and ``beta_proteins`` fields are set for all crosslinks.
@@ -96,7 +96,7 @@ def to_xlinkdb(
     Returns
     -------
     pd.DataFrame
-        A pandas DataFrame containing crosslinks in XlinkDB format.
+        A pandas DataFrame containing crosslinks in XLinkDB format.
 
     Raises
     ------
@@ -113,7 +113,7 @@ def to_xlinkdb(
 
     Notes
     -----
-    XlinkDB input format requires a column with probabilities that the crosslinks are correct. Since that is not available
+    XLinkDB input format requires a column with probabilities that the crosslinks are correct. Since that is not available
     from most crosslink search engines, this is simply set to a constant ``1``.
 
     Examples
@@ -126,7 +126,7 @@ def to_xlinkdb(
     ...     crosslinker="DSS",
     ... )
     >>> crosslinks = pr["crosslinks"]
-    >>> to_xlinkdb(crosslinks, filename="crosslinksForXlinkDB")
+    >>> to_xlinkdb(crosslinks, filename="crosslinksForXLinkDB")
                    Peptide A Protein A  Labeled Position A      Peptide B Protein B  Labeled Position B  Probability
     0            VVDELVKVMGR      Cas9                   6    VVDELVKVMGR      Cas9                   6            1
     1    MLASAGELQKGNELALPSK      Cas9                   9    VVDELVKVMGR      Cas9                   6            1
@@ -166,6 +166,6 @@ def to_xlinkdb(
     available_keys = get_available_keys(crosslinks)
     if not available_keys["alpha_proteins"] or not available_keys["beta_proteins"]:
         raise RuntimeError(
-            "Can't export to XlinkDB because not all necessary information is available!"
+            "Can't export to XLinkDB because not all necessary information is available!"
         )
     return __xls_to_xlinkdb(crosslinks, filename)

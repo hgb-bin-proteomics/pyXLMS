@@ -338,3 +338,59 @@ def test17():
         "beta_proteins_peptide_positions"
     ] == [76]
     assert new_pr["crosslinks"] is None
+
+
+def test18():
+    from pyXLMS.transform.reannotate_positions import __generate_all_sequences
+    from pyXLMS.constants import AMINO_ACIDS_REPLACEMENTS
+
+    x = len(AMINO_ACIDS_REPLACEMENTS["X"])
+    assert len(set(__generate_all_sequences("PX"))) == x
+    assert len(set(__generate_all_sequences("PXX"))) == x * x
+    assert len(set(__generate_all_sequences("PXXB"))) == x * x * 2
+    assert len(set(__generate_all_sequences("PXXBJ"))) == x * x * 2 * 2
+    assert len(set(__generate_all_sequences("PXXBJZ"))) == x * x * 2 * 2 * 2
+    assert len(set(__generate_all_sequences("X"))) == x
+    assert len(set(__generate_all_sequences("XX"))) == x * x
+    assert len(set(__generate_all_sequences("XXB"))) == x * x * 2
+    assert len(set(__generate_all_sequences("XXBJ"))) == x * x * 2 * 2
+    assert len(set(__generate_all_sequences("XXBJZ"))) == x * x * 2 * 2 * 2
+    assert len(set(__generate_all_sequences("PXP"))) == x
+    assert len(set(__generate_all_sequences("PXPX"))) == x * x
+    assert len(set(__generate_all_sequences("PXXPB"))) == x * x * 2
+    assert len(set(__generate_all_sequences("PXXBPJ"))) == x * x * 2 * 2
+    assert len(set(__generate_all_sequences("PPXXBJZ"))) == x * x * 2 * 2 * 2
+
+
+def test19():
+    from pyXLMS.transform.reannotate_positions import __get_proteins_and_positions
+
+    protein_db = {
+        "P76000": (
+            "MNTIHLRCLFRMNPLVWCLRADVAAELRSLRRYYHLSNGMESKSVDTRSIYRZLGATLSY"
+            "NMRLGNGMEXEPWLKAAVRKEFVDDNRVKVNNDGNFVNDLSGRRGIYQAAIKASFSSTFS"
+            "GHLGVGYSHGAGVESPWNAVAGVNWSF"
+        )
+    }
+
+    peptide = "ELGATLSYNMRLGNGMEKEPWLK"
+    prot_pos = __get_proteins_and_positions(peptide, protein_db)
+    assert prot_pos[0] == ["P76000"]
+    assert prot_pos[1] == [52]
+
+
+def test20():
+    from pyXLMS.transform.reannotate_positions import __get_proteins_and_positions
+
+    protein_db = {
+        "P76000": (
+            "MNTIHLRCLFRMNPLVWCLRADVAAELRSLRRYYHLSNGMESKSVDTRSIYRZLGATJSY"
+            "NMRJGNGMEXEPWLKAAVRKEFVDDNRVKVNNDGNFVNDLSGRRGIYQAAIKASFSSTFS"
+            "GHLGVGYSHGAGVESPWNAVAGVNWSF"
+        )
+    }
+
+    peptide = "ELGATLSYNMRLGNGMEKEPWLK"
+    prot_pos = __get_proteins_and_positions(peptide, protein_db)
+    assert prot_pos[0] == ["P76000"]
+    assert prot_pos[1] == [52]

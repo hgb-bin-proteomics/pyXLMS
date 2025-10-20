@@ -203,9 +203,7 @@ def test11():
 def test12():
     from pyXLMS.exporter import to_pyxlinkviewer
 
-    with pytest.raises(
-        ValueError, match=r"Provided data does not contain any crosslinks!"
-    ):
+    with pytest.raises(ValueError, match=r"Provided crosslinks contain no elements!"):
         _pyxlinkviewer_result = to_pyxlinkviewer([], pdb_file="6YHU")
 
 
@@ -217,7 +215,7 @@ def test13():
     csms = [csm1]
     with pytest.raises(
         TypeError,
-        match="Unsupported data type for input data! Parameter data has to be a list of crosslinks!",
+        match="Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!",
     ):
         _pyxlinkviewer_result = to_pyxlinkviewer(csms, pdb_file="6YHU")
 

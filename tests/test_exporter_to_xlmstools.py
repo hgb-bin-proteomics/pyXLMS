@@ -131,9 +131,7 @@ def test5():
 def test6():
     from pyXLMS.exporter import to_xlmstools
 
-    with pytest.raises(
-        ValueError, match=r"Provided data does not contain any crosslinks!"
-    ):
+    with pytest.raises(ValueError, match=r"Provided crosslinks contain no elements!"):
         _xlmstools_result = to_xlmstools([], pdb_file="6YHU")
 
 
@@ -145,7 +143,7 @@ def test7():
     csms = [csm1]
     with pytest.raises(
         TypeError,
-        match="Unsupported data type for input data! Parameter data has to be a list of crosslinks!",
+        match="Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!",
     ):
         _xlmstools_result = to_xlmstools(csms, pdb_file="6YHU")
 
