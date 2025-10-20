@@ -28,8 +28,25 @@ from typing import Any
 
 
 def __generate_all_sequences(sequence: str) -> List[str]:
-    r"""
-    TODO Docs
+    r"""Generates all possible amino acid sequences for a given amino acid sequence if it contains placeholder amino acids.
+
+    Generates all possible amino acid sequences for a given amino acid sequence if it contains placeholder amino acids. Has no
+    effect on amino acid sequences that do not contain placeholder amino acids.
+
+    Parameters
+    ----------
+    sequence : str
+        The amino acid sequence of a peptide or protein that the generation should be based on.
+
+    Returns
+    -------
+    list of str
+        List of generated amino acid sequences without placeholders. If the original sequence did not contain
+        any placeholder amino acids, the list will only contain the original sequence.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``__get_proteins_and_positions()``.
     """
     sequence_needs_generation = False
     for one_letter_code in AMINO_ACIDS_REPLACEMENTS:
