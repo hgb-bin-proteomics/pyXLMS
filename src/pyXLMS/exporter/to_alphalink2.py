@@ -280,8 +280,10 @@ def to_alphalink2(
                 alphalink2_txt += f"{residueFrom} {chain1} {residueTo} {chain2} {FDR}\n"
     # create fasta
     alphalink2_fasta = ""
-    for chain, item in protein_db.items():
-        alphalink2_fasta += f">{chain}|{item['header']}\n{item['sequence']}\n"
+    for chain in CHAINS:
+        if chain in protein_db:
+            item = protein_db[chain]
+            alphalink2_fasta += f">{chain}|{item['header']}\n{item['sequence']}\n"
     # create pandas dataframe
     alphalink2_df = pd.DataFrame(alphalink2_df_dict)
     # export files
