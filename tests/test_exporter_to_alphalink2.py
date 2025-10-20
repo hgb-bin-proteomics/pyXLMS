@@ -22,5 +22,5 @@ def test1():
     export = to_alphalink2(
         cas9, fasta="data/_fasta/Cas9_plus10.fasta", filename_prefix="Cas9"
     )
-    assert export["Exported files"][0] == "Cas9_AlphaLink.txt"
-    assert export["Exported files"][1] == "Cas9_AlphaLink.fasta"
+    assert export["Exported files"][0] == "Cas9_AlphaLink2.txt"
+    assert export["Exported files"][1] == "Cas9_AlphaLink2.fasta"
