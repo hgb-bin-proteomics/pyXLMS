@@ -16,6 +16,7 @@ as well as the [mzIdentML format](https://www.psidev.info/mzidentml)
 of the HUPO Proteomics Standards Initiative, and a well-documented and
 [human-readable custom tabular format](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/format.md).
 Down-stream analysis is facilitated by functionality that is directly available within pyXLMS such as validation, annotation, aggregation, filtering, and visualization - and [much more](https://hgb-bin-proteomics.github.io/pyXLMS/modules.html) - of crosslink-spectrum-matches and crosslinks. In addition, the data can easily be exported to the required data format of the various available down-stream analysis tools such as
+[AlphaLink2](https://github.com/Rappsilber-Laboratory/AlphaLink2),
 [xiNET](https://crosslinkviewer.org/index.php),
 [xiVIEW](https://www.xiview.org/index.php),
 [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
@@ -43,8 +44,12 @@ _them to xiFDR format for external validation._
 
 ```python
 >>> import pyXLMS
->>> pr = pyXLMS.parser.read("data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx", engine="MS Annika", crosslinker="DSS")
-Reading MS Annika CSMs...: 100%|████████████████████████████████████████████████████████████████████████████████| 826/826 [00:00<00:00, 20731.70it/s]
+>>> pr = pyXLMS.parser.read(
+...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+...     engine="MS Annika",
+...     crosslinker="DSS"
+... )
+Reading MS Annika CSMs...: 100%|████████████████| 826/826 [00:00<00:00, 20731.70it/s]
 >>> _ = pyXLMS.transform.summary(pr)
 Number of CSMs: 826.0
 Number of unique CSMs: 826.0
@@ -55,7 +60,10 @@ Number of target-decoy CSMs: 39.0
 Number of decoy-decoy CSMs: 1.0
 Minimum CSM score: 1.11
 Maximum CSM score: 452.99
->>> _ = pyXLMS.exporter.to_xifdr(pr["crosslink-spectrum-matches"], filename="msannika_CSMs_for_xiFDR.csv")
+>>> _ = pyXLMS.exporter.to_xifdr(
+...     pr["crosslink-spectrum-matches"],
+...     filename="msannika_CSMs_for_xiFDR.csv"
+... )
 ```
 
 ## Web App
