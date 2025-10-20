@@ -11,6 +11,7 @@ import warnings
 from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
+from ..constants import AMINO_ACIDS_REPLACEMENTS
 from ..data import check_input
 from ..data import create_csm
 from ..data import create_crosslink
@@ -24,6 +25,29 @@ from typing import Dict
 from typing import Tuple
 from typing import List
 from typing import Any
+
+
+def __generate_all_sequences(sequence: str) -> List[str]:
+    r"""
+    TODO Docs
+    """
+    sequence_needs_generation = False
+    for one_letter_code in AMINO_ACIDS_REPLACEMENTS:
+        if one_letter_code in sequence:
+            sequence_needs_generation = True
+            break
+    if not sequence_needs_generation:
+        return [sequence]
+    all_sequences = [sequence]
+    for one_letter_code, replacements in AMINO_ACIDS_REPLACEMENTS.items():
+        occurences = sequence.count(one_letter_code)
+        for i in range(occurences):
+            all_sequences = [
+                seq.replace(one_letter_code, replacement, 1)
+                for seq in all_sequences
+                for replacement in replacements
+            ]
+    return all_sequences
 
 
 def __get_proteins_and_positions(
@@ -62,11 +86,13 @@ def __get_proteins_and_positions(
     """
     proteins = list()
     positions = list()
-    for id, seq in protein_db.items():
-        if peptide in seq:
-            for match in re.finditer(peptide, seq):
-                proteins.append(id)
-                positions.append(match.start())
+    for id, base_seq in protein_db.items():
+        seqs = __generate_all_sequences(base_seq)
+        for seq in seqs:
+            if peptide in seq:
+                for match in re.finditer(peptide, seq):
+                    proteins.append(id)
+                    positions.append(match.start())
     if len(proteins) == 0:
         raise RuntimeError(f"No match found for peptide {peptide}!")
     return (proteins, positions)
