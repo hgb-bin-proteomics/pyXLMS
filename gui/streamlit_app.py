@@ -964,7 +964,7 @@ def input_tab():
 # filter tab
 def filter_tab():
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
-        no_data = st.info("You need to upload a result file first!")
+        no_data = st.info("You need to upload at least one result file first!")
     else:
         # filters
         # protein filter
@@ -1395,7 +1395,7 @@ def visualize_tab():
         help="Maximum number of proteins and peptide pairs to display. Proteins and peptide pairs are sorted by the number of associated elements.",
     )
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
-        no_data = st.info("You need to upload a result file first!")
+        no_data = st.info("You need to upload at least one result file first!")
     if "pr" in st.session_state and st.session_state["pr"] is not None:
         if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
             csms = st.session_state["pr"]["crosslink-spectrum-matches"]
@@ -1530,7 +1530,7 @@ def visualize_tab():
 # export tab
 def export_tab():
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
-        no_data = st.info("You need to upload a result file first!")
+        no_data = st.info("You need to upload at least one result file first!")
     if "pr" in st.session_state and st.session_state["pr"] is not None:
         # exporting CSMs
         if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
@@ -1543,7 +1543,7 @@ def export_tab():
                 "Export crosslink-spectrum-matches to:",
                 options=export_csms_options,
                 index=None,
-                help="Chose a format to export the crosslink-spectrum-matches to.",
+                help="Choose a format to export the crosslink-spectrum-matches to.",
             )
             if export_csms_picker is None:
                 pass
@@ -1763,7 +1763,7 @@ def export_tab():
                 "Export crosslinks to:",
                 options=export_crosslinks_options,
                 index=None,
-                help="Chose a format to export the crosslinks to.",
+                help="Choose a format to export the crosslinks to.",
             )
             if export_crosslinks_picker is None:
                 pass
@@ -2654,7 +2654,7 @@ def export_tab():
             "Export aggregated crosslinks to:",
             options=export_aggregated_crosslinks_options,
             index=None,
-            help="Chose a format to export the aggregated crosslinks to.",
+            help="Choose a format to export the aggregated crosslinks to.",
         )
         if export_aggregated_crosslinks_picker is None:
             pass
