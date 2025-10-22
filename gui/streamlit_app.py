@@ -222,6 +222,33 @@ def layout_plots(plots: List[Any]) -> None:
     return
 
 
+def reset_exports() -> None:
+    # CSMs
+    st.session_state["export_csms_impxfdr"] = None
+    st.session_state["export_csms_msannika"] = None
+    st.session_state["export_csms_xifdr"] = None
+    # crosslinks
+    st.session_state["export_crosslinks_alphalink2"] = None
+    st.session_state["export_crosslinks_impxfdr"] = None
+    st.session_state["export_crosslinks_msannika"] = None
+    st.session_state["export_crosslinks_pyxlinkviewer"] = None
+    st.session_state["export_crosslinks_xinet"] = None
+    st.session_state["export_crosslinks_xiview"] = None
+    st.session_state["export_crosslinks_xlinkdb"] = None
+    st.session_state["export_crosslinks_xlmstools"] = None
+    st.session_state["export_crosslinks_xmas"] = None
+    # aggregated crosslinks
+    st.session_state["export_aggregated_crosslinks_alphalink2"] = None
+    st.session_state["export_aggregated_crosslinks_impxfdr"] = None
+    st.session_state["export_aggregated_crosslinks_msannika"] = None
+    st.session_state["export_aggregated_crosslinks_pyxlinkviewer"] = None
+    st.session_state["export_aggregated_crosslinks_xinet"] = None
+    st.session_state["export_aggregated_crosslinks_xiview"] = None
+    st.session_state["export_aggregated_crosslinks_xlinkdb"] = None
+    st.session_state["export_aggregated_crosslinks_xlmstools"] = None
+    st.session_state["export_aggregated_crosslinks_xmas"] = None
+
+
 # input tab
 def input_tab():
     general_description = """
@@ -502,28 +529,7 @@ def input_tab():
         if "aggregated" in st.session_state:
             del st.session_state["aggregated"]
         # reset any exported files
-        # CSMs
-        st.session_state["export_csms_impxfdr"] = None
-        st.session_state["export_csms_msannika"] = None
-        st.session_state["export_csms_xifdr"] = None
-        # crosslinks
-        st.session_state["export_crosslinks_impxfdr"] = None
-        st.session_state["export_crosslinks_msannika"] = None
-        st.session_state["export_crosslinks_pyxlinkviewer"] = None
-        st.session_state["export_crosslinks_xinet"] = None
-        st.session_state["export_crosslinks_xiview"] = None
-        st.session_state["export_crosslinks_xlinkdb"] = None
-        st.session_state["export_crosslinks_xlmstools"] = None
-        st.session_state["export_crosslinks_xmas"] = None
-        # aggregated crosslinks
-        st.session_state["export_aggregated_crosslinks_impxfdr"] = None
-        st.session_state["export_aggregated_crosslinks_msannika"] = None
-        st.session_state["export_aggregated_crosslinks_pyxlinkviewer"] = None
-        st.session_state["export_aggregated_crosslinks_xinet"] = None
-        st.session_state["export_aggregated_crosslinks_xiview"] = None
-        st.session_state["export_aggregated_crosslinks_xlinkdb"] = None
-        st.session_state["export_aggregated_crosslinks_xlmstools"] = None
-        st.session_state["export_aggregated_crosslinks_xmas"] = None
+        reset_exports()
         # reset proteins
         st.session_state["possible_proteins"] = None
         # check what is uploaded and set
@@ -1037,28 +1043,7 @@ def filter_tab():
         # filter in all inputs
         if filter_button:
             # reset any exported files
-            # CSMs
-            st.session_state["export_csms_impxfdr"] = None
-            st.session_state["export_csms_msannika"] = None
-            st.session_state["export_csms_xifdr"] = None
-            # crosslinks
-            st.session_state["export_crosslinks_impxfdr"] = None
-            st.session_state["export_crosslinks_msannika"] = None
-            st.session_state["export_crosslinks_pyxlinkviewer"] = None
-            st.session_state["export_crosslinks_xinet"] = None
-            st.session_state["export_crosslinks_xiview"] = None
-            st.session_state["export_crosslinks_xlinkdb"] = None
-            st.session_state["export_crosslinks_xlmstools"] = None
-            st.session_state["export_crosslinks_xmas"] = None
-            # aggregated crosslinks
-            st.session_state["export_aggregated_crosslinks_impxfdr"] = None
-            st.session_state["export_aggregated_crosslinks_msannika"] = None
-            st.session_state["export_aggregated_crosslinks_pyxlinkviewer"] = None
-            st.session_state["export_aggregated_crosslinks_xinet"] = None
-            st.session_state["export_aggregated_crosslinks_xiview"] = None
-            st.session_state["export_aggregated_crosslinks_xlinkdb"] = None
-            st.session_state["export_aggregated_crosslinks_xlmstools"] = None
-            st.session_state["export_aggregated_crosslinks_xmas"] = None
+            reset_exports()
             # reset proteins
             st.session_state["possible_proteins"] = None
 
