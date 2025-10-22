@@ -50,7 +50,7 @@ from typing import Set
 from typing import Any
 
 
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 
 
 @st.cache_data
@@ -2707,14 +2707,12 @@ def export_tab():
                         show_time=True,
                     ):
                         try:
-                            st.session_state["export_crosslinks_alphalink2"] = (
-                                export_alphalink2(
-                                    aggregated_crosslinks,
-                                    aggregated_crosslinks_alphalink2_fasta_file,
-                                    float(
-                                        aggregated_crosslinks_alphalink2_annotated_fdr
-                                    ),
-                                )
+                            st.session_state[
+                                "export_aggregated_crosslinks_alphalink2"
+                            ] = export_alphalink2(
+                                aggregated_crosslinks,
+                                aggregated_crosslinks_alphalink2_fasta_file,
+                                float(aggregated_crosslinks_alphalink2_annotated_fdr),
                             )
                         except Exception as e:
                             _ = st.error(
