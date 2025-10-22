@@ -291,3 +291,45 @@ def test8():
             cas9,
             fasta="data/_fasta/Ribosome_for_XL_all_contained_Proteins_from_shotgun.fasta",
         )
+
+
+def test9():
+    from pyXLMS.exporter.to_alphalink2 import __get_proteins_and_positions
+
+    proteins_and_positions = __get_proteins_and_positions(
+        "GSQKDR", {"A": {"header": "Cas9", "sequence": CAS9}}
+    )
+    assert len(proteins_and_positions[0]) == 0
+    assert len(proteins_and_positions[1]) == 0
+
+
+def test10():
+    from pyXLMS.pipelines import pipeline
+    from pyXLMS.exporter import to_alphalink2
+
+    pr = pipeline(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    export = to_alphalink2(pr["crosslinks"], fasta="data/_fasta/Cas9.fasta")
+    assert export["AlphaLink2 DataFrame"].shape[0] == 223
+
+
+def test11():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import targets_only
+    from pyXLMS.transform import filter_proteins
+    from pyXLMS.exporter import to_alphalink2
+
+    pr = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    should = len(
+        filter_proteins(targets_only(pr["crosslinks"]), proteins=["Cas9"])["Both"]
+    )
+    assert len(pr["crosslinks"]) == 300
+    export = to_alphalink2(pr["crosslinks"], fasta="data/_fasta/Cas9.fasta")
+    assert export["AlphaLink2 DataFrame"].shape[0] == should

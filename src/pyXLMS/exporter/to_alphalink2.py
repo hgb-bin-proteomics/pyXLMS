@@ -48,11 +48,6 @@ def __get_proteins_and_positions(
     tuple of list of str, list of int
         List of protein chain ids, and list of peptide positions.
 
-    Raises
-    ------
-    RuntimeError
-        If the peptide could not be matched to any protein.
-
     Notes
     -----
     This function should not be called directly, it is called from ``to_alphalink2()``.
@@ -71,8 +66,6 @@ def __get_proteins_and_positions(
                 for match in re.finditer(peptide, seq):
                     proteins.append(chain)
                     positions.append(match.start())
-    if len(proteins) == 0:
-        raise RuntimeError(f"No match found for peptide {peptide}!")
     return (proteins, positions)
 
 
@@ -252,6 +245,9 @@ def to_alphalink2(
         proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(
             xl["beta_peptide"], protein_db
         )
+        # skip if crosslink matches to none of the proteins in the fasta
+        if len(proteins_a) == 0 or len(proteins_b) == 0:
+            continue
         for i in range(len(proteins_a)):
             for j in range(len(proteins_b)):
                 residueFrom = (
