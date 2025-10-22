@@ -480,6 +480,8 @@ def input_tab():
             fdr = st.number_input(
                 "Target FDR:",
                 value=0.01,
+                min_value=0.0,
+                max_value=1.0,
                 step=0.001,
                 format="%0.3f",
                 key="fdr",
