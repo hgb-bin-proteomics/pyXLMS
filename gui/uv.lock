@@ -937,7 +937,7 @@ wheels = [
 
 [[package]]
 name = "pyxlms"
-version = "1.5.2"
+version = "1.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "biopandas" },
@@ -951,9 +951,9 @@ dependencies = [
     { name = "pyteomics", extra = ["xml"] },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/ad/15c3f56dd1eb33dc4e604d6096cab5bf98658b1c1e4ace3e3727aa4a3bb1/pyxlms-1.5.2.tar.gz", hash = "sha256:224c4620ef3ef51962e6d3823915169ef591ba7b7a36aca40570d06b2bc808c1", size = 139334, upload-time = "2025-09-26T16:44:56.863Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5c/81/c6f6844b5540e4119e319eda59e62a588719d3d7f27bafaed801e411cd5f/pyxlms-1.6.0.tar.gz", hash = "sha256:c3209b8292660f452f2406495f9cfc9057b7cb9decb683f8ea125a4211eba3e1", size = 149098, upload-time = "2025-10-20T21:35:36.036Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/a1/9db7908973d1b4594f66751f84058aa4272c89c70c8b228fef6f8aa855c0/pyxlms-1.5.2-py3-none-any.whl", hash = "sha256:e5942408b88bf3700da09a698e3708ea320c9be9b70588ebc7008b9172f5753d", size = 132886, upload-time = "2025-09-26T16:44:54.998Z" },
+    { url = "https://files.pythonhosted.org/packages/00/2c/f9c0d331b0e39f85d40bef72f71054b919addf6cbdc32b495771c044beae/pyxlms-1.6.0-py3-none-any.whl", hash = "sha256:225af3e451019808ec7a1f5c2f563789a3a1eb5918522a93b730121d3a977a68", size = 141424, upload-time = "2025-10-20T21:35:34.501Z" },
 ]
 
 [[package]]
@@ -968,7 +968,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "pyxlms", specifier = ">=1.5.2" },
+    { name = "pyxlms", specifier = ">=1.6.0" },
     { name = "streamlit", specifier = ">=1.50.0" },
     { name = "xlsxwriter", specifier = ">=3.2.5" },
 ]
