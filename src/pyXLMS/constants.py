@@ -44,7 +44,7 @@ Examples
 >>> "A" in AMINO_ACIDS
 True
 >>> "B" in AMINO_ACIDS
-False
+True
 """
 
 AMINO_ACIDS_REPLACEMENTS = {
