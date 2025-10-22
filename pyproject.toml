@@ -48,6 +48,18 @@ docs = [
   "myst-parser",
   "sphinx-copybutton"
 ]
+dev = [
+  "streamlit>=1.50.0",
+  "xlsxwriter",
+  "sphinx",
+  "pydata-sphinx-theme",
+  "myst-parser",
+  "sphinx-copybutton",
+  "uv",
+  "ruff",
+  "pyright",
+  "pytest"
+]
 
 [project.urls]
 Homepage = "https://hgb-bin-proteomics.github.io/pyXLMS"
