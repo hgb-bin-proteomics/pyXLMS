@@ -4,7 +4,7 @@
 # requires-python = ">=3.12"
 # dependencies = [
 #   "streamlit>=1.50.0",
-#   "pyxlms>=1.5.2",
+#   "pyxlms>=1.6.0",
 #   "xlsxwriter",
 # ]
 # ///
@@ -31,6 +31,7 @@ import os
 import json
 import pandas as pd
 from tempfile import NamedTemporaryFile
+from tempfile import TemporaryDirectory
 
 from pyXLMS import parser
 from pyXLMS import transform
@@ -40,6 +41,7 @@ from pyXLMS import exporter
 from pyXLMS import __version__ as __pyxlms_version__
 
 import streamlit as st
+from streamlit.runtime.uploaded_file_manager import UploadedFile
 
 from typing import Optional
 from typing import Dict
@@ -48,7 +50,7 @@ from typing import Set
 from typing import Any
 
 
-__version__ = "1.1.4"
+__version__ = "1.2.1"
 
 
 @st.cache_data
@@ -80,23 +82,26 @@ def dataframe_to_xlsx_stream(
 
 
 @st.cache_data
-def read_file(
-    uploaded_file: io.BytesIO,
+def read_files(
+    uploaded_files: List[UploadedFile],
     engine: str,
     crosslinker: str,
     parse_modifications: bool,
     crosslinker_mass: Optional[float],
 ) -> Dict[str, Any]:
     #
-    with NamedTemporaryFile(
-        suffix=os.path.splitext(uploaded_file.name)[1], delete_on_close=False
-    ) as f:  # pyright: ignore[reportCallIssue]
-        f.write(uploaded_file.getbuffer())
-        f.close()
+    with TemporaryDirectory() as d:  # pyright: ignore[reportCallIssue]
+        filenames = list()
+        for uploaded_file in uploaded_files:
+            filename = os.path.join(d, uploaded_file.name)
+            with open(filename, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+                f.close()
+            filenames.append(filename)
         if crosslinker_mass is not None:
             try:
                 return parser.read(
-                    f.name,
+                    filenames,
                     engine=engine,  # pyright: ignore[reportArgumentType]
                     crosslinker=crosslinker,
                     parse_modifications=parse_modifications,
@@ -104,13 +109,13 @@ def read_file(
                 )
             except Exception as _e:
                 parser.read(
-                    f.name,
+                    filenames,
                     engine=engine,  # pyright: ignore[reportArgumentType]
                     crosslinker=crosslinker,
                     parse_modifications=parse_modifications,
                 )
         return parser.read(
-            f.name,
+            filenames,
             engine=engine,  # pyright: ignore[reportArgumentType]
             crosslinker=crosslinker,
             parse_modifications=parse_modifications,
@@ -180,6 +185,21 @@ def filter_proteins(
     return filtered["Both"] + filtered["One"]
 
 
+@st.cache_data
+def export_alphalink2(
+    crosslinks: List[Dict[str, Any]], fasta: io.BytesIO, annotated_fdr: float
+) -> Dict[str, Any]:
+    #
+    with NamedTemporaryFile(
+        suffix=os.path.splitext(fasta.name)[1], delete_on_close=False
+    ) as f:  # pyright: ignore[reportCallIssue]
+        f.write(fasta.getbuffer())
+        f.close()
+        return exporter.to_alphalink2(
+            crosslinks, f.name, annotated_fdr, filename_prefix=None
+        )
+
+
 def layout_plots(plots: List[Any]) -> None:
     for i in range(0, len(plots), 2):
         l_col, r_col = st.columns(2)
@@ -200,6 +220,33 @@ def layout_plots(plots: List[Any]) -> None:
                     width="stretch",
                 )
     return
+
+
+def reset_exports() -> None:
+    # CSMs
+    st.session_state["export_csms_impxfdr"] = None
+    st.session_state["export_csms_msannika"] = None
+    st.session_state["export_csms_xifdr"] = None
+    # crosslinks
+    st.session_state["export_crosslinks_alphalink2"] = None
+    st.session_state["export_crosslinks_impxfdr"] = None
+    st.session_state["export_crosslinks_msannika"] = None
+    st.session_state["export_crosslinks_pyxlinkviewer"] = None
+    st.session_state["export_crosslinks_xinet"] = None
+    st.session_state["export_crosslinks_xiview"] = None
+    st.session_state["export_crosslinks_xlinkdb"] = None
+    st.session_state["export_crosslinks_xlmstools"] = None
+    st.session_state["export_crosslinks_xmas"] = None
+    # aggregated crosslinks
+    st.session_state["export_aggregated_crosslinks_alphalink2"] = None
+    st.session_state["export_aggregated_crosslinks_impxfdr"] = None
+    st.session_state["export_aggregated_crosslinks_msannika"] = None
+    st.session_state["export_aggregated_crosslinks_pyxlinkviewer"] = None
+    st.session_state["export_aggregated_crosslinks_xinet"] = None
+    st.session_state["export_aggregated_crosslinks_xiview"] = None
+    st.session_state["export_aggregated_crosslinks_xlinkdb"] = None
+    st.session_state["export_aggregated_crosslinks_xlmstools"] = None
+    st.session_state["export_aggregated_crosslinks_xmas"] = None
 
 
 # input tab
@@ -227,6 +274,7 @@ def input_tab():
     filtering, and visualization - and [much more](https://hgb-bin-proteomics.github.io/pyXLMS/modules.html) - of crosslink-spectrum-matches and crosslinks.
 
     In addition, the data can easily be exported to the required data format of the various available down-stream analysis tools such as
+    [AlphaLink2](https://github.com/Rappsilber-Laboratory/AlphaLink2),
     [xiNET](https://crosslinkviewer.org/index.php),
     [xiVIEW](https://www.xiview.org/index.php),
     [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
@@ -242,28 +290,28 @@ def input_tab():
 
     header_1 = st.subheader("File Upload", divider="grey")
 
-    uploaded_file = st.file_uploader(
-        "Upload a cross-linking result file from any of the supported search engines or formats:",
+    uploaded_files = st.file_uploader(
+        "Upload one or more cross-linking result files from any of the supported search engines or formats:",
         type=None,
-        accept_multiple_files=False,
-        key="uploaded_file",
-        help="Upload a cross-linking result file from any of the supported search engines or formats.",
+        accept_multiple_files=True,
+        key="uploaded_files",
+        help="Upload one or more cross-linking result files from any of the supported search engines or formats.",
     )
 
     with st.popover(
-        "Unsure which file to upload? Click me!",
+        "Unsure which files to upload? Click me!",
         help="Display help for file selection.",
         icon="💡",
         width="stretch",
     ):
-        uploaded_file_description = """
+        uploaded_files_description = """
         - ➡️ Check out this 🔗[**overview**](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/supported_io.md)
         on supported input and output formats.
         - ➡️ In our GitHub repository you can also find 🔗[**example files**](https://github.com/hgb-bin-proteomics/pyXLMS/tree/master/data).
         - ➡️ If you need any further help, visit the web application guide which you can find 🔗[**here**](https://pyxlms.vercel.app/docs/webapp).
         - ➡️ Still stuck? Please 📩[**send us a message**](https://github.com/hgb-bin-proteomics/pyXLMS?tab=readme-ov-file#contact).
         """
-        uploaded_file_helper = st.markdown(uploaded_file_description)
+        uploaded_files_helper = st.markdown(uploaded_files_description)
 
     l1, r1 = st.columns(2)
 
@@ -432,6 +480,8 @@ def input_tab():
             fdr = st.number_input(
                 "Target FDR:",
                 value=0.01,
+                min_value=0.0,
+                max_value=1.0,
                 step=0.001,
                 format="%0.3f",
                 key="fdr",
@@ -471,43 +521,22 @@ def input_tab():
     l7, center_7, r7 = st.columns(3)
 
     with center_7:
-        read_file_button = st.button("Read file!", type="primary", width="stretch")
+        read_files_button = st.button("Read file(s)!", type="primary", width="stretch")
 
     # read in all inputs
-    if read_file_button:
+    if read_files_button:
         # reset pr and aggregated on file read
         if "pr" in st.session_state:
             del st.session_state["pr"]
         if "aggregated" in st.session_state:
             del st.session_state["aggregated"]
         # reset any exported files
-        # CSMs
-        st.session_state["export_csms_impxfdr"] = None
-        st.session_state["export_csms_msannika"] = None
-        st.session_state["export_csms_xifdr"] = None
-        # crosslinks
-        st.session_state["export_crosslinks_impxfdr"] = None
-        st.session_state["export_crosslinks_msannika"] = None
-        st.session_state["export_crosslinks_pyxlinkviewer"] = None
-        st.session_state["export_crosslinks_xinet"] = None
-        st.session_state["export_crosslinks_xiview"] = None
-        st.session_state["export_crosslinks_xlinkdb"] = None
-        st.session_state["export_crosslinks_xlmstools"] = None
-        st.session_state["export_crosslinks_xmas"] = None
-        # aggregated crosslinks
-        st.session_state["export_aggregated_crosslinks_impxfdr"] = None
-        st.session_state["export_aggregated_crosslinks_msannika"] = None
-        st.session_state["export_aggregated_crosslinks_pyxlinkviewer"] = None
-        st.session_state["export_aggregated_crosslinks_xinet"] = None
-        st.session_state["export_aggregated_crosslinks_xiview"] = None
-        st.session_state["export_aggregated_crosslinks_xlinkdb"] = None
-        st.session_state["export_aggregated_crosslinks_xlmstools"] = None
-        st.session_state["export_aggregated_crosslinks_xmas"] = None
+        reset_exports()
         # reset proteins
         st.session_state["possible_proteins"] = None
         # check what is uploaded and set
-        if uploaded_file is None:
-            _ = st.error("You need to upload a result file first!")
+        if uploaded_files is None or len(uploaded_files) == 0:
+            _ = st.error("You need to upload at least one result file first!")
         if search_engine is None:
             _ = st.error("You need to select a search engine or format first!")
         if crosslinker is None:
@@ -520,15 +549,16 @@ def input_tab():
                     "You need to specify the crosslinker mass for your custom crosslinker!"
                 )
         if (
-            uploaded_file is not None
+            uploaded_files is not None
+            and len(uploaded_files) > 0
             and search_engine is not None
             and crosslinker is not None
             and crosslinker != "Custom"
         ):
             with st.spinner("Parsing file...", show_time=True):
                 try:
-                    st.session_state["pr"] = read_file(
-                        uploaded_file,
+                    st.session_state["pr"] = read_files(
+                        uploaded_files,
                         search_engine,
                         crosslinker,
                         parse_modifications,
@@ -623,7 +653,8 @@ def input_tab():
                     with st.expander("Show exception"):
                         _ = st.exception(e)
         elif (
-            uploaded_file is not None
+            uploaded_files is not None
+            and len(uploaded_files) > 0
             and search_engine is not None
             and crosslinker is not None
             and crosslinker == "Custom"
@@ -632,8 +663,8 @@ def input_tab():
         ):
             with st.spinner("Parsing file...", show_time=True):
                 try:
-                    st.session_state["pr"] = read_file(
-                        uploaded_file,
+                    st.session_state["pr"] = read_files(
+                        uploaded_files,
                         search_engine,
                         crosslinker_name,
                         parse_modifications,
@@ -935,7 +966,7 @@ def input_tab():
 # filter tab
 def filter_tab():
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
-        no_data = st.info("You need to upload a result file first!")
+        no_data = st.info("You need to upload at least one result file first!")
     else:
         # filters
         # protein filter
@@ -1014,28 +1045,7 @@ def filter_tab():
         # filter in all inputs
         if filter_button:
             # reset any exported files
-            # CSMs
-            st.session_state["export_csms_impxfdr"] = None
-            st.session_state["export_csms_msannika"] = None
-            st.session_state["export_csms_xifdr"] = None
-            # crosslinks
-            st.session_state["export_crosslinks_impxfdr"] = None
-            st.session_state["export_crosslinks_msannika"] = None
-            st.session_state["export_crosslinks_pyxlinkviewer"] = None
-            st.session_state["export_crosslinks_xinet"] = None
-            st.session_state["export_crosslinks_xiview"] = None
-            st.session_state["export_crosslinks_xlinkdb"] = None
-            st.session_state["export_crosslinks_xlmstools"] = None
-            st.session_state["export_crosslinks_xmas"] = None
-            # aggregated crosslinks
-            st.session_state["export_aggregated_crosslinks_impxfdr"] = None
-            st.session_state["export_aggregated_crosslinks_msannika"] = None
-            st.session_state["export_aggregated_crosslinks_pyxlinkviewer"] = None
-            st.session_state["export_aggregated_crosslinks_xinet"] = None
-            st.session_state["export_aggregated_crosslinks_xiview"] = None
-            st.session_state["export_aggregated_crosslinks_xlinkdb"] = None
-            st.session_state["export_aggregated_crosslinks_xlmstools"] = None
-            st.session_state["export_aggregated_crosslinks_xmas"] = None
+            reset_exports()
             # reset proteins
             st.session_state["possible_proteins"] = None
 
@@ -1387,7 +1397,7 @@ def visualize_tab():
         help="Maximum number of proteins and peptide pairs to display. Proteins and peptide pairs are sorted by the number of associated elements.",
     )
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
-        no_data = st.info("You need to upload a result file first!")
+        no_data = st.info("You need to upload at least one result file first!")
     if "pr" in st.session_state and st.session_state["pr"] is not None:
         if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
             csms = st.session_state["pr"]["crosslink-spectrum-matches"]
@@ -1522,7 +1532,7 @@ def visualize_tab():
 # export tab
 def export_tab():
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
-        no_data = st.info("You need to upload a result file first!")
+        no_data = st.info("You need to upload at least one result file first!")
     if "pr" in st.session_state and st.session_state["pr"] is not None:
         # exporting CSMs
         if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
@@ -1535,7 +1545,7 @@ def export_tab():
                 "Export crosslink-spectrum-matches to:",
                 options=export_csms_options,
                 index=None,
-                help="Chose a format to export the crosslink-spectrum-matches to.",
+                help="Choose a format to export the crosslink-spectrum-matches to.",
             )
             if export_csms_picker is None:
                 pass
@@ -1741,6 +1751,7 @@ def export_tab():
             crosslinks = st.session_state["pr"]["crosslinks"]
             export_crosslinks_header = st.subheader("Export Crosslinks", divider="grey")
             export_crosslinks_options = [
+                "AlphaLink2",
                 "IMP-X-FDR",
                 "MS Annika",
                 "PyXlinkViewer",
@@ -1754,10 +1765,157 @@ def export_tab():
                 "Export crosslinks to:",
                 options=export_crosslinks_options,
                 index=None,
-                help="Chose a format to export the crosslinks to.",
+                help="Choose a format to export the crosslinks to.",
             )
             if export_crosslinks_picker is None:
                 pass
+            # AlphaLink2
+            elif export_crosslinks_picker == "AlphaLink2":
+                crosslinks_alphalink2_fasta_file = st.file_uploader(
+                    "Upload a FASTA file of proteins/chains of interest:",
+                    type="fasta",
+                    accept_multiple_files=False,
+                    key="crosslinks_alphalink2_fasta_file",
+                    help="Upload a FASTA file containing protein/chain sequences. Please keep in mind that AlphaLink2 supports a maximum of 62 proteins/chains!",
+                )
+                crosslinks_alphalink2_annotated_fdr = st.number_input(
+                    "Annotated FDR:",
+                    value=0.01,
+                    min_value=0.0,
+                    max_value=1.0,
+                    step=0.001,
+                    format="%0.3f",
+                    key="crosslinks_alphalink2_annotated_fdr",
+                    help="Value to use for the 'FDR' column in the AlphaLink2 crosslink table, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.",
+                )
+                export_crosslinks_alphalink2_info = st.info(
+                    "To export to AlphaLink2 your crosslinks should be **unique** and **not** "
+                    + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
+                    + "You should also filter your crosslinks to only contain residue pairs of your protein(s) of interest! "
+                    + "You can check this in the "
+                    + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+                )
+                export_crosslinks_alphalink2_button = st.button(
+                    "Export to AlphaLink2 format!",
+                    type="primary",
+                    width="stretch",
+                    key="export_crosslinks_alphalink2_button",
+                )
+                if export_crosslinks_alphalink2_button:
+                    if (
+                        crosslinks_alphalink2_fasta_file is None
+                        or crosslinks_alphalink2_annotated_fdr is None
+                    ):
+                        _ = st.error(
+                            "Can't export to AlphaLink2 when either FASTA file or annotated FDR are missing!",
+                            icon="⚠️",
+                        )
+                    else:
+                        with st.spinner(
+                            "Exporting crosslinks to AlphaLink2 format...",
+                            show_time=True,
+                        ):
+                            try:
+                                st.session_state["export_crosslinks_alphalink2"] = (
+                                    export_alphalink2(
+                                        crosslinks,
+                                        crosslinks_alphalink2_fasta_file,
+                                        float(crosslinks_alphalink2_annotated_fdr),
+                                    )
+                                )
+                            except Exception as e:
+                                _ = st.error(
+                                    "Something went wrong! This is most likely due to missing information in the results!",
+                                    icon="⚠️",
+                                )
+                                with st.expander("Show exception"):
+                                    _ = st.exception(e)
+                if (
+                    "export_crosslinks_alphalink2" in st.session_state
+                    and st.session_state["export_crosslinks_alphalink2"] is not None
+                ):
+                    export_crosslinks_alphalink2_download_info = st.markdown(
+                        "Your exported crosslinks in AlphaLink2 format are ready for download:"
+                    )
+                    (
+                        export_crosslinks_alphalink2_download_l,
+                        export_crosslinks_alphalink2_download_r,
+                    ) = st.columns(2)
+
+                    with export_crosslinks_alphalink2_download_l:
+                        export_crosslinks_alphalink2_download_txt = st.download_button(
+                            label="Download crosslinks in AlphaLink2 format!",
+                            data=to_text(
+                                st.session_state["export_crosslinks_alphalink2"][
+                                    "AlphaLink2 crosslinks"
+                                ]
+                            ),
+                            file_name="crosslinks_AlphaLink2.txt",
+                            on_click="ignore",
+                            type="primary",
+                            mime="text/plain",
+                            icon=":material/download:",
+                            width="stretch",
+                            help="Downloads the exported crosslinks in AlphaLink2 format.",
+                            key="export_crosslinks_alphalink2_download_txt",
+                        )
+                    with export_crosslinks_alphalink2_download_r:
+                        export_crosslinks_alphalink2_download_fasta = st.download_button(
+                            label="Download FASTA in AlphaLink2 format!",
+                            data=to_text(
+                                st.session_state["export_crosslinks_alphalink2"][
+                                    "AlphaLink2 FASTA"
+                                ]
+                            ),
+                            file_name="crosslinks_AlphaLink2.fasta",
+                            on_click="ignore",
+                            type="primary",
+                            mime="chemical/seq-aa-fasta",
+                            icon=":material/download:",
+                            width="stretch",
+                            help="Downloads the uploaded FASTA file in AlphaLink2 format.",
+                            key="export_crosslinks_alphalink2_download_fasta",
+                        )
+                    with st.expander("Show Exported Crosslinks"):
+                        export_crosslinks_alphalink2_df_info = st.markdown(
+                            "**Number of mapped residue pairs:** "
+                            + f"{st.session_state['export_crosslinks_alphalink2']['AlphaLink2 DataFrame'].shape[0]}"
+                        )
+                        export_crosslinks_alphalink2_df = st.dataframe(
+                            st.session_state["export_crosslinks_alphalink2"][
+                                "AlphaLink2 DataFrame"
+                            ],
+                            width="stretch",
+                        )
+                    with st.expander("Show Exported FASTA"):
+                        export_crosslinks_alphalink2_nr_proteins = len(
+                            [
+                                line
+                                for line in st.session_state[
+                                    "export_crosslinks_alphalink2"
+                                ]["AlphaLink2 FASTA"].split("\n")
+                                if line.startswith(">")
+                            ]
+                        )
+                        export_crosslinks_alphalink2_display_fasta_info = st.markdown(
+                            "**Number of mapped proteins/chains:** "
+                            + f"{export_crosslinks_alphalink2_nr_proteins}"
+                        )
+                        export_crosslinks_alphalink2_display_fasta = st.text(
+                            st.session_state["export_crosslinks_alphalink2"][
+                                "AlphaLink2 FASTA"
+                            ],
+                            width="stretch",
+                        )
+
+                    export_crosslinks_alphalink2_download_goto_tool = st.link_button(
+                        "Go to AlphaLink2!",
+                        url="https://github.com/Rappsilber-Laboratory/AlphaLink2",
+                        help="Go to the AlphaLink2 page.",
+                        type="primary",
+                        icon="🔗",
+                        width="stretch",
+                    )
             # IMP-X-FDR
             elif export_crosslinks_picker == "IMP-X-FDR":
                 export_crosslinks_impxfdr_info = st.info(
@@ -2484,6 +2642,7 @@ def export_tab():
             "Export Aggregated Crosslinks", divider="grey"
         )
         export_aggregated_crosslinks_options = [
+            "AlphaLink2",
             "IMP-X-FDR",
             "MS Annika",
             "PyXlinkViewer",
@@ -2497,10 +2656,162 @@ def export_tab():
             "Export aggregated crosslinks to:",
             options=export_aggregated_crosslinks_options,
             index=None,
-            help="Chose a format to export the aggregated crosslinks to.",
+            help="Choose a format to export the aggregated crosslinks to.",
         )
         if export_aggregated_crosslinks_picker is None:
             pass
+        # AlphaLink2
+        elif export_aggregated_crosslinks_picker == "AlphaLink2":
+            aggregated_crosslinks_alphalink2_fasta_file = st.file_uploader(
+                "Upload a FASTA file of proteins/chains of interest:",
+                type="fasta",
+                accept_multiple_files=False,
+                key="aggregated_crosslinks_alphalink2_fasta_file",
+                help="Upload a FASTA file containing protein/chain sequences. Please keep in mind that AlphaLink2 supports a maximum of 62 proteins/chains!",
+            )
+            aggregated_crosslinks_alphalink2_annotated_fdr = st.number_input(
+                "Annotated FDR:",
+                value=0.01,
+                min_value=0.0,
+                max_value=1.0,
+                step=0.001,
+                format="%0.3f",
+                key="aggregated_crosslinks_alphalink2_annotated_fdr",
+                help="Value to use for the 'FDR' column in the AlphaLink2 crosslink table, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.",
+            )
+            export_aggregated_crosslinks_alphalink2_info = st.info(
+                "To export to AlphaLink2 your crosslinks should be **unique** and **not** "
+                + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
+                + "You should also filter your crosslinks to only contain residue pairs of your protein(s) of interest! "
+                + "You can check this in the "
+                + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+            )
+            export_aggregated_crosslinks_alphalink2_button = st.button(
+                "Export to AlphaLink2 format!",
+                type="primary",
+                width="stretch",
+                key="export_aggregated_crosslinks_alphalink2_button",
+            )
+            if export_aggregated_crosslinks_alphalink2_button:
+                if (
+                    aggregated_crosslinks_alphalink2_fasta_file is None
+                    or aggregated_crosslinks_alphalink2_annotated_fdr is None
+                ):
+                    _ = st.error(
+                        "Can't export to AlphaLink2 when either FASTA file or annotated FDR are missing!",
+                        icon="⚠️",
+                    )
+                else:
+                    with st.spinner(
+                        "Exporting crosslinks to AlphaLink2 format...",
+                        show_time=True,
+                    ):
+                        try:
+                            st.session_state[
+                                "export_aggregated_crosslinks_alphalink2"
+                            ] = export_alphalink2(
+                                aggregated_crosslinks,
+                                aggregated_crosslinks_alphalink2_fasta_file,
+                                float(aggregated_crosslinks_alphalink2_annotated_fdr),
+                            )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+            if (
+                "export_aggregated_crosslinks_alphalink2" in st.session_state
+                and st.session_state["export_aggregated_crosslinks_alphalink2"]
+                is not None
+            ):
+                export_aggregated_crosslinks_alphalink2_download_info = st.markdown(
+                    "Your exported crosslinks in AlphaLink2 format are ready for download:"
+                )
+                (
+                    export_aggregated_crosslinks_alphalink2_download_l,
+                    export_aggregated_crosslinks_alphalink2_download_r,
+                ) = st.columns(2)
+
+                with export_aggregated_crosslinks_alphalink2_download_l:
+                    export_aggregated_crosslinks_alphalink2_download_txt = st.download_button(
+                        label="Download crosslinks in AlphaLink2 format!",
+                        data=to_text(
+                            st.session_state["export_aggregated_crosslinks_alphalink2"][
+                                "AlphaLink2 crosslinks"
+                            ]
+                        ),
+                        file_name="aggregated_crosslinks_AlphaLink2.txt",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/plain",
+                        icon=":material/download:",
+                        width="stretch",
+                        help="Downloads the exported crosslinks in AlphaLink2 format.",
+                        key="export_aggregated_crosslinks_alphalink2_download_txt",
+                    )
+                with export_aggregated_crosslinks_alphalink2_download_r:
+                    export_aggregated_crosslinks_alphalink2_download_fasta = st.download_button(
+                        label="Download FASTA in AlphaLink2 format!",
+                        data=to_text(
+                            st.session_state["export_aggregated_crosslinks_alphalink2"][
+                                "AlphaLink2 FASTA"
+                            ]
+                        ),
+                        file_name="aggregated_crosslinks_AlphaLink2.fasta",
+                        on_click="ignore",
+                        type="primary",
+                        mime="chemical/seq-aa-fasta",
+                        icon=":material/download:",
+                        width="stretch",
+                        help="Downloads the uploaded FASTA file in AlphaLink2 format.",
+                        key="export_aggregated_crosslinks_alphalink2_download_fasta",
+                    )
+                with st.expander("Show Exported Crosslinks"):
+                    export_aggregated_crosslinks_alphalink2_df_info = st.markdown(
+                        "**Number of mapped residue pairs:** "
+                        + f"{st.session_state['export_aggregated_crosslinks_alphalink2']['AlphaLink2 DataFrame'].shape[0]}"
+                    )
+                    export_aggregated_crosslinks_alphalink2_df = st.dataframe(
+                        st.session_state["export_aggregated_crosslinks_alphalink2"][
+                            "AlphaLink2 DataFrame"
+                        ],
+                        width="stretch",
+                    )
+                with st.expander("Show Exported FASTA"):
+                    export_aggregated_crosslinks_alphalink2_nr_proteins = len(
+                        [
+                            line
+                            for line in st.session_state[
+                                "export_aggregated_crosslinks_alphalink2"
+                            ]["AlphaLink2 FASTA"].split("\n")
+                            if line.startswith(">")
+                        ]
+                    )
+                    export_aggregated_crosslinks_alphalink2_display_fasta_info = (
+                        st.markdown(
+                            "**Number of mapped proteins/chains:** "
+                            + f"{export_aggregated_crosslinks_alphalink2_nr_proteins}"
+                        )
+                    )
+                    export_aggregated_crosslinks_alphalink2_display_fasta = st.text(
+                        st.session_state["export_aggregated_crosslinks_alphalink2"][
+                            "AlphaLink2 FASTA"
+                        ],
+                        width="stretch",
+                    )
+
+                export_aggregated_crosslinks_alphalink2_download_goto_tool = (
+                    st.link_button(
+                        "Go to AlphaLink2!",
+                        url="https://github.com/Rappsilber-Laboratory/AlphaLink2",
+                        help="Go to the AlphaLink2 page.",
+                        type="primary",
+                        icon="🔗",
+                        width="stretch",
+                    )
+                )
         # IMP-X-FDR
         elif export_aggregated_crosslinks_picker == "IMP-X-FDR":
             export_aggregated_crosslinks_impxfdr_info = st.info(
@@ -3264,6 +3575,7 @@ def about_tab():
         filtering, and visualization - and [much more](https://hgb-bin-proteomics.github.io/pyXLMS/modules.html) - of crosslink-spectrum-matches and crosslinks.
 
         In addition, the data can easily be exported to the required data format of the various available down-stream analysis tools such as
+        [AlphaLink2](https://github.com/Rappsilber-Laboratory/AlphaLink2),
         [xiNET](https://crosslinkviewer.org/index.php),
         [xiVIEW](https://www.xiview.org/index.php),
         [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
