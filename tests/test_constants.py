@@ -12,6 +12,7 @@ def test1():
     from pyXLMS.constants import AMINO_ACIDS
 
     assert "A" in AMINO_ACIDS
+    assert "B" in AMINO_ACIDS
 
 
 def test2():
