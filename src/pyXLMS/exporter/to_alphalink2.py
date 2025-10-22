@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import re
+import warnings
 import pandas as pd
 from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
@@ -23,11 +24,17 @@ from typing import Tuple
 from typing import List
 from typing import Any
 
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
 CHAINS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
 
 
 def __get_proteins_and_positions(
-    peptide: str, protein_db: Dict[str, Dict[str, str]]
+    peptide: str, protein_db: Dict[str, Dict[str, str]], error_on_no_match: bool = False
 ) -> Tuple[List[str], List[int]]:
     r"""Retrieve matching protein chains and peptide positions for a specific peptide.
 
@@ -42,6 +49,8 @@ def __get_proteins_and_positions(
     protein_db : dict of dict of str, str
         A dictionary that maps protein chain ids to their fasta entries, which are dictionaries
         that map key "header" to the sequence header and key "sequence" to the sequence.
+    error_on_no_match : bool, default = False
+        Wether an error should be raised if the peptide matches to none of the proteins.
 
     Returns
     -------
@@ -51,7 +60,8 @@ def __get_proteins_and_positions(
     Raises
     ------
     RuntimeError
-        If the peptide could not be matched to any protein.
+        If the peptide could not be matched to any protein. Only raised if 'error_on_no_match'
+        is set to True.
 
     Notes
     -----
@@ -71,7 +81,7 @@ def __get_proteins_and_positions(
                 for match in re.finditer(peptide, seq):
                     proteins.append(chain)
                     positions.append(match.start())
-    if len(proteins) == 0:
+    if error_on_no_match and len(proteins) == 0:
         raise RuntimeError(f"No match found for peptide {peptide}!")
     return (proteins, positions)
 
@@ -116,6 +126,7 @@ def to_alphalink2(
     annotated_fdr: float | List[float] = 0.01,
     try_use_annotated_fdr: bool = True,
     filename_prefix: Optional[str] = None,
+    verbose: Literal[0, 1, 2] = 1,
 ) -> Dict[str, Any]:
     r"""Exports a list of crosslinks to AlphaLink2 format.
 
@@ -143,6 +154,10 @@ def to_alphalink2(
     filename_prefix : str, or None, default = None
         If not None, the exported data will be written to files with the specified filename prefix.
         The full list of written files can be accessed via the returned dictionary.
+    verbose : 0, 1, or 2, default = 1
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
 
     Returns
     -------
@@ -164,6 +179,9 @@ def to_alphalink2(
         Only applies if annotated_fdr is given as a list.
     IndexError
         If the provided crosslinks match to more than 62 proteins/chains in the FASTA file.
+    RuntimeError
+        If one or more of the crosslinks could not be matched to the proteins/chains in the
+        FASTA file. Only is raised if 'verbose' is set to 2.
 
     Notes
     -----
@@ -194,6 +212,9 @@ def to_alphalink2(
         if filename_prefix is not None
         else True
     )
+    _ok = check_input(verbose, "verbose", int)
+    if verbose not in [0, 1, 2]:
+        raise TypeError("Verbose level has to be one of 0, 1, or 2!")
     if isinstance(annotated_fdr, list) and len(annotated_fdr) != len(crosslinks):
         raise ValueError(
             "Length of annotated_fdr does not match length of crosslinks! "
@@ -247,11 +268,30 @@ def to_alphalink2(
         desc="Exporting crosslinks to AlphaLink2...",
     ):
         proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(
-            xl["alpha_peptide"], protein_db
+            xl["alpha_peptide"], protein_db, error_on_no_match=False
         )
         proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(
-            xl["beta_peptide"], protein_db
+            xl["beta_peptide"], protein_db, error_on_no_match=False
         )
+        # skip if crosslink matches to none of the proteins in the fasta
+        if len(proteins_a) == 0 or len(proteins_b) == 0:
+            if verbose == 1:
+                warnings.warn(
+                    RuntimeWarning(
+                        (
+                            f"Could not find matching proteins in FASTA file for crosslink id {id}:{xl['alpha_peptide']}-{xl['beta_peptide']}! "
+                            "This warning can be ignored if this is to be expected."
+                        )
+                    )
+                )
+            if verbose == 2:
+                raise RuntimeError(
+                    (
+                        f"Could not find matching proteins in FASTA file for crosslink id {id}:{xl['alpha_peptide']}-{xl['beta_peptide']}! "
+                        "If this is to be expected please set verbose level to either 1 or 0!"
+                    )
+                )
+            continue
         for i in range(len(proteins_a)):
             for j in range(len(proteins_b)):
                 residueFrom = (

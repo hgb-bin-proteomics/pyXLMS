@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyXLMS"
-version = "1.6.0"
+version = "1.6.1"
 authors = [
   { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
 ]
@@ -47,6 +47,18 @@ docs = [
   "pydata-sphinx-theme",
   "myst-parser",
   "sphinx-copybutton"
+]
+dev = [
+  "streamlit>=1.50.0",
+  "xlsxwriter",
+  "sphinx",
+  "pydata-sphinx-theme",
+  "myst-parser",
+  "sphinx-copybutton",
+  "uv",
+  "ruff",
+  "pyright",
+  "pytest"
 ]
 
 [project.urls]
