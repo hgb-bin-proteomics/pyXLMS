@@ -31,6 +31,7 @@ import os
 import json
 import pandas as pd
 from tempfile import NamedTemporaryFile
+from tempfile import TemporaryDirectory
 
 from pyXLMS import parser
 from pyXLMS import transform
@@ -40,6 +41,7 @@ from pyXLMS import exporter
 from pyXLMS import __version__ as __pyxlms_version__
 
 import streamlit as st
+from streamlit.runtime.uploaded_file_manager import UploadedFile
 
 from typing import Optional
 from typing import Dict
@@ -48,7 +50,7 @@ from typing import Set
 from typing import Any
 
 
-__version__ = "1.1.4"
+__version__ = "1.1.5"
 
 
 @st.cache_data
@@ -80,23 +82,26 @@ def dataframe_to_xlsx_stream(
 
 
 @st.cache_data
-def read_file(
-    uploaded_file: io.BytesIO,
+def read_files(
+    uploaded_files: List[UploadedFile],
     engine: str,
     crosslinker: str,
     parse_modifications: bool,
     crosslinker_mass: Optional[float],
 ) -> Dict[str, Any]:
     #
-    with NamedTemporaryFile(
-        suffix=os.path.splitext(uploaded_file.name)[1], delete_on_close=False
-    ) as f:  # pyright: ignore[reportCallIssue]
-        f.write(uploaded_file.getbuffer())
-        f.close()
+    with TemporaryDirectory() as d:  # pyright: ignore[reportCallIssue]
+        filenames = list()
+        for uploaded_file in uploaded_files:
+            filename = os.path.join(d, uploaded_file.name)
+            with open(filename, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+                f.close()
+            filenames.append(filename)
         if crosslinker_mass is not None:
             try:
                 return parser.read(
-                    f.name,
+                    filenames,
                     engine=engine,  # pyright: ignore[reportArgumentType]
                     crosslinker=crosslinker,
                     parse_modifications=parse_modifications,
@@ -104,13 +109,13 @@ def read_file(
                 )
             except Exception as _e:
                 parser.read(
-                    f.name,
+                    filenames,
                     engine=engine,  # pyright: ignore[reportArgumentType]
                     crosslinker=crosslinker,
                     parse_modifications=parse_modifications,
                 )
         return parser.read(
-            f.name,
+            filenames,
             engine=engine,  # pyright: ignore[reportArgumentType]
             crosslinker=crosslinker,
             parse_modifications=parse_modifications,
@@ -242,28 +247,28 @@ def input_tab():
 
     header_1 = st.subheader("File Upload", divider="grey")
 
-    uploaded_file = st.file_uploader(
-        "Upload a cross-linking result file from any of the supported search engines or formats:",
+    uploaded_files = st.file_uploader(
+        "Upload one or more cross-linking result files from any of the supported search engines or formats:",
         type=None,
-        accept_multiple_files=False,
-        key="uploaded_file",
-        help="Upload a cross-linking result file from any of the supported search engines or formats.",
+        accept_multiple_files=True,
+        key="uploaded_files",
+        help="Upload one or more cross-linking result files from any of the supported search engines or formats.",
     )
 
     with st.popover(
-        "Unsure which file to upload? Click me!",
+        "Unsure which files to upload? Click me!",
         help="Display help for file selection.",
         icon="💡",
         width="stretch",
     ):
-        uploaded_file_description = """
+        uploaded_files_description = """
         - ➡️ Check out this 🔗[**overview**](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/supported_io.md)
         on supported input and output formats.
         - ➡️ In our GitHub repository you can also find 🔗[**example files**](https://github.com/hgb-bin-proteomics/pyXLMS/tree/master/data).
         - ➡️ If you need any further help, visit the web application guide which you can find 🔗[**here**](https://pyxlms.vercel.app/docs/webapp).
         - ➡️ Still stuck? Please 📩[**send us a message**](https://github.com/hgb-bin-proteomics/pyXLMS?tab=readme-ov-file#contact).
         """
-        uploaded_file_helper = st.markdown(uploaded_file_description)
+        uploaded_files_helper = st.markdown(uploaded_files_description)
 
     l1, r1 = st.columns(2)
 
@@ -471,10 +476,10 @@ def input_tab():
     l7, center_7, r7 = st.columns(3)
 
     with center_7:
-        read_file_button = st.button("Read file!", type="primary", width="stretch")
+        read_files_button = st.button("Read file(s)!", type="primary", width="stretch")
 
     # read in all inputs
-    if read_file_button:
+    if read_files_button:
         # reset pr and aggregated on file read
         if "pr" in st.session_state:
             del st.session_state["pr"]
@@ -506,8 +511,8 @@ def input_tab():
         # reset proteins
         st.session_state["possible_proteins"] = None
         # check what is uploaded and set
-        if uploaded_file is None:
-            _ = st.error("You need to upload a result file first!")
+        if uploaded_files is None or len(uploaded_files) == 0:
+            _ = st.error("You need to upload at least one result file first!")
         if search_engine is None:
             _ = st.error("You need to select a search engine or format first!")
         if crosslinker is None:
@@ -520,15 +525,16 @@ def input_tab():
                     "You need to specify the crosslinker mass for your custom crosslinker!"
                 )
         if (
-            uploaded_file is not None
+            uploaded_files is not None
+            and len(uploaded_files) > 0
             and search_engine is not None
             and crosslinker is not None
             and crosslinker != "Custom"
         ):
             with st.spinner("Parsing file...", show_time=True):
                 try:
-                    st.session_state["pr"] = read_file(
-                        uploaded_file,
+                    st.session_state["pr"] = read_files(
+                        uploaded_files,
                         search_engine,
                         crosslinker,
                         parse_modifications,
@@ -623,7 +629,8 @@ def input_tab():
                     with st.expander("Show exception"):
                         _ = st.exception(e)
         elif (
-            uploaded_file is not None
+            uploaded_files is not None
+            and len(uploaded_files) > 0
             and search_engine is not None
             and crosslinker is not None
             and crosslinker == "Custom"
@@ -632,8 +639,8 @@ def input_tab():
         ):
             with st.spinner("Parsing file...", show_time=True):
                 try:
-                    st.session_state["pr"] = read_file(
-                        uploaded_file,
+                    st.session_state["pr"] = read_files(
+                        uploaded_files,
                         search_engine,
                         crosslinker_name,
                         parse_modifications,
