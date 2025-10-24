@@ -14,8 +14,8 @@ sys.path.insert(0, os.path.abspath("../src/"))
 project = "pyXLMS"
 copyright = "2025, Micha Johannes Birklbauer"
 author = "Micha Johannes Birklbauer"
-version = "1.6"
-release = "1.6.1"
+version = "1.7"
+release = "1.7.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
