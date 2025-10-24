@@ -133,3 +133,122 @@ def test5():
             crosslinker="DSS",
             schema_validation="offline",
         )
+
+
+def test6():
+    from pyXLMS.pipelines import pipeline
+    from pyXLMS.exporter import to_proxl
+
+    pr = pipeline(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    with pytest.raises(
+        TypeError,
+        match="Parameter 'schema_validation' has to be one of 'online' or 'offline'!",
+    ):
+        _xml = to_proxl(
+            pr["crosslink-spectrum-matches"],
+            fasta_filename="data/_fasta/Cas9_plus10.fasta",
+            search_engine="MS Annika",
+            search_engine_version="3.0.1",
+            score="higher_better",
+            crosslinker="DSS",
+            schema_validation="local",
+        )
+
+
+def test7():
+    from pyXLMS.pipelines import pipeline
+    from pyXLMS.exporter import to_proxl
+
+    pr = pipeline(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    with pytest.raises(
+        KeyError,
+        match=(
+            "Cannot infer crosslinker mass because crosslinker is not defined in "
+            r"parameter 'modifications'\. Please specify crosslinker mass manually!"
+        ),
+    ):
+        _xml = to_proxl(
+            pr["crosslink-spectrum-matches"],
+            fasta_filename="data/_fasta/Cas9_plus10.fasta",
+            search_engine="MS Annika",
+            search_engine_version="3.0.1",
+            score="higher_better",
+            crosslinker="SDA",
+            schema_validation="offline",
+        )
+
+
+def test8():
+    from pyXLMS.exporter import to_proxl
+
+    with pytest.raises(
+        ValueError,
+        match="Provided crosslink-spectrum-matches contain no elements!",
+    ):
+        _xml = to_proxl(
+            [],
+            fasta_filename="data/_fasta/Cas9_plus10.fasta",
+            search_engine="MS Annika",
+            search_engine_version="3.0.1",
+            score="higher_better",
+            crosslinker="DSS",
+            schema_validation="offline",
+        )
+
+
+def test9():
+    from pyXLMS.pipelines import pipeline
+    from pyXLMS.exporter import to_proxl
+
+    pr = pipeline(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    with pytest.raises(
+        TypeError,
+        match="Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!",
+    ):
+        _xml = to_proxl(
+            pr["crosslinks"],
+            fasta_filename="data/_fasta/Cas9_plus10.fasta",
+            search_engine="MS Annika",
+            search_engine_version="3.0.1",
+            score="higher_better",
+            crosslinker="DSS",
+            schema_validation="offline",
+        )
+
+
+def test10():
+    from pyXLMS.pipelines import pipeline
+    from pyXLMS.exporter import to_proxl
+    from pyXLMS.data import create_csm_min
+
+    pr = pipeline(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    with pytest.raises(
+        RuntimeError,
+        match="Can't export to ProXL because not all necessary information is available!",
+    ):
+        _xml = to_proxl(
+            pr["crosslink-spectrum-matches"]
+            + [create_csm_min("PEPK", 4, "KPEP", 1, "MSFile", 1)],
+            fasta_filename="data/_fasta/Cas9_plus10.fasta",
+            search_engine="MS Annika",
+            search_engine_version="3.0.1",
+            score="higher_better",
+            crosslinker="DSS",
+            schema_validation="offline",
+        )
