@@ -385,7 +385,7 @@ def to_proxl(
     crosslinker_mass: Optional[float] = None,
     modifications: Dict[str, float] = MODIFICATIONS,
     fasta_filename_override: Optional[str] = None,
-    title_to_accession: Optional[Callable[[str], str]] = None,
+    fasta_title_to_accession: Optional[Callable[[str], str]] = None,
     filename: Optional[str] = None,
     schema_validation: Literal["online", "offline"] = "online",
 ) -> str:
@@ -418,7 +418,7 @@ def to_proxl(
     fasta_filename_override : str, or None, default = None
         Name that should be used in the ProXL XML for the fasta file. If None (default)
         uses the filename of parameter 'fasta_filename' (preceding directories are pruned).
-    title_to_accession : callable, or None, default = None
+    fasta_title_to_accession : callable, or None, default = None
         A function that parses the protein accession from the fasta title/header. If None (default)
         the full fasta headers are used. An example function would be ``transform.fasta_title_to_accession()``.
     filename : str, or None, default = None
@@ -488,8 +488,8 @@ def to_proxl(
         else True
     )
     _ok = (
-        check_input(title_to_accession, "title_to_accession", Callable)
-        if title_to_accession is not None
+        check_input(fasta_title_to_accession, "title_to_accession", Callable)
+        if fasta_title_to_accession is not None
         else True
     )
     _ok = check_input(filename, "filename", str) if filename is not None else True
@@ -537,7 +537,7 @@ def to_proxl(
             crosslinker_mass,
         )
         + __build_reported_peptides(reported_peptides, crosslinker_mass, search_engine)
-        + __build_matched_proteins(csms, fasta_filename, title_to_accession)
+        + __build_matched_proteins(csms, fasta_filename, fasta_title_to_accession)
         + [r"""</proxl_input>"""]
     )
     xml_str = "\n".join(lines)
