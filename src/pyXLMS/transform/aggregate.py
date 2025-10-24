@@ -124,7 +124,7 @@ def __unique_csms(
         A list of pyXLMS crosslink-spectrum-match objects.
     has_scores : bool
         If the crosslink-spectrum-match objects contain scores.
-    score: str, one of "higher_better" or "lower_better"
+    score : str, one of "higher_better" or "lower_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
@@ -173,7 +173,7 @@ def __unique_xls(
         If peptide or protein crosslink position should be used for determining if a crosslink is unique.
     has_scores : bool
         If the crosslink objects contain scores.
-    score: str, one of "higher_better" or "lower_better"
+    score : str, one of "higher_better" or "lower_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
@@ -231,7 +231,7 @@ def unique(
         position is not available for all crosslinks a ``ValueError`` will be raised. Make sure that all
         crosslinks have the ``_proteins`` and ``_proteins_crosslink_positions`` fields set. If this is not
         already done by the parser, this can be achieved with ``transform.reannotate_positions()``.
-    score: str, one of "higher_better" or "lower_better", default = "higher_better"
+    score : str, one of "higher_better" or "lower_better", default = "higher_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
@@ -389,7 +389,7 @@ def aggregate(
         will be raised. Make sure that all crosslink-spectrum-matches have the ``_proteins`` and
         ``_proteins_crosslink_positions`` fields set. If this is not already done by the parser, this can
         be achieved with ``transform.reannotate_positions()``.
-    score: str, one of "higher_better" or "lower_better", default = "higher_better"
+    score : str, one of "higher_better" or "lower_better", default = "higher_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns

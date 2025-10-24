@@ -48,7 +48,7 @@ def __verify_fdr_strict(
         The target FDR, must be given as a real number between 0 and 1.
     cutoff : float
         Score cutoff that defines which crosslinks or crosslink-spectrum-matches fall within the FDR validated result.
-    score: str, one of "higher_better" or "lower_better"
+    score : str, one of "higher_better" or "lower_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
@@ -98,7 +98,7 @@ def __validate_strict(
         A list of crosslink-spectrum-matches or crosslinks to validate.
     fdr : float
         The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
-    score: str, one of "higher_better" or "lower_better"
+    score : str, one of "higher_better" or "lower_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
@@ -184,7 +184,7 @@ def __verify_fdr_relaxed(
         The target FDR, must be given as a real number between 0 and 1.
     cutoff : float
         Score cutoff that defines which crosslinks or crosslink-spectrum-matches fall within the FDR validated result.
-    score: str, one of "higher_better" or "lower_better"
+    score : str, one of "higher_better" or "lower_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
@@ -250,7 +250,7 @@ def __validate_relaxed(
         A list of crosslink-spectrum-matches or crosslinks to validate.
     fdr : float
         The target FDR, must be given as a real number between 0 and 1.
-    score: str, one of "higher_better" or "lower_better"
+    score : str, one of "higher_better" or "lower_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
@@ -357,7 +357,7 @@ def validate(
     formula : str, one of "D/T", "(TD+DD)/TT", or "(TD-DD)/TT", default = "D/T"
         Which formula to use to estimate FDR. D and DD denote decoy matches, T and TT denote target matches, and TD denotes target-decoy
         and decoy-target matches.
-    score: str, one of "higher_better" or "lower_better", default = "higher_better"
+    score : str, one of "higher_better" or "lower_better", default = "higher_better"
         If a higher score is considered better, or a lower score is considered better.
     separate_intra_inter : bool, default = False
         If FDR should be estimated separately for intra and inter matches.
