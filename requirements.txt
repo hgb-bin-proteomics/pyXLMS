@@ -10,3 +10,4 @@ matplotlib-venn
 streamlit
 xlsxwriter
 pyarrow
+lxml

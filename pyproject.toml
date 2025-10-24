@@ -34,7 +34,8 @@ dependencies = [
   "biopandas",
   "matplotlib",
   "matplotlib-venn",
-  "pyarrow"
+  "pyarrow",
+  "lxml"
 ]
 
 [project.optional-dependencies]
