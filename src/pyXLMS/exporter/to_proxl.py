@@ -57,7 +57,7 @@ def __build_header(
         If a higher score is considered better, or a lower score is considered better.
     crosslinker : str
         Name of the used cross-linking reagent, for example "DSSO".
-    crosslinker_mass : float, or None, default = None
+    crosslinker_mass : float
         Monoisotopic delta mass of the crosslink modification.
 
     Returns
@@ -132,7 +132,7 @@ def __get_reported_peptide_string(csm: Dict[str, Any]) -> str:
 def __get_reported_peptides(
     csms: List[Dict[str, Any]],
 ) -> Dict[str, List[Dict[str, Any]]]:
-    r"""
+    r"""Groups crosslink-spectrum-matches by their unique 'reported_peptide_string'.
 
     Parameters
     ----------
@@ -168,7 +168,7 @@ def __build_psm(
     ----------
     csms : dict of str, any
         A crosslink-spectrum-match.
-    crosslinker_mass : float, or None, default = None
+    crosslinker_mass : float
         Monoisotopic delta mass of the crosslink modification.
     search_engine : str
         Name of the used crosslink search engine.
@@ -252,7 +252,7 @@ def __build_reported_peptides(
     reported_peptides : dict of str, list of dict of str, any
         A dictionary that maps unique 'reported_peptide_string' keys to lists of associated
         crosslink-spectrum-matches as values.
-    crosslinker_mass : float, or None, default = None
+    crosslinker_mass : float
         Monoisotopic delta mass of the crosslink modification.
     search_engine : str
         Name of the used crosslink search engine.
@@ -344,7 +344,7 @@ def __build_matched_proteins(
 
 
 def __validate_schema(
-    xml_str: str, schema_validation: Literal["online", "offline"] = "online"
+    xml_str: str, schema_validation: Literal["online", "offline"]
 ) -> bool:
     r"""Validates a ProXL XML string against the ProXL XML schema.
 
@@ -391,9 +391,8 @@ def to_proxl(
 ) -> str:
     r"""Exports a list of crosslink-spectrum-matches to ProXL format.
 
-    Exports a list of crosslinks to ProXL format. The tool ProXL is accessible
-    via the link
-    `yeastrc.org/proxl_public <https://www.yeastrc.org/proxl_public/>`_.
+    Exports a list of crosslink-spectrum-matches to ProXL format. The tool ProXL is accessible
+    via the link `yeastrc.org/proxl_public <https://www.yeastrc.org/proxl_public/>`_.
     Requires that ``charge`` and ``score`` fields are set for all crosslink-spectrum-matches.
 
     Parameters
