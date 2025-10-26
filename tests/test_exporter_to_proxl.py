@@ -252,3 +252,28 @@ def test10():
             crosslinker="DSS",
             schema_validation="offline",
         )
+
+
+def test11():
+    from pyXLMS import parser
+    from pyXLMS import exporter
+    from pyXLMS.transform import targets_only
+
+    parser_result = parser.read(
+        "../../data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    csms = parser_result["crosslink-spectrum-matches"]
+    csms = targets_only(csms)
+    xml = exporter.to_proxl(
+        csms,
+        fasta_filename="../../data/_fasta/Cas9_plus10.fasta",
+        search_engine="MS Annika",
+        search_engine_version="3.0.1",
+        score="higher_better",
+        crosslinker="DSS",
+        filename="CSMS_exported_to_ProXL.xml",
+        schema_validation="online",
+    )
+    assert xml is not None
