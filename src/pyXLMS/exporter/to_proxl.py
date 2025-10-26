@@ -219,6 +219,10 @@ def __build_modifications(csm: Dict[str, Any]) -> Tuple[List[str], List[str]]:
     if csm["alpha_modifications"] is not None:
         modifications_a.append(r"""<modifications>""")
         for pos, modification in csm["alpha_modifications"].items():
+            if pos == 0:
+                pos = 1
+            if pos > len(csm["alpha_peptide"]):
+                pos = len(csm["alpha_peptide"])
             if pos != csm["alpha_peptide_crosslink_position"]:
                 modifications_a.append(
                     f'<modification mass="{modification[1]}" position="{pos}" isMonolink="false"/>'
@@ -230,6 +234,10 @@ def __build_modifications(csm: Dict[str, Any]) -> Tuple[List[str], List[str]]:
     if csm["beta_modifications"] is not None:
         modifications_b.append(r"""<modifications>""")
         for pos, modification in csm["beta_modifications"].items():
+            if pos == 0:
+                pos = 1
+            if pos > len(csm["beta_peptide"]):
+                pos = len(csm["beta_peptide"])
             if pos != csm["beta_peptide_crosslink_position"]:
                 modifications_b.append(
                     f'<modification mass="{modification[1]}" position="{pos}" isMonolink="false"/>'
