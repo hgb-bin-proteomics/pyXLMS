@@ -48,7 +48,7 @@ def __serialize_pandas_series(
                 val = float(raw_val)
         else:
             if not pd.isna(raw_val):  # pyright: ignore[reportGeneralTypeIssues]
-                str_val = str(val)
+                str_val = str(raw_val)
                 if str_val.lower().strip() not in nan_values:
                     val = str_val
         serialized_pds[key] = val
