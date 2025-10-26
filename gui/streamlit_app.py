@@ -688,6 +688,7 @@ def input_tab():
                                 st.session_state["aggregated"],
                                 uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
                             )
+                    st.rerun()
                 except Exception as e:
                     _ = st.error(
                         "Something went wrong! This is most likely due to missing information in the results!",
@@ -799,6 +800,7 @@ def input_tab():
                                 st.session_state["aggregated"],
                                 uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
                             )
+                    st.rerun()
                 except Exception as e:
                     _ = st.error(
                         "Something went wrong! This is most likely due to missing information in the results!",
@@ -1211,6 +1213,7 @@ def filter_tab():
                             if "Decoy-Decoy" in target_decoy_filter:
                                 keep += tt_td_dd["Decoy-Decoy"]
                             st.session_state["aggregated"] = keep
+                    st.rerun()
                 except Exception as e:
                     _ = st.error(
                         "Something went wrong! This is most likely due to missing information in the results!",
