@@ -49,6 +49,11 @@ from typing import List
 from typing import Set
 from typing import Any
 
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
 __version__ = "1.2.1"
 
@@ -200,6 +205,34 @@ def export_alphalink2(
         )
 
 
+@st.cache_data
+def export_proxl(
+    csms: List[Dict[str, Any]],
+    fasta_file: io.BytesIO,
+    search_engine: str,
+    search_engine_version: str,
+    score: Literal["higher_better", "lower_better"],
+    crosslinker: str,
+    crosslinker_mass: Optional[float],
+) -> str:
+    #
+    with NamedTemporaryFile(
+        suffix=os.path.splitext(fasta_file.name)[1], delete_on_close=False
+    ) as f:  # pyright: ignore[reportCallIssue]
+        f.write(fasta_file.getbuffer())
+        f.close()
+        return exporter.to_proxl(
+            csms,
+            f.name,
+            search_engine,
+            search_engine_version,
+            score,
+            crosslinker,
+            crosslinker_mass,
+            fasta_filename_override=fasta_file.name,
+        )
+
+
 def layout_plots(plots: List[Any]) -> None:
     for i in range(0, len(plots), 2):
         l_col, r_col = st.columns(2)
@@ -226,6 +259,7 @@ def reset_exports() -> None:
     # CSMs
     st.session_state["export_csms_impxfdr"] = None
     st.session_state["export_csms_msannika"] = None
+    st.session_state["export_csms_proxl"] = None
     st.session_state["export_csms_xifdr"] = None
     # crosslinks
     st.session_state["export_crosslinks_alphalink2"] = None
@@ -275,6 +309,7 @@ def input_tab():
 
     In addition, the data can easily be exported to the required data format of the various available down-stream analysis tools such as
     [AlphaLink2](https://github.com/Rappsilber-Laboratory/AlphaLink2),
+    [ProXL](https://www.yeastrc.org/proxl_public/),
     [xiNET](https://crosslinkviewer.org/index.php),
     [xiVIEW](https://www.xiview.org/index.php),
     [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
@@ -1553,7 +1588,7 @@ def export_tab():
             export_csms_header = st.subheader(
                 "Export Crosslink-Spectrum-Matches", divider="grey"
             )
-            export_csms_options = ["IMP-X-FDR", "MS Annika", "xiFDR"]
+            export_csms_options = ["IMP-X-FDR", "MS Annika", "ProXL", "xiFDR"]
             export_csms_picker = st.selectbox(
                 "Export crosslink-spectrum-matches to:",
                 options=export_csms_options,
@@ -1689,6 +1724,158 @@ def export_tab():
                             help="Downloads the exported crosslink-spectrum-matches in MS Annika Microsoft Excel (.xlsx) format.",
                             key="export_csms_msannika_download_xlsx",
                         )
+            # ProXL
+            elif export_csms_picker == "ProXL":
+                export_csms_proxl_info = st.info(
+                    "To export to ProXL your crosslink-spectrum-matches should be **unique** and **should not** "
+                    + "**contain decoy matches**! It is also required that all crosslink-spectrum-matches have an "
+                    + "associated score and charge! It is **not necessary to check this preemptively** as the exporter "
+                    + "automatically checks that this information is available and will throw an error otherwise! "
+                    + "Please however **make sure** that your crosslink-spectrum-matches are **unique** and **do not contain decoys** "
+                    + "as otherwise the export to ProXL or ProXL itself will not work as intended! You can check this in the "
+                    + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+                )
+                export_csms_proxl_fasta = st.file_uploader(
+                    "Upload the FASTA file containing the protein sequences of your crosslink-spectrum-matches:",
+                    type="fasta",
+                    accept_multiple_files=False,
+                    key="export_csms_proxl_fasta",
+                    help="Upload the FASTA file containing protein sequences for the provided crosslink spectrum matches.",
+                )
+                export_csms_proxl_search_engine = st.text_input(
+                    "Name of the used crosslink search engine [this field has been pre-filled with your selection from the 'Load Data' tab]:",
+                    value=st.session_state["meta_info"]["search_engine"],
+                    max_chars=150,
+                    placeholder=None,
+                    key="export_csms_proxl_search_engine",
+                    help="Name of the crosslink search engine used in the experiment of the uploaded result file.",
+                )
+                export_csms_proxl_search_engine_version = st.text_input(
+                    "Software version of the used crosslink search engine:",
+                    value=None,
+                    max_chars=150,
+                    placeholder="v1.0.0",
+                    key="export_csms_proxl_search_engine_version",
+                    help="Name of the crosslink search engine used in the experiment of the uploaded result file.",
+                )
+                export_csms_proxl_score = st.selectbox(
+                    "Is a higher crosslink-spectrum-match score considered better?",
+                    options=["Higher better", "Lower better"],
+                    index=0,
+                    key="export_csms_proxl_score",
+                    help="If a higher crosslink-spectrum-match score is considered better, or a lower score is considered better.",
+                )
+                export_csms_proxl_crosslinker_name = st.text_input(
+                    "Name of the used crosslinker [this field has been pre-filled with your selection from the 'Load Data' tab]:",
+                    value=st.session_state["meta_info"]["crosslinker_name"],
+                    max_chars=50,
+                    placeholder="DSSO",
+                    key="export_csms_proxl_crosslinker_name",
+                    help="Name of the crosslinker used in the experiment of the uploaded result file.",
+                )
+                export_csms_proxl_crosslinker_mass = st.number_input(
+                    "Mass of the used crosslinker [this field has been pre-filled with your selection from the 'Load Data' tab]:",
+                    value=st.session_state["meta_info"]["crosslinker_mass"],
+                    step=0.00001,
+                    format="%0.5f",
+                    placeholder="158.00376",
+                    key="export_csms_proxl_crosslinker_mass",
+                    help="Monoisotopic delta mass of the crosslinker used in the experiment of the uploaded result file.",
+                )
+                export_csms_proxl_button = st.button(
+                    "Export to ProXL!",
+                    type="primary",
+                    width="stretch",
+                    key="export_csms_proxl_button",
+                )
+                if export_csms_proxl_button:
+                    if export_csms_proxl_fasta is None:
+                        _ = st.error("You need to upload a FASTA file first!")
+                    if (
+                        export_csms_proxl_search_engine is None
+                        or export_csms_proxl_search_engine.strip() == ""
+                    ):
+                        _ = st.error(
+                            "You need to specify the name of the crosslink search engine first!"
+                        )
+                    if (
+                        export_csms_proxl_search_engine_version is None
+                        or export_csms_proxl_search_engine_version.strip() == ""
+                    ):
+                        _ = st.error(
+                            "You need to specify the version of the crosslink search engine first!"
+                        )
+                    if (
+                        export_csms_proxl_crosslinker_name is None
+                        or export_csms_proxl_crosslinker_name.strip() == ""
+                    ):
+                        _ = st.error(
+                            "You need the specify the name of the used crosslink reagent first!"
+                        )
+                    if export_csms_proxl_crosslinker_mass is None:
+                        _ = st.error(
+                            "You need to specify the delta mass of the used crosslink reagent first!"
+                        )
+                    if (
+                        export_csms_proxl_fasta is not None
+                        and export_csms_proxl_search_engine is not None
+                        and export_csms_proxl_search_engine.strip() != ""
+                        and export_csms_proxl_search_engine_version is not None
+                        and export_csms_proxl_search_engine_version.strip() != ""
+                        and export_csms_proxl_crosslinker_name is not None
+                        and export_csms_proxl_crosslinker_name.strip() != ""
+                        and export_csms_proxl_crosslinker_mass is not None
+                    ):
+                        with st.spinner(
+                            "Exporting crosslink-spectrum-matches to ProXL...",
+                            show_time=True,
+                        ):
+                            try:
+                                st.session_state["export_csms_proxl"] = export_proxl(
+                                    csms,
+                                    export_csms_proxl_fasta,
+                                    export_csms_proxl_search_engine,
+                                    export_csms_proxl_search_engine_version,
+                                    "higher_better"
+                                    if export_csms_proxl_score == "Higher better"
+                                    else "lower_better",
+                                    export_csms_proxl_crosslinker_name,
+                                    export_csms_proxl_crosslinker_mass,
+                                )
+                            except Exception as e:
+                                _ = st.error(
+                                    "Something went wrong! This is most likely due to missing information in the results!",
+                                    icon="⚠️",
+                                )
+                                with st.expander("Show exception"):
+                                    _ = st.exception(e)
+                if (
+                    "export_csms_proxl" in st.session_state
+                    and st.session_state["export_csms_proxl"] is not None
+                ):
+                    export_csms_proxl_download_info = st.markdown(
+                        "Your exported crosslink-spectrum-matches in ProXL format are ready for download:"
+                    )
+                    export_csms_proxl_download = st.download_button(
+                        label="Download in ProXL format!",
+                        data=to_text(st.session_state["export_csms_proxl"]),
+                        file_name="crosslink-spectrum-matches_proxl.xml",
+                        on_click="ignore",
+                        type="primary",
+                        mime="application/xml",
+                        icon=":material/download:",
+                        width="stretch",
+                        help="Downloads the exported crosslink-spectrum-matches in ProXL format.",
+                        key="export_csms_proxl_download",
+                    )
+                    export_csms_proxl_download_goto_tool = st.link_button(
+                        "Go to ProXL!",
+                        url="https://www.yeastrc.org/proxl_public/",
+                        help="Go to the ProXL page.",
+                        type="primary",
+                        icon="🔗",
+                        width="stretch",
+                    )
             # xiFDR
             elif export_csms_picker == "xiFDR":
                 export_csms_xifdr_info = st.info(
@@ -3589,6 +3776,7 @@ def about_tab():
 
         In addition, the data can easily be exported to the required data format of the various available down-stream analysis tools such as
         [AlphaLink2](https://github.com/Rappsilber-Laboratory/AlphaLink2),
+        [ProXL](https://www.yeastrc.org/proxl_public/),
         [xiNET](https://crosslinkviewer.org/index.php),
         [xiVIEW](https://www.xiview.org/index.php),
         [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
