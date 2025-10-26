@@ -690,6 +690,18 @@ def input_tab():
                             )
                     st.rerun()
                 except Exception as e:
+                    # reset meta information
+                    if "meta_info" in st.session_state:
+                        del st.session_state["meta_info"]
+                    # reset pr and aggregated on file read
+                    if "pr" in st.session_state:
+                        del st.session_state["pr"]
+                    if "aggregated" in st.session_state:
+                        del st.session_state["aggregated"]
+                    # reset any exported files
+                    reset_exports()
+                    # reset proteins
+                    st.session_state["possible_proteins"] = None
                     _ = st.error(
                         "Something went wrong! This is most likely due to missing information in the results!",
                         icon="⚠️",
@@ -802,6 +814,18 @@ def input_tab():
                             )
                     st.rerun()
                 except Exception as e:
+                    # reset meta information
+                    if "meta_info" in st.session_state:
+                        del st.session_state["meta_info"]
+                    # reset pr and aggregated on file read
+                    if "pr" in st.session_state:
+                        del st.session_state["pr"]
+                    if "aggregated" in st.session_state:
+                        del st.session_state["aggregated"]
+                    # reset any exported files
+                    reset_exports()
+                    # reset proteins
+                    st.session_state["possible_proteins"] = None
                     _ = st.error(
                         "Something went wrong! This is most likely due to missing information in the results!",
                         icon="⚠️",
@@ -1215,8 +1239,20 @@ def filter_tab():
                             st.session_state["aggregated"] = keep
                     st.rerun()
                 except Exception as e:
+                    # reset meta information
+                    if "meta_info" in st.session_state:
+                        del st.session_state["meta_info"]
+                    # reset pr and aggregated on file read
+                    if "pr" in st.session_state:
+                        del st.session_state["pr"]
+                    if "aggregated" in st.session_state:
+                        del st.session_state["aggregated"]
+                    # reset any exported files
+                    reset_exports()
+                    # reset proteins
+                    st.session_state["possible_proteins"] = None
                     _ = st.error(
-                        "Something went wrong! This is most likely due to missing information in the results!",
+                        "Something went wrong! This is most likely due to missing information in the results! All results have been reset!",
                         icon="⚠️",
                     )
                     with st.expander("Show exception"):
