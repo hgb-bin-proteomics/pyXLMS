@@ -260,7 +260,7 @@ def test11():
     from pyXLMS.transform import targets_only
 
     parser_result = parser.read(
-        "../../data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt",
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt",
         engine="MS Annika",
         crosslinker="DSS",
     )
@@ -268,7 +268,7 @@ def test11():
     csms = targets_only(csms)
     xml = exporter.to_proxl(
         csms,
-        fasta_filename="../../data/_fasta/Cas9_plus10.fasta",
+        fasta_filename="data/_fasta/Cas9_plus10.fasta",
         search_engine="MS Annika",
         search_engine_version="3.0.1",
         score="higher_better",
