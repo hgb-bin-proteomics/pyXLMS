@@ -525,6 +525,9 @@ def input_tab():
 
     # read in all inputs
     if read_files_button:
+        # reset meta information
+        if "meta_info" in st.session_state:
+            del st.session_state["meta_info"]
         # reset pr and aggregated on file read
         if "pr" in st.session_state:
             del st.session_state["pr"]
@@ -557,6 +560,11 @@ def input_tab():
         ):
             with st.spinner("Parsing file...", show_time=True):
                 try:
+                    st.session_state["meta_info"] = {
+                        "search_engine": search_engine,
+                        "crosslinker_name": crosslinker,
+                        "crosslinker_mass": constants.CROSSLINKERS[crosslinker],
+                    }
                     st.session_state["pr"] = read_files(
                         uploaded_files,
                         search_engine,
@@ -663,6 +671,11 @@ def input_tab():
         ):
             with st.spinner("Parsing file...", show_time=True):
                 try:
+                    st.session_state["meta_info"] = {
+                        "search_engine": search_engine,
+                        "crosslinker_name": crosslinker_name,
+                        "crosslinker_mass": crosslinker_mass,
+                    }
                     st.session_state["pr"] = read_files(
                         uploaded_files,
                         search_engine,
