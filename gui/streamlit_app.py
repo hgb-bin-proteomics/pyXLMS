@@ -835,7 +835,17 @@ def input_tab():
 
     # display read data and summary [CSMs]
     if "pr" in st.session_state:
-        if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
+        if (
+            st.session_state["pr"]["crosslink-spectrum-matches"] is not None
+            and len(st.session_state["pr"]["crosslink-spectrum-matches"]) == 0
+        ):
+            _ = st.error(
+                "Filtering criteria too strict! No crosslink-spectrum-matches passed the filter! Please reload your data from the 'Load Data' tab!"
+            )
+        if (
+            st.session_state["pr"]["crosslink-spectrum-matches"] is not None
+            and len(st.session_state["pr"]["crosslink-spectrum-matches"]) > 0
+        ):
             csms_header = st.subheader(
                 "Read Crosslink-Spectrum-Matches", divider="grey"
             )
@@ -901,7 +911,17 @@ def input_tab():
                 )
 
         # display read data and summary [crosslinks]
-        if st.session_state["pr"]["crosslinks"] is not None:
+        if (
+            st.session_state["pr"]["crosslinks"] is not None
+            and len(st.session_state["pr"]["crosslinks"]) == 0
+        ):
+            _ = st.error(
+                "Filtering criteria too strict! No crosslinks passed the filter! Please reload your data from the 'Load Data' tab!"
+            )
+        if (
+            st.session_state["pr"]["crosslinks"] is not None
+            and len(st.session_state["pr"]["crosslinks"]) > 0
+        ):
             crosslinks_header = st.subheader("Read Crosslinks", divider="grey")
             crosslinks = st.session_state["pr"]["crosslinks"]
             crosslinks_info = st.markdown(f"**Read {len(crosslinks)} crosslinks:**")
@@ -967,7 +987,19 @@ def input_tab():
                 )
 
     # display read data and summary [aggregated crosslinks]
-    if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
+    if (
+        "aggregated" in st.session_state
+        and st.session_state["aggregated"] is not None
+        and len(st.session_state["aggregated"]) == 0
+    ):
+        _ = st.error(
+            "Filtering criteria too strict! None of the aggregated crosslinks passed the filter! Please reload your data from the 'Load Data' tab!"
+        )
+    if (
+        "aggregated" in st.session_state
+        and st.session_state["aggregated"] is not None
+        and len(st.session_state["aggregated"]) > 0
+    ):
         aggregated_crosslinks_header = st.subheader(
             "Aggregated Crosslinks", divider="grey"
         )
@@ -1260,7 +1292,17 @@ def filter_tab():
 
     # display filtered data and summary [CSMs]
     if "pr" in st.session_state:
-        if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
+        if (
+            st.session_state["pr"]["crosslink-spectrum-matches"] is not None
+            and len(st.session_state["pr"]["crosslink-spectrum-matches"]) == 0
+        ):
+            _ = st.error(
+                "Filtering criteria too strict! No crosslink-spectrum-matches passed the filter! Please reload your data from the 'Load Data' tab!"
+            )
+        if (
+            st.session_state["pr"]["crosslink-spectrum-matches"] is not None
+            and len(st.session_state["pr"]["crosslink-spectrum-matches"]) > 0
+        ):
             csms_header = st.subheader(
                 "Current Crosslink-Spectrum-Matches", divider="grey"
             )
@@ -1328,7 +1370,17 @@ def filter_tab():
                 )
 
         # display filtered data and summary [crosslinks]
-        if st.session_state["pr"]["crosslinks"] is not None:
+        if (
+            st.session_state["pr"]["crosslinks"] is not None
+            and len(st.session_state["pr"]["crosslinks"]) == 0
+        ):
+            _ = st.error(
+                "Filtering criteria too strict! No crosslinks passed the filter! Please reload your data from the 'Load Data' tab!"
+            )
+        if (
+            st.session_state["pr"]["crosslinks"] is not None
+            and len(st.session_state["pr"]["crosslinks"]) > 0
+        ):
             crosslinks_header = st.subheader("Current Crosslinks", divider="grey")
             crosslinks = st.session_state["pr"]["crosslinks"]
             crosslinks_info = st.markdown(
@@ -1396,7 +1448,19 @@ def filter_tab():
                 )
 
     # display filtered data and summary [aggregated crosslinks]
-    if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
+    if (
+        "aggregated" in st.session_state
+        and st.session_state["aggregated"] is not None
+        and len(st.session_state["aggregated"]) == 0
+    ):
+        _ = st.error(
+            "Filtering criteria too strict! None of the aggregated crosslinks passed the filter! Please reload your data from the 'Load Data' tab!"
+        )
+    if (
+        "aggregated" in st.session_state
+        and st.session_state["aggregated"] is not None
+        and len(st.session_state["aggregated"]) > 0
+    ):
         aggregated_crosslinks_header = st.subheader(
             "Current Aggregated Crosslinks", divider="grey"
         )
@@ -1486,7 +1550,17 @@ def visualize_tab():
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
         no_data = st.info("You need to upload at least one result file first!")
     if "pr" in st.session_state and st.session_state["pr"] is not None:
-        if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
+        if (
+            st.session_state["pr"]["crosslink-spectrum-matches"] is not None
+            and len(st.session_state["pr"]["crosslink-spectrum-matches"]) == 0
+        ):
+            _ = st.error(
+                "Filtering criteria too strict! No crosslink-spectrum-matches passed the filter! Please reload your data from the 'Load Data' tab!"
+            )
+        if (
+            st.session_state["pr"]["crosslink-spectrum-matches"] is not None
+            and len(st.session_state["pr"]["crosslink-spectrum-matches"]) > 0
+        ):
             csms = st.session_state["pr"]["crosslink-spectrum-matches"]
             csms_viz_header = st.subheader(
                 "Visualizations for Crosslink-Spectrum-Matches", divider="grey"
@@ -1532,7 +1606,17 @@ def visualize_tab():
                 csms_not_enough_data = st.info(
                     "Not enough data to plot anything for crosslink-spectrum-matches!"
                 )
-        if st.session_state["pr"]["crosslinks"] is not None:
+        if (
+            st.session_state["pr"]["crosslinks"] is not None
+            and len(st.session_state["pr"]["crosslinks"]) == 0
+        ):
+            _ = st.error(
+                "Filtering criteria too strict! No crosslinks passed the filter! Please reload your data from the 'Load Data' tab!"
+            )
+        if (
+            st.session_state["pr"]["crosslinks"] is not None
+            and len(st.session_state["pr"]["crosslinks"]) > 0
+        ):
             crosslinks = st.session_state["pr"]["crosslinks"]
             crosslinks_viz_header = st.subheader(
                 "Visualizations for Crosslinks", divider="grey"
@@ -1573,7 +1657,19 @@ def visualize_tab():
                 crosslinks_not_enough_data = st.info(
                     "Not enough data to plot anything for crosslinks!"
                 )
-    if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
+    if (
+        "aggregated" in st.session_state
+        and st.session_state["aggregated"] is not None
+        and len(st.session_state["aggregated"]) == 0
+    ):
+        _ = st.error(
+            "Filtering criteria too strict! None of the aggregated crosslinks passed the filter! Please reload your data from the 'Load Data' tab!"
+        )
+    if (
+        "aggregated" in st.session_state
+        and st.session_state["aggregated"] is not None
+        and len(st.session_state["aggregated"]) > 0
+    ):
         aggregated_crosslinks = st.session_state["aggregated"]
         aggregated_crosslinks_viz_header = st.subheader(
             "Visualizations for Aggregated Crosslinks", divider="grey"
@@ -1622,7 +1718,17 @@ def export_tab():
         no_data = st.info("You need to upload at least one result file first!")
     if "pr" in st.session_state and st.session_state["pr"] is not None:
         # exporting CSMs
-        if st.session_state["pr"]["crosslink-spectrum-matches"] is not None:
+        if (
+            st.session_state["pr"]["crosslink-spectrum-matches"] is not None
+            and len(st.session_state["pr"]["crosslink-spectrum-matches"]) == 0
+        ):
+            _ = st.error(
+                "Filtering criteria too strict! No crosslink-spectrum-matches passed the filter! Please reload your data from the 'Load Data' tab!"
+            )
+        if (
+            st.session_state["pr"]["crosslink-spectrum-matches"] is not None
+            and len(st.session_state["pr"]["crosslink-spectrum-matches"]) > 0
+        ):
             csms = st.session_state["pr"]["crosslink-spectrum-matches"]
             export_csms_header = st.subheader(
                 "Export Crosslink-Spectrum-Matches", divider="grey"
@@ -1986,7 +2092,17 @@ def export_tab():
                 pass
 
         # exporting crosslinks
-        if st.session_state["pr"]["crosslinks"] is not None:
+        if (
+            st.session_state["pr"]["crosslinks"] is not None
+            and len(st.session_state["pr"]["crosslinks"]) == 0
+        ):
+            _ = st.error(
+                "Filtering criteria too strict! No crosslinks passed the filter! Please reload your data from the 'Load Data' tab!"
+            )
+        if (
+            st.session_state["pr"]["crosslinks"] is not None
+            and len(st.session_state["pr"]["crosslinks"]) > 0
+        ):
             crosslinks = st.session_state["pr"]["crosslinks"]
             export_crosslinks_header = st.subheader("Export Crosslinks", divider="grey")
             export_crosslinks_options = [
@@ -2875,7 +2991,19 @@ def export_tab():
                 pass
 
     # exporting aggregated crosslinks
-    if "aggregated" in st.session_state and st.session_state["aggregated"] is not None:
+    if (
+        "aggregated" in st.session_state
+        and st.session_state["aggregated"] is not None
+        and len(st.session_state["aggregated"]) == 0
+    ):
+        _ = st.error(
+            "Filtering criteria too strict! None of the aggregated crosslinks passed the filter! Please reload your data from the 'Load Data' tab!"
+        )
+    if (
+        "aggregated" in st.session_state
+        and st.session_state["aggregated"] is not None
+        and len(st.session_state["aggregated"]) > 0
+    ):
         aggregated_crosslinks = st.session_state["aggregated"]
         export_aggregated_crosslinks_header = st.subheader(
             "Export Aggregated Crosslinks", divider="grey"
