@@ -1183,7 +1183,10 @@ def filter_tab():
                             st.session_state["aggregated"] = filter_proteins(
                                 st.session_state["aggregated"], protein_filter
                             )
-                    if crosslink_type_filter is not None:
+                    if (
+                        crosslink_type_filter is not None
+                        and len(crosslink_type_filter) > 0
+                    ):
                         if "pr" in st.session_state:
                             if (
                                 st.session_state["pr"]["crosslink-spectrum-matches"]
@@ -1223,7 +1226,7 @@ def filter_tab():
                             if "Inter" in crosslink_type_filter:
                                 keep += intra_inter["Inter"]
                             st.session_state["aggregated"] = keep
-                    if target_decoy_filter is not None:
+                    if target_decoy_filter is not None and len(target_decoy_filter) > 0:
                         if "pr" in st.session_state:
                             if (
                                 st.session_state["pr"]["crosslink-spectrum-matches"]
