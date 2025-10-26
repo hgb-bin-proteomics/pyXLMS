@@ -1134,7 +1134,7 @@ def filter_tab():
         target_decoy_filter = st.multiselect(
             "Select the crosslink types that you want to keep:",
             options=["Target-Target", "Target-Decoy", "Decoy-Decoy"],
-            default=["Target-Target", "Target-Decoy", "Decoy-Decoy"],
+            default=[],
             key="target_decoy_filter",
             help="Select the target-decoy types that you want to keep. "
             + "Crosslink-spectrum-matches and crosslinks that are not of these types will be filtered out.",
