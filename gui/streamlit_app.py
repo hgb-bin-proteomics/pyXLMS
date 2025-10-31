@@ -58,6 +58,8 @@ except ImportError:
 
 __version__ = "1.3.0"
 
+HELP_URL = "https://pyxlms.dev/docs/webapp"
+
 
 @st.cache_data
 def to_text(data: str) -> bytes:
@@ -340,13 +342,17 @@ def input_tab():
         icon="💡",
         width="stretch",
     ):
-        uploaded_files_description = """
-        - ➡️ Check out this 🔗[**overview**](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/supported_io.md)
-        on supported input and output formats.
-        - ➡️ In our GitHub repository you can also find 🔗[**example files**](https://github.com/hgb-bin-proteomics/pyXLMS/tree/master/data).
-        - ➡️ If you need any further help, visit the web application guide which you can find 🔗[**here**](https://pyxlms.vercel.app/docs/webapp).
-        - ➡️ Still stuck? Please 📩[**send us a message**](https://github.com/hgb-bin-proteomics/pyXLMS?tab=readme-ov-file#contact).
-        """
+        uploaded_files_description = (
+            """
+            - ➡️ Check out this 🔗[**overview**](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/docs/supported_io.md)
+            on supported input and output formats.
+            - ➡️ In our GitHub repository you can also find 🔗[**example files**](https://github.com/hgb-bin-proteomics/pyXLMS/tree/master/data).
+            - ➡️ If you need any further help, visit the web application guide which you can find 🔗[**here**]("""
+            + HELP_URL
+            + """).
+            - ➡️ Still stuck? Please 📩[**send us a message**](https://github.com/hgb-bin-proteomics/pyXLMS?tab=readme-ov-file#contact).
+            """
+        )
         uploaded_files_helper = st.markdown(uploaded_files_description)
 
     l1, r1 = st.columns(2)
@@ -4079,7 +4085,7 @@ def main():
 
     get_help = st.sidebar.link_button(
         "Help",
-        url="https://pyxlms.vercel.app/docs/webapp",
+        url=HELP_URL,
         type="secondary",
         # help="Link to the pyXLMS webapp documentation page.",
         width="stretch",
@@ -4094,7 +4100,7 @@ def main():
     if "display_help_toast" not in st.session_state:
         st.session_state["display_help_toast"] = False
         help_msg = st.toast(
-            "Need help? Read the [docs](https://pyxlms.vercel.app/docs/webapp)!",
+            f"Need help? Read the [docs]({HELP_URL})!",
             icon="🤔",
             duration="infinite",
         )
