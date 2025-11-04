@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath("../src/"))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "pyXLMS"
-copyright = "2025, Micha Johannes Birklbauer"
+copyright = "2025, Bioinformatics Research Group, FH Oberösterreich Campus Hagenberg"
 author = "Micha Johannes Birklbauer"
 version = "1.7"
 release = "1.7.0"
