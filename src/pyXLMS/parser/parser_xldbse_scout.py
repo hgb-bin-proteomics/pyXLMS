@@ -276,11 +276,21 @@ def __read_scout_csms_unfiltered(
             im_cv=None,
             additional_information={
                 "source": __serialize_pandas_series(row),
-                "ClassificationScore": float(row["ClassificationScore"]),
-                "XlinkxAlpha": float(row["XlinkxAlpha"]),
-                "XlinkxBeta": float(row["XlinkxBeta"]),
-                "XlinkxScore": float(row["XlinkxScore"]),
-                "PoissonScore": float(row["PoissonScore"]),
+                "ClassificationScore": float(row["ClassificationScore"])
+                if "ClassificationScore" in row.index
+                else None,
+                "XlinkxAlpha": float(row["XlinkxAlpha"])
+                if "XlinkxAlpha" in row.index
+                else None,
+                "XlinkxBeta": float(row["XlinkxBeta"])
+                if "XlinkxBeta" in row.index
+                else None,
+                "XlinkxScore": float(row["XlinkxScore"])
+                if "XlinkxScore" in row.index
+                else None,
+                "PoissonScore": float(row["PoissonScore"])
+                if "PoissonScore" in row.index
+                else None,
             },
         )
         csms.append(csm)
