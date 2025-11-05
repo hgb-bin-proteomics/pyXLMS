@@ -185,6 +185,12 @@ def read_xlinkx(
     KeyError
         If one of the found post-translational-modifications could not be found/mapped.
 
+    Notes
+    -----
+    Uses ``XlinkX Score`` as the score of the crosslink-spectrum-match for crosslink-spectrum-matches,
+    alpha and beta peptide scores are ``None`` for crosslink-spectrum-matches. Uses ``Max. XlinkX Score``
+    as the score of the crosslink for crosslinks.
+
     Warnings
     --------
     XlinkX does not report if the individual peptides in a crosslink are from the target or decoy database.
