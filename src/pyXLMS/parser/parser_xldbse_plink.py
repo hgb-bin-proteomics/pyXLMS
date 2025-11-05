@@ -497,6 +497,10 @@ def read_plink(
     TypeError
         If parameter verbose was not set correctly.
 
+    Notes
+    -----
+    Uses ``Score`` as the score of the crosslink-spectrum-match, all other scores are ``None``.
+
     Warnings
     --------
     Target and decoy information is derived based off the protein accession and parameter ``decoy_prefix``.
