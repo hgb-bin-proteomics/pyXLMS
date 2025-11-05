@@ -1102,6 +1102,16 @@ def read_xi(
     TypeError
         If parameter verbose was not set correctly.
 
+    Notes
+    -----
+    Uses ``Pep1Score`` as the score for the alpha peptide, ``Pep2Score` as the score of the
+    beta peptide, and ``match score`` as the score of the crosslink-spectrum-match for xiSearch
+    crosslink-spectrum-matches. Uses ``Score`` as the score of the crosslink-spectrum-match for
+    xiFDR crosslink-spectrum-matches, alpha and beta peptide scores are ``None`` for xiFDR
+    crosslink-spectrum-matches. Uses ``Score`` as the score of the crosslink for xiFDR crosslinks.
+    For reference, see here:
+    `github.com/Rappsilber-Laboratory/XiSearch <https://github.com/Rappsilber-Laboratory/XiSearch/discussions/126>`_.
+
     Examples
     --------
     >>> from pyXLMS.parser import read_xi
