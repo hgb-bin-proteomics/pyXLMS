@@ -395,6 +395,11 @@ def read_merox(
     KeyError
         If the specified crosslinker could not be found/mapped.
 
+    Notes
+    -----
+    Uses ``pepScore1`` as the score for the alpha peptide, ``pepScore2`` as the score of the
+    beta peptide, and ``Score`` as the score of the crosslink-spectrum-match.
+
     Warnings
     --------
     MeroX only reports a single protein crosslink position per peptide, for ambiguous peptides

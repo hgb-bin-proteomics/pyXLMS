@@ -180,6 +180,11 @@ def read_maxquant(
     KeyError
         If the specified crosslinker could not be found/mapped.
 
+    Notes
+    -----
+    Uses ``Partial score 1`` as the score for the alpha peptide, ``Partial score 2`` as the score of the
+    beta peptide, and ``Score`` as the score of the crosslink-spectrum-match.
+
     Warnings
     --------
     MaxLynx/MaxQuant only reports a single protein crosslink position per peptide, for ambiguous peptides
@@ -368,6 +373,11 @@ def read_maxlynx(
         If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
     KeyError
         If the specified crosslinker could not be found/mapped.
+
+    Notes
+    -----
+    Uses ``Partial score 1`` as the score for the alpha peptide, ``Partial score 2`` as the score of the
+    beta peptide, and ``Score`` as the score of the crosslink-spectrum-match.
 
     Warnings
     --------
