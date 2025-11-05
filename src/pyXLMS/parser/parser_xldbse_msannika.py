@@ -200,6 +200,12 @@ def read_msannika(
     KeyError
         If one of the found post-translational-modifications could not be found/mapped.
 
+    Notes
+    -----
+    Uses ``Score Alpha`` as the score for the alpha peptide, ``Score Beta`` as the score of the
+    beta peptide, ``Combined Score`` as the score of the crosslink-spectrum-match, and ``Best CSM Score``
+    as the score of the crosslink.
+
     Warnings
     --------
     MS Annika does not report if the individual peptides in a crosslink are from the target or decoy database.
