@@ -1104,7 +1104,7 @@ def read_xi(
 
     Notes
     -----
-    Uses ``Pep1Score`` as the score for the alpha peptide, ``Pep2Score` as the score of the
+    Uses ``Pep1Score`` as the score for the alpha peptide, ``Pep2Score`` as the score of the
     beta peptide, and ``match score`` as the score of the crosslink-spectrum-match for xiSearch
     crosslink-spectrum-matches. Uses ``Score`` as the score of the crosslink-spectrum-match for
     xiFDR crosslink-spectrum-matches, alpha and beta peptide scores are ``None`` for xiFDR

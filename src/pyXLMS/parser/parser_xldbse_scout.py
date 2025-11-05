@@ -603,7 +603,7 @@ def read_scout(
 
     Notes
     -----
-    Uses ``AlphaScore`` as the score for the alpha peptide, ``BetaScore` as the score of the
+    Uses ``AlphaScore`` as the score for the alpha peptide, ``BetaScore`` as the score of the
     beta peptide, and ``XLScore`` as the score of the crosslink-spectrum-match for unfiltered
     crosslink-spectrum-matches. Uses ``Score`` as the score of the crosslink-spectrum-match for
     filtered crosslink-spectrum-matches, alpha and beta peptide scores are ``None`` for filtered
