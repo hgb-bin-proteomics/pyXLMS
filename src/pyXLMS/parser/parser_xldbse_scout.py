@@ -601,6 +601,18 @@ def read_scout(
     TypeError
         If parameter verbose was not set correctly.
 
+    Notes
+    -----
+    Uses ``AlphaScore`` as the score for the alpha peptide, ``BetaScore` as the score of the
+    beta peptide, and ``XLScore`` as the score of the crosslink-spectrum-match for unfiltered
+    crosslink-spectrum-matches. Uses ``Score`` as the score of the crosslink-spectrum-match for
+    filtered crosslink-spectrum-matches, alpha and beta peptide scores are ``None`` for filtered
+    crosslink-spectrum-matches. Uses ``Score`` as the score of the crosslink for residue pairs.
+    These scores should not be used for validation as Scout does it's own FDR estimation based
+    on multiple scores.
+    See here:
+    `github.com/diogobor/Scout <https://github.com/diogobor/Scout/issues/15>`_.
+
     Warnings
     --------
     - When reading unfiltered crosslink-spectrum-matches, no protein crosslink positions or protein peptide positions are
