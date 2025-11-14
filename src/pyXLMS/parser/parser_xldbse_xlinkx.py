@@ -123,7 +123,12 @@ def __read_xlinkx_pdresult(filename: str, drop: bool = False) -> List[pd.DataFra
             ),
             inplace=True,
         )
-    return [csms, dcsms, xls]
+    target_xls = xls[xls["Is Decoy"] == 0]
+    if not isinstance(target_xls, pd.DataFrame):
+        raise RuntimeError(
+            "Selection of target crosslinks did not return a valid pandas DataFrame!"
+        )
+    return [csms, target_xls]
 
 
 def read_xlinkx(
@@ -401,7 +406,7 @@ def read_xlinkx(
                             for protein in str(row["Accession A"]).split(";")
                         ],
                         xl_position_proteins_a=[
-                            int(position)
+                            adjust_protein_position(int(position))
                             for position in str(row["Position A"]).split(";")
                         ],
                         decoy_a=get_bool_from_value(row["Is Decoy"]),
@@ -418,7 +423,7 @@ def read_xlinkx(
                             for protein in str(row["Accession B"]).split(";")
                         ],
                         xl_position_proteins_b=[
-                            int(position)
+                            adjust_protein_position(int(position))
                             for position in str(row["Position B"]).split(";")
                         ],
                         decoy_b=get_bool_from_value(row["Is Decoy"]),

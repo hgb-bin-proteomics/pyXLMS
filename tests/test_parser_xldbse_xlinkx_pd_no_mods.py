@@ -9,6 +9,7 @@ import pytest
 
 
 PD = "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3.pdResult"
+DECOY = False
 
 
 def test1():
@@ -23,10 +24,10 @@ def test1():
     assert parser_result["crosslinks"] is not None
 
     csms = parser_result["crosslink-spectrum-matches"]
-    assert len(csms) == 841 + 9
+    assert len(csms) == 841 + 9 if DECOY else 841
 
     crosslinks = parser_result["crosslinks"]
-    assert len(crosslinks) == 262
+    assert len(crosslinks) == 262 if DECOY else 253
 
     csm = csms[0]
     assert csm["data_type"] == "crosslink-spectrum-match"
@@ -55,32 +56,33 @@ def test1():
     assert csm["retention_time"] == pytest.approx(16.0316734313965 * 60.0)
     assert csm["ion_mobility"] is None
 
-    csm = csms[-1]
-    assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "partial"
-    assert csm["alpha_peptide"] == "LNDWTLDSASKK"
-    assert mts(csm["alpha_modifications"]) is None
-    assert csm["alpha_peptide_crosslink_position"] == 11
-    assert csm["alpha_proteins"] == ["decoy_98"]
-    assert csm["alpha_proteins_crosslink_positions"] == [235]
-    assert csm["alpha_proteins_peptide_positions"] == [225]
-    assert csm["alpha_score"] is None
-    assert csm["alpha_decoy"]
-    assert csm["beta_peptide"] == "NKDSR"
-    assert mts(csm["beta_modifications"]) is None
-    assert csm["beta_peptide_crosslink_position"] == 2
-    assert csm["beta_proteins"] == ["decoy_2"]
-    assert csm["beta_proteins_crosslink_positions"] == [505]
-    assert csm["beta_proteins_peptide_positions"] == [504]
-    assert csm["beta_score"] is None
-    assert csm["beta_decoy"]
-    assert csm["crosslink_type"] == "inter"
-    assert csm["score"] == pytest.approx(4.15420412699015)
-    assert csm["spectrum_file"] == "XLpeplib_Beveridge_Lumos_DSSO_MS3.raw"
-    assert csm["scan_nr"] == 43290
-    assert csm["charge"] == 3
-    assert csm["retention_time"] == pytest.approx(88.1825561523437 * 60.0)
-    assert csm["ion_mobility"] is None
+    if DECOY:
+        csm = csms[-1]
+        assert csm["data_type"] == "crosslink-spectrum-match"
+        assert csm["completeness"] == "partial"
+        assert csm["alpha_peptide"] == "LNDWTLDSASKK"
+        assert mts(csm["alpha_modifications"]) is None
+        assert csm["alpha_peptide_crosslink_position"] == 11
+        assert csm["alpha_proteins"] == ["decoy_98"]
+        assert csm["alpha_proteins_crosslink_positions"] == [235]
+        assert csm["alpha_proteins_peptide_positions"] == [225]
+        assert csm["alpha_score"] is None
+        assert csm["alpha_decoy"]
+        assert csm["beta_peptide"] == "NKDSR"
+        assert mts(csm["beta_modifications"]) is None
+        assert csm["beta_peptide_crosslink_position"] == 2
+        assert csm["beta_proteins"] == ["decoy_2"]
+        assert csm["beta_proteins_crosslink_positions"] == [505]
+        assert csm["beta_proteins_peptide_positions"] == [504]
+        assert csm["beta_score"] is None
+        assert csm["beta_decoy"]
+        assert csm["crosslink_type"] == "inter"
+        assert csm["score"] == pytest.approx(4.15420412699015)
+        assert csm["spectrum_file"] == "XLpeplib_Beveridge_Lumos_DSSO_MS3.raw"
+        assert csm["scan_nr"] == 43290
+        assert csm["charge"] == 3
+        assert csm["retention_time"] == pytest.approx(88.1825561523437 * 60.0)
+        assert csm["ion_mobility"] is None
 
     xl = crosslinks[1]
     assert xl["data_type"] == "crosslink"
@@ -98,21 +100,22 @@ def test1():
     assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(119.059334966149)
 
-    xl = crosslinks[-1]
-    assert xl["data_type"] == "crosslink"
-    assert xl["completeness"] == "full"
-    assert xl["alpha_peptide"] == "LNDWTLDSASKK"
-    assert xl["alpha_peptide_crosslink_position"] == 11
-    assert xl["alpha_proteins"] == ["decoy_98"]
-    assert xl["alpha_proteins_crosslink_positions"] == [235]
-    assert xl["alpha_decoy"]
-    assert xl["beta_peptide"] == "NKDSR"
-    assert xl["beta_peptide_crosslink_position"] == 2
-    assert xl["beta_proteins"] == ["decoy_2"]
-    assert xl["beta_proteins_crosslink_positions"] == [505]
-    assert xl["beta_decoy"]
-    assert xl["crosslink_type"] == "inter"
-    assert xl["score"] == pytest.approx(4.15420412699015)
+    if DECOY:
+        xl = crosslinks[-1]
+        assert xl["data_type"] == "crosslink"
+        assert xl["completeness"] == "full"
+        assert xl["alpha_peptide"] == "LNDWTLDSASKK"
+        assert xl["alpha_peptide_crosslink_position"] == 11
+        assert xl["alpha_proteins"] == ["decoy_98"]
+        assert xl["alpha_proteins_crosslink_positions"] == [235]
+        assert xl["alpha_decoy"]
+        assert xl["beta_peptide"] == "NKDSR"
+        assert xl["beta_peptide_crosslink_position"] == 2
+        assert xl["beta_proteins"] == ["decoy_2"]
+        assert xl["beta_proteins_crosslink_positions"] == [505]
+        assert xl["beta_decoy"]
+        assert xl["crosslink_type"] == "inter"
+        assert xl["score"] == pytest.approx(4.15420412699015)
 
 
 def test2():
@@ -127,10 +130,10 @@ def test2():
     assert parser_result["crosslinks"] is not None
 
     csms = parser_result["crosslink-spectrum-matches"]
-    assert len(csms) == (841 + 9) * 2
+    assert len(csms) == (841 + 9) * 2 if DECOY else 841 * 2
 
     crosslinks = parser_result["crosslinks"]
-    assert len(crosslinks) == 262 * 2
+    assert len(crosslinks) == 262 * 2 if DECOY else 253 * 2
 
     csm = csms[0]
     assert csm["data_type"] == "crosslink-spectrum-match"
@@ -159,32 +162,33 @@ def test2():
     assert csm["retention_time"] == pytest.approx(16.0316734313965 * 60.0)
     assert csm["ion_mobility"] is None
 
-    csm = csms[-1]
-    assert csm["data_type"] == "crosslink-spectrum-match"
-    assert csm["completeness"] == "partial"
-    assert csm["alpha_peptide"] == "LNDWTLDSASKK"
-    assert mts(csm["alpha_modifications"]) is None
-    assert csm["alpha_peptide_crosslink_position"] == 11
-    assert csm["alpha_proteins"] == ["decoy_98"]
-    assert csm["alpha_proteins_crosslink_positions"] == [235]
-    assert csm["alpha_proteins_peptide_positions"] == [225]
-    assert csm["alpha_score"] is None
-    assert csm["alpha_decoy"]
-    assert csm["beta_peptide"] == "NKDSR"
-    assert mts(csm["beta_modifications"]) is None
-    assert csm["beta_peptide_crosslink_position"] == 2
-    assert csm["beta_proteins"] == ["decoy_2"]
-    assert csm["beta_proteins_crosslink_positions"] == [505]
-    assert csm["beta_proteins_peptide_positions"] == [504]
-    assert csm["beta_score"] is None
-    assert csm["beta_decoy"]
-    assert csm["crosslink_type"] == "inter"
-    assert csm["score"] == pytest.approx(4.15420412699015)
-    assert csm["spectrum_file"] == "XLpeplib_Beveridge_Lumos_DSSO_MS3.raw"
-    assert csm["scan_nr"] == 43290
-    assert csm["charge"] == 3
-    assert csm["retention_time"] == pytest.approx(88.1825561523437 * 60.0)
-    assert csm["ion_mobility"] is None
+    if DECOY:
+        csm = csms[-1]
+        assert csm["data_type"] == "crosslink-spectrum-match"
+        assert csm["completeness"] == "partial"
+        assert csm["alpha_peptide"] == "LNDWTLDSASKK"
+        assert mts(csm["alpha_modifications"]) is None
+        assert csm["alpha_peptide_crosslink_position"] == 11
+        assert csm["alpha_proteins"] == ["decoy_98"]
+        assert csm["alpha_proteins_crosslink_positions"] == [235]
+        assert csm["alpha_proteins_peptide_positions"] == [225]
+        assert csm["alpha_score"] is None
+        assert csm["alpha_decoy"]
+        assert csm["beta_peptide"] == "NKDSR"
+        assert mts(csm["beta_modifications"]) is None
+        assert csm["beta_peptide_crosslink_position"] == 2
+        assert csm["beta_proteins"] == ["decoy_2"]
+        assert csm["beta_proteins_crosslink_positions"] == [505]
+        assert csm["beta_proteins_peptide_positions"] == [504]
+        assert csm["beta_score"] is None
+        assert csm["beta_decoy"]
+        assert csm["crosslink_type"] == "inter"
+        assert csm["score"] == pytest.approx(4.15420412699015)
+        assert csm["spectrum_file"] == "XLpeplib_Beveridge_Lumos_DSSO_MS3.raw"
+        assert csm["scan_nr"] == 43290
+        assert csm["charge"] == 3
+        assert csm["retention_time"] == pytest.approx(88.1825561523437 * 60.0)
+        assert csm["ion_mobility"] is None
 
     xl = crosslinks[1]
     assert xl["data_type"] == "crosslink"
@@ -202,18 +206,19 @@ def test2():
     assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(119.059334966149)
 
-    xl = crosslinks[-1]
-    assert xl["data_type"] == "crosslink"
-    assert xl["completeness"] == "full"
-    assert xl["alpha_peptide"] == "LNDWTLDSASKK"
-    assert xl["alpha_peptide_crosslink_position"] == 11
-    assert xl["alpha_proteins"] == ["decoy_98"]
-    assert xl["alpha_proteins_crosslink_positions"] == [235]
-    assert xl["alpha_decoy"]
-    assert xl["beta_peptide"] == "NKDSR"
-    assert xl["beta_peptide_crosslink_position"] == 2
-    assert xl["beta_proteins"] == ["decoy_2"]
-    assert xl["beta_proteins_crosslink_positions"] == [505]
-    assert xl["beta_decoy"]
-    assert xl["crosslink_type"] == "inter"
-    assert xl["score"] == pytest.approx(4.15420412699015)
+    if DECOY:
+        xl = crosslinks[-1]
+        assert xl["data_type"] == "crosslink"
+        assert xl["completeness"] == "full"
+        assert xl["alpha_peptide"] == "LNDWTLDSASKK"
+        assert xl["alpha_peptide_crosslink_position"] == 11
+        assert xl["alpha_proteins"] == ["decoy_98"]
+        assert xl["alpha_proteins_crosslink_positions"] == [235]
+        assert xl["alpha_decoy"]
+        assert xl["beta_peptide"] == "NKDSR"
+        assert xl["beta_peptide_crosslink_position"] == 2
+        assert xl["beta_proteins"] == ["decoy_2"]
+        assert xl["beta_proteins_crosslink_positions"] == [505]
+        assert xl["beta_decoy"]
+        assert xl["crosslink_type"] == "inter"
+        assert xl["score"] == pytest.approx(4.15420412699015)
