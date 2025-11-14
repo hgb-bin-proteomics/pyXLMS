@@ -368,6 +368,24 @@ def __read_scout_csms_filtered(
             if alpha
             else int(row["Beta peptide position"])
         )
+        if alpha and "Alpha modification(s)" not in row.index:
+            return parse_modifications_from_scout_sequence(
+                seq=str(row["Modified alpha peptide"]),
+                crosslink_position=crosslink_position,
+                crosslinker=crosslinker,
+                crosslinker_mass=crosslinker_mass,
+                modifications=modifications,
+                verbose=verbose,
+            )
+        if not alpha and "Beta modification(s)" not in row.index:
+            return parse_modifications_from_scout_sequence(
+                seq=str(row["Modified beta peptide"]),
+                crosslink_position=crosslink_position,
+                crosslinker=crosslinker,
+                crosslinker_mass=crosslinker_mass,
+                modifications=modifications,
+                verbose=verbose,
+            )
         parsed_modifications = {crosslink_position: (crosslinker, crosslinker_mass)}
         if alpha and bool(pd.isna(row["Alpha modification(s)"])):
             return parsed_modifications
