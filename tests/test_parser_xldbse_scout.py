@@ -490,3 +490,38 @@ def test11():
 
     crosslinks = pr["crosslinks"]
     assert len(crosslinks) == 200 + 200
+
+
+def test12():
+    import pandas as pd
+    from pyXLMS import parser as p
+    from pyXLMS.parser import detect_scout_filetype
+
+    f1 = "data/scout/Cas9_HeLa_Cyt_r1/Cas9_HeLa_Cyt_r1_unfiltered_CSMs.csv"
+    f2 = "data/scout/Cas9_HeLa_Cyt_r1/Cas9_HeLa_Cyt_r1_filtered_CSMs.csv"
+    f3 = "data/scout/Cas9_HeLa_Cyt_r1/Cas9_HeLa_Cyt_r1_filtered_XLs.csv"
+    f4 = "data/scout/Cas9_HeLa_Cyt_r2/Cas9_HeLa_Cyt_r2_unfiltered_CSMs.csv"
+    f5 = "data/scout/Cas9_HeLa_Cyt_r2/Cas9_HeLa_Cyt_r2_filtered_CSMs.csv"
+    f6 = "data/scout/Cas9_HeLa_Cyt_r2/Cas9_HeLa_Cyt_r2_filtered_XLs.csv"
+    f7 = "data/scout/Cas9_HeLa_Cyt_r3/Cas9_HeLa_Cyt_r3_unfiltered_CSMs.csv"
+    f8 = "data/scout/Cas9_HeLa_Cyt_r3/Cas9_HeLa_Cyt_r3_filtered_CSMs.csv"
+    f9 = "data/scout/Cas9_HeLa_Cyt_r3/Cas9_HeLa_Cyt_r3_filtered_XLs.csv"
+
+    assert detect_scout_filetype(pd.read_csv(f1)) == "scout_csms_unfiltered"
+    assert detect_scout_filetype(pd.read_csv(f2)) == "scout_csms_filtered"
+    assert detect_scout_filetype(pd.read_csv(f3)) == "scout_xl"
+    assert detect_scout_filetype(pd.read_csv(f4)) == "scout_csms_unfiltered"
+    assert detect_scout_filetype(pd.read_csv(f5)) == "scout_csms_filtered"
+    assert detect_scout_filetype(pd.read_csv(f6)) == "scout_xl"
+    assert detect_scout_filetype(pd.read_csv(f7)) == "scout_csms_unfiltered"
+    assert detect_scout_filetype(pd.read_csv(f8)) == "scout_csms_filtered"
+    assert detect_scout_filetype(pd.read_csv(f9)) == "scout_xl"
+
+    pr = p.read_scout(
+        [f1, f2, f3, f4, f5, f6, f7, f8, f9], crosslinker="DSBSO", verbose=0
+    )
+    assert pr["data_type"] == "parser_result"
+    assert pr["completeness"] == "full"
+    assert pr["search_engine"] == "Scout"
+    assert pr["crosslink-spectrum-matches"] is not None
+    assert pr["crosslinks"] is not None
