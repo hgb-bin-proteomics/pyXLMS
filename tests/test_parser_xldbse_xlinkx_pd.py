@@ -217,3 +217,34 @@ def test2():
     assert xl["beta_decoy"]
     assert xl["crosslink_type"] == "inter"
     assert xl["score"] == pytest.approx(4.15420412699015)
+def test3():
+    from pyXLMS import parser as p
+
+    parser_result = p.read_xlinkx("data/xlinkx/Cas9_HeLa_Cyt_r1.pdResult")
+    assert parser_result["data_type"] == "parser_result"
+    assert parser_result["completeness"] == "full"
+    assert parser_result["search_engine"] == "XlinkX"
+    assert parser_result["crosslink-spectrum-matches"] is not None
+    assert parser_result["crosslinks"] is not None
+
+
+def test4():
+    from pyXLMS import parser as p
+
+    parser_result = p.read_xlinkx("data/xlinkx/Cas9_HeLa_Cyt_r2.pdResult")
+    assert parser_result["data_type"] == "parser_result"
+    assert parser_result["completeness"] == "full"
+    assert parser_result["search_engine"] == "XlinkX"
+    assert parser_result["crosslink-spectrum-matches"] is not None
+    assert parser_result["crosslinks"] is not None
+
+
+def test5():
+    from pyXLMS import parser as p
+
+    parser_result = p.read_xlinkx("data/xlinkx/Cas9_HeLa_Cyt_r3.pdResult")
+    assert parser_result["data_type"] == "parser_result"
+    assert parser_result["completeness"] == "full"
+    assert parser_result["search_engine"] == "XlinkX"
+    assert parser_result["crosslink-spectrum-matches"] is not None
+    assert parser_result["crosslinks"] is not None
