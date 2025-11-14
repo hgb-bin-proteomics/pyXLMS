@@ -95,7 +95,11 @@ def __read_xlinkx_pdresult(filename: str, drop: bool = False) -> List[pd.DataFra
         "MaxXlinkXScore": "Max. XlinkX Score",
     }
     csms.rename(columns=column_mapping_csms, inplace=True)
+    if "Is Decoy" not in csms.columns:
+        csms["Is Decoy"] = [False for i in range(csms.shape[0])]
     dcsms.rename(columns=column_mapping_csms, inplace=True)
+    if "Is Decoy" not in dcsms.columns:
+        dcsms["Is Decoy"] = [True for i in range(dcsms.shape[0])]
     xls.rename(columns=column_mapping_xls, inplace=True)
     if drop:
         csms.drop(
@@ -299,6 +303,11 @@ def read_xlinkx(
             return len(sequence.strip())
         return position
 
+    def adjust_protein_position(position: int) -> int:
+        if position == 0:
+            return 1
+        return position
+
     ## data structures
     crosslinks = list()
     csms = list()
@@ -443,13 +452,13 @@ def read_xlinkx(
                             for protein in str(row["Protein Accession A"]).split(";")
                         ],
                         xl_position_proteins_a=[
-                            int(position)
+                            adjust_protein_position(int(position))
                             for position in str(
                                 row["Leading Protein Position A"]
                             ).split(";")
                         ],
                         pep_position_proteins_a=[
-                            int(position)
+                            adjust_protein_position(int(position))
                             - adjust_crosslink_position(
                                 int(row["Crosslinker Position A"]),
                                 format_sequence(str(row["Sequence A"]).strip()),
@@ -479,13 +488,13 @@ def read_xlinkx(
                             for protein in str(row["Protein Accession B"]).split(";")
                         ],
                         xl_position_proteins_b=[
-                            int(position)
+                            adjust_protein_position(int(position))
                             for position in str(
                                 row["Leading Protein Position B"]
                             ).split(";")
                         ],
                         pep_position_proteins_b=[
-                            int(position)
+                            adjust_protein_position(int(position))
                             - adjust_crosslink_position(
                                 int(row["Crosslinker Position B"]),
                                 format_sequence(str(row["Sequence B"])),
