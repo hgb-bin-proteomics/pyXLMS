@@ -17,7 +17,7 @@ Additionally, the web application can also be run locally or self-hosted. **This
 
 - Cloning the [pyXLMS GitHub repository](https://github.com/hgb-bin-proteomics/pyXLMS):
   - ```bash
-    git clone https://github.com/hgb-bin-proteomics/pyXLMS.git`
+    git clone https://github.com/hgb-bin-proteomics/pyXLMS.git
     ```
   - ```bash
     cd pyXLMS
