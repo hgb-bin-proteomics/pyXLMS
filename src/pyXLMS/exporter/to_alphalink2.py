@@ -7,6 +7,8 @@
 from __future__ import annotations
 
 import re
+import gzip
+import pickle
 import warnings
 import pandas as pd
 from tqdm import tqdm
@@ -165,6 +167,7 @@ def to_alphalink2(
         Returns a dictionary with key ``AlphaLink2 crosslinks`` containing the formatted crosslink input for AlphaLink2,
         with key ``AlphaLink2 FASTA`` containing the FASTA file content for AlphaLink2,
         with key ``AlphaLink2 DataFrame`` containing the exported crosslinks as a pandas DataFrame,
+        with key ``AlphaLink2 Pickle`` containing the dictionary that was pickled for usage with AlphaLink2,
         and with key ``Exported files`` containing a list of filenames of all files that were
         written to disk.
 
@@ -261,6 +264,7 @@ def to_alphalink2(
         "chain2": [],
         "FDR": [],
     }
+    alphalink2_pickle = dict()
     # export crosslinks
     for id, xl in tqdm(
         enumerate(crosslinks),
@@ -318,6 +322,15 @@ def to_alphalink2(
                 alphalink2_df_dict["chain2"].append(chain2)
                 alphalink2_df_dict["FDR"].append(FDR)
                 alphalink2_txt += f"{residueFrom} {chain1} {residueTo} {chain2} {FDR}\n"
+                # generate pickle
+                # taken from https://github.com/Rappsilber-Laboratory/AlphaLink2/blob/main/generate_crosslink_pickle.py
+                if chain1 not in alphalink2_pickle:
+                    alphalink2_pickle[chain1] = dict()
+                if chain2 not in alphalink2_pickle[chain1]:
+                    alphalink2_pickle[chain1][chain2] = list()
+                alphalink2_pickle[chain1][chain2].append(
+                    (int(residueFrom) - 1, int(residueTo) - 1, float(FDR))
+                )
     # create fasta
     alphalink2_fasta = ""
     for chain in CHAINS:
@@ -337,10 +350,15 @@ def to_alphalink2(
             f.write(alphalink2_fasta)
             f.close()
         exported_files.append(filename_prefix + "_AlphaLink2.fasta")
+        with gzip.open(filename_prefix + "_AlphaLink2.pickle", "wb") as f:
+            pickle.dump(alphalink2_pickle, f)
+            f.close()
+        exported_files.append(filename_prefix + "_AlphaLink2.pickle")
     # return exported files
     return {
         "AlphaLink2 crosslinks": alphalink2_txt,
         "AlphaLink2 FASTA": alphalink2_fasta,
         "AlphaLink2 DataFrame": alphalink2_df,
+        "AlphaLink2 Pickle": alphalink2_pickle,
         "Exported files": exported_files,
     }
