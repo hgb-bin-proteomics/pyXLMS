@@ -2944,6 +2944,12 @@ def export_tab():
                     )
             # XMAS
             elif export_crosslinks_picker == "XMAS":
+                export_crosslinks_xmas_info = st.info(
+                    "To export to XMAS your crosslinks should be **unique** and **not** "
+                    + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
+                    + "You can check this in the "
+                    + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+                )
                 export_crosslinks_xmas_button = st.button(
                     "Export to XMAS format!",
                     type="primary",
@@ -3872,6 +3878,12 @@ def export_tab():
                 )
         # XMAS
         elif export_aggregated_crosslinks_picker == "XMAS":
+            export_aggregated_crosslinks_xmas_info = st.info(
+                "To export to XMAS your aggregated crosslinks should be **unique** and **not** "
+                + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
+                + "You can check this in the "
+                + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+            )
             export_aggregated_crosslinks_xmas_button = st.button(
                 "Export to XMAS format!",
                 type="primary",
