@@ -28,7 +28,9 @@ from __future__ import annotations
 
 import io
 import os
+import gzip
 import json
+import pickle
 import pandas as pd
 from tempfile import NamedTemporaryFile
 from tempfile import TemporaryDirectory
@@ -56,7 +58,7 @@ except ImportError:
     from typing_extensions import Literal
 
 
-__version__ = "1.3.2"
+__version__ = "1.3.3"
 
 HELP_URL = "https://pyxlms.dev/docs/webapp"
 
@@ -234,6 +236,14 @@ def export_proxl(
             crosslinker_mass,
             fasta_filename_override=fasta_file.name,
         )
+
+
+@st.cache_data
+def pickle_and_gzip(data: Any) -> io.BytesIO:
+    buffer = io.BytesIO()
+    with gzip.open(buffer, "wb") as f:
+        pickle.dump(data, f)
+    return buffer
 
 
 def layout_plots(plots: List[Any]) -> None:
@@ -2241,6 +2251,26 @@ def export_tab():
                             help="Downloads the uploaded FASTA file in AlphaLink2 format.",
                             key="export_crosslinks_alphalink2_download_fasta",
                         )
+                    if (
+                        "AlphaLink2 Pickle"
+                        in st.session_state["export_crosslinks_alphalink2"]
+                    ):
+                        export_crosslinks_alphalink2_download_pickle = st.download_button(
+                            label="Download pickled crosslinks in AlphaLink2 format!",
+                            data=pickle_and_gzip(
+                                st.session_state["export_crosslinks_alphalink2"][
+                                    "AlphaLink2 Pickle"
+                                ]
+                            ),
+                            file_name="crosslinks_AlphaLink2.pickle.gz",
+                            on_click="ignore",
+                            type="primary",
+                            mime="application/gzip",
+                            icon=":material/download:",
+                            width="stretch",
+                            help="Downloads the exported crosslinks in pickled AlphaLink2 format.",
+                            key="export_crosslinks_alphalink2_download_pickle",
+                        )
                     with st.expander("Show Exported Crosslinks"):
                         export_crosslinks_alphalink2_df_info = st.markdown(
                             "**Number of mapped residue pairs:** "
@@ -3150,6 +3180,26 @@ def export_tab():
                         width="stretch",
                         help="Downloads the uploaded FASTA file in AlphaLink2 format.",
                         key="export_aggregated_crosslinks_alphalink2_download_fasta",
+                    )
+                if (
+                    "AlphaLink2 Pickle"
+                    in st.session_state["export_aggregated_crosslinks_alphalink2"]
+                ):
+                    export_aggregated_crosslinks_alphalink2_download_pickle = st.download_button(
+                        label="Download pickled crosslinks in AlphaLink2 format!",
+                        data=pickle_and_gzip(
+                            st.session_state["export_aggregated_crosslinks_alphalink2"][
+                                "AlphaLink2 Pickle"
+                            ]
+                        ),
+                        file_name="aggregated_crosslinks_AlphaLink2.pickle.gz",
+                        on_click="ignore",
+                        type="primary",
+                        mime="application/gzip",
+                        icon=":material/download:",
+                        width="stretch",
+                        help="Downloads the exported crosslinks in pickled AlphaLink2 format.",
+                        key="export_aggregated_crosslinks_alphalink2_download_pickle",
                     )
                 with st.expander("Show Exported Crosslinks"):
                     export_aggregated_crosslinks_alphalink2_df_info = st.markdown(
