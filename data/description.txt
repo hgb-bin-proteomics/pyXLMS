@@ -1,0 +1,92 @@
+FILETREE                                                                        | ENGINE        | CROSSLINKER
+--------------------------------------------------------------------------------|---------------|------------
++---maxquant                                                                    |               |
+¦   +---run1                                                                    |               |
+¦   ¦       crosslinkMsms.txt                                                   | MaxLynx       | DSS
+¦   ¦                                                                           |               |
+¦   +---run2                                                                    |               |
+¦           crosslinkMsms.txt                                                   | MaxLynx       | DSS
+¦                                                                               |               |
++---merox                                                                       |               |
+¦       cas11.csv                                                               | MeroX         | DSS
+¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1.csv                                   | MeroX         | DSS
+¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1.zhrm                                  | MeroX         | DSS
+¦                                                                               |               |
++---ms_annika                                                                   |               |
+¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1.mzid                                  | mzIdentML     | DSS
+¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult                              | MS Annika     | DSS
+¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.txt                        | MS Annika     | DSS
+¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx                       | MS Annika     | DSS
+¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt                              | MS Annika     | DSS
+¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx                             | MS Annika     | DSS
+¦                                                                               |               |
++---plink2                                                                      |               |
+¦       Cas9_plus10_2024.06.20.filtered_cross-linked_peptides.csv               | pLink         | DSS
+¦       Cas9_plus10_2024.06.20.filtered_cross-linked_sites.csv                  | NOT SUPPORTED |
+¦       Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv                | pLink         | DSS
+¦                                                                               |               |
++---plink3                                                                      |               |
+¦       Cas10_plus10_2025.04.07.filtered_cross-linked_peptides.csv              | pLink         | DSS
+¦       Cas10_plus10_2025.04.07.filtered_cross-linked_sites.csv                 | NOT SUPPORTED |
+¦       Cas10_plus10_2025.04.07.filtered_cross-linked_spectra.csv               | pLink         | DSS
+¦                                                                               |               |
++---pyxlms                                                                      |               |
+¦       csm.txt                                                                 | Custom        | DSS
+¦       csm_format.txt                                                          | Custom        | DSS
+¦       csm_min.txt                                                             | Custom        | DSS
+¦       csm_null.txt                                                            | Custom        | DSS
+¦       csm_rev1.txt                                                            | Custom        | DSS
+¦       csm_rev2.txt                                                            | Custom        | DSS
+¦       xl.txt                                                                  | Custom        | DSS
+¦       xl_format.txt                                                           | Custom        | DSS
+¦       xl_min.txt                                                              | Custom        | DSS
+¦       xl_null.txt                                                             | Custom        | DSS
+¦       xl_rev1.txt                                                             | Custom        | DSS
+¦       xl_rev2.txt                                                             | Custom        | DSS
+¦                                                                               |               |
++---scout                                                                       |               |
+¦   ¦   Cas10.scout                                                             | NOT SUPPORTED |
+¦   ¦   Cas10_Filtered_CSMs.csv                                                 | Scout         | DSSO
+¦   ¦   Cas10_Residue_Pairs.csv                                                 | Scout         | DSSO
+¦   ¦   Cas10_Unfiltered_CSMs.csv                                               | Scout         | DSSO
+¦   ¦   Cas10_Unfiltered_CSMs_(head).csv                                        | Scout         | DSSO
+¦   ¦   Cas9.scout                                                              | NOT SUPPORTED |
+¦   ¦   Cas9_Filtered_CSMs.csv                                                  | Scout         | DSSO
+¦   ¦   Cas9_Residue_Pairs.csv                                                  | Scout         | DSSO
+¦   ¦   Cas9_Unfiltered_CSMs.csv                                                | Scout         | DSSO
+¦   ¦   Multi_Mod.csv                                                           | Scout         | DSSO
+¦   ¦                                                                           |               |
+¦   +---Cas9_HeLa_Cyt_r1                                                        |               |
+¦   ¦       Cas9_HeLa_Cyt_r1.scout                                              | NOT SUPPORTED |
+¦   ¦       Cas9_HeLa_Cyt_r1_filtered_CSMs.csv                                  | Scout         | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r1_filtered_XLs.csv                                   | Scout         | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r1_unfiltered_CSMs.csv                                | Scout         | DSBSO
+¦   ¦                                                                           |               |
+¦   +---Cas9_HeLa_Cyt_r2                                                        |               |
+¦   ¦       Cas9_HeLa_Cyt_r2.scout                                              | NOT SUPPORTED |
+¦   ¦       Cas9_HeLa_Cyt_r2_filtered_CSMs.csv                                  | Scout         | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r2_filtered_XLs.csv                                   | Scout         | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r2_unfiltered_CSMs.csv                                | Scout         | DSBSO
+¦   ¦                                                                           |               |
+¦   +---Cas9_HeLa_Cyt_r3                                                        |               |
+¦           Cas9_HeLa_Cyt_r3.scout                                              | NOT SUPPORTED |
+¦           Cas9_HeLa_Cyt_r3_filtered_CSMs.csv                                  | Scout         | DSBSO
+¦           Cas9_HeLa_Cyt_r3_filtered_XLs.csv                                   | Scout         | DSBSO
+¦           Cas9_HeLa_Cyt_r3_unfiltered_CSMs.csv                                | Scout         | DSBSO
+¦                                                                               |               |
++---xi                                                                          |               |
+¦       1perc_xl_boost_CSM_xiFDR2.2.1.csv                                       | xiFDR         | BS3
+¦       1perc_xl_boost_Links_xiFDR2.2.1.csv                                     | xiFDR         | BS3
+¦       r1_Xi1.7.6.7.csv                                                        | xiSearch      | BS3
+¦                                                                               |               |
++---xlinkx                                                                      |               |
+¦       Cas9_HeLa_Cyt_r1.pdResult                                               | XlinkX        | DSBSO
+¦       Cas9_HeLa_Cyt_r2.pdResult                                               | XlinkX        | DSBSO
+¦       Cas9_HeLa_Cyt_r3.pdResult                                               | XlinkX        | DSBSO
+¦       XLpeplib_Beveridge_Lumos_DSSO_MS3.mzid                                  | mzIdentML     | DSSO
+¦       XLpeplib_Beveridge_Lumos_DSSO_MS3.pdResult                              | XlinkX        | DSSO
+¦       XLpeplib_Beveridge_Lumos_DSSO_MS3_Crosslinks.txt                        | XlinkX        | DSSO
+¦       XLpeplib_Beveridge_Lumos_DSSO_MS3_Crosslinks.xlsx                       | XlinkX        | DSSO
+¦       XLpeplib_Beveridge_Lumos_DSSO_MS3_CSMs.txt                              | XlinkX        | DSSO
+¦       XLpeplib_Beveridge_Lumos_DSSO_MS3_CSMs.xlsx                             | XlinkX        | DSSO
+¦

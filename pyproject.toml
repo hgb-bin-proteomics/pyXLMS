@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyXLMS"
-version = "1.7.3"
+version = "1.7.4"
 authors = [
   { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
 ]
@@ -41,7 +41,8 @@ dependencies = [
 [project.optional-dependencies]
 gui = [
   "streamlit>=1.50.0",
-  "xlsxwriter"
+  "xlsxwriter",
+  "uv"
 ]
 docs = [
   "sphinx",

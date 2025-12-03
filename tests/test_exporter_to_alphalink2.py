@@ -376,3 +376,27 @@ def test14():
         _export = to_alphalink2(
             pr["crosslinks"], fasta="data/_fasta/Cas9.fasta", verbose=2
         )
+
+
+def test15():
+    import gzip
+    import pickle
+    from pyXLMS.pipelines import pipeline
+    from pyXLMS.transform import filter_proteins
+    from pyXLMS.exporter import to_alphalink2
+
+    pr = pipeline(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    cas9 = filter_proteins(pr["crosslinks"], proteins=["Cas9"])["Both"]
+    export = to_alphalink2(
+        cas9, fasta="data/_fasta/Cas9_plus10.fasta", filename_prefix="Cas9"
+    )
+    assert export["Exported files"][0] == "Cas9_AlphaLink2.txt"
+    assert export["Exported files"][1] == "Cas9_AlphaLink2.fasta"
+    assert export["Exported files"][2] == "Cas9_AlphaLink2.pickle"
+    assert export["AlphaLink2 Pickle"] == pickle.load(
+        gzip.open("Cas9_AlphaLink2.pickle", "rb")
+    )
