@@ -41,7 +41,8 @@ dependencies = [
 [project.optional-dependencies]
 gui = [
   "streamlit>=1.50.0",
-  "xlsxwriter"
+  "xlsxwriter",
+  "uv"
 ]
 docs = [
   "sphinx",
