@@ -206,8 +206,8 @@ def __get_xl_position_and_chain_in_protein(
                 b_end = top_alignment.coordinates[1][1]
             else:
                 raise RuntimeError("Could not extract positions of alignment!")
-            seqA = top_alignment.target[a_start:a_end]
-            seqB = top_alignment.query[b_start:b_end]
+            seqA = str(top_alignment.target[a_start:a_end])
+            seqB = str(top_alignment.query[b_start:b_end])
             sequence_identity = __calculate_sequence_identity(seqA, seqB)
             if sequence_identity > min_sequence_identity:
                 xl_pos_in_alignment = xl_pos_in_pep

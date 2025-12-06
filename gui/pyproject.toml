@@ -1,11 +1,11 @@
 [project]
 name = "pyXLMS-GUI"
-version = "1.3.3"
+version = "1.3.4"
 description = "Easy-to-use web app that offers most of the functionality of the pyXLMS python package."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "pyxlms>=1.7.0",
+    "pyxlms>=1.7.4",
     "streamlit>=1.50.0",
     "xlsxwriter>=3.2.5",
 ]
