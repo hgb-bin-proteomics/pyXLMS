@@ -972,7 +972,9 @@ def __read_xifdr_csms(
             score_b=None,
             decoy_b=get_bool_from_value(row["Decoy2"]),
             score=__parse_float(row["Score"]),
-            spectrum_file=str(row["PeakListFileName"]).strip(),
+            spectrum_file=str(row["PeakListFileName"]).strip()
+            if "PeakListFileName" in row
+            else str(row["run"]).strip(),
             scan_nr=__parse_int(row["scan"]),
             charge=__parse_int(row["exp charge"]),
             rt=None,
