@@ -328,7 +328,7 @@ def input_tab():
     [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
     [XlinkDB](https://xlinkdb.gs.washington.edu/xlinkdb/),
     [xlms-tools](https://gitlab.com/topf-lab/xlms-tools),
-    pyMOL (via [pyXlinkViewer](https://github.com/BobSchiffrin/PyXlinkViewer)),
+    PyMOL (via [PyXlinkViewer](https://github.com/BobSchiffrin/PyXlinkViewer)),
     ChimeraX (via [XMAS](https://github.com/ScheltemaLab/ChimeraX_XMAS_bundle)),
     or [IMP-X-FDR](https://github.com/vbc-proteomics-org/imp-x-fdr).
 
@@ -4075,7 +4075,7 @@ def about_tab():
         [xiFDR](https://www.rappsilberlab.org/software/xifdr/),
         [XlinkDB](https://xlinkdb.gs.washington.edu/xlinkdb/),
         [xlms-tools](https://gitlab.com/topf-lab/xlms-tools),
-        pyMOL (via [pyXlinkViewer](https://github.com/BobSchiffrin/PyXlinkViewer)),
+        PyMOL (via [PyXlinkViewer](https://github.com/BobSchiffrin/PyXlinkViewer)),
         ChimeraX (via [XMAS](https://github.com/ScheltemaLab/ChimeraX_XMAS_bundle)),
         or [IMP-X-FDR](https://github.com/vbc-proteomics-org/imp-x-fdr).
         """
