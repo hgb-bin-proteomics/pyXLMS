@@ -402,7 +402,7 @@ def to_pyxlinkviewer(
 ) -> Dict[str, Any]:
     r"""Exports a list of crosslinks to PyXlinkViewer format.
 
-    Exports a list of crosslinks to PyXlinkViewer format for visualization in pyMOL. The tool
+    Exports a list of crosslinks to PyXlinkViewer format for visualization in PyMOL. The tool
     PyXlinkViewer is available from
     `github.com/BobSchiffrin/PyXlinkViewer <https://github.com/BobSchiffrin/PyXlinkViewer>`_.
     This exporter performs basical local sequence alignment to align crosslinked peptides to a protein
