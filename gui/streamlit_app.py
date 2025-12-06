@@ -58,7 +58,7 @@ except ImportError:
     from typing_extensions import Literal
 
 
-__version__ = "1.3.3"
+__version__ = "1.3.4"
 
 HELP_URL = "https://pyxlms.dev/docs/webapp"
 
@@ -1118,139 +1118,178 @@ def filter_tab():
                                 possible_proteins.add(protein)
             st.session_state["possible_proteins"] = possible_proteins
             _ = st.toast("Successfully loaded proteins!", icon="✅")
-        protein_filter_header = st.subheader(
-            "Filter by Protein Accession", divider="grey"
-        )
-        protein_filter = st.multiselect(
-            "Select the protein accessions that you want to keep:",
-            options=st.session_state["possible_proteins"],
-            default=None,
-            key="protein_filter",
-            help="Select the protein accessions that you want to keep. "
-            + "Crosslink-spectrum-matches and crosslinks containing none of the proteins will be filtered out. "
-            + "Leaving this filter blank will keep everything.",
-            max_selections=25,
-        )
-        # crosslink type filter
-        crosslink_type_filter_header = st.subheader(
-            "Filter by Crosslink Type", divider="grey"
-        )
-        crosslink_type_filter = st.multiselect(
-            "Select the crosslink types that you want to keep:",
-            options=["Intra", "Inter"],
-            default=["Intra", "Inter"],
-            key="crosslink_type_filter",
-            help="Select the crosslink types that you want to keep. "
-            + "Crosslink-spectrum-matches and crosslinks that are not of these types will be filtered out.",
-            max_selections=2,
-        )
-        # target decoy filter
-        target_decoy_filter_header = st.subheader(
-            "Filter by Target-Decoy Type", divider="grey"
-        )
-        target_decoy_filter = st.multiselect(
-            "Select the crosslink types that you want to keep:",
-            options=["Target-Target", "Target-Decoy", "Decoy-Decoy"],
-            default=[],
-            key="target_decoy_filter",
-            help="Select the target-decoy types that you want to keep. "
-            + "Crosslink-spectrum-matches and crosslinks that are not of these types will be filtered out.",
-            max_selections=3,
-        )
-        # filter action
-        left_c, center_c, right_c = st.columns(3)
-
-        with center_c:
-            filter_button = st.button(
-                "Filter results!", type="primary", width="stretch"
+        with st.form("filter_form", enter_to_submit=False, border=False):
+            protein_filter_header = st.subheader(
+                "Filter by Protein Accession", divider="grey"
             )
+            protein_filter = st.multiselect(
+                "Select the protein accessions that you want to keep:",
+                options=st.session_state["possible_proteins"],
+                default=None,
+                key="protein_filter",
+                help="Select the protein accessions that you want to keep. "
+                + "Crosslink-spectrum-matches and crosslinks containing none of the proteins will be filtered out. "
+                + "Leaving this filter blank will keep everything.",
+                max_selections=25,
+            )
+            # crosslink type filter
+            crosslink_type_filter_header = st.subheader(
+                "Filter by Crosslink Type", divider="grey"
+            )
+            crosslink_type_filter = st.multiselect(
+                "Select the crosslink types that you want to keep:",
+                options=["Intra", "Inter"],
+                default=["Intra", "Inter"],
+                key="crosslink_type_filter",
+                help="Select the crosslink types that you want to keep. "
+                + "Crosslink-spectrum-matches and crosslinks that are not of these types will be filtered out.",
+                max_selections=2,
+            )
+            # target decoy filter
+            target_decoy_filter_header = st.subheader(
+                "Filter by Target-Decoy Type", divider="grey"
+            )
+            target_decoy_filter = st.multiselect(
+                "Select the crosslink types that you want to keep:",
+                options=["Target-Target", "Target-Decoy", "Decoy-Decoy"],
+                default=[],
+                key="target_decoy_filter",
+                help="Select the target-decoy types that you want to keep. "
+                + "Crosslink-spectrum-matches and crosslinks that are not of these types will be filtered out.",
+                max_selections=3,
+            )
+            # filter action
+            left_c, center_c, right_c = st.columns(3)
 
-        # filter in all inputs
-        if filter_button:
-            # reset any exported files
-            reset_exports()
-            # reset proteins
-            st.session_state["possible_proteins"] = None
+            with center_c:
+                filter_button = st.form_submit_button(
+                    "Filter results!", type="primary", width="stretch"
+                )
 
-            with st.spinner("Filtering results...", show_time=True):
-                try:
-                    if protein_filter is not None and len(protein_filter) > 0:
-                        if "pr" in st.session_state:
-                            if (
-                                st.session_state["pr"]["crosslink-spectrum-matches"]
-                                is not None
-                            ):
-                                st.session_state["pr"]["crosslink-spectrum-matches"] = (
-                                    filter_proteins(
+            # filter in all inputs
+            if filter_button:
+                # reset any exported files
+                reset_exports()
+                # reset proteins
+                st.session_state["possible_proteins"] = None
+
+                with st.spinner("Filtering results...", show_time=True):
+                    try:
+                        if protein_filter is not None and len(protein_filter) > 0:
+                            if "pr" in st.session_state:
+                                if (
+                                    st.session_state["pr"]["crosslink-spectrum-matches"]
+                                    is not None
+                                ):
+                                    st.session_state["pr"][
+                                        "crosslink-spectrum-matches"
+                                    ] = filter_proteins(
                                         st.session_state["pr"][
                                             "crosslink-spectrum-matches"
                                         ],
                                         protein_filter,
                                     )
-                                )
-                            if st.session_state["pr"]["crosslinks"] is not None:
-                                st.session_state["pr"]["crosslinks"] = filter_proteins(
-                                    st.session_state["pr"]["crosslinks"],
-                                    protein_filter,
+                                if st.session_state["pr"]["crosslinks"] is not None:
+                                    st.session_state["pr"]["crosslinks"] = (
+                                        filter_proteins(
+                                            st.session_state["pr"]["crosslinks"],
+                                            protein_filter,
+                                        )
+                                    )
+                            if (
+                                "aggregated" in st.session_state
+                                and st.session_state["aggregated"] is not None
+                            ):
+                                st.session_state["aggregated"] = filter_proteins(
+                                    st.session_state["aggregated"], protein_filter
                                 )
                         if (
-                            "aggregated" in st.session_state
-                            and st.session_state["aggregated"] is not None
+                            crosslink_type_filter is not None
+                            and len(crosslink_type_filter) > 0
                         ):
-                            st.session_state["aggregated"] = filter_proteins(
-                                st.session_state["aggregated"], protein_filter
-                            )
-                    if (
-                        crosslink_type_filter is not None
-                        and len(crosslink_type_filter) > 0
-                    ):
-                        if "pr" in st.session_state:
+                            if "pr" in st.session_state:
+                                if (
+                                    st.session_state["pr"]["crosslink-spectrum-matches"]
+                                    is not None
+                                ):
+                                    intra_inter = transform.filter_crosslink_type(
+                                        st.session_state["pr"][
+                                            "crosslink-spectrum-matches"
+                                        ]
+                                    )
+                                    keep = list()
+                                    if "Intra" in crosslink_type_filter:
+                                        keep += intra_inter["Intra"]
+                                    if "Inter" in crosslink_type_filter:
+                                        keep += intra_inter["Inter"]
+                                    st.session_state["pr"][
+                                        "crosslink-spectrum-matches"
+                                    ] = keep
+                                if st.session_state["pr"]["crosslinks"] is not None:
+                                    intra_inter = transform.filter_crosslink_type(
+                                        st.session_state["pr"]["crosslinks"]
+                                    )
+                                    keep = list()
+                                    if "Intra" in crosslink_type_filter:
+                                        keep += intra_inter["Intra"]
+                                    if "Inter" in crosslink_type_filter:
+                                        keep += intra_inter["Inter"]
+                                    st.session_state["pr"]["crosslinks"] = keep
                             if (
-                                st.session_state["pr"]["crosslink-spectrum-matches"]
-                                is not None
+                                "aggregated" in st.session_state
+                                and st.session_state["aggregated"] is not None
                             ):
                                 intra_inter = transform.filter_crosslink_type(
-                                    st.session_state["pr"]["crosslink-spectrum-matches"]
+                                    st.session_state["aggregated"]
                                 )
                                 keep = list()
                                 if "Intra" in crosslink_type_filter:
                                     keep += intra_inter["Intra"]
                                 if "Inter" in crosslink_type_filter:
                                     keep += intra_inter["Inter"]
-                                st.session_state["pr"]["crosslink-spectrum-matches"] = (
-                                    keep
-                                )
-                            if st.session_state["pr"]["crosslinks"] is not None:
-                                intra_inter = transform.filter_crosslink_type(
-                                    st.session_state["pr"]["crosslinks"]
-                                )
-                                keep = list()
-                                if "Intra" in crosslink_type_filter:
-                                    keep += intra_inter["Intra"]
-                                if "Inter" in crosslink_type_filter:
-                                    keep += intra_inter["Inter"]
-                                st.session_state["pr"]["crosslinks"] = keep
+                                st.session_state["aggregated"] = keep
                         if (
-                            "aggregated" in st.session_state
-                            and st.session_state["aggregated"] is not None
+                            target_decoy_filter is not None
+                            and len(target_decoy_filter) > 0
                         ):
-                            intra_inter = transform.filter_crosslink_type(
-                                st.session_state["aggregated"]
-                            )
-                            keep = list()
-                            if "Intra" in crosslink_type_filter:
-                                keep += intra_inter["Intra"]
-                            if "Inter" in crosslink_type_filter:
-                                keep += intra_inter["Inter"]
-                            st.session_state["aggregated"] = keep
-                    if target_decoy_filter is not None and len(target_decoy_filter) > 0:
-                        if "pr" in st.session_state:
+                            if "pr" in st.session_state:
+                                if (
+                                    st.session_state["pr"]["crosslink-spectrum-matches"]
+                                    is not None
+                                ):
+                                    tt_td_dd = transform.filter_target_decoy(
+                                        st.session_state["pr"][
+                                            "crosslink-spectrum-matches"
+                                        ]
+                                    )
+                                    keep = list()
+                                    if "Target-Target" in target_decoy_filter:
+                                        keep += tt_td_dd["Target-Target"]
+                                    if "Target-Decoy" in target_decoy_filter:
+                                        keep += tt_td_dd["Target-Decoy"]
+                                    if "Decoy-Decoy" in target_decoy_filter:
+                                        keep += tt_td_dd["Decoy-Decoy"]
+                                    st.session_state["pr"][
+                                        "crosslink-spectrum-matches"
+                                    ] = keep
+                                if st.session_state["pr"]["crosslinks"] is not None:
+                                    tt_td_dd = transform.filter_target_decoy(
+                                        st.session_state["pr"]["crosslinks"]
+                                    )
+                                    keep = list()
+                                    if "Target-Target" in target_decoy_filter:
+                                        keep += tt_td_dd["Target-Target"]
+                                    if "Target-Decoy" in target_decoy_filter:
+                                        keep += tt_td_dd["Target-Decoy"]
+                                    if "Decoy-Decoy" in target_decoy_filter:
+                                        keep += tt_td_dd["Decoy-Decoy"]
+                                    st.session_state["pr"]["crosslinks"] = keep
                             if (
-                                st.session_state["pr"]["crosslink-spectrum-matches"]
-                                is not None
+                                "aggregated" in st.session_state
+                                and st.session_state["aggregated"] is not None
                             ):
                                 tt_td_dd = transform.filter_target_decoy(
-                                    st.session_state["pr"]["crosslink-spectrum-matches"]
+                                    st.session_state["aggregated"]
                                 )
                                 keep = list()
                                 if "Target-Target" in target_decoy_filter:
@@ -1259,56 +1298,27 @@ def filter_tab():
                                     keep += tt_td_dd["Target-Decoy"]
                                 if "Decoy-Decoy" in target_decoy_filter:
                                     keep += tt_td_dd["Decoy-Decoy"]
-                                st.session_state["pr"]["crosslink-spectrum-matches"] = (
-                                    keep
-                                )
-                            if st.session_state["pr"]["crosslinks"] is not None:
-                                tt_td_dd = transform.filter_target_decoy(
-                                    st.session_state["pr"]["crosslinks"]
-                                )
-                                keep = list()
-                                if "Target-Target" in target_decoy_filter:
-                                    keep += tt_td_dd["Target-Target"]
-                                if "Target-Decoy" in target_decoy_filter:
-                                    keep += tt_td_dd["Target-Decoy"]
-                                if "Decoy-Decoy" in target_decoy_filter:
-                                    keep += tt_td_dd["Decoy-Decoy"]
-                                st.session_state["pr"]["crosslinks"] = keep
-                        if (
-                            "aggregated" in st.session_state
-                            and st.session_state["aggregated"] is not None
-                        ):
-                            tt_td_dd = transform.filter_target_decoy(
-                                st.session_state["aggregated"]
-                            )
-                            keep = list()
-                            if "Target-Target" in target_decoy_filter:
-                                keep += tt_td_dd["Target-Target"]
-                            if "Target-Decoy" in target_decoy_filter:
-                                keep += tt_td_dd["Target-Decoy"]
-                            if "Decoy-Decoy" in target_decoy_filter:
-                                keep += tt_td_dd["Decoy-Decoy"]
-                            st.session_state["aggregated"] = keep
-                    st.rerun()
-                except Exception as e:
-                    # reset meta information
-                    if "meta_info" in st.session_state:
-                        del st.session_state["meta_info"]
-                    # reset pr and aggregated on file read
-                    if "pr" in st.session_state:
-                        del st.session_state["pr"]
-                    if "aggregated" in st.session_state:
-                        del st.session_state["aggregated"]
-                    # reset any exported files
-                    reset_exports()
-                    # reset proteins
-                    st.session_state["possible_proteins"] = None
-                    _ = st.error(
-                        "Something went wrong! This is most likely due to missing information in the results! All results have been reset!",
-                        icon="⚠️",
-                    )
-                    with st.expander("Show exception"):
-                        _ = st.exception(e)
+                                st.session_state["aggregated"] = keep
+                        st.rerun()
+                    except Exception as e:
+                        # reset meta information
+                        if "meta_info" in st.session_state:
+                            del st.session_state["meta_info"]
+                        # reset pr and aggregated on file read
+                        if "pr" in st.session_state:
+                            del st.session_state["pr"]
+                        if "aggregated" in st.session_state:
+                            del st.session_state["aggregated"]
+                        # reset any exported files
+                        reset_exports()
+                        # reset proteins
+                        st.session_state["possible_proteins"] = None
+                        _ = st.error(
+                            "Something went wrong! This is most likely due to missing information in the results! All results have been reset!",
+                            icon="⚠️",
+                        )
+                        with st.expander("Show exception"):
+                            _ = st.exception(e)
 
     # display filtered data and summary [CSMs]
     if "pr" in st.session_state:
@@ -1900,120 +1910,126 @@ def export_tab():
                     + "as otherwise the export to ProXL or ProXL itself will not work as intended! You can check this in the "
                     + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
                 )
-                export_csms_proxl_fasta = st.file_uploader(
-                    "Upload the FASTA file containing the protein sequences of your crosslink-spectrum-matches:",
-                    type="fasta",
-                    accept_multiple_files=False,
-                    key="export_csms_proxl_fasta",
-                    help="Upload the FASTA file containing protein sequences for the provided crosslink spectrum matches.",
-                )
-                export_csms_proxl_search_engine = st.text_input(
-                    "Name of the used crosslink search engine [this field has been pre-filled with your selection from the 'Load Data' tab]:",
-                    value=st.session_state["meta_info"]["search_engine"],
-                    max_chars=150,
-                    placeholder=None,
-                    key="export_csms_proxl_search_engine",
-                    help="Name of the crosslink search engine used in the experiment of the uploaded result file.",
-                )
-                export_csms_proxl_search_engine_version = st.text_input(
-                    "Software version of the used crosslink search engine:",
-                    value=None,
-                    max_chars=150,
-                    placeholder="v1.0.0",
-                    key="export_csms_proxl_search_engine_version",
-                    help="Name of the crosslink search engine used in the experiment of the uploaded result file.",
-                )
-                export_csms_proxl_score = st.selectbox(
-                    "Is a higher crosslink-spectrum-match score considered better?",
-                    options=["Higher better", "Lower better"],
-                    index=0,
-                    key="export_csms_proxl_score",
-                    help="If a higher crosslink-spectrum-match score is considered better, or a lower score is considered better.",
-                )
-                export_csms_proxl_crosslinker_name = st.text_input(
-                    "Name of the used crosslinker [this field has been pre-filled with your selection from the 'Load Data' tab]:",
-                    value=st.session_state["meta_info"]["crosslinker_name"],
-                    max_chars=50,
-                    placeholder="DSSO",
-                    key="export_csms_proxl_crosslinker_name",
-                    help="Name of the crosslinker used in the experiment of the uploaded result file.",
-                )
-                export_csms_proxl_crosslinker_mass = st.number_input(
-                    "Mass of the used crosslinker [this field has been pre-filled with your selection from the 'Load Data' tab]:",
-                    value=st.session_state["meta_info"]["crosslinker_mass"],
-                    step=0.00001,
-                    format="%0.5f",
-                    placeholder="158.00376",
-                    key="export_csms_proxl_crosslinker_mass",
-                    help="Monoisotopic delta mass of the crosslinker used in the experiment of the uploaded result file.",
-                )
-                export_csms_proxl_button = st.button(
-                    "Export to ProXL!",
-                    type="primary",
-                    width="stretch",
-                    key="export_csms_proxl_button",
-                )
-                if export_csms_proxl_button:
-                    if export_csms_proxl_fasta is None:
-                        _ = st.error("You need to upload a FASTA file first!")
-                    if (
-                        export_csms_proxl_search_engine is None
-                        or export_csms_proxl_search_engine.strip() == ""
-                    ):
-                        _ = st.error(
-                            "You need to specify the name of the crosslink search engine first!"
-                        )
-                    if (
-                        export_csms_proxl_search_engine_version is None
-                        or export_csms_proxl_search_engine_version.strip() == ""
-                    ):
-                        _ = st.error(
-                            "You need to specify the version of the crosslink search engine first!"
-                        )
-                    if (
-                        export_csms_proxl_crosslinker_name is None
-                        or export_csms_proxl_crosslinker_name.strip() == ""
-                    ):
-                        _ = st.error(
-                            "You need the specify the name of the used crosslink reagent first!"
-                        )
-                    if export_csms_proxl_crosslinker_mass is None:
-                        _ = st.error(
-                            "You need to specify the delta mass of the used crosslink reagent first!"
-                        )
-                    if (
-                        export_csms_proxl_fasta is not None
-                        and export_csms_proxl_search_engine is not None
-                        and export_csms_proxl_search_engine.strip() != ""
-                        and export_csms_proxl_search_engine_version is not None
-                        and export_csms_proxl_search_engine_version.strip() != ""
-                        and export_csms_proxl_crosslinker_name is not None
-                        and export_csms_proxl_crosslinker_name.strip() != ""
-                        and export_csms_proxl_crosslinker_mass is not None
-                    ):
-                        with st.spinner(
-                            "Exporting crosslink-spectrum-matches to ProXL...",
-                            show_time=True,
+                with st.form(
+                    "export_csms_proxl_form", enter_to_submit=False, border=False
+                ):
+                    export_csms_proxl_fasta = st.file_uploader(
+                        "Upload the FASTA file containing the protein sequences of your crosslink-spectrum-matches:",
+                        type="fasta",
+                        accept_multiple_files=False,
+                        key="export_csms_proxl_fasta",
+                        help="Upload the FASTA file containing protein sequences for the provided crosslink spectrum matches.",
+                    )
+                    export_csms_proxl_search_engine = st.text_input(
+                        "Name of the used crosslink search engine [this field has been pre-filled with your selection from the 'Load Data' tab]:",
+                        value=st.session_state["meta_info"]["search_engine"],
+                        max_chars=150,
+                        placeholder=None,
+                        key="export_csms_proxl_search_engine",
+                        help="Name of the crosslink search engine used in the experiment of the uploaded result file.",
+                    )
+                    export_csms_proxl_search_engine_version = st.text_input(
+                        "Software version of the used crosslink search engine:",
+                        value=None,
+                        max_chars=150,
+                        placeholder="v1.0.0",
+                        key="export_csms_proxl_search_engine_version",
+                        help="Name of the crosslink search engine used in the experiment of the uploaded result file.",
+                    )
+                    export_csms_proxl_score = st.selectbox(
+                        "Is a higher crosslink-spectrum-match score considered better?",
+                        options=["Higher better", "Lower better"],
+                        index=0,
+                        key="export_csms_proxl_score",
+                        help="If a higher crosslink-spectrum-match score is considered better, or a lower score is considered better.",
+                    )
+                    export_csms_proxl_crosslinker_name = st.text_input(
+                        "Name of the used crosslinker [this field has been pre-filled with your selection from the 'Load Data' tab]:",
+                        value=st.session_state["meta_info"]["crosslinker_name"],
+                        max_chars=50,
+                        placeholder="DSSO",
+                        key="export_csms_proxl_crosslinker_name",
+                        help="Name of the crosslinker used in the experiment of the uploaded result file.",
+                    )
+                    export_csms_proxl_crosslinker_mass = st.number_input(
+                        "Mass of the used crosslinker [this field has been pre-filled with your selection from the 'Load Data' tab]:",
+                        value=st.session_state["meta_info"]["crosslinker_mass"],
+                        step=0.00001,
+                        format="%0.5f",
+                        placeholder="158.00376",
+                        key="export_csms_proxl_crosslinker_mass",
+                        help="Monoisotopic delta mass of the crosslinker used in the experiment of the uploaded result file.",
+                    )
+                    export_csms_proxl_button = st.form_submit_button(
+                        "Export to ProXL!",
+                        type="primary",
+                        width="stretch",
+                        key="export_csms_proxl_button",
+                    )
+                    if export_csms_proxl_button:
+                        if export_csms_proxl_fasta is None:
+                            _ = st.error("You need to upload a FASTA file first!")
+                        if (
+                            export_csms_proxl_search_engine is None
+                            or export_csms_proxl_search_engine.strip() == ""
                         ):
-                            try:
-                                st.session_state["export_csms_proxl"] = export_proxl(
-                                    csms,
-                                    export_csms_proxl_fasta,
-                                    export_csms_proxl_search_engine,
-                                    export_csms_proxl_search_engine_version,
-                                    "higher_better"
-                                    if export_csms_proxl_score == "Higher better"
-                                    else "lower_better",
-                                    export_csms_proxl_crosslinker_name,
-                                    export_csms_proxl_crosslinker_mass,
-                                )
-                            except Exception as e:
-                                _ = st.error(
-                                    "Something went wrong! This is most likely due to missing information in the results!",
-                                    icon="⚠️",
-                                )
-                                with st.expander("Show exception"):
-                                    _ = st.exception(e)
+                            _ = st.error(
+                                "You need to specify the name of the crosslink search engine first!"
+                            )
+                        if (
+                            export_csms_proxl_search_engine_version is None
+                            or export_csms_proxl_search_engine_version.strip() == ""
+                        ):
+                            _ = st.error(
+                                "You need to specify the version of the crosslink search engine first!"
+                            )
+                        if (
+                            export_csms_proxl_crosslinker_name is None
+                            or export_csms_proxl_crosslinker_name.strip() == ""
+                        ):
+                            _ = st.error(
+                                "You need the specify the name of the used crosslink reagent first!"
+                            )
+                        if export_csms_proxl_crosslinker_mass is None:
+                            _ = st.error(
+                                "You need to specify the delta mass of the used crosslink reagent first!"
+                            )
+                        if (
+                            export_csms_proxl_fasta is not None
+                            and export_csms_proxl_search_engine is not None
+                            and export_csms_proxl_search_engine.strip() != ""
+                            and export_csms_proxl_search_engine_version is not None
+                            and export_csms_proxl_search_engine_version.strip() != ""
+                            and export_csms_proxl_crosslinker_name is not None
+                            and export_csms_proxl_crosslinker_name.strip() != ""
+                            and export_csms_proxl_crosslinker_mass is not None
+                        ):
+                            with st.spinner(
+                                "Exporting crosslink-spectrum-matches to ProXL...",
+                                show_time=True,
+                            ):
+                                try:
+                                    st.session_state["export_csms_proxl"] = (
+                                        export_proxl(
+                                            csms,
+                                            export_csms_proxl_fasta,
+                                            export_csms_proxl_search_engine,
+                                            export_csms_proxl_search_engine_version,
+                                            "higher_better"
+                                            if export_csms_proxl_score
+                                            == "Higher better"
+                                            else "lower_better",
+                                            export_csms_proxl_crosslinker_name,
+                                            export_csms_proxl_crosslinker_mass,
+                                        )
+                                    )
+                                except Exception as e:
+                                    _ = st.error(
+                                        "Something went wrong! This is most likely due to missing information in the results!",
+                                        icon="⚠️",
+                                    )
+                                    with st.expander("Show exception"):
+                                        _ = st.exception(e)
                 if (
                     "export_csms_proxl" in st.session_state
                     and st.session_state["export_csms_proxl"] is not None
@@ -2146,23 +2162,6 @@ def export_tab():
                 pass
             # AlphaLink2
             elif export_crosslinks_picker == "AlphaLink2":
-                crosslinks_alphalink2_fasta_file = st.file_uploader(
-                    "Upload a FASTA file of proteins/chains of interest:",
-                    type="fasta",
-                    accept_multiple_files=False,
-                    key="crosslinks_alphalink2_fasta_file",
-                    help="Upload a FASTA file containing protein/chain sequences. Please keep in mind that AlphaLink2 supports a maximum of 62 proteins/chains!",
-                )
-                crosslinks_alphalink2_annotated_fdr = st.number_input(
-                    "Annotated FDR:",
-                    value=0.01,
-                    min_value=0.0,
-                    max_value=1.0,
-                    step=0.001,
-                    format="%0.3f",
-                    key="crosslinks_alphalink2_annotated_fdr",
-                    help="Value to use for the 'FDR' column in the AlphaLink2 crosslink table, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.",
-                )
                 export_crosslinks_alphalink2_info = st.info(
                     "To export to AlphaLink2 your crosslinks should be **unique** and **not** "
                     + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
@@ -2170,41 +2169,63 @@ def export_tab():
                     + "You can check this in the "
                     + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
                 )
-                export_crosslinks_alphalink2_button = st.button(
-                    "Export to AlphaLink2 format!",
-                    type="primary",
-                    width="stretch",
-                    key="export_crosslinks_alphalink2_button",
-                )
-                if export_crosslinks_alphalink2_button:
-                    if (
-                        crosslinks_alphalink2_fasta_file is None
-                        or crosslinks_alphalink2_annotated_fdr is None
-                    ):
-                        _ = st.error(
-                            "Can't export to AlphaLink2 when either FASTA file or annotated FDR are missing!",
-                            icon="⚠️",
-                        )
-                    else:
-                        with st.spinner(
-                            "Exporting crosslinks to AlphaLink2 format...",
-                            show_time=True,
+                with st.form(
+                    "export_crosslinks_alphalink2_form",
+                    enter_to_submit=False,
+                    border=False,
+                ):
+                    crosslinks_alphalink2_fasta_file = st.file_uploader(
+                        "Upload a FASTA file of proteins/chains of interest:",
+                        type="fasta",
+                        accept_multiple_files=False,
+                        key="crosslinks_alphalink2_fasta_file",
+                        help="Upload a FASTA file containing protein/chain sequences. Please keep in mind that AlphaLink2 supports a maximum of 62 proteins/chains!",
+                    )
+                    crosslinks_alphalink2_annotated_fdr = st.number_input(
+                        "Annotated FDR:",
+                        value=0.01,
+                        min_value=0.0,
+                        max_value=1.0,
+                        step=0.001,
+                        format="%0.3f",
+                        key="crosslinks_alphalink2_annotated_fdr",
+                        help="Value to use for the 'FDR' column in the AlphaLink2 crosslink table, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.",
+                    )
+                    export_crosslinks_alphalink2_button = st.form_submit_button(
+                        "Export to AlphaLink2 format!",
+                        type="primary",
+                        width="stretch",
+                        key="export_crosslinks_alphalink2_button",
+                    )
+                    if export_crosslinks_alphalink2_button:
+                        if (
+                            crosslinks_alphalink2_fasta_file is None
+                            or crosslinks_alphalink2_annotated_fdr is None
                         ):
-                            try:
-                                st.session_state["export_crosslinks_alphalink2"] = (
-                                    export_alphalink2(
-                                        crosslinks,
-                                        crosslinks_alphalink2_fasta_file,
-                                        float(crosslinks_alphalink2_annotated_fdr),
+                            _ = st.error(
+                                "Can't export to AlphaLink2 when either FASTA file or annotated FDR are missing!",
+                                icon="⚠️",
+                            )
+                        else:
+                            with st.spinner(
+                                "Exporting crosslinks to AlphaLink2 format...",
+                                show_time=True,
+                            ):
+                                try:
+                                    st.session_state["export_crosslinks_alphalink2"] = (
+                                        export_alphalink2(
+                                            crosslinks,
+                                            crosslinks_alphalink2_fasta_file,
+                                            float(crosslinks_alphalink2_annotated_fdr),
+                                        )
                                     )
-                                )
-                            except Exception as e:
-                                _ = st.error(
-                                    "Something went wrong! This is most likely due to missing information in the results!",
-                                    icon="⚠️",
-                                )
-                                with st.expander("Show exception"):
-                                    _ = st.exception(e)
+                                except Exception as e:
+                                    _ = st.error(
+                                        "Something went wrong! This is most likely due to missing information in the results!",
+                                        icon="⚠️",
+                                    )
+                                    with st.expander("Show exception"):
+                                        _ = st.exception(e)
                 if (
                     "export_crosslinks_alphalink2" in st.session_state
                     and st.session_state["export_crosslinks_alphalink2"] is not None
@@ -2214,8 +2235,9 @@ def export_tab():
                     )
                     (
                         export_crosslinks_alphalink2_download_l,
+                        export_crosslinks_alphalink2_download_m,
                         export_crosslinks_alphalink2_download_r,
-                    ) = st.columns(2)
+                    ) = st.columns(3)
 
                     with export_crosslinks_alphalink2_download_l:
                         export_crosslinks_alphalink2_download_txt = st.download_button(
@@ -2234,7 +2256,7 @@ def export_tab():
                             help="Downloads the exported crosslinks in AlphaLink2 format.",
                             key="export_crosslinks_alphalink2_download_txt",
                         )
-                    with export_crosslinks_alphalink2_download_r:
+                    with export_crosslinks_alphalink2_download_m:
                         export_crosslinks_alphalink2_download_fasta = st.download_button(
                             label="Download FASTA in AlphaLink2 format!",
                             data=to_text(
@@ -2251,10 +2273,7 @@ def export_tab():
                             help="Downloads the uploaded FASTA file in AlphaLink2 format.",
                             key="export_crosslinks_alphalink2_download_fasta",
                         )
-                    if (
-                        "AlphaLink2 Pickle"
-                        in st.session_state["export_crosslinks_alphalink2"]
-                    ):
+                    with export_crosslinks_alphalink2_download_r:
                         export_crosslinks_alphalink2_download_pickle = st.download_button(
                             label="Download pickled crosslinks in AlphaLink2 format!",
                             data=pickle_and_gzip(
@@ -2440,74 +2459,79 @@ def export_tab():
                         )
             # PyXlinkViewer
             elif export_crosslinks_picker == "PyXlinkViewer":
-                crosslinks_pdb_code = st.text_input(
-                    "Specify the PDB identification code of your protein(-complex) of interest:",
-                    value=None,
-                    max_chars=4,
-                    key="crosslinks_pdb_code",
-                    help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
-                )
-                crosslinks_pdb_file = st.file_uploader(
-                    "Alternatively, upload a PDB file of your protein(-complex) of interest:",
-                    type="pdb",
-                    accept_multiple_files=False,
-                    key="crosslinks_pdb_file",
-                    help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
-                )
                 export_crosslinks_pyxlinkviewer_info = st.info(
                     "To export to PyXlinkViewer your crosslinks should be **unique** and **not** "
                     + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
                     + "You can check this in the "
                     + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
                 )
-                export_crosslinks_pyxlinkviewer_button = st.button(
-                    "Export to PyXlinkViewer format!",
-                    type="primary",
-                    width="stretch",
-                    key="export_crosslinks_pyxlinkviewer_button",
-                )
-                if export_crosslinks_pyxlinkviewer_button:
-                    if crosslinks_pdb_code is None and crosslinks_pdb_file is None:
-                        _ = st.error(
-                            "Can't export to PyXlinkViewer when neither PDB code nor file are given!",
-                            icon="⚠️",
-                        )
-                    else:
-                        with st.spinner(
-                            "Exporting crosslinks to PyXlinkViewer format...",
-                            show_time=True,
-                        ):
-                            try:
-                                if crosslinks_pdb_file is not None:
-                                    st.session_state[
-                                        "export_crosslinks_pyxlinkviewer"
-                                    ] = export_pyxlinkviewer_using_pdbfile(
-                                        crosslinks, crosslinks_pdb_file
-                                    )
-                                else:
-                                    if crosslinks_pdb_code is not None:
-                                        if len(crosslinks_pdb_code.strip()) != 4:
-                                            raise ValueError(
-                                                "Specified PDB code is not a valid 4-letter PDB identification code!"
-                                            )
+                with st.form(
+                    "export_crosslinks_pyxlinkviewer_form",
+                    enter_to_submit=False,
+                    border=False,
+                ):
+                    crosslinks_pdb_code = st.text_input(
+                        "Specify the PDB identification code of your protein(-complex) of interest:",
+                        value=None,
+                        max_chars=4,
+                        key="crosslinks_pdb_code",
+                        help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
+                    )
+                    crosslinks_pdb_file = st.file_uploader(
+                        "Alternatively, upload a PDB file of your protein(-complex) of interest:",
+                        type="pdb",
+                        accept_multiple_files=False,
+                        key="crosslinks_pdb_file",
+                        help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
+                    )
+                    export_crosslinks_pyxlinkviewer_button = st.form_submit_button(
+                        "Export to PyXlinkViewer format!",
+                        type="primary",
+                        width="stretch",
+                        key="export_crosslinks_pyxlinkviewer_button",
+                    )
+                    if export_crosslinks_pyxlinkviewer_button:
+                        if crosslinks_pdb_code is None and crosslinks_pdb_file is None:
+                            _ = st.error(
+                                "Can't export to PyXlinkViewer when neither PDB code nor file are given!",
+                                icon="⚠️",
+                            )
+                        else:
+                            with st.spinner(
+                                "Exporting crosslinks to PyXlinkViewer format...",
+                                show_time=True,
+                            ):
+                                try:
+                                    if crosslinks_pdb_file is not None:
                                         st.session_state[
                                             "export_crosslinks_pyxlinkviewer"
-                                        ] = exporter.to_pyxlinkviewer(
-                                            crosslinks,
-                                            crosslinks_pdb_code.strip(),
-                                            filename_prefix=None,
+                                        ] = export_pyxlinkviewer_using_pdbfile(
+                                            crosslinks, crosslinks_pdb_file
                                         )
                                     else:
-                                        raise RuntimeError(
-                                            "Can't export to PyXlinkViewer when neither PDB code nor file are given!"
-                                        )
-                            except Exception as e:
-                                _ = st.error(
-                                    "Something went wrong! This is most likely due to missing information in the results!",
-                                    icon="⚠️",
-                                )
-                                with st.expander("Show exception"):
-                                    _ = st.exception(e)
+                                        if crosslinks_pdb_code is not None:
+                                            if len(crosslinks_pdb_code.strip()) != 4:
+                                                raise ValueError(
+                                                    "Specified PDB code is not a valid 4-letter PDB identification code!"
+                                                )
+                                            st.session_state[
+                                                "export_crosslinks_pyxlinkviewer"
+                                            ] = exporter.to_pyxlinkviewer(
+                                                crosslinks,
+                                                crosslinks_pdb_code.strip(),
+                                                filename_prefix=None,
+                                            )
+                                        else:
+                                            raise RuntimeError(
+                                                "Can't export to PyXlinkViewer when neither PDB code nor file are given!"
+                                            )
+                                except Exception as e:
+                                    _ = st.error(
+                                        "Something went wrong! This is most likely due to missing information in the results!",
+                                        icon="⚠️",
+                                    )
+                                    with st.expander("Show exception"):
+                                        _ = st.exception(e)
                 if (
                     "export_crosslinks_pyxlinkviewer" in st.session_state
                     and st.session_state["export_crosslinks_pyxlinkviewer"] is not None
@@ -2802,80 +2826,87 @@ def export_tab():
                     )
             # xlms-tools
             elif export_crosslinks_picker == "xlms-tools":
-                xlmstools_crosslinks_pdb_code = st.text_input(
-                    "Specify the PDB identification code of your protein(-complex) of interest:",
-                    value=None,
-                    max_chars=4,
-                    key="xlmstools_crosslinks_pdb_code",
-                    help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
-                )
-                xlmstools_crosslinks_pdb_file = st.file_uploader(
-                    "Alternatively, upload a PDB file of your protein(-complex) of interest:",
-                    type="pdb",
-                    accept_multiple_files=False,
-                    key="xlmstools_crosslinks_pdb_file",
-                    help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
-                )
                 export_crosslinks_xlmstools_info = st.info(
                     "To export to xlms-tools your crosslinks should be **unique** and **not** "
                     + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
                     + "You can check this in the "
                     + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
                 )
-                export_crosslinks_xlmstools_button = st.button(
-                    "Export to xlms-tools format!",
-                    type="primary",
-                    width="stretch",
-                    key="export_crosslinks_xlmstools_button",
-                )
-                if export_crosslinks_xlmstools_button:
-                    if (
-                        xlmstools_crosslinks_pdb_code is None
-                        and xlmstools_crosslinks_pdb_file is None
-                    ):
-                        _ = st.error(
-                            "Can't export to xlms-tools when neither PDB code nor file are given!",
-                            icon="⚠️",
-                        )
-                    else:
-                        with st.spinner(
-                            "Exporting crosslinks to xlms-tools format...",
-                            show_time=True,
+                with st.form(
+                    "export_crosslinks_xlmstools_form",
+                    enter_to_submit=False,
+                    border=False,
+                ):
+                    xlmstools_crosslinks_pdb_code = st.text_input(
+                        "Specify the PDB identification code of your protein(-complex) of interest:",
+                        value=None,
+                        max_chars=4,
+                        key="xlmstools_crosslinks_pdb_code",
+                        help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
+                    )
+                    xlmstools_crosslinks_pdb_file = st.file_uploader(
+                        "Alternatively, upload a PDB file of your protein(-complex) of interest:",
+                        type="pdb",
+                        accept_multiple_files=False,
+                        key="xlmstools_crosslinks_pdb_file",
+                        help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
+                    )
+                    export_crosslinks_xlmstools_button = st.form_submit_button(
+                        "Export to xlms-tools format!",
+                        type="primary",
+                        width="stretch",
+                        key="export_crosslinks_xlmstools_button",
+                    )
+                    if export_crosslinks_xlmstools_button:
+                        if (
+                            xlmstools_crosslinks_pdb_code is None
+                            and xlmstools_crosslinks_pdb_file is None
                         ):
-                            try:
-                                if xlmstools_crosslinks_pdb_file is not None:
-                                    st.session_state["export_crosslinks_xlmstools"] = (
-                                        export_xlmstools_using_pdbfile(
-                                            crosslinks, xlmstools_crosslinks_pdb_file
-                                        )
-                                    )
-                                else:
-                                    if xlmstools_crosslinks_pdb_code is not None:
-                                        if (
-                                            len(xlmstools_crosslinks_pdb_code.strip())
-                                            != 4
-                                        ):
-                                            raise ValueError(
-                                                "Specified PDB code is not a valid 4-letter PDB identification code!"
-                                            )
+                            _ = st.error(
+                                "Can't export to xlms-tools when neither PDB code nor file are given!",
+                                icon="⚠️",
+                            )
+                        else:
+                            with st.spinner(
+                                "Exporting crosslinks to xlms-tools format...",
+                                show_time=True,
+                            ):
+                                try:
+                                    if xlmstools_crosslinks_pdb_file is not None:
                                         st.session_state[
                                             "export_crosslinks_xlmstools"
-                                        ] = exporter.to_xlmstools(
-                                            crosslinks,
-                                            xlmstools_crosslinks_pdb_code.strip(),
-                                            filename_prefix=None,
+                                        ] = export_xlmstools_using_pdbfile(
+                                            crosslinks, xlmstools_crosslinks_pdb_file
                                         )
                                     else:
-                                        raise RuntimeError(
-                                            "Can't export to xlms-tools when neither PDB code nor file are given!"
-                                        )
-                            except Exception as e:
-                                _ = st.error(
-                                    "Something went wrong! This is most likely due to missing information in the results!",
-                                    icon="⚠️",
-                                )
-                                with st.expander("Show exception"):
-                                    _ = st.exception(e)
+                                        if xlmstools_crosslinks_pdb_code is not None:
+                                            if (
+                                                len(
+                                                    xlmstools_crosslinks_pdb_code.strip()
+                                                )
+                                                != 4
+                                            ):
+                                                raise ValueError(
+                                                    "Specified PDB code is not a valid 4-letter PDB identification code!"
+                                                )
+                                            st.session_state[
+                                                "export_crosslinks_xlmstools"
+                                            ] = exporter.to_xlmstools(
+                                                crosslinks,
+                                                xlmstools_crosslinks_pdb_code.strip(),
+                                                filename_prefix=None,
+                                            )
+                                        else:
+                                            raise RuntimeError(
+                                                "Can't export to xlms-tools when neither PDB code nor file are given!"
+                                            )
+                                except Exception as e:
+                                    _ = st.error(
+                                        "Something went wrong! This is most likely due to missing information in the results!",
+                                        icon="⚠️",
+                                    )
+                                    with st.expander("Show exception"):
+                                        _ = st.exception(e)
                 if (
                     "export_crosslinks_xlmstools" in st.session_state
                     and st.session_state["export_crosslinks_xlmstools"] is not None
@@ -3075,23 +3106,6 @@ def export_tab():
             pass
         # AlphaLink2
         elif export_aggregated_crosslinks_picker == "AlphaLink2":
-            aggregated_crosslinks_alphalink2_fasta_file = st.file_uploader(
-                "Upload a FASTA file of proteins/chains of interest:",
-                type="fasta",
-                accept_multiple_files=False,
-                key="aggregated_crosslinks_alphalink2_fasta_file",
-                help="Upload a FASTA file containing protein/chain sequences. Please keep in mind that AlphaLink2 supports a maximum of 62 proteins/chains!",
-            )
-            aggregated_crosslinks_alphalink2_annotated_fdr = st.number_input(
-                "Annotated FDR:",
-                value=0.01,
-                min_value=0.0,
-                max_value=1.0,
-                step=0.001,
-                format="%0.3f",
-                key="aggregated_crosslinks_alphalink2_annotated_fdr",
-                help="Value to use for the 'FDR' column in the AlphaLink2 crosslink table, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.",
-            )
             export_aggregated_crosslinks_alphalink2_info = st.info(
                 "To export to AlphaLink2 your crosslinks should be **unique** and **not** "
                 + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
@@ -3099,41 +3113,65 @@ def export_tab():
                 + "You can check this in the "
                 + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
             )
-            export_aggregated_crosslinks_alphalink2_button = st.button(
-                "Export to AlphaLink2 format!",
-                type="primary",
-                width="stretch",
-                key="export_aggregated_crosslinks_alphalink2_button",
-            )
-            if export_aggregated_crosslinks_alphalink2_button:
-                if (
-                    aggregated_crosslinks_alphalink2_fasta_file is None
-                    or aggregated_crosslinks_alphalink2_annotated_fdr is None
-                ):
-                    _ = st.error(
-                        "Can't export to AlphaLink2 when either FASTA file or annotated FDR are missing!",
-                        icon="⚠️",
-                    )
-                else:
-                    with st.spinner(
-                        "Exporting crosslinks to AlphaLink2 format...",
-                        show_time=True,
+            with st.form(
+                "export_aggregated_crosslinks_alphalink2_form",
+                enter_to_submit=False,
+                border=False,
+            ):
+                aggregated_crosslinks_alphalink2_fasta_file = st.file_uploader(
+                    "Upload a FASTA file of proteins/chains of interest:",
+                    type="fasta",
+                    accept_multiple_files=False,
+                    key="aggregated_crosslinks_alphalink2_fasta_file",
+                    help="Upload a FASTA file containing protein/chain sequences. Please keep in mind that AlphaLink2 supports a maximum of 62 proteins/chains!",
+                )
+                aggregated_crosslinks_alphalink2_annotated_fdr = st.number_input(
+                    "Annotated FDR:",
+                    value=0.01,
+                    min_value=0.0,
+                    max_value=1.0,
+                    step=0.001,
+                    format="%0.3f",
+                    key="aggregated_crosslinks_alphalink2_annotated_fdr",
+                    help="Value to use for the 'FDR' column in the AlphaLink2 crosslink table, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.",
+                )
+                export_aggregated_crosslinks_alphalink2_button = st.form_submit_button(
+                    "Export to AlphaLink2 format!",
+                    type="primary",
+                    width="stretch",
+                    key="export_aggregated_crosslinks_alphalink2_button",
+                )
+                if export_aggregated_crosslinks_alphalink2_button:
+                    if (
+                        aggregated_crosslinks_alphalink2_fasta_file is None
+                        or aggregated_crosslinks_alphalink2_annotated_fdr is None
                     ):
-                        try:
-                            st.session_state[
-                                "export_aggregated_crosslinks_alphalink2"
-                            ] = export_alphalink2(
-                                aggregated_crosslinks,
-                                aggregated_crosslinks_alphalink2_fasta_file,
-                                float(aggregated_crosslinks_alphalink2_annotated_fdr),
-                            )
-                        except Exception as e:
-                            _ = st.error(
-                                "Something went wrong! This is most likely due to missing information in the results!",
-                                icon="⚠️",
-                            )
-                            with st.expander("Show exception"):
-                                _ = st.exception(e)
+                        _ = st.error(
+                            "Can't export to AlphaLink2 when either FASTA file or annotated FDR are missing!",
+                            icon="⚠️",
+                        )
+                    else:
+                        with st.spinner(
+                            "Exporting crosslinks to AlphaLink2 format...",
+                            show_time=True,
+                        ):
+                            try:
+                                st.session_state[
+                                    "export_aggregated_crosslinks_alphalink2"
+                                ] = export_alphalink2(
+                                    aggregated_crosslinks,
+                                    aggregated_crosslinks_alphalink2_fasta_file,
+                                    float(
+                                        aggregated_crosslinks_alphalink2_annotated_fdr
+                                    ),
+                                )
+                            except Exception as e:
+                                _ = st.error(
+                                    "Something went wrong! This is most likely due to missing information in the results!",
+                                    icon="⚠️",
+                                )
+                                with st.expander("Show exception"):
+                                    _ = st.exception(e)
             if (
                 "export_aggregated_crosslinks_alphalink2" in st.session_state
                 and st.session_state["export_aggregated_crosslinks_alphalink2"]
@@ -3144,8 +3182,9 @@ def export_tab():
                 )
                 (
                     export_aggregated_crosslinks_alphalink2_download_l,
+                    export_aggregated_crosslinks_alphalink2_download_m,
                     export_aggregated_crosslinks_alphalink2_download_r,
-                ) = st.columns(2)
+                ) = st.columns(3)
 
                 with export_aggregated_crosslinks_alphalink2_download_l:
                     export_aggregated_crosslinks_alphalink2_download_txt = st.download_button(
@@ -3164,7 +3203,7 @@ def export_tab():
                         help="Downloads the exported crosslinks in AlphaLink2 format.",
                         key="export_aggregated_crosslinks_alphalink2_download_txt",
                     )
-                with export_aggregated_crosslinks_alphalink2_download_r:
+                with export_aggregated_crosslinks_alphalink2_download_m:
                     export_aggregated_crosslinks_alphalink2_download_fasta = st.download_button(
                         label="Download FASTA in AlphaLink2 format!",
                         data=to_text(
@@ -3181,10 +3220,7 @@ def export_tab():
                         help="Downloads the uploaded FASTA file in AlphaLink2 format.",
                         key="export_aggregated_crosslinks_alphalink2_download_fasta",
                     )
-                if (
-                    "AlphaLink2 Pickle"
-                    in st.session_state["export_aggregated_crosslinks_alphalink2"]
-                ):
+                with export_aggregated_crosslinks_alphalink2_download_r:
                     export_aggregated_crosslinks_alphalink2_download_pickle = st.download_button(
                         label="Download pickled crosslinks in AlphaLink2 format!",
                         data=pickle_and_gzip(
@@ -3379,78 +3415,88 @@ def export_tab():
                     )
         # PyXlinkViewer
         elif export_aggregated_crosslinks_picker == "PyXlinkViewer":
-            aggregated_crosslinks_pdb_code = st.text_input(
-                "Specify the PDB identification code of your protein(-complex) of interest:",
-                value=None,
-                max_chars=4,
-                key="aggregated_crosslinks_pdb_code",
-                help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
-            )
-            aggregated_crosslinks_pdb_file = st.file_uploader(
-                "Alternatively, upload a PDB file of your protein(-complex) of interest:",
-                type="pdb",
-                accept_multiple_files=False,
-                key="aggregated_crosslinks_pdb_file",
-                help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
-            )
             export_aggregated_crosslinks_pyxlinkviewer_info = st.info(
                 "To export to PyXlinkViewer your aggregated crosslinks should be **unique** and **not** "
                 + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
                 + "You can check this in the "
                 + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
             )
-            export_aggregated_crosslinks_pyxlinkviewer_button = st.button(
-                "Export to PyXlinkViewer format!",
-                type="primary",
-                width="stretch",
-                key="export_aggregated_crosslinks_pyxlinkviewer_button",
-            )
-            if export_aggregated_crosslinks_pyxlinkviewer_button:
-                if (
-                    aggregated_crosslinks_pdb_code is None
-                    and aggregated_crosslinks_pdb_file is None
-                ):
-                    _ = st.error(
-                        "Can't export to PyXlinkViewer when neither PDB code nor file are given!",
-                        icon="⚠️",
+            with st.form(
+                "export_aggregated_crosslinks_pyxlinkviewer_form",
+                enter_to_submit=False,
+                border=False,
+            ):
+                aggregated_crosslinks_pdb_code = st.text_input(
+                    "Specify the PDB identification code of your protein(-complex) of interest:",
+                    value=None,
+                    max_chars=4,
+                    key="aggregated_crosslinks_pdb_code",
+                    help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
+                )
+                aggregated_crosslinks_pdb_file = st.file_uploader(
+                    "Alternatively, upload a PDB file of your protein(-complex) of interest:",
+                    type="pdb",
+                    accept_multiple_files=False,
+                    key="aggregated_crosslinks_pdb_file",
+                    help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
+                )
+                export_aggregated_crosslinks_pyxlinkviewer_button = (
+                    st.form_submit_button(
+                        "Export to PyXlinkViewer format!",
+                        type="primary",
+                        width="stretch",
+                        key="export_aggregated_crosslinks_pyxlinkviewer_button",
                     )
-                else:
-                    with st.spinner(
-                        "Exporting aggregated crosslinks to PyXlinkViewer format...",
-                        show_time=True,
+                )
+                if export_aggregated_crosslinks_pyxlinkviewer_button:
+                    if (
+                        aggregated_crosslinks_pdb_code is None
+                        and aggregated_crosslinks_pdb_file is None
                     ):
-                        try:
-                            if aggregated_crosslinks_pdb_file is not None:
-                                st.session_state[
-                                    "export_aggregated_crosslinks_pyxlinkviewer"
-                                ] = export_pyxlinkviewer_using_pdbfile(
-                                    aggregated_crosslinks,
-                                    aggregated_crosslinks_pdb_file,
-                                )
-                            else:
-                                if aggregated_crosslinks_pdb_code is not None:
-                                    if len(aggregated_crosslinks_pdb_code.strip()) != 4:
-                                        raise ValueError(
-                                            "Specified PDB code is not a valid 4-letter PDB identification code!"
-                                        )
+                        _ = st.error(
+                            "Can't export to PyXlinkViewer when neither PDB code nor file are given!",
+                            icon="⚠️",
+                        )
+                    else:
+                        with st.spinner(
+                            "Exporting aggregated crosslinks to PyXlinkViewer format...",
+                            show_time=True,
+                        ):
+                            try:
+                                if aggregated_crosslinks_pdb_file is not None:
                                     st.session_state[
                                         "export_aggregated_crosslinks_pyxlinkviewer"
-                                    ] = exporter.to_pyxlinkviewer(
+                                    ] = export_pyxlinkviewer_using_pdbfile(
                                         aggregated_crosslinks,
-                                        aggregated_crosslinks_pdb_code.strip(),
-                                        filename_prefix=None,
+                                        aggregated_crosslinks_pdb_file,
                                     )
                                 else:
-                                    raise RuntimeError(
-                                        "Can't export to PyXlinkViewer when neither PDB code nor file are given!"
-                                    )
-                        except Exception as e:
-                            _ = st.error(
-                                "Something went wrong! This is most likely due to missing information in the results!",
-                                icon="⚠️",
-                            )
-                            with st.expander("Show exception"):
-                                _ = st.exception(e)
+                                    if aggregated_crosslinks_pdb_code is not None:
+                                        if (
+                                            len(aggregated_crosslinks_pdb_code.strip())
+                                            != 4
+                                        ):
+                                            raise ValueError(
+                                                "Specified PDB code is not a valid 4-letter PDB identification code!"
+                                            )
+                                        st.session_state[
+                                            "export_aggregated_crosslinks_pyxlinkviewer"
+                                        ] = exporter.to_pyxlinkviewer(
+                                            aggregated_crosslinks,
+                                            aggregated_crosslinks_pdb_code.strip(),
+                                            filename_prefix=None,
+                                        )
+                                    else:
+                                        raise RuntimeError(
+                                            "Can't export to PyXlinkViewer when neither PDB code nor file are given!"
+                                        )
+                            except Exception as e:
+                                _ = st.error(
+                                    "Something went wrong! This is most likely due to missing information in the results!",
+                                    icon="⚠️",
+                                )
+                                with st.expander("Show exception"):
+                                    _ = st.exception(e)
             if (
                 "export_aggregated_crosslinks_pyxlinkviewer" in st.session_state
                 and st.session_state["export_aggregated_crosslinks_pyxlinkviewer"]
@@ -3750,83 +3796,91 @@ def export_tab():
                 )
         # xlms-tools
         elif export_aggregated_crosslinks_picker == "xlms-tools":
-            xlmstools_aggregated_crosslinks_pdb_code = st.text_input(
-                "Specify the PDB identification code of your protein(-complex) of interest:",
-                value=None,
-                max_chars=4,
-                key="xlmstools_aggregated_crosslinks_pdb_code",
-                help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
-            )
-            xlmstools_aggregated_crosslinks_pdb_file = st.file_uploader(
-                "Alternatively, upload a PDB file of your protein(-complex) of interest:",
-                type="pdb",
-                accept_multiple_files=False,
-                key="xlmstools_aggregated_crosslinks_pdb_file",
-                help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
-            )
             export_aggregated_crosslinks_xlmstools_info = st.info(
                 "To export to xlms-tools your aggregated crosslinks should be **unique** and **not** "
                 + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslinks! "
                 + "You can check this in the "
                 + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
             )
-            export_aggregated_crosslinks_xlmstools_button = st.button(
-                "Export to xlms-tools format!",
-                type="primary",
-                width="stretch",
-                key="export_aggregated_crosslinks_xlmstools_button",
-            )
-            if export_aggregated_crosslinks_xlmstools_button:
-                if (
-                    xlmstools_aggregated_crosslinks_pdb_code is None
-                    and xlmstools_aggregated_crosslinks_pdb_file is None
-                ):
-                    _ = st.error(
-                        "Can't export to xlms-tools when neither PDB code nor file are given!",
-                        icon="⚠️",
-                    )
-                else:
-                    with st.spinner(
-                        "Exporting aggregated crosslinks to xlms-tools format...",
-                        show_time=True,
+            with st.form(
+                "export_aggregated_crosslinks_xlmstools_form",
+                enter_to_submit=False,
+                border=False,
+            ):
+                xlmstools_aggregated_crosslinks_pdb_code = st.text_input(
+                    "Specify the PDB identification code of your protein(-complex) of interest:",
+                    value=None,
+                    max_chars=4,
+                    key="xlmstools_aggregated_crosslinks_pdb_code",
+                    help="Specify a 4-letter PDB identification code of your cross-linked protein(-complex) of interest.",
+                )
+                xlmstools_aggregated_crosslinks_pdb_file = st.file_uploader(
+                    "Alternatively, upload a PDB file of your protein(-complex) of interest:",
+                    type="pdb",
+                    accept_multiple_files=False,
+                    key="xlmstools_aggregated_crosslinks_pdb_file",
+                    help="Upload a PDB file of your cross-linked protein(-complex) of interest.",
+                )
+                export_aggregated_crosslinks_xlmstools_button = st.form_submit_button(
+                    "Export to xlms-tools format!",
+                    type="primary",
+                    width="stretch",
+                    key="export_aggregated_crosslinks_xlmstools_button",
+                )
+                if export_aggregated_crosslinks_xlmstools_button:
+                    if (
+                        xlmstools_aggregated_crosslinks_pdb_code is None
+                        and xlmstools_aggregated_crosslinks_pdb_file is None
                     ):
-                        try:
-                            if xlmstools_aggregated_crosslinks_pdb_file is not None:
-                                st.session_state[
-                                    "export_aggregated_crosslinks_xlmstools"
-                                ] = export_xlmstools_using_pdbfile(
-                                    aggregated_crosslinks,
-                                    xlmstools_aggregated_crosslinks_pdb_file,
-                                )
-                            else:
-                                if xlmstools_aggregated_crosslinks_pdb_code is not None:
-                                    if (
-                                        len(
-                                            xlmstools_aggregated_crosslinks_pdb_code.strip()
-                                        )
-                                        != 4
-                                    ):
-                                        raise ValueError(
-                                            "Specified PDB code is not a valid 4-letter PDB identification code!"
-                                        )
+                        _ = st.error(
+                            "Can't export to xlms-tools when neither PDB code nor file are given!",
+                            icon="⚠️",
+                        )
+                    else:
+                        with st.spinner(
+                            "Exporting aggregated crosslinks to xlms-tools format...",
+                            show_time=True,
+                        ):
+                            try:
+                                if xlmstools_aggregated_crosslinks_pdb_file is not None:
                                     st.session_state[
                                         "export_aggregated_crosslinks_xlmstools"
-                                    ] = exporter.to_xlmstools(
+                                    ] = export_xlmstools_using_pdbfile(
                                         aggregated_crosslinks,
-                                        xlmstools_aggregated_crosslinks_pdb_code.strip(),
-                                        filename_prefix=None,
+                                        xlmstools_aggregated_crosslinks_pdb_file,
                                     )
                                 else:
-                                    raise RuntimeError(
-                                        "Can't export to xlms-tools when neither PDB code nor file are given!"
-                                    )
-                        except Exception as e:
-                            _ = st.error(
-                                "Something went wrong! This is most likely due to missing information in the results!",
-                                icon="⚠️",
-                            )
-                            with st.expander("Show exception"):
-                                _ = st.exception(e)
+                                    if (
+                                        xlmstools_aggregated_crosslinks_pdb_code
+                                        is not None
+                                    ):
+                                        if (
+                                            len(
+                                                xlmstools_aggregated_crosslinks_pdb_code.strip()
+                                            )
+                                            != 4
+                                        ):
+                                            raise ValueError(
+                                                "Specified PDB code is not a valid 4-letter PDB identification code!"
+                                            )
+                                        st.session_state[
+                                            "export_aggregated_crosslinks_xlmstools"
+                                        ] = exporter.to_xlmstools(
+                                            aggregated_crosslinks,
+                                            xlmstools_aggregated_crosslinks_pdb_code.strip(),
+                                            filename_prefix=None,
+                                        )
+                                    else:
+                                        raise RuntimeError(
+                                            "Can't export to xlms-tools when neither PDB code nor file are given!"
+                                        )
+                            except Exception as e:
+                                _ = st.error(
+                                    "Something went wrong! This is most likely due to missing information in the results!",
+                                    icon="⚠️",
+                                )
+                                with st.expander("Show exception"):
+                                    _ = st.exception(e)
             if (
                 "export_aggregated_crosslinks_xlmstools" in st.session_state
                 and st.session_state["export_aggregated_crosslinks_xlmstools"]
