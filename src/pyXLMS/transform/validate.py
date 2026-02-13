@@ -355,7 +355,8 @@ def validate(
     fdr : float, default = 0.01
         The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
     formula : str, one of "D/T", "(TD+DD)/TT", or "(TD-DD)/TT", default = "D/T"
-        Which formula to use to estimate FDR. D and DD denote decoy matches, T and TT denote target matches, and TD denotes target-decoy
+        Which formula to use to estimate FDR. 'D' denotes any decoy matches including decoy-decoy, decoy-target and target-decoy matches.
+        'DD' denotes decoy-decoy matches, 'T' and 'TT' denote target-target matches, and 'TD' denotes target-decoy
         and decoy-target matches.
     score : str, one of "higher_better" or "lower_better", default = "higher_better"
         If a higher score is considered better, or a lower score is considered better.
@@ -391,6 +392,12 @@ def validate(
     ValueError
         If the number of DD matches exceeds the number of TD matches for formula '(TD-DD)/TT'.
         FDR cannot be estimated with the formula '(TD-DD)/TT' in these cases.
+
+    Warnings
+    --------
+    Please note that the by default selected FDR formula of 'D/T' actually denotes '(TD+DD)/TT' where 'TD' includes both 'TD' and 'DT' matches
+    since we consider any peptide pair with at least one decoy hit a decoy. Estimating FDR via 'DD/TT' is not valid for crosslinking mass spectrometry
+    as it severly underestimated the actual error and is therefore not supported by pyXLMS!
 
     Notes
     -----
