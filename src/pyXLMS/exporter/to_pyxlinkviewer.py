@@ -241,7 +241,7 @@ def __get_xl_position_and_chain_in_protein(
                                     seqA.replace("-", ""), pdb_sequence
                                 )
                             ],
-                            a_start,
+                            a_start,  # pyright: ignore[reportArgumentType]
                         )
                         xl_position = pep_pos_in_protein + xl_pos_in_alignment
                         xl_chain = pdb_chains[xl_position]
@@ -255,7 +255,7 @@ def __get_xl_position_and_chain_in_protein(
                             m.start()
                             for m in re.finditer(seqA.replace("-", ""), pdb_sequence)
                         ],
-                        a_start,
+                        a_start,  # pyright: ignore[reportArgumentType]
                     )
                     xl_position = pep_pos_in_protein + xl_pos_in_alignment
                     xl_chain = pdb_chains[xl_position]
@@ -402,7 +402,7 @@ def to_pyxlinkviewer(
 ) -> Dict[str, Any]:
     r"""Exports a list of crosslinks to PyXlinkViewer format.
 
-    Exports a list of crosslinks to PyXlinkViewer format for visualization in pyMOL. The tool
+    Exports a list of crosslinks to PyXlinkViewer format for visualization in PyMOL. The tool
     PyXlinkViewer is available from
     `github.com/BobSchiffrin/PyXlinkViewer <https://github.com/BobSchiffrin/PyXlinkViewer>`_.
     This exporter performs basical local sequence alignment to align crosslinked peptides to a protein
