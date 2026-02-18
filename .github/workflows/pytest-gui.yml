@@ -45,4 +45,4 @@ jobs:
     - name: Test with pytest
       working-directory: ./gui
       run: |
-        pytest -W error test.py
+        pytest -c pytest-gui.ini test.py
