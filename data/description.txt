@@ -79,6 +79,9 @@ FILETREE                                                                        
 ¦       1perc_xl_boost_Links_xiFDR2.2.1.csv                                     | xiFDR         | BS3
 ¦       r1_Xi1.7.6.7.csv                                                        | xiSearch      | BS3
 ¦                                                                               |               |
++---xiview                                                                      |               |
+¦       DDX39B_LCSDA_shared_links_open_clamped.csv                              | xiVIEW        | SDA
+¦                                                                               |               |
 +---xlinkx                                                                      |               |
 ¦       Cas9_HeLa_Cyt_r1.pdResult                                               | XlinkX        | DSBSO
 ¦       Cas9_HeLa_Cyt_r2.pdResult                                               | XlinkX        | DSBSO
