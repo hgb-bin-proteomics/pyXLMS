@@ -88,6 +88,10 @@ FILES = {
         "engine": "XlinkX",
         "crosslinker": "DSSO",
     },
+    "data/xiview/DDX39B_LCSDA_shared_links_open_clamped.csv": {
+        "engine": "xiNET/xiVIEW",
+        "crosslinker": "SDA",
+    },
 }
 
 NOT_SUPPORTED = {
