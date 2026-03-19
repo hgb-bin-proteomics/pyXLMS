@@ -171,6 +171,11 @@ def read_xinet(
     def __get_scan_number(row: pd.Series, id: int, verbose: int) -> int:
         if "ScanNumber" in row and not pd.isna(row["ScanNumber"]):  # pyright: ignore[reportGeneralTypeIssues]
             return int(row["ScanNumber"])
+        if "Id" in row and not pd.isna(row["Id"]):  # pyright: ignore[reportGeneralTypeIssues]
+            try:
+                return int(row["Id"])
+            except Exception as _e:
+                pass
         if verbose == 2:
             raise KeyError(
                 "Could not get a suitable column or value for the scan number!"

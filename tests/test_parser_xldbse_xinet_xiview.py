@@ -196,7 +196,7 @@ def test4():
     assert first_csm["crosslink_type"] == "intra"
     assert first_csm["score"] == pytest.approx(20.280395)
     assert first_csm["spectrum_file"] == ""
-    assert first_csm["scan_nr"] == 1
+    assert first_csm["scan_nr"] == 20
     assert first_csm["charge"] == 6
     assert first_csm["retention_time"] is None
     assert first_csm["ion_mobility"] is None
@@ -222,7 +222,7 @@ def test4():
     assert last_csm["crosslink_type"] == "inter"
     assert last_csm["score"] == pytest.approx(6.280929)
     assert last_csm["spectrum_file"] == ""
-    assert last_csm["scan_nr"] == 124
+    assert last_csm["scan_nr"] == 364
     assert last_csm["charge"] == 4
     assert last_csm["retention_time"] is None
     assert last_csm["ion_mobility"] is None
