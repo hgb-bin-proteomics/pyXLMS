@@ -155,15 +155,27 @@ def read_xinet(
                     ]
         return None
 
-    def __get_spectrum_file(row: pd.Series) -> str:
+    def __get_spectrum_file(row: pd.Series, verbose: int) -> str:
         if "PeakListFileName" in row and not pd.isna(row["PeakListFileName"]):  # pyright: ignore[reportGeneralTypeIssues]
             return str(row["PeakListFileName"]).strip()
         if "RawFileName" in row and not pd.isna(row["RawFileName"]):  # pyright: ignore[reportGeneralTypeIssues]
             return str(row["RawFileName"]).strip()
         if "run" in row and not pd.isna(row["run"]):  # pyright: ignore[reportGeneralTypeIssues]
             return str(row["run"]).strip()
-        raise KeyError("Could not get a suitable column for the spectrum file name!")
-        return "err"
+        if verbose == 2:
+            raise KeyError(
+                "Could not get a suitable column or value for the spectrum file name!"
+            )
+        return ""
+
+    def __get_scan_number(row: pd.Series, id: int, verbose: int) -> int:
+        if "ScanNumber" in row and not pd.isna(row["ScanNumber"]):  # pyright: ignore[reportGeneralTypeIssues]
+            return int(row["ScanNumber"])
+        if verbose == 2:
+            raise KeyError(
+                "Could not get a suitable column or value for the scan number!"
+            )
+        return id
 
     ## data structures
     csms = list()
@@ -183,6 +195,7 @@ def read_xinet(
         )
         if "PepSeq1" not in data or "PepSeq2" not in data:
             raise KeyError("Could not get a suitable column for the peptide sequence!")
+        id = 0
         for i, row in tqdm(
             data.iterrows(),
             total=data.shape[0],
@@ -243,6 +256,7 @@ def read_xinet(
                 get_bool_from_value(row["Decoy2"]) if "Decoy2" in row else None
             )
             score: float | None = float(row["Score"]) if "Score" in row else None
+            id += 1
             if not has_csms:
                 # create crosslink
                 crosslink = create_crosslink(
@@ -292,8 +306,8 @@ def read_xinet(
                     score_b=None,
                     decoy_b=decoy_b,
                     score=score,
-                    spectrum_file=__get_spectrum_file(row),
-                    scan_nr=int(row["ScanNumber"]),
+                    spectrum_file=__get_spectrum_file(row, verbose),
+                    scan_nr=__get_scan_number(row, id, verbose),
                     charge=int(row["Charge"]) if "Charge" in row else None,
                     rt=None,
                     im_cv=None,
