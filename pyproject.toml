@@ -53,6 +53,7 @@ docs = [
 dev = [
   "streamlit>=1.50.0",
   "xlsxwriter",
+  "jupyterlab",
   "sphinx",
   "pydata-sphinx-theme",
   "myst-parser",
