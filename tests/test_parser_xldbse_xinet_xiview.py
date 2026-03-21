@@ -243,3 +243,76 @@ def test6():
 
     with pytest.raises(TypeError, match="Verbose level has to be one of 0, 1, or 2!"):
         _parser_result = p.read_xiview(XIVIEW, verbose=3)
+
+
+def test7():
+    from pyXLMS import parser as p
+    from pyXLMS.transform import modifications_to_str as mts
+
+    parser_result = None
+    with open(XIVIEW, "r", encoding="utf-8") as f:
+        parser_result = p.read_xiview(f, sep=",", decimal=".")
+    assert parser_result is not None
+    assert parser_result["data_type"] == "parser_result"
+    assert parser_result["completeness"] == "partial"
+    assert parser_result["search_engine"] == "xiNET/xiVIEW"
+    assert parser_result["crosslink-spectrum-matches"] is not None
+    assert parser_result["crosslinks"] is None
+
+    csms = parser_result["crosslink-spectrum-matches"]
+    assert len(csms) == 124
+
+    first_csm = csms[0]
+    last_csm = csms[123]
+
+    assert first_csm["data_type"] == "crosslink-spectrum-match"
+    assert first_csm["completeness"] == "partial"
+    assert first_csm["alpha_peptide"] == "MTPVGTASNVKAQAAKEAQHAQLVAVAEDK"
+    assert mts(first_csm["alpha_modifications"]) is None
+    assert first_csm["alpha_peptide_crosslink_position"] == 1
+    assert first_csm["alpha_proteins"] == ["DECOY_decoy:P11940"]
+    assert first_csm["alpha_proteins_crosslink_positions"] == [1]
+    assert first_csm["alpha_proteins_peptide_positions"] == [1]
+    assert first_csm["alpha_score"] is None
+    assert first_csm["alpha_decoy"]
+    assert first_csm["beta_peptide"] == "TVAPTAAAAAAARPPGMTQTSTNAR"
+    assert mts(first_csm["beta_modifications"]) is None
+    assert first_csm["beta_peptide_crosslink_position"] == 1
+    assert first_csm["beta_proteins"] == ["DECOY_decoy:P11940"]
+    assert first_csm["beta_proteins_crosslink_positions"] == [131]
+    assert first_csm["beta_proteins_peptide_positions"] == [131]
+    assert first_csm["beta_score"] is None
+    assert first_csm["beta_decoy"]
+    assert first_csm["crosslink_type"] == "intra"
+    assert first_csm["score"] == pytest.approx(20.280395)
+    assert first_csm["spectrum_file"] == ""
+    assert first_csm["scan_nr"] == 20
+    assert first_csm["charge"] == 6
+    assert first_csm["retention_time"] is None
+    assert first_csm["ion_mobility"] is None
+
+    assert last_csm["data_type"] == "crosslink-spectrum-match"
+    assert last_csm["completeness"] == "partial"
+    assert last_csm["alpha_peptide"] == "GSGGGSSSGR"
+    assert mts(last_csm["alpha_modifications"]) is None
+    assert last_csm["alpha_peptide_crosslink_position"] == 2
+    assert last_csm["alpha_proteins"] == ["DECOY_decoy:cont_Q3TTY5"]
+    assert last_csm["alpha_proteins_crosslink_positions"] == [51]
+    assert last_csm["alpha_proteins_peptide_positions"] == [50]
+    assert last_csm["alpha_score"] is None
+    assert last_csm["alpha_decoy"]
+    assert last_csm["beta_peptide"] == "KDVDSCYMDK"
+    assert mts(last_csm["beta_modifications"]) is None
+    assert last_csm["beta_peptide_crosslink_position"] == 1
+    assert last_csm["beta_proteins"] == ["cont_Q3TTY5"]
+    assert last_csm["beta_proteins_crosslink_positions"] == [308]
+    assert last_csm["beta_proteins_peptide_positions"] == [308]
+    assert last_csm["beta_score"] is None
+    assert not last_csm["beta_decoy"]
+    assert last_csm["crosslink_type"] == "inter"
+    assert last_csm["score"] == pytest.approx(6.280929)
+    assert last_csm["spectrum_file"] == ""
+    assert last_csm["scan_nr"] == 364
+    assert last_csm["charge"] == 4
+    assert last_csm["retention_time"] is None
+    assert last_csm["ion_mobility"] is None
