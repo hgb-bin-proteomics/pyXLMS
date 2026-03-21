@@ -62,7 +62,7 @@ def read_xinet(
     Raises
     ------
     RuntimeError
-        If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
+        If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches or crosslinks.
     RuntimeError
         If the number of proteins does not match the number of protein crosslink positions. Only
         raised if verbose is set to ``2`` otherwise ``None`` will be used!
@@ -366,7 +366,7 @@ def read_xiview(
     Raises
     ------
     RuntimeError
-        If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
+        If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches or crosslinks.
     RuntimeError
         If the number of proteins does not match the number of protein crosslink positions. Only
         raised if verbose is set to ``2`` otherwise ``None`` will be used!
