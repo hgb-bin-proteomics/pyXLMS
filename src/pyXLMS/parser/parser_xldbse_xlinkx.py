@@ -255,7 +255,7 @@ def read_xlinkx(
         mods = [mod.strip() for mod in modification_str.split(";")]
         parsed_mods = dict()
         for mod in mods:
-            mod_type = mod.split("(")[1].split(")")[0].strip()
+            mod_type = ")".join("(".join(mod.split("(")[1:]).split(")")[:-1]).strip()
             mod_pos = mod.split("(")[0].strip()
             if mod_type not in modifications:
                 raise KeyError(
@@ -285,7 +285,20 @@ def read_xlinkx(
                 return i + 1
         for mod in mods:
             if xl in mod:
-                return int(mod.split("[")[1].split("]")[0][1:])
+                mod_pos: str = mod.split("[")[-1].split("]")[0].strip()
+                if "Nterm" in mod_pos or "N-Term" in mod_pos:
+                    return 0
+                if "Cterm" in mod_pos or "C-Term" in mod_pos:
+                    return len(format_sequence(sequence))
+                try:
+                    return int(mod_pos[1:])
+                except Exception as _e:
+                    pass
+                try:
+                    # legacy fallback, this should already be caught by the code above
+                    return int(mod.split("[")[1].split("]")[0][1:])
+                except Exception as _e:
+                    pass
         if verbose == 2 or not ignore_errors:
             raise RuntimeError(
                 f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!"

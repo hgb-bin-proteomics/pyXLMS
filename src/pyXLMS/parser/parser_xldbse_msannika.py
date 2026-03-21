@@ -261,7 +261,7 @@ def read_msannika(
         mods = [mod.strip() for mod in modification_str.split(";")]
         parsed_mods = dict()
         for mod in mods:
-            mod_type = mod.split("(")[1].split(")")[0].strip()
+            mod_type = ")".join("(".join(mod.split("(")[1:]).split(")")[:-1]).strip()
             mod_pos = mod.split("(")[0].strip()
             if mod_type not in modifications:
                 raise KeyError(
