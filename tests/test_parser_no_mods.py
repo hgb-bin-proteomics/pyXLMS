@@ -88,10 +88,6 @@ FILES = {
         "engine": "XlinkX",
         "crosslinker": "DSSO",
     },
-    "data/xiview/DDX39B_LCSDA_shared_links_open_clamped.csv": {
-        "engine": "xiNET/xiVIEW",
-        "crosslinker": "SDA",
-    },
 }
 
 NOT_SUPPORTED = {
@@ -104,6 +100,10 @@ NOT_SUPPORTED = {
     "data/xlinkx/XLpeplib_Beveridge_Lumos_DSSO_MS3.mzid": {
         "engine": "mzIdentML",
         "crosslinker": "DSSO",
+    },
+    "data/xiview/DDX39B_LCSDA_shared_links_open_clamped.csv": {
+        "engine": "xiNET/xiVIEW",
+        "crosslinker": "SDA",
     },
 }
 
