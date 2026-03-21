@@ -181,7 +181,7 @@ def test7():
             search_engine="MS Annika",
             search_engine_version="3.0.1",
             score="higher_better",
-            crosslinker="SDA",
+            crosslinker="THIS_CROSSLINKER_DOES_NOT_EXIST",
             schema_validation="offline",
         )
 
