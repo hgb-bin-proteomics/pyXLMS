@@ -712,7 +712,7 @@ def __read_xisearch(
                 __parse_int(__parse_float(p)) for p in str(row["Start1"]).split(";")
             ],
             score_a=__parse_float(row["Pep1Score"]),
-            decoy_a=get_bool_from_value(int(row["Protein1decoy"])),
+            decoy_a=get_bool_from_value(int(row["Protein1decoy"])),  # pyright: ignore[reportArgumentType]
             peptide_b=format_sequence(str(row["BasePeptide2"])),
             modifications_b=__parse_xisearch_modifications(
                 row, False, modifications, ignore_errors, verbose
@@ -734,7 +734,7 @@ def __read_xisearch(
                 __parse_int(__parse_float(p)) for p in str(row["Start2"]).split(";")
             ],
             score_b=__parse_float(row["Pep2Score"]),
-            decoy_b=get_bool_from_value(int(row["Protein2decoy"])),
+            decoy_b=get_bool_from_value(int(row["Protein2decoy"])),  # pyright: ignore[reportArgumentType]
             score=__parse_float(row["match score"]),
             spectrum_file=str(row["peakListFileName"]).strip(),
             scan_nr=__parse_int(row["Scan"]),
