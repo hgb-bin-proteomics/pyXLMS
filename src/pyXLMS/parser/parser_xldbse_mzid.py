@@ -161,7 +161,7 @@ def read_mzid(
         raise TypeError(f"Expected str value but {type(value)} was given!")
         return "err"
 
-    def check___parse_int(value: int | None) -> int:
+    def check_int(value: int | None) -> int:
         if value is None:
             raise TypeError("Expected int value but None was given!")
         if type(value) is int:
@@ -258,7 +258,7 @@ def read_mzid(
                 csm = create_csm(
                     peptide_a=check_str(peptide_a),
                     modifications_a=None,
-                    xl_position_peptide_a=check___parse_int(pos_a),
+                    xl_position_peptide_a=check_int(pos_a),
                     proteins_a=None,
                     xl_position_proteins_a=None,
                     pep_position_proteins_a=None,
@@ -266,7 +266,7 @@ def read_mzid(
                     decoy_a=decoy,
                     peptide_b=check_str(peptide_b),
                     modifications_b=None,
-                    xl_position_peptide_b=check___parse_int(pos_b),
+                    xl_position_peptide_b=check_int(pos_b),
                     proteins_b=None,
                     xl_position_proteins_b=None,
                     pep_position_proteins_b=None,
@@ -274,7 +274,7 @@ def read_mzid(
                     decoy_b=decoy,
                     score=None,
                     spectrum_file=check_str(filename),
-                    scan_nr=check___parse_int(scan),
+                    scan_nr=check_int(scan),
                     charge=None,
                     rt=None,
                     im_cv=None,
