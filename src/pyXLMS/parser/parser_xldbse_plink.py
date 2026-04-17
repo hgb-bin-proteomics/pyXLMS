@@ -18,6 +18,7 @@ from ..data import create_parser_result
 from ..constants import MODIFICATIONS
 from .util import format_sequence
 from .util import __serialize_pandas_series
+from .util import __parse_int, __parse_float
 
 from typing import Optional
 from typing import BinaryIO
@@ -81,8 +82,8 @@ def __parse_modifications_from_plink_modifications_str(
     """
     modifications_a = dict()
     modifications_b = dict()
-    xl_pos_a = int(seq.split("-")[0].split("(")[1].split(")")[0])
-    xl_pos_b = int(seq.split("-")[1].split("(")[1].split(")")[0])
+    xl_pos_a = __parse_int(seq.split("-")[0].split("(")[1].split(")")[0])
+    xl_pos_b = __parse_int(seq.split("-")[1].split("(")[1].split(")")[0])
     if crosslinker in modifications:
         modifications_a[xl_pos_a] = (crosslinker, modifications[crosslinker])
         modifications_b[xl_pos_b] = (crosslinker, modifications[crosslinker])
@@ -104,7 +105,7 @@ def __parse_modifications_from_plink_modifications_str(
             raise KeyError(
                 f"Key {mod_desc} not found in parameter 'modifications'. Are you missing a modification?"
             )
-        mod_pos = int(mod.split("(")[1].split(")")[0])
+        mod_pos = __parse_int(mod.split("(")[1].split(")")[0])
         if mod_pos > len(seq.split("-")[0]):
             mod_pos = mod_pos - len(seq.split("-")[0])
             if mod_pos in modifications_b:
@@ -170,8 +171,8 @@ def __parse_proteins_and_position_from_plink(
     -----
     This function should not be called directly, it is called from ``read_plink()``.
     """
-    xl_pos_a = int(seq.split("-")[0].split("(")[1].split(")")[0])
-    xl_pos_b = int(seq.split("-")[1].split("(")[1].split(")")[0])
+    xl_pos_a = __parse_int(seq.split("-")[0].split("(")[1].split(")")[0])
+    xl_pos_b = __parse_int(seq.split("-")[1].split("(")[1].split(")")[0])
     # proteins a
     proteins_set_a = set()
     proteins_a = list()
@@ -192,14 +193,14 @@ def __parse_proteins_and_position_from_plink(
     # get proteins a
     for protein in sorted(proteins_set_a):
         acc = protein.split("(")[0]
-        pos = int(protein.split("(")[1].split(")")[0])
+        pos = __parse_int(protein.split("(")[1].split(")")[0])
         proteins_a.append(acc)
         proteins_a_xl_positions.append(pos)
         proteins_a_pep_positions.append(pos - xl_pos_a + 1)
     # get proteins b
     for protein in sorted(proteins_set_b):
         acc = protein.split("(")[0]
-        pos = int(protein.split("(")[1].split(")")[0])
+        pos = __parse_int(protein.split("(")[1].split(")")[0])
         proteins_b.append(acc)
         proteins_b_xl_positions.append(pos)
         proteins_b_pep_positions.append(pos - xl_pos_b + 1)
@@ -326,7 +327,7 @@ def parse_scan_nr_from_plink(title: str) -> int:
     ... )
     20588
     """
-    return int(str(title).split(".")[1])
+    return __parse_int(str(title).split(".")[1])
 
 
 def detect_plink_filetype(
@@ -658,17 +659,17 @@ def read_plink(
                     ],
                     score_b=None,
                     decoy_b=decoy_prefix in " ".join(parsed_positions["proteins_b"]),
-                    score=float(row["Score"]),
+                    score=__parse_float(row["Score"]),
                     spectrum_file=spectrum_file_parser(str(row["Title"]).strip()),
                     scan_nr=scan_nr_parser(str(row["Title"]).strip()),
-                    charge=int(row["Charge"]),
+                    charge=__parse_int(row["Charge"]),
                     rt=None,
                     im_cv=None,
                     additional_information={
                         "source": __serialize_pandas_series(row),
-                        "Evalue": float(row["Evalue"]),
-                        "Alpha_Evalue": float(row["Alpha_Evalue"]),
-                        "Beta_Evalue": float(row["Beta_Evalue"]),
+                        "Evalue": __parse_float(row["Evalue"]),
+                        "Alpha_Evalue": __parse_float(row["Alpha_Evalue"]),
+                        "Beta_Evalue": __parse_float(row["Beta_Evalue"]),
                     },
                 )
                 csms.append(csm)

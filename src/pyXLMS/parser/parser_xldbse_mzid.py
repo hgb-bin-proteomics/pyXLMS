@@ -15,6 +15,7 @@ from ..data import create_csm
 from ..data import create_parser_result
 from ..constants import CROSSLINKERS
 from .util import format_sequence
+from .util import __parse_int, __parse_float
 
 from typing import Optional
 from typing import BinaryIO
@@ -49,7 +50,7 @@ def parse_scan_nr_from_mzid(spectrum_id: str) -> int:
     >>> parse_scan_nr_from_mzid("scan=5321")
     5321
     """
-    return int(str(spectrum_id).split("scan=")[1].split(",")[0])
+    return __parse_int(str(spectrum_id).split("scan=")[1].split(",")[0])
 
 
 def read_mzid(
@@ -160,7 +161,7 @@ def read_mzid(
         raise TypeError(f"Expected str value but {type(value)} was given!")
         return "err"
 
-    def check_int(value: int | None) -> int:
+    def check___parse_int(value: int | None) -> int:
         if value is None:
             raise TypeError("Expected int value but None was given!")
         if type(value) is int:
@@ -211,14 +212,14 @@ def read_mzid(
                 for subitem in item["SpectrumIdentificationItem"]:
                     # we only consider rank 1 CSMs
                     if "rank" in subitem:
-                        if int(subitem["rank"]) > 1:
+                        if __parse_int(subitem["rank"]) > 1:
                             continue
                     # check if item is a CSM
                     if "cross-link spectrum identification item" in subitem:
                         # if csm_id is not set yet, we parse item as alpha peptide
                         if csm_id is None:
-                            csm_id = int(
-                                float(
+                            csm_id = __parse_int(
+                                __parse_float(
                                     subitem["cross-link spectrum identification item"]
                                 )
                             )
@@ -233,11 +234,13 @@ def read_mzid(
                                             in crosslinkers
                                         ):
                                             if "location" in mod:
-                                                pos_a = int(mod["location"])
+                                                pos_a = __parse_int(mod["location"])
                         # if csm_id is already set, we check if csm_ids of items are equal,
                         # if yes we parse the item as the beta peptide
-                        elif csm_id == int(
-                            float(subitem["cross-link spectrum identification item"])
+                        elif csm_id == __parse_int(
+                            __parse_float(
+                                subitem["cross-link spectrum identification item"]
+                            )
                         ):
                             if "PeptideSequence" in subitem:
                                 peptide_b = format_sequence(subitem["PeptideSequence"])
@@ -249,13 +252,13 @@ def read_mzid(
                                             in crosslinkers
                                         ):
                                             if "location" in mod:
-                                                pos_b = int(mod["location"])
+                                                pos_b = __parse_int(mod["location"])
             # if and only if all minimal CSM values are parsed, we create a CSM
             if None not in [csm_id, scan, filename, peptide_a, pos_a, peptide_b, pos_b]:
                 csm = create_csm(
                     peptide_a=check_str(peptide_a),
                     modifications_a=None,
-                    xl_position_peptide_a=check_int(pos_a),
+                    xl_position_peptide_a=check___parse_int(pos_a),
                     proteins_a=None,
                     xl_position_proteins_a=None,
                     pep_position_proteins_a=None,
@@ -263,7 +266,7 @@ def read_mzid(
                     decoy_a=decoy,
                     peptide_b=check_str(peptide_b),
                     modifications_b=None,
-                    xl_position_peptide_b=check_int(pos_b),
+                    xl_position_peptide_b=check___parse_int(pos_b),
                     proteins_b=None,
                     xl_position_proteins_b=None,
                     pep_position_proteins_b=None,
@@ -271,7 +274,7 @@ def read_mzid(
                     decoy_b=decoy,
                     score=None,
                     spectrum_file=check_str(filename),
-                    scan_nr=check_int(scan),
+                    scan_nr=check___parse_int(scan),
                     charge=None,
                     rt=None,
                     im_cv=None,
