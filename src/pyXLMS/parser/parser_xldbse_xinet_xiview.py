@@ -17,6 +17,7 @@ from ..data import create_parser_result
 from .util import format_sequence
 from .util import get_bool_from_value
 from .util import __serialize_pandas_series
+from .util import __parse_int, __parse_float
 
 from typing import BinaryIO
 from typing import Dict
@@ -92,25 +93,25 @@ def read_xinet(
     def __get_xl_position_peptide(row: pd.Series, alpha: bool) -> int:
         if alpha:
             if "LinkPos1" in row and not pd.isna(row["LinkPos1"]):  # pyright: ignore[reportGeneralTypeIssues]
-                return int(row["LinkPos1"])
+                return __parse_int(row["LinkPos1"])
             if "PepPos1" in row and not pd.isna(row["PepPos1"]):  # pyright: ignore[reportGeneralTypeIssues]
-                pep_pos1: int = int(str(row["PepPos1"]).split(";")[0])
+                pep_pos1: int = __parse_int(str(row["PepPos1"]).split(";")[0])
                 if "SeqPos1" in row and not pd.isna(row["SeqPos1"]):  # pyright: ignore[reportGeneralTypeIssues]
-                    seq_pos1: int = int(str(row["SeqPos1"]).split(";")[0])
+                    seq_pos1: int = __parse_int(str(row["SeqPos1"]).split(";")[0])
                     return seq_pos1 - pep_pos1 + 1
                 if "AbsPos1" in row and not pd.isna(row["AbsPos1"]):  # pyright: ignore[reportGeneralTypeIssues]
-                    abs_pos1: int = int(str(row["AbsPos1"]).split(";")[0])
+                    abs_pos1: int = __parse_int(str(row["AbsPos1"]).split(";")[0])
                     return abs_pos1 - pep_pos1 + 1
         else:
             if "LinkPos2" in row and not pd.isna(row["LinkPos2"]):  # pyright: ignore[reportGeneralTypeIssues]
-                return int(row["LinkPos2"])
+                return __parse_int(row["LinkPos2"])
             if "PepPos2" in row and not pd.isna(row["PepPos2"]):  # pyright: ignore[reportGeneralTypeIssues]
-                pep_pos2: int = int(str(row["PepPos2"]).split(";")[0])
+                pep_pos2: int = __parse_int(str(row["PepPos2"]).split(";")[0])
                 if "SeqPos2" in row and not pd.isna(row["SeqPos2"]):  # pyright: ignore[reportGeneralTypeIssues]
-                    seq_pos2: int = int(str(row["SeqPos2"]).split(";")[0])
+                    seq_pos2: int = __parse_int(str(row["SeqPos2"]).split(";")[0])
                     return seq_pos2 - pep_pos2 + 1
                 if "AbsPos2" in row and not pd.isna(row["AbsPos2"]):  # pyright: ignore[reportGeneralTypeIssues]
-                    abs_pos2: int = int(str(row["AbsPos2"]).split(";")[0])
+                    abs_pos2: int = __parse_int(str(row["AbsPos2"]).split(";")[0])
                     return abs_pos2 - pep_pos2 + 1
         raise KeyError(
             "Could not get a suitable column for the peptide crosslink position!"
@@ -130,27 +131,27 @@ def read_xinet(
         if alpha:
             if "SeqPos1" in row:
                 if not pd.isna(row["SeqPos1"]):  # pyright: ignore[reportGeneralTypeIssues]
-                    return [int(x) for x in str(row["SeqPos1"]).split(";")]
+                    return [__parse_int(x) for x in str(row["SeqPos1"]).split(";")]
             if "AbsPos1" in row:
                 if not pd.isna(row["AbsPos1"]):  # pyright: ignore[reportGeneralTypeIssues]
-                    return [int(x) for x in str(row["AbsPos1"]).split(";")]
+                    return [__parse_int(x) for x in str(row["AbsPos1"]).split(";")]
             if "PepPos1" in row and "LinkPos1" in row:
                 if not pd.isna(row["PepPos1"]) and not pd.isna(row["LinkPos1"]):  # pyright: ignore[reportGeneralTypeIssues]
                     return [
-                        int(x) + int(row["LinkPos1"]) - 1
+                        __parse_int(x) + __parse_int(row["LinkPos1"]) - 1
                         for x in str(row["PepPos1"]).split(";")
                     ]
         else:
             if "SeqPos2" in row:
                 if not pd.isna(row["SeqPos2"]):  # pyright: ignore[reportGeneralTypeIssues]
-                    return [int(x) for x in str(row["SeqPos2"]).split(";")]
+                    return [__parse_int(x) for x in str(row["SeqPos2"]).split(";")]
             if "AbsPos2" in row:
                 if not pd.isna(row["AbsPos2"]):  # pyright: ignore[reportGeneralTypeIssues]
-                    return [int(x) for x in str(row["AbsPos2"]).split(";")]
+                    return [__parse_int(x) for x in str(row["AbsPos2"]).split(";")]
             if "PepPos2" in row and "LinkPos2" in row:
                 if not pd.isna(row["PepPos2"]) and not pd.isna(row["LinkPos2"]):  # pyright: ignore[reportGeneralTypeIssues]
                     return [
-                        int(x) + int(row["LinkPos2"]) - 1
+                        __parse_int(x) + __parse_int(row["LinkPos2"]) - 1
                         for x in str(row["PepPos2"]).split(";")
                     ]
         return None
@@ -170,10 +171,10 @@ def read_xinet(
 
     def __get_scan_number(row: pd.Series, id: int, verbose: int) -> int:
         if "ScanNumber" in row and not pd.isna(row["ScanNumber"]):  # pyright: ignore[reportGeneralTypeIssues]
-            return int(row["ScanNumber"])
+            return __parse_int(row["ScanNumber"])
         if "Id" in row and not pd.isna(row["Id"]):  # pyright: ignore[reportGeneralTypeIssues]
             try:
-                return int(row["Id"])
+                return __parse_int(row["Id"])
             except Exception as _e:
                 pass
         if verbose == 2:
@@ -260,7 +261,9 @@ def read_xinet(
             decoy_b: bool | None = (
                 get_bool_from_value(row["Decoy2"]) if "Decoy2" in row else None
             )
-            score: float | None = float(row["Score"]) if "Score" in row else None
+            score: float | None = (
+                __parse_float(row["Score"]) if "Score" in row else None
+            )
             id += 1
             if not has_csms:
                 # create crosslink
@@ -313,7 +316,7 @@ def read_xinet(
                     score=score,
                     spectrum_file=__get_spectrum_file(row, verbose),
                     scan_nr=__get_scan_number(row, id, verbose),
-                    charge=int(row["Charge"]) if "Charge" in row else None,
+                    charge=__parse_int(row["Charge"]) if "Charge" in row else None,
                     rt=None,
                     im_cv=None,
                     additional_information={

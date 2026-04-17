@@ -16,6 +16,48 @@ from typing import Dict
 from typing import Any
 
 
+def __parse_int(value: Any) -> int:
+    r"""Dummy function to parse integer numbers without requiring ConvertableToInt.
+
+    Parameters
+    ----------
+    value : any
+        The value to be cast to int.
+
+    Returns
+    -------
+    int
+        The integer value.
+
+    Raises
+    ------
+    ValueError
+        If the value cannot be parsed.
+    """
+    return int(value)
+
+
+def __parse_float(value: Any) -> float:
+    r"""Dummy function to parse float numbers without requiring ConvertableToFloat.
+
+    Parameters
+    ----------
+    value : any
+        The value to be cast to float.
+
+    Returns
+    -------
+    float
+        The float value.
+
+    Raises
+    ------
+    ValueError
+        If the value cannot be parsed.
+    """
+    return float(value)
+
+
 def __serialize_pandas_series(
     pds: pd.Series, nan_values: List[str] = ["", "nan", "null", "none"]
 ) -> Dict[str, Any]:

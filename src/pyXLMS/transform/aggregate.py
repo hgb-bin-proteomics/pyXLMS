@@ -85,22 +85,31 @@ def __get_xl_key(xl: Dict[str, Any], by: Literal["peptide", "protein"]) -> str:
     This function should not be called directly, it is called from ``__unique_xls()``.
     """
     if by == "peptide":
-        return f"{xl['alpha_peptide']}_{xl['alpha_peptide_crosslink_position']}-{xl['beta_peptide']}_{xl['beta_peptide_crosslink_position']}"
-    prot_pos_a = "-".join(
-        sorted(
-            [
-                f"{xl['alpha_proteins'][i]}_{xl['alpha_proteins_crosslink_positions'][i]}"
-                for i in range(len(xl["alpha_proteins"]))
-            ]
+        return (
+            f"{xl['alpha_peptide']}_{xl['alpha_peptide_crosslink_position']}_{xl['alpha_decoy']}-"
+            f"{xl['beta_peptide']}_{xl['beta_peptide_crosslink_position']}_{xl['beta_decoy']}"
         )
+    prot_pos_a = (
+        "-".join(
+            sorted(
+                [
+                    f"{xl['alpha_proteins'][i]}_{xl['alpha_proteins_crosslink_positions'][i]}"
+                    for i in range(len(xl["alpha_proteins"]))
+                ]
+            )
+        )
+        + f"_{xl['alpha_decoy']}"
     )
-    prot_pos_b = "-".join(
-        sorted(
-            [
-                f"{xl['beta_proteins'][i]}_{xl['beta_proteins_crosslink_positions'][i]}"
-                for i in range(len(xl["beta_proteins"]))
-            ]
+    prot_pos_b = (
+        "-".join(
+            sorted(
+                [
+                    f"{xl['beta_proteins'][i]}_{xl['beta_proteins_crosslink_positions'][i]}"
+                    for i in range(len(xl["beta_proteins"]))
+                ]
+            )
         )
+        + f"_{xl['beta_decoy']}"
     )
     return ":".join(sorted([prot_pos_a, prot_pos_b]))
 

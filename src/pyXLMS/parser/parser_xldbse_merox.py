@@ -18,6 +18,7 @@ from ..constants import AMINO_ACIDS
 from ..constants import MODIFICATIONS
 from ..constants import MEROX_MODIFICATION_MAPPING
 from .util import __serialize_pandas_series
+from .util import __parse_int, __parse_float
 
 from typing import Optional
 from typing import BinaryIO
@@ -244,7 +245,7 @@ def __get_merox_position(position_str: str) -> int:
     """
     position = None
     try:
-        position = int(position_str[1:])
+        position = __parse_int(position_str[1:])
     except Exception as _e:
         pass
     if position is None:
@@ -303,7 +304,7 @@ def __get_merox_scan_number(scan_nr_and_file: str) -> int:
     """
     scan_nr = None
     try:
-        scan_nr = int(scan_nr_and_file.split("~")[0])
+        scan_nr = __parse_int(scan_nr_and_file.split("~")[0])
     except Exception as _e:
         pass
     if scan_nr is None:
@@ -482,12 +483,12 @@ def read_merox(
                 ),
                 proteins_a=__get_merox_protein(str(row["Protein 1"])),
                 xl_position_proteins_a=[
-                    int(row["From"])
+                    __parse_int(row["From"])
                     + __get_merox_position(str(row["best linkage position peptide 1"]))
                     - 1
                 ],
-                pep_position_proteins_a=[int(row["From"])],
-                score_a=float(row["pepScore1"]),
+                pep_position_proteins_a=[__parse_int(row["From"])],
+                score_a=__parse_float(row["pepScore1"]),
                 decoy_a=__get_merox_protein(str(row["Protein 1"]))[0].startswith(
                     decoy_prefix
                 ),
@@ -508,20 +509,20 @@ def read_merox(
                 ),
                 proteins_b=__get_merox_protein(str(row["Protein 2"])),
                 xl_position_proteins_b=[
-                    int(row["From.1"])
+                    __parse_int(row["From.1"])
                     + __get_merox_position(str(row["best linkage position peptide 2"]))
                     - 1
                 ],
-                pep_position_proteins_b=[int(row["From.1"])],
-                score_b=float(row["pepScore2"]),
+                pep_position_proteins_b=[__parse_int(row["From.1"])],
+                score_b=__parse_float(row["pepScore2"]),
                 decoy_b=__get_merox_protein(str(row["Protein 2"]))[0].startswith(
                     decoy_prefix
                 ),
-                score=float(row["Score"]),
+                score=__parse_float(row["Score"]),
                 spectrum_file=__get_merox_spectrum_file(str(row["Scan number"])),
                 scan_nr=__get_merox_scan_number(str(row["Scan number"])),
-                charge=int(row["Charge"]),
-                rt=float(row["Retention time in sec"]),
+                charge=__parse_int(row["Charge"]),
+                rt=__parse_float(row["Retention time in sec"]),
                 im_cv=None,
                 additional_information={
                     "source": __serialize_pandas_series(row),

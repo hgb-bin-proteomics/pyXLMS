@@ -15,6 +15,7 @@ from ..data import create_parser_result
 from ..constants import MODIFICATIONS
 from .util import format_sequence
 from .util import __serialize_pandas_series
+from .util import __parse_int, __parse_float
 
 from typing import Optional
 from typing import BinaryIO
@@ -254,62 +255,66 @@ def read_maxquant(
                 peptide_a=format_sequence(str(row["Sequence1"])),
                 modifications_a=parse_modifications_from_maxquant_sequence(
                     str(row["Modified sequence1"]),
-                    int(row["Peptide index of Crosslink 1"]),
+                    __parse_int(row["Peptide index of Crosslink 1"]),
                     crosslinker,
                     crosslinker_mass,
                     modifications,
                 )
                 if parse_modifications
                 else None,
-                xl_position_peptide_a=int(row["Peptide index of Crosslink 1"]),
+                xl_position_peptide_a=__parse_int(row["Peptide index of Crosslink 1"]),
                 proteins_a=[
                     protein_a.strip()
                     if protein_a.strip()[: len(decoy_prefix)] != decoy_prefix
                     else protein_a.strip()[len(decoy_prefix) :]
                 ],
-                xl_position_proteins_a=[int(row["Protein index of Crosslink 1"])],
+                xl_position_proteins_a=[
+                    __parse_int(row["Protein index of Crosslink 1"])
+                ],
                 pep_position_proteins_a=[
-                    int(row["Protein index of Crosslink 1"])
-                    - int(row["Peptide index of Crosslink 1"])
+                    __parse_int(row["Protein index of Crosslink 1"])
+                    - __parse_int(row["Peptide index of Crosslink 1"])
                     + 1
                 ],
-                score_a=float(row["Partial score 1"]),
+                score_a=__parse_float(row["Partial score 1"]),
                 decoy_a=decoy_prefix in str(row["Proteins1"]),
                 peptide_b=format_sequence(str(row["Sequence2"])),
                 modifications_b=parse_modifications_from_maxquant_sequence(
                     str(row["Modified sequence2"]),
-                    int(row["Peptide index of Crosslink 2"]),
+                    __parse_int(row["Peptide index of Crosslink 2"]),
                     crosslinker,
                     crosslinker_mass,
                     modifications,
                 )
                 if parse_modifications
                 else None,
-                xl_position_peptide_b=int(row["Peptide index of Crosslink 2"]),
+                xl_position_peptide_b=__parse_int(row["Peptide index of Crosslink 2"]),
                 proteins_b=[
                     protein_b.strip()
                     if protein_b.strip()[: len(decoy_prefix)] != decoy_prefix
                     else protein_b.strip()[len(decoy_prefix) :]
                 ],
-                xl_position_proteins_b=[int(row["Protein index of Crosslink 2"])],
+                xl_position_proteins_b=[
+                    __parse_int(row["Protein index of Crosslink 2"])
+                ],
                 pep_position_proteins_b=[
-                    int(row["Protein index of Crosslink 2"])
-                    - int(row["Peptide index of Crosslink 2"])
+                    __parse_int(row["Protein index of Crosslink 2"])
+                    - __parse_int(row["Peptide index of Crosslink 2"])
                     + 1
                 ],
-                score_b=float(row["Partial score 2"]),
+                score_b=__parse_float(row["Partial score 2"]),
                 decoy_b=decoy_prefix in str(row["Proteins2"]),
-                score=float(row["Score"]),
+                score=__parse_float(row["Score"]),
                 spectrum_file=str(row["Raw file"]).strip(),
-                scan_nr=int(row["Scan number"]),
-                charge=int(row["Charge"]),
+                scan_nr=__parse_int(row["Scan number"]),
+                charge=__parse_int(row["Charge"]),
                 rt=None,
                 im_cv=None,
                 additional_information={
                     "source": __serialize_pandas_series(row),
                     "Proteins1": str(row["Proteins1"]).strip(),
                     "Proteins2": str(row["Proteins2"]).strip(),
-                    "Delta score": float(row["Delta score"]),
+                    "Delta score": __parse_float(row["Delta score"]),
                 },
             )
             csms.append(csm)
