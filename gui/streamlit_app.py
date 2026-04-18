@@ -112,7 +112,7 @@ def read_files(
             try:
                 return parser.read(
                     filenames,
-                    engine=engine,  # pyright: ignore[reportArgumentType]
+                    engine=engine,  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
                     crosslinker=crosslinker,
                     parse_modifications=parse_modifications,
                     crosslinker_mass=crosslinker_mass,
@@ -120,13 +120,13 @@ def read_files(
             except Exception as _e:
                 parser.read(
                     filenames,
-                    engine=engine,  # pyright: ignore[reportArgumentType]
+                    engine=engine,  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
                     crosslinker=crosslinker,
                     parse_modifications=parse_modifications,
                 )
         return parser.read(
             filenames,
-            engine=engine,  # pyright: ignore[reportArgumentType]
+            engine=engine,  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
             crosslinker=crosslinker,
             parse_modifications=parse_modifications,
         )
@@ -631,45 +631,45 @@ def input_tab():
                             st.session_state["aggregated"] = transform.aggregate(
                                 st.session_state["pr"]["crosslink-spectrum-matches"],
                                 by="peptide"
-                                if group_by  # pyright: ignore[reportPossiblyUnboundVariable]
+                                if group_by  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                                 == "Peptide sequence and peptide crosslink position"
                                 else "protein",
                                 score="higher_better"
-                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                                 else "lower_better",
                             )
                     if validate_aggregated:
                         if st.session_state["aggregated"] is not None:
                             st.session_state["aggregated"] = transform.validate(
                                 st.session_state["aggregated"],
-                                fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable]
-                                formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType]
+                                fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
+                                formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType] # ty: ignore[possibly-unresolved-reference, invalid-argument-type]
                                 score="higher_better"
-                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                                 else "lower_better",
-                                separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable]
+                                separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                                 == "Separate FDR for intra and inter matches",
                             )
                     if unique:
                         st.session_state["pr"] = transform.unique(
                             st.session_state["pr"],
                             by="peptide"
-                            if group_by  # pyright: ignore[reportPossiblyUnboundVariable]
+                            if group_by  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             == "Peptide sequence and peptide crosslink position"
                             else "protein",
                             score="higher_better"
-                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             else "lower_better",
                         )
                     if validate:
                         st.session_state["pr"] = transform.validate(
                             st.session_state["pr"],
-                            fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable]
-                            formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType]
+                            fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
+                            formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType] # ty: ignore[possibly-unresolved-reference, invalid-argument-type]
                             score="higher_better"
-                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             else "lower_better",
-                            separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable]
+                            separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             == "Separate FDR for intra and inter matches",
                         )
                     if targets_only:
@@ -684,7 +684,7 @@ def input_tab():
                                 st.session_state["aggregated"]
                             )
                     if reannotate_positions:
-                        if uploaded_fasta is None:  # pyright: ignore[reportPossiblyUnboundVariable]
+                        if uploaded_fasta is None:  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             raise ValueError(
                                 "Can't annotate crosslink position when no FASTA file is uploaded!"
                             )
@@ -695,7 +695,7 @@ def input_tab():
                             )
                         st.session_state["pr"] = reannotating_positions(
                             st.session_state["pr"],
-                            uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
+                            uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                         )
                         if (
                             "aggregated" in st.session_state
@@ -703,7 +703,7 @@ def input_tab():
                         ):
                             st.session_state["aggregated"] = reannotating_positions(
                                 st.session_state["aggregated"],
-                                uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
+                                uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             )
                     st.rerun()
                 except Exception as e:
@@ -755,45 +755,45 @@ def input_tab():
                             st.session_state["aggregated"] = transform.aggregate(
                                 st.session_state["pr"]["crosslink-spectrum-matches"],
                                 by="peptide"
-                                if group_by  # pyright: ignore[reportPossiblyUnboundVariable]
+                                if group_by  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                                 == "Peptide sequence and peptide crosslink position"
                                 else "protein",
                                 score="higher_better"
-                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                                 else "lower_better",
                             )
                     if validate_aggregated:
                         if st.session_state["aggregated"] is not None:
                             st.session_state["aggregated"] = transform.validate(
                                 st.session_state["aggregated"],
-                                fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable]
-                                formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType]
+                                fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
+                                formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType] # ty: ignore[possibly-unresolved-reference, invalid-argument-type]
                                 score="higher_better"
-                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                                if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                                 else "lower_better",
-                                separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable]
+                                separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                                 == "Separate FDR for intra and inter matches",
                             )
                     if unique:
                         st.session_state["pr"] = transform.unique(
                             st.session_state["pr"],
                             by="peptide"
-                            if group_by  # pyright: ignore[reportPossiblyUnboundVariable]
+                            if group_by  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             == "Peptide sequence and peptide crosslink position"
                             else "protein",
                             score="higher_better"
-                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             else "lower_better",
                         )
                     if validate:
                         st.session_state["pr"] = transform.validate(
                             st.session_state["pr"],
-                            fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable]
-                            formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType]
+                            fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
+                            formula=formula,  # pyright: ignore[reportPossiblyUnboundVariable, reportArgumentType] # ty: ignore[possibly-unresolved-reference, invalid-argument-type]
                             score="higher_better"
-                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable]
+                            if score == "Higher better"  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             else "lower_better",
-                            separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable]
+                            separate_intra_inter=separate  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             == "Separate FDR for intra and inter matches",
                         )
                     if targets_only:
@@ -808,7 +808,7 @@ def input_tab():
                                 st.session_state["aggregated"]
                             )
                     if reannotate_positions:
-                        if uploaded_fasta is None:  # pyright: ignore[reportPossiblyUnboundVariable]
+                        if uploaded_fasta is None:  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             raise ValueError(
                                 "Can't annotate crosslink position when no FASTA file is uploaded!"
                             )
@@ -819,7 +819,7 @@ def input_tab():
                             )
                         st.session_state["pr"] = reannotating_positions(
                             st.session_state["pr"],
-                            uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
+                            uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                         )
                         if (
                             "aggregated" in st.session_state
@@ -827,7 +827,7 @@ def input_tab():
                         ):
                             st.session_state["aggregated"] = reannotating_positions(
                                 st.session_state["aggregated"],
-                                uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable]
+                                uploaded_fasta,  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
                             )
                     st.rerun()
                 except Exception as e:
