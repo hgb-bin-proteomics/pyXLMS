@@ -59,6 +59,7 @@ dev = [
   "myst-parser",
   "sphinx-copybutton",
   "uv",
+  "ty",
   "ruff",
   "pyright",
   "pytest",
