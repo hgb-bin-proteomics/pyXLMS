@@ -6,32 +6,41 @@
 
 from __future__ import annotations
 
-import re
 import copy
-import warnings
 from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
-from ..constants import AMINO_ACIDS_REPLACEMENTS
 from ..data import check_input
-from ..data import create_csm
-from ..data import create_crosslink
 from ..data import create_parser_result
 from .util import assert_data_type_same
 from .reannotate_positions import __generate_all_sequences
 
-from typing import Optional
 from typing import BinaryIO
 from typing import Callable
 from typing import Dict
-from typing import Tuple
 from typing import List
 from typing import Any
 
 
-def __is_peptide_in_protein_db(
-    peptide: str, protein_db: Dict[str, str]
-) -> bool:
+def __annotate_by_mapping(
+    data: List[Dict[str, Any]], by_mapping: Dict[bool | None, bool | None]
+) -> List[Dict[str, Any]]:
+    return data
+
+
+def __annotate_by_protein_prefix(
+    data: List[Dict[str, Any]], by_protein_prefix: str
+) -> List[Dict[str, Any]]:
+    return data
+
+
+def __annotate_by_protein_substring(
+    data: List[Dict[str, Any]], by_protein_substring: str
+) -> List[Dict[str, Any]]:
+    return data
+
+
+def __is_peptide_in_protein_db(peptide: str, protein_db: List[str]) -> bool:
     r"""Retrieve matching proteins and peptide positions for a specific peptide.
 
     Matches the specified peptide against the given protein database and returns all proteins
@@ -42,7 +51,7 @@ def __is_peptide_in_protein_db(
     ----------
     peptide : str
         Unmodified peptide sequence.
-    protein_db : dict of str, str
+    protein_db : list of str
         A dictionary that maps protein accessions to their sequences.
 
     Returns
@@ -63,7 +72,7 @@ def __is_peptide_in_protein_db(
     --------
     Contrary to most functions in pyXLMS, this function uses 0-based indexing.
     """
-    for id, base_seq in protein_db.items():
+    for base_seq in protein_db:
         seqs = __generate_all_sequences(base_seq)
         for seq in seqs:
             if peptide in seq:
@@ -71,9 +80,43 @@ def __is_peptide_in_protein_db(
     return False
 
 
+def __annotate_by_fasta(
+    data: List[Dict[str, Any]], fasta: str | BinaryIO, is_target: bool
+) -> List[Dict[str, Any]]:
+    protein_db = list()
+    # read fasta file
+    if isinstance(fasta, str):
+        with open(fasta, "r", encoding="utf-8") as f:
+            for item in SimpleFastaParser(f):
+                protein_db.append(item[1])
+    else:
+        for item in SimpleFastaParser(fasta):
+            protein_db.append(item[1])
+    # reannote
+    data_type = (
+        "crosslinks"
+        if data[0]["data_type"] == "crosslink"
+        else "crosslink-spectrum-matches"
+    )
+    for item in tqdm(data, total=len(data), desc=f"Annotating {data_type}..."):
+        alpha_in_db = __is_peptide_in_protein_db(item["alpha_peptide"], protein_db)
+        beta_in_db = __is_peptide_in_protein_db(item["beta_peptide"], protein_db)
+        item["alpha_decoy"] = not alpha_in_db if is_target else alpha_in_db
+        item["beta_decoy"] = not beta_in_db if is_target else beta_in_db
+    return data
+
+
+def __annotate_by_function(
+    data: List[Dict[str, Any]], by_function: Callable[[Dict[str, Any]], bool]
+) -> List[Dict[str, Any]]:
+    return data
+
+
 def reannotate_decoy_labels(
     data: List[Dict[str, Any]] | Dict[str, Any],
-    by_mapping: Dict[bool | Any, bool | Any] | None = {None: False},
+    by_mapping: Dict[bool | Any, bool | Any] | None = None,
+    by_protein_prefix: str | None = None,
+    by_protein_substring: str | None = None,
     by_target_fasta: str | BinaryIO | None = None,
     by_decoy_fasta: str | BinaryIO | None = None,
     by_function: Callable[[Dict[str, Any]], bool] | None = None,
@@ -121,10 +164,24 @@ def reannotate_decoy_labels(
     >>> xls[0]["beta_proteins_crosslink_positions"]
     [48]
     """
-    if title_to_accession is not None:
-        _ok = check_input(title_to_accession, "title_to_accession", Callable)
-    else:
-        title_to_accession = fasta_title_to_accession
+    _ok = (
+        check_input(by_mapping, "by_mapping", dict) if by_mapping is not None else True
+    )
+    _ok = (
+        check_input(by_protein_prefix, "by_protein_prefix", str)
+        if by_protein_prefix is not None
+        else True
+    )
+    _ok = (
+        check_input(by_protein_substring, "by_protein_substring", str)
+        if by_protein_substring is not None
+        else True
+    )
+    _ok = (
+        check_input(by_function, "by_function", Callable)
+        if by_function is not None
+        else True
+    )
     if isinstance(data, list):
         _ok = check_input(data, "data", list, dict)
         if len(data) == 0:
@@ -135,141 +192,85 @@ def reannotate_decoy_labels(
                 "or a 'parser_result'!"
             )
         _ok = assert_data_type_same(data)
-        protein_db = dict()
-        reannoted = list()
-        # read fasta file
-        i = 0
-        if isinstance(fasta, str):
-            with open(fasta, "r", encoding="utf-8") as f:
-                for i, item in enumerate(SimpleFastaParser(f)):
-                    protein_db[title_to_accession(item[0])] = item[1]
-            if len(protein_db) != i + 1:
-                warnings.warn(
-                    RuntimeWarning(
-                        f"Possible duplicates found in fasta file! Read {i + 1} sequences but only stored {len(protein_db)}."
-                    )
+        # annotate decoy labels
+        if (
+            data[0]["data_type"] == "crosslink"
+            or data[0]["data_type"] == "crosslink-spectrum-match"
+        ):
+            data_copy = copy.deepcopy(data)
+            if by_mapping is not None:
+                print(f"Reannotating decoy labels by mapping: {by_mapping}!")
+                return __annotate_by_mapping(data_copy, by_mapping)
+            if by_protein_prefix is not None:
+                print(
+                    f"Reannotating decoy labels by protein prefix: {by_protein_prefix}!"
                 )
-        else:
-            for i, item in enumerate(SimpleFastaParser(fasta)):
-                protein_db[title_to_accession(item[0])] = item[1]
-            if len(protein_db) != i + 1:
-                warnings.warn(
-                    RuntimeWarning(
-                        f"Possible duplicates found in fasta file! Read {i + 1} sequences but only stored {len(protein_db)}."
-                    )
+                return __annotate_by_protein_prefix(data_copy, by_protein_prefix)
+            if by_protein_substring is not None:
+                print(
+                    f"Reannotating decoy labels by protein substring: {by_protein_substring}!"
                 )
-        # annotate crosslinks
-        if data[0]["data_type"] == "crosslink":
-            for xl in tqdm(data, total=len(data), desc="Annotating crosslinks..."):
-                proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(
-                    xl["alpha_peptide"], protein_db
-                )
-                proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(
-                    xl["beta_peptide"], protein_db
-                )
-                reannoted.append(
-                    create_crosslink(
-                        peptide_a=xl["alpha_peptide"],
-                        xl_position_peptide_a=xl["alpha_peptide_crosslink_position"],
-                        proteins_a=proteins_a,
-                        xl_position_proteins_a=[
-                            pos + xl["alpha_peptide_crosslink_position"]
-                            for pos in pep_position0_proteins_a
-                        ],
-                        decoy_a=xl["alpha_decoy"],
-                        peptide_b=xl["beta_peptide"],
-                        xl_position_peptide_b=xl["beta_peptide_crosslink_position"],
-                        proteins_b=proteins_b,
-                        xl_position_proteins_b=[
-                            pos + xl["beta_peptide_crosslink_position"]
-                            for pos in pep_position0_proteins_b
-                        ],
-                        decoy_b=xl["beta_decoy"],
-                        score=xl["score"],
-                        additional_information=xl["additional_information"],
-                    )
-                )
-        # annotate csms
-        elif data[0]["data_type"] == "crosslink-spectrum-match":
-            for csm in tqdm(
-                data, total=len(data), desc="Annotation crosslink-spectrum-matches..."
-            ):
-                proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(
-                    csm["alpha_peptide"], protein_db
-                )
-                proteins_b, pep_position0_proteins_b = __get_proteins_and_positions(
-                    csm["beta_peptide"], protein_db
-                )
-                reannoted.append(
-                    create_csm(
-                        peptide_a=csm["alpha_peptide"],
-                        modifications_a=csm["alpha_modifications"],
-                        xl_position_peptide_a=csm["alpha_peptide_crosslink_position"],
-                        proteins_a=proteins_a,
-                        xl_position_proteins_a=[
-                            pos + csm["alpha_peptide_crosslink_position"]
-                            for pos in pep_position0_proteins_a
-                        ],
-                        pep_position_proteins_a=[
-                            pos + 1 for pos in pep_position0_proteins_a
-                        ],
-                        score_a=csm["alpha_score"],
-                        decoy_a=csm["alpha_decoy"],
-                        peptide_b=csm["beta_peptide"],
-                        modifications_b=csm["beta_modifications"],
-                        xl_position_peptide_b=csm["beta_peptide_crosslink_position"],
-                        proteins_b=proteins_b,
-                        xl_position_proteins_b=[
-                            pos + csm["beta_peptide_crosslink_position"]
-                            for pos in pep_position0_proteins_b
-                        ],
-                        pep_position_proteins_b=[
-                            pos + 1 for pos in pep_position0_proteins_b
-                        ],
-                        score_b=csm["beta_score"],
-                        decoy_b=csm["beta_decoy"],
-                        score=csm["score"],
-                        spectrum_file=csm["spectrum_file"],
-                        scan_nr=csm["scan_nr"],
-                        charge=csm["charge"],
-                        rt=csm["retention_time"],
-                        im_cv=csm["ion_mobility"],
-                        additional_information=csm["additional_information"],
-                    )
-                )
+                return __annotate_by_protein_substring(data_copy, by_protein_substring)
+            if by_target_fasta is not None:
+                print("Reannotating decoy labels by provided target fasta file!")
+                return __annotate_by_fasta(data_copy, by_target_fasta, is_target=True)
+            if by_decoy_fasta is not None:
+                print("Reannotating decoy labels by provided decoy fasta file!")
+                return __annotate_by_fasta(data_copy, by_decoy_fasta, is_target=False)
+            if by_function is not None:
+                print("Reannotating decoy labels by provided function!")
+                return __annotate_by_function(data_copy, by_function)
+            print(
+                "No decoy label reannotation parameter provided - no decoy label reannotation has been performed!"
+            )
+            return data
         else:
             raise TypeError(
-                f"Can't annotate positions for data type {data[0]['data_type']}. Valid data types are:\n"
+                f"Can't annotate decoy labels for data type {data[0]['data_type']}. Valid data types are:\n"
                 "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
             )
-        return reannoted
+        return data
     _ok = check_input(data, "data", dict)
     if "data_type" not in data or data["data_type"] != "parser_result":
         raise TypeError(
-            "Can't annotate positions for dict. Dict has to be a valid 'parser_result'!"
+            "Can't annotate decoy labels for dict. Dict has to be a valid 'parser_result'!"
         )
     new_csms = (
-        reannotate_positions(
-            data["crosslink-spectrum-matches"], fasta, title_to_accession
+        reannotate_decoy_labels(
+            data["crosslink-spectrum-matches"],
+            by_mapping=by_mapping,
+            by_protein_prefix=by_protein_prefix,
+            by_protein_substring=by_protein_substring,
+            by_target_fasta=by_target_fasta,
+            by_decoy_fasta=by_decoy_fasta,
+            by_function=by_function,
         )
         if data["crosslink-spectrum-matches"] is not None
         else None
     )
     new_xls = (
-        reannotate_positions(data["crosslinks"], fasta, title_to_accession)
+        reannotate_decoy_labels(
+            data["crosslinks"],
+            by_mapping=by_mapping,
+            by_protein_prefix=by_protein_prefix,
+            by_protein_substring=by_protein_substring,
+            by_target_fasta=by_target_fasta,
+            by_decoy_fasta=by_decoy_fasta,
+            by_function=by_function,
+        )
         if data["crosslinks"] is not None
         else None
     )
     if new_csms is not None:
         if not isinstance(new_csms, list):
             raise RuntimeError(
-                "Something went wrong while reannotating positions.\n"
+                "Something went wrong while reannotating decoy labels.\n"
                 f"Expected data type: list. Got: {type(new_csms)}."
             )
     if new_xls is not None:
         if not isinstance(new_xls, list):
             raise RuntimeError(
-                "Something went wrong while reannotating positions.\n"
+                "Something went wrong while reannotating decoy labels.\n"
                 f"Expected data type: list. Got: {type(new_xls)}."
             )
     return create_parser_result(
