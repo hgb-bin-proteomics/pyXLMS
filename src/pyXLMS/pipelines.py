@@ -148,15 +148,15 @@ def pipeline(
             unique_params.update(unique)
             pr = transform_unique(
                 pr,
-                by=str(unique_params["by"]),  # pyright: ignore[reportArgumentType]
-                score=str(unique_params["score"]),  # pyright: ignore[reportArgumentType]
+                by=str(unique_params["by"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
+                score=str(unique_params["score"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
             )
         elif isinstance(unique, bool):
             if unique:
                 pr = transform_unique(
                     pr,
-                    by=str(unique_params["by"]),  # pyright: ignore[reportArgumentType]
-                    score=str(unique_params["score"]),  # pyright: ignore[reportArgumentType]
+                    by=str(unique_params["by"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
+                    score=str(unique_params["score"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
                 )
         else:
             raise TypeError(
@@ -176,8 +176,8 @@ def pipeline(
             pr = transform_validate(
                 pr,
                 fdr=float(validate_params["fdr"]),
-                formula=str(validate_params["formula"]),  # pyright: ignore[reportArgumentType]
-                score=str(validate_params["score"]),  # pyright: ignore[reportArgumentType]
+                formula=str(validate_params["formula"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
+                score=str(validate_params["score"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
                 separate_intra_inter=bool(validate_params["separate_intra_inter"]),
                 ignore_missing_labels=bool(validate_params["ignore_missing_labels"]),
             )
@@ -186,8 +186,8 @@ def pipeline(
                 pr = transform_validate(
                     pr,
                     fdr=float(validate_params["fdr"]),
-                    formula=str(validate_params["formula"]),  # pyright: ignore[reportArgumentType]
-                    score=str(validate_params["score"]),  # pyright: ignore[reportArgumentType]
+                    formula=str(validate_params["formula"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
+                    score=str(validate_params["score"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
                     separate_intra_inter=bool(validate_params["separate_intra_inter"]),
                     ignore_missing_labels=bool(
                         validate_params["ignore_missing_labels"]

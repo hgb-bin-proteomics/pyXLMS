@@ -284,7 +284,7 @@ def to_proforma(
     )
     if isinstance(data, list):
         _ok = check_input(data, "data", list, dict)
-        return [to_proforma(item, crosslinker) for item in data]  # pyright: ignore[reportReturnType]
+        return [to_proforma(item, crosslinker) for item in data]  # pyright: ignore[reportReturnType] # ty: ignore[invalid-return-type]
     _ok = check_input(data, "data", dict)
     if "data_type" not in data or data["data_type"] not in [
         "crosslink",
