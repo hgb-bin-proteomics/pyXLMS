@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  pytest-gui:
+  ty-gui:
 
     runs-on: ubuntu-latest
     steps:
