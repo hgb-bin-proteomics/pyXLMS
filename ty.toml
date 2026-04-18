@@ -14,3 +14,7 @@ respect-type-ignore-comments = false
 
 [rules]
 all = "error"
+
+[environment]
+python-platform = "all"
+python-version = "3.7"
