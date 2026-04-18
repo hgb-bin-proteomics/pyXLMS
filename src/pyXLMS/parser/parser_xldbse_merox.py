@@ -458,7 +458,7 @@ def read_merox(
 
     for input in inputs:
         ## reading data
-        data = __read_merox_file(input, sep=sep, decimal=decimal)
+        data = __read_merox_file(input, sep=sep, decimal=decimal)  # ty: ignore[invalid-argument-type]
         for i, row in tqdm(
             data.iterrows(),
             total=data.shape[0],

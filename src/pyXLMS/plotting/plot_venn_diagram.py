@@ -181,8 +181,8 @@ def venn(
                 len(set_2.difference(set_1)),
                 len(set_1.intersection(set_2)),
             ),
-            set_labels=tuple(labels),  # pyright: ignore[reportArgumentType]
-            set_colors=tuple(colors),  # pyright: ignore[reportArgumentType]
+            set_labels=tuple(labels),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
+            set_colors=tuple(colors),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
             alpha=alpha,
         )
 
@@ -260,8 +260,8 @@ def venn(
                 len(set_2.intersection(set_3).difference(set_1)),
                 len(set_1.intersection(set_3).intersection(set_2)),
             ),
-            set_labels=tuple(labels),  # pyright: ignore[reportArgumentType]
-            set_colors=tuple(colors),  # pyright: ignore[reportArgumentType]
+            set_labels=tuple(labels),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
+            set_colors=tuple(colors),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
             alpha=alpha,
         )
 
@@ -277,7 +277,7 @@ def venn(
                     len(set_2.intersection(set_3).difference(set_1)),
                     len(set_1.intersection(set_3).intersection(set_2)),
                 ),
-                linewidth=linewidth,  # pyright: ignore[reportArgumentType]
+                linewidth=linewidth,  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
             )
 
         # save file

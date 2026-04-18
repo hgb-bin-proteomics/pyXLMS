@@ -557,9 +557,11 @@ def read_plink(
 
     ## process data
     for input in inputs:
-        if detect_plink_filetype(input, sep=sep, decimal=decimal) == "crosslinks":
+        if detect_plink_filetype(input, sep=sep, decimal=decimal) == "crosslinks":  # ty: ignore[invalid-argument-type]
             data = __read_plink_cross_linked_peptides_file(
-                input, sep=sep, decimal=decimal
+                input,  # ty: ignore[invalid-argument-type]
+                sep=sep,
+                decimal=decimal,
             )
             for i, row in tqdm(
                 data.iterrows(), total=data.shape[0], desc="Reading pLink crosslinks..."

@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 import os
-from lxml import etree  # pyright: ignore[reportAttributeAccessIssue]
+from lxml import etree  # pyright: ignore[reportAttributeAccessIssue] # ty: ignore[unresolved-import]
 import urllib.request as ur
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
