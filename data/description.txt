@@ -74,6 +74,31 @@ FILETREE                                                                        
 ¦           Cas9_HeLa_Cyt_r3_filtered_XLs.csv                                   | Scout         | DSBSO
 ¦           Cas9_HeLa_Cyt_r3_unfiltered_CSMs.csv                                | Scout         | DSBSO
 ¦                                                                               |               |
++---scout2                                                                      |               |
+¦   +---Cas9_HeLa_Cyt_r1                                                        |               |
+¦   ¦       Cas9_HeLa_Cyt_r1.scout                                              | NOT SUPPORTED |
+¦   ¦       Cas9_HeLa_Cyt_r1_filtered_CSMs.csv                                  | Scout         | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r1_filtered_XLs.csv                                   | Scout         | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r1_unfiltered_CSMs.csv                                | Scout         | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r1-v1.2.mzid                                          | mzIdentML     | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r1-v1.3.mzid                                          | mzIdentML     | DSBSO
+¦   ¦                                                                           |               |
+¦   +---Cas9_HeLa_Cyt_r2                                                        |               |
+¦   ¦       Cas9_HeLa_Cyt_r2.scout                                              | NOT SUPPORTED |
+¦   ¦       Cas9_HeLa_Cyt_r2_filtered_CSMs.csv                                  | Scout         | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r2_filtered_XLs.csv                                   | Scout         | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r2_unfiltered_CSMs.csv                                | Scout         | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r2-v1.2.mzid                                          | mzIdentML     | DSBSO
+¦   ¦       Cas9_HeLa_Cyt_r2-v1.3.mzid                                          | mzIdentML     | DSBSO
+¦   ¦                                                                           |               |
+¦   +---Cas9_HeLa_Cyt_r3                                                        |               |
+¦           Cas9_HeLa_Cyt_r3.scout                                              | NOT SUPPORTED |
+¦           Cas9_HeLa_Cyt_r3_filtered_CSMs.csv                                  | Scout         | DSBSO
+¦           Cas9_HeLa_Cyt_r3_filtered_XLs.csv                                   | Scout         | DSBSO
+¦           Cas9_HeLa_Cyt_r3_unfiltered_CSMs.csv                                | Scout         | DSBSO
+¦           Cas9_HeLa_Cyt_r3-v1.2.mzid                                          | mzIdentML     | DSBSO
+¦           Cas9_HeLa_Cyt_r3-v1.3.mzid                                          | mzIdentML     | DSBSO
+¦                                                                               |               |
 +---xi                                                                          |               |
 ¦       1perc_xl_boost_CSM_xiFDR2.2.1.csv                                       | xiFDR         | BS3
 ¦       1perc_xl_boost_Links_xiFDR2.2.1.csv                                     | xiFDR         | BS3
