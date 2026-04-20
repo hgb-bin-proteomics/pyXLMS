@@ -227,6 +227,8 @@ def __read_scout_csms_unfiltered(
     """
     csms = list()
     xl = data.dropna(axis=0, subset=["AlphaPeptide", "BetaPeptide"])
+    if "Type" in xl.columns:
+        xl = xl[xl["Type"] != "LoopLink"]
     for i, row in tqdm(
         xl.iterrows(), total=xl.shape[0], desc="Reading Scout unfiltered CSMs..."
     ):
