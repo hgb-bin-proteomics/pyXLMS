@@ -89,3 +89,72 @@ def test5():
 
             csms = pr["crosslink-spectrum-matches"]
             assert len(csms) == get_nr_mzid_items(test_file)
+
+
+def test6():
+    from pyXLMS import parser as p
+
+    test_files = [
+        "data/scout2/Cas9_HeLa_Cyt_r1/Cas9_HeLa_Cyt_r1-v1.2.mzid",
+        "data/scout2/Cas9_HeLa_Cyt_r1/Cas9_HeLa_Cyt_r1-v1.3.mzid",
+    ]
+
+    with pytest.warns(RuntimeWarning):
+        for test_file in test_files:
+            pr = p.read_mzid(test_file, decoy=None, verbose=0)
+            assert pr["data_type"] == "parser_result"
+            assert pr["completeness"] == "partial"
+            assert pr["search_engine"] == "mzIdentML"
+            assert pr["crosslink-spectrum-matches"] is not None
+            assert pr["crosslinks"] is None
+
+            csms = pr["crosslink-spectrum-matches"]
+            for csm in csms:
+                assert csm["alpha_decoy"] is None
+                assert csm["beta_decoy"] is None
+
+
+def test7():
+    from pyXLMS import parser as p
+
+    test_files = [
+        "data/scout2/Cas9_HeLa_Cyt_r1/Cas9_HeLa_Cyt_r1-v1.2.mzid",
+        "data/scout2/Cas9_HeLa_Cyt_r1/Cas9_HeLa_Cyt_r1-v1.3.mzid",
+    ]
+
+    with pytest.warns(RuntimeWarning):
+        for test_file in test_files:
+            pr = p.read_mzid(test_file, decoy=True, verbose=0)
+            assert pr["data_type"] == "parser_result"
+            assert pr["completeness"] == "partial"
+            assert pr["search_engine"] == "mzIdentML"
+            assert pr["crosslink-spectrum-matches"] is not None
+            assert pr["crosslinks"] is None
+
+            csms = pr["crosslink-spectrum-matches"]
+            for csm in csms:
+                assert csm["alpha_decoy"]
+                assert csm["beta_decoy"]
+
+
+def test8():
+    from pyXLMS import parser as p
+
+    test_files = [
+        "data/scout2/Cas9_HeLa_Cyt_r1/Cas9_HeLa_Cyt_r1-v1.2.mzid",
+        "data/scout2/Cas9_HeLa_Cyt_r1/Cas9_HeLa_Cyt_r1-v1.3.mzid",
+    ]
+
+    with pytest.warns(RuntimeWarning):
+        for test_file in test_files:
+            pr = p.read_mzid(test_file, decoy=False, verbose=0)
+            assert pr["data_type"] == "parser_result"
+            assert pr["completeness"] == "partial"
+            assert pr["search_engine"] == "mzIdentML"
+            assert pr["crosslink-spectrum-matches"] is not None
+            assert pr["crosslinks"] is None
+
+            csms = pr["crosslink-spectrum-matches"]
+            for csm in csms:
+                assert not csm["alpha_decoy"]
+                assert not csm["beta_decoy"]
