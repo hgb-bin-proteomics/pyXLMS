@@ -63,7 +63,10 @@ def test5():
         i = 0
         with mzid.MzIdentML(mzid_file) as reader:
             for item in reader:
-                i += 1
+                if "crosslink spectrum identification item" in str(item):
+                    i += 1
+                elif "cross-link spectrum identification item" in str(item):
+                    i += 1
         return i
 
     test_files = [
