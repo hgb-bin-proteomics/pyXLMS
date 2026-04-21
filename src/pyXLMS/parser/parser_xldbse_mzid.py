@@ -15,7 +15,8 @@ from ..data import create_csm
 from ..data import create_parser_result
 from ..constants import CROSSLINKERS
 from .util import format_sequence
-from .util import __parse_int, __parse_float
+from .util import get_bool_from_value
+from .util import __parse_int
 
 from typing import Optional
 from typing import BinaryIO
@@ -94,6 +95,7 @@ def read_mzid(
         the function ``parse_scan_nr_from_mzid()`` is used.
     decoy : bool, or None, default = None
         Whether the mzid file contains decoy CSMs (``True``) or target CSMs (``False``).
+        If None (default) the decoy label is tried to be inferred from the mzIdentML file.
     crosslinkers: dict of str, float, default = ``constants.CROSSLINKERS``
         Mapping of crosslinker names to crosslinker delta masses.
     verbose : 0, 1, or 2, default = 1
@@ -122,13 +124,14 @@ def read_mzid(
 
     Notes
     -----
-    This parser is experimental, as I don't know if the mzIdentML structure is consistent accross different
-    crosslink search engines. This parser was tested with mzIdentML files from MS Annika and XlinkX.
+    This parser is still a bit experimental, as I am not completely sure the mzIdentML structure is consistent accross all
+    different crosslink search engines. This parser was tested with mzIdentML files from MS Annika, XlinkX, and Scout
+    using mzIdentML versions 1.2 and 1.3!
 
     Warnings
     --------
-    This parser only parses minimal data because most information is not available from the mzIdentML file.
-    The available data is:
+    This parser only guarantees minimal data because some information might not be available from the mzIdentML file.
+    The guaranteed available data is:
 
     - ``alpha_peptide``
     - ``alpha_peptide_crosslink_position``
@@ -136,6 +139,19 @@ def read_mzid(
     - ``beta_peptide_crosslink_position``
     - ``spectrum_file``
     - ``scan_nr``
+
+    Data that is parsed if available:
+
+    - ``alpha_proteins``
+    - ``alpha_proteins_crosslink_positions``
+    - ``alpha_proteins_peptide_positions``
+    - ``alpha_decoy``
+    - ``beta_proteins``
+    - ``beta_proteins_crosslink_positions``
+    - ``beta_proteins_peptide_positions``
+    - ``beta_decoy``
+
+    You can retroactively check which data is available using ``transform.get_available_keys()``!
 
     Examples
     --------
@@ -161,14 +177,14 @@ def read_mzid(
     ## warning message
     if verbose == 1:
         warnings.warn(
-            UserWarning(
-                "Please be aware that mzIdentML parsing is currently an experimental feature!\n"
+            RuntimeWarning(
+                "Please be aware that mzIdentML parsing while stable still features some experimental code!\n"
                 "Please check the documentation for parser.read_mzid for more information!"
             )
         )
     if verbose == 2:
         raise RuntimeError(
-            "Please be aware that mzIdentML parsing is currently an experimental feature!\n"
+            "Please be aware that mzIdentML parsing while stable still features some experimental code!\n"
             "Please check the documentation for parser.read_mzid for more information!"
         )
 
@@ -188,6 +204,74 @@ def read_mzid(
             return value
         raise TypeError(f"Expected int value but {type(value)} was given!")
         return -1
+
+    def is_xl_mod(modification: Dict[Any, Any]) -> bool:
+        if "name" in modification:
+            if str(mod["name"]).strip().upper() in crosslinkers:
+                return True
+        if "crosslink donor" in modification:
+            return True
+        if "cross-link donor" in modification:
+            return True
+        if "crosslink acceptor" in modification:
+            return True
+        if "cross-link acceptor" in modification:
+            return True
+        if "crosslink receiver" in modification:
+            return True
+        if "cross-link receiver" in modification:
+            return True
+        if "search modification id ref" in modification:
+            if "crosslink_donor" in "search modification id ref":
+                return True
+            if "crosslink_acceptor" in "search modification id ref":
+                return True
+        return False
+
+    def get_proteins_and_positions(
+        pep_evidence_list: List[Dict[Any, Any]], pos: int
+    ) -> Dict[str, Any]:
+        proteins = list()
+        xl_position_proteins = list()
+        pep_position_proteins = list()
+        decoy = None
+        for pep_evidence in pep_evidence_list:
+            if "start" in pep_evidence:
+                try:
+                    start = __parse_int(pep_evidence["start"])
+                    # positions are 1-indexed in mzIdentML, so if start is smaller than 1
+                    # the mzIdentML is incorrect or it's maybe a decoy?
+                    if start > 0:
+                        xl_position_proteins.append(start + pos - 1)
+                        pep_position_proteins.append(start)
+                except Exception as _e:
+                    pass
+            if "accession" in pep_evidence:
+                accession = str(pep_evidence["accession"]).strip()
+                if len(accession) > 0:
+                    proteins.append(accession)
+            if "isDecoy" in pep_evidence:
+                parsed_decoy = None
+                try:
+                    parsed_decoy = get_bool_from_value(pep_evidence["isDecoy"])
+                except Exception as _e:
+                    pass
+                if parsed_decoy is not None:
+                    if decoy is None:
+                        decoy = parsed_decoy
+                    else:
+                        # if any of the peptides are target, we classify as target
+                        decoy = decoy and parsed_decoy
+        if len(proteins) > 0 and len(proteins) == len(xl_position_proteins) == len(
+            pep_position_proteins
+        ):
+            return {
+                "proteins": proteins,
+                "xl": xl_position_proteins,
+                "pep": pep_position_proteins,
+                "decoy": decoy,
+            }
+        return {"proteins": None, "xl": None, "pep": None, "decoy": decoy}
 
     ## data structures
     csms = list()
@@ -214,13 +298,22 @@ def read_mzid(
         # iterate over all items
         for item in tqdm(items):
             # set up empty variables that are needed for a minimal CSM
-            csm_id = None
-            scan = None
-            filename = None
-            peptide_a = None
-            pos_a = None
-            peptide_b = None
-            pos_b = None
+            csm_id: str | None = None
+            scan: int | None = None
+            filename: str | None = None
+            peptide_a: str | None = None
+            pos_a: int | None = None
+            peptide_b: str | None = None
+            pos_b: int | None = None
+            # optional fields
+            proteins_a: List[str] | None = None
+            xl_position_proteins_a: List[int] | None = None
+            pep_position_proteins_a: List[int] | None = None
+            decoy_a: bool | None = decoy
+            proteins_b: List[str] | None = None
+            xl_position_proteins_b: List[int] | None = None
+            pep_position_proteins_b: List[int] | None = None
+            decoy_b: bool | None = decoy
             # set scan
             if "spectrumID" in item:
                 scan = scan_nr_parser(item["spectrumID"])
@@ -235,63 +328,89 @@ def read_mzid(
                         if __parse_int(subitem["rank"]) > 1:
                             continue
                     # check if item is a CSM
-                    if "cross-link spectrum identification item" in subitem:
+                    if (
+                        "cross-link spectrum identification item" in subitem
+                        or "crosslink spectrum identification item" in subitem
+                    ):
+                        parsed_csm_id = (
+                            str(subitem["cross-link spectrum identification item"])
+                            if "cross-link spectrum identification item" in subitem
+                            else str(subitem["crosslink spectrum identification item"])
+                        )
                         # if csm_id is not set yet, we parse item as alpha peptide
                         if csm_id is None:
-                            csm_id = __parse_int(
-                                __parse_float(
-                                    subitem["cross-link spectrum identification item"]
-                                )
-                            )
+                            csm_id = parsed_csm_id
                             if "PeptideSequence" in subitem:
                                 peptide_a = format_sequence(subitem["PeptideSequence"])
                             # we only parse crosslink position from modifications
                             if "Modification" in subitem:
                                 for mod in subitem["Modification"]:
-                                    if "name" in mod:
-                                        if (
-                                            str(mod["name"]).strip().upper()
-                                            in crosslinkers
-                                        ):
-                                            if "location" in mod:
-                                                pos_a = __parse_int(mod["location"])
+                                    if is_xl_mod(mod):
+                                        if "location" in mod:
+                                            pos_a = __parse_int(mod["location"])
+                            if "PeptideEvidenceRef" in subitem:
+                                if pos_a is not None:
+                                    proteins_and_positions = get_proteins_and_positions(
+                                        subitem["PeptideEvidenceRef"], pos_a
+                                    )
+                                    proteins_a = proteins_and_positions["proteins"]
+                                    xl_position_proteins_a = proteins_and_positions[
+                                        "xl"
+                                    ]
+                                    pep_position_proteins_a = proteins_and_positions[
+                                        "pep"
+                                    ]
+                                    decoy_a = (
+                                        proteins_and_positions["decoy"]
+                                        if decoy is None
+                                        else decoy
+                                    )
                         # if csm_id is already set, we check if csm_ids of items are equal,
                         # if yes we parse the item as the beta peptide
-                        elif csm_id == __parse_int(
-                            __parse_float(
-                                subitem["cross-link spectrum identification item"]
-                            )
-                        ):
+                        elif csm_id == parsed_csm_id:
                             if "PeptideSequence" in subitem:
                                 peptide_b = format_sequence(subitem["PeptideSequence"])
                             if "Modification" in subitem:
                                 for mod in subitem["Modification"]:
-                                    if "name" in mod:
-                                        if (
-                                            str(mod["name"]).strip().upper()
-                                            in crosslinkers
-                                        ):
-                                            if "location" in mod:
-                                                pos_b = __parse_int(mod["location"])
+                                    if is_xl_mod(mod):
+                                        if "location" in mod:
+                                            pos_b = __parse_int(mod["location"])
+                            if "PeptideEvidenceRef" in subitem:
+                                if pos_b is not None:
+                                    proteins_and_positions = get_proteins_and_positions(
+                                        subitem["PeptideEvidenceRef"], pos_b
+                                    )
+                                    proteins_b = proteins_and_positions["proteins"]
+                                    xl_position_proteins_b = proteins_and_positions[
+                                        "xl"
+                                    ]
+                                    pep_position_proteins_b = proteins_and_positions[
+                                        "pep"
+                                    ]
+                                    decoy_b = (
+                                        proteins_and_positions["decoy"]
+                                        if decoy is None
+                                        else decoy
+                                    )
             # if and only if all minimal CSM values are parsed, we create a CSM
             if None not in [csm_id, scan, filename, peptide_a, pos_a, peptide_b, pos_b]:
                 csm = create_csm(
                     peptide_a=check_str(peptide_a),
                     modifications_a=None,
                     xl_position_peptide_a=check_int(pos_a),
-                    proteins_a=None,
-                    xl_position_proteins_a=None,
-                    pep_position_proteins_a=None,
+                    proteins_a=proteins_a,
+                    xl_position_proteins_a=xl_position_proteins_a,
+                    pep_position_proteins_a=pep_position_proteins_a,
                     score_a=None,
-                    decoy_a=decoy,
+                    decoy_a=decoy_a,
                     peptide_b=check_str(peptide_b),
                     modifications_b=None,
                     xl_position_peptide_b=check_int(pos_b),
-                    proteins_b=None,
-                    xl_position_proteins_b=None,
-                    pep_position_proteins_b=None,
+                    proteins_b=proteins_b,
+                    xl_position_proteins_b=xl_position_proteins_b,
+                    pep_position_proteins_b=pep_position_proteins_b,
                     score_b=None,
-                    decoy_b=decoy,
+                    decoy_b=decoy_b,
                     score=None,
                     spectrum_file=check_str(filename),
                     scan_nr=check_int(scan),
