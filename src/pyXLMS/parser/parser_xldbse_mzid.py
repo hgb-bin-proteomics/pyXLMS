@@ -32,7 +32,7 @@ except ImportError:
 
 
 def parse_scan_nr_from_mzid(spectrum_id: str) -> int:
-    r"""Parse the scan number from a 'spectrumID' of a mzIdentML file.
+    r"""Parse the scan number (or spectrum index) from a 'spectrumID' of a mzIdentML file.
 
     Parameters
     ----------
@@ -42,15 +42,35 @@ def parse_scan_nr_from_mzid(spectrum_id: str) -> int:
     Returns
     -------
     int
-        The scan number.
+        The scan number or spectrum index.
+
+    Notes
+    -----
+    This function tries to parse the scan number from the 'spectrumID' but does fall back
+    to using the spectrum index if the scan number is not available!
 
     Examples
     --------
     >>> from pyXLMS.parser import parse_scan_nr_from_mzid
     >>> parse_scan_nr_from_mzid("scan=5321")
     5321
+
+    >>> from pyXLMS.parser import parse_scan_nr_from_mzid
+    >>> parse_scan_nr_from_mzid("index=1")
+    RuntimeWarning: Could not parse scan number from spectrum - using index instead!
+    Exception while parsing scan number: list index out of range
+    1
     """
-    return __parse_int(str(spectrum_id).split("scan=")[1].split(",")[0])
+    try:
+        return __parse_int(str(spectrum_id).split("scan=")[1].split(",")[0])
+    except Exception as e:
+        warnings.warn(
+            RuntimeWarning(
+                "Could not parse scan number from spectrum - using index instead!\n"
+                f"Exception while parsing scan number: {e}"
+            )
+        )
+    return __parse_int(str(spectrum_id).split("index=")[1].split(",")[0])
 
 
 def read_mzid(
