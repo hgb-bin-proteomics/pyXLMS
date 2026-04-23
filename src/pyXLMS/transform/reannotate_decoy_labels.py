@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import copy
+import warnings
 from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
@@ -25,6 +26,37 @@ from typing import Any
 def __annotate_by_mapping(
     data: List[Dict[str, Any]], by_mapping: Dict[bool | None, bool | None]
 ) -> List[Dict[str, Any]]:
+    r"""Reannotates decoy labels based on a given label mapping.
+
+    Parameters
+    ----------
+    data : list of dict of str, any
+        A list of crosslink-spectrum-matches or crosslinks to annotate.
+    by_mapping : dict of bool or None, bool or None
+        A dictionary that maps possible ``alpha_decoy`` and ``beta_decoy`` values to their new values.
+        For example, if decoy labels that are ``None`` should be labelled as targets, provide ``{None: False}``.
+
+    Returns
+    -------
+    list of dict of str, any
+        A list of reannotated crosslink-spectrum-matches or crosslinks is returned.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``reannotate_decoy_labels()``.
+    """
+    data_type = (
+        "crosslinks"
+        if data[0]["data_type"] == "crosslink"
+        else "crosslink-spectrum-matches"
+    )
+    for _i, item in tqdm(
+        enumerate(data), total=len(data), desc=f"Annotating {data_type}..."
+    ):
+        if item["alpha_decoy"] in by_mapping:
+            item["alpha_decoy"] = by_mapping[item["alpha_decoy"]]
+        if item["beta_decoy"] in by_mapping:
+            item["beta_decoy"] = by_mapping[item["alpha_decoy"]]
     return data
 
 
