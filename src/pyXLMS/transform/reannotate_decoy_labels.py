@@ -20,6 +20,7 @@ from typing import BinaryIO
 from typing import Callable
 from typing import Dict
 from typing import List
+from typing import Tuple
 from typing import Any
 
 
@@ -260,8 +261,40 @@ def __annotate_by_fasta(
 
 
 def __annotate_by_function(
-    data: List[Dict[str, Any]], by_function: Callable[[Dict[str, Any]], bool]
+    data: List[Dict[str, Any]],
+    by_function: Callable[[Dict[str, Any]], Tuple[bool, bool]],
 ) -> List[Dict[str, Any]]:
+    r"""Reannotates decoy labels based on a given function.
+
+    Parameters
+    ----------
+    data : list of dict of str, any
+        A list of crosslink-spectrum-matches or crosslinks to annotate.
+    by_function : callable
+        A function that takes one crosslink-spectrum-match or crosslink as input and returns a tuple
+        of two boolean values. The first value should be the decoy label for the alpha peptide (``True``
+        if it is a decoy hit, ``False`` if it is a target hit) and the second value for the beta peptide.
+
+    Returns
+    -------
+    list of dict of str, any
+        A list of reannotated crosslink-spectrum-matches or crosslinks is returned.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``reannotate_decoy_labels()``.
+    """
+    data_type = (
+        "crosslinks"
+        if data[0]["data_type"] == "crosslink"
+        else "crosslink-spectrum-matches"
+    )
+    for _i, item in tqdm(
+        enumerate(data), total=len(data), desc=f"Annotating {data_type}..."
+    ):
+        alpha_decoy, beta_decoy = by_function(item)
+        item["alpha_decoy"] = alpha_decoy
+        item["beta_decoy"] = beta_decoy
     return data
 
 
@@ -272,7 +305,7 @@ def reannotate_decoy_labels(
     by_protein_substring: str | None = None,
     by_target_fasta: str | BinaryIO | None = None,
     by_decoy_fasta: str | BinaryIO | None = None,
-    by_function: Callable[[Dict[str, Any]], bool] | None = None,
+    by_function: Callable[[Dict[str, Any]], Tuple[bool, bool]] | None = None,
 ) -> List[Dict[str, Any]] | Dict[str, Any]:
     r"""Reannotates protein crosslink positions for a given fasta file.
 
