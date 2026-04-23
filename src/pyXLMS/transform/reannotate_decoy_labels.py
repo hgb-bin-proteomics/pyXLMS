@@ -124,8 +124,65 @@ def __annotate_by_protein_prefix(
 
 
 def __annotate_by_protein_substring(
-    data: List[Dict[str, Any]], by_protein_substring: str
+    data: List[Dict[str, Any]], by_decoy_protein_substring: str
 ) -> List[Dict[str, Any]]:
+    r"""Reannotates decoy labels based on a given decoy protein substring.
+
+    Parameters
+    ----------
+    data : list of dict of str, any
+        A list of crosslink-spectrum-matches or crosslinks to annotate.
+    by_decoy_protein_substring : str
+        Substring that specifies that a protein is a decoy.
+
+    Returns
+    -------
+    list of dict of str, any
+        A list of reannotated crosslink-spectrum-matches or crosslinks is returned.
+
+    Warns
+    -----
+    RuntimeWarning
+        If one of the crosslink-spectrum-matches or crosslinks does not have assigned proteins.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``reannotate_decoy_labels()``.
+    """
+    data_type = (
+        "crosslinks"
+        if data[0]["data_type"] == "crosslink"
+        else "crosslink-spectrum-matches"
+    )
+    for i, item in tqdm(
+        enumerate(data), total=len(data), desc=f"Annotating {data_type}..."
+    ):
+        if item["alpha_proteins"] is not None and len(item["alpha_proteins"]) > 0:
+            item["alpha_decoy"] = all(
+                [
+                    by_decoy_protein_substring in protein
+                    for protein in item["alpha_proteins"]
+                ]
+            )
+        else:
+            warnings.warn(
+                RuntimeWarning(
+                    f"Could not annotate alpha decoy label at index={i} because alpha proteins is 'None'!"
+                )
+            )
+        if item["beta_proteins"] is not None and len(item["beta_proteins"]) > 0:
+            item["beta_decoy"] = all(
+                [
+                    by_decoy_protein_substring in protein
+                    for protein in item["beta_proteins"]
+                ]
+            )
+        else:
+            warnings.warn(
+                RuntimeWarning(
+                    f"Could not annotate beta decoy label at index={i} because beta proteins is 'None'!"
+                )
+            )
     return data
 
 
