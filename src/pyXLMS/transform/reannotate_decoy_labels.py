@@ -355,7 +355,7 @@ def reannotate_decoy_labels(
     >>> from pyXLMS.data import create_crosslink_min
     >>> from pyXLMS.transform import reannotate_decoy_labels
     >>> xls = [create_crosslink_min("ADANLDK", 7, "GNTDRHSIK", 9)]
-    >>> xls = reannotate_positions(xls, by_mapping={None: False})
+    >>> xls = reannotate_decoy_labels(xls, by_mapping={None: False})
     >>> xls[0]["alpha_decoy"]
     False
     >>> xls[0]["beta_decoy"]
