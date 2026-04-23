@@ -245,6 +245,7 @@ def __annotate_by_fasta(
             for item in SimpleFastaParser(f):
                 protein_db.append(item[1])
     else:
+        fasta.seek(0)
         for item in SimpleFastaParser(fasta):
             protein_db.append(item[1])
     # reannote
