@@ -201,7 +201,7 @@ def __is_peptide_in_protein_db(peptide: str, protein_db: List[str]) -> bool:
     Returns
     -------
     bool
-        Whether or not the protein database contains the peptide (``True``) or not (``False``).
+        Whether the protein database contains the peptide (``True``) or not (``False``).
 
     Notes
     -----
@@ -225,7 +225,7 @@ def __annotate_by_fasta(
     data : list of dict of str, any
         A list of crosslink-spectrum-matches or crosslinks to annotate.
     fasta : str, or file stream
-        The name/path of the fasta file containing protein sequences or a file-like object/stream.
+        The name/path of the FASTA file containing protein sequences or a file-like object/stream.
     is_target : bool
         If the FASTA file contains target sequences (``True``) or decoy sequences (``False``).
 
@@ -327,9 +327,9 @@ def reannotate_decoy_labels(
     by_decoy_protein_substring : str, or None, default = None
         Substring that specifies that a protein is a decoy.
     by_target_fasta : str, or file stream, default = None
-        The name/path of the fasta file containing target protein sequences or a file-like object/stream.
+        The name/path of the FASTA file containing target protein sequences or a file-like object/stream.
     by_decoy_fasta : str, or file stream, default = None
-        The name/path of the fasta file containing decoy protein sequences or a file-like object/stream.
+        The name/path of the FASTA file containing decoy protein sequences or a file-like object/stream.
     by_function : callable, or None, default = None
         A function that takes one crosslink-spectrum-match or crosslink as input and returns a tuple
         of two boolean values. The first value should be the decoy label for the alpha peptide (``True``
