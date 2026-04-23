@@ -57,7 +57,7 @@ def __annotate_by_mapping(
         if item["alpha_decoy"] in by_mapping:
             item["alpha_decoy"] = by_mapping[item["alpha_decoy"]]
         if item["beta_decoy"] in by_mapping:
-            item["beta_decoy"] = by_mapping[item["alpha_decoy"]]
+            item["beta_decoy"] = by_mapping[item["beta_decoy"]]
     return data
 
 
