@@ -16,6 +16,7 @@ from ..data import create_parser_result
 from .util import assert_data_type_same
 from .reannotate_positions import __generate_all_sequences
 
+from typing import Optional
 from typing import BinaryIO
 from typing import Callable
 from typing import Dict
@@ -300,12 +301,12 @@ def __annotate_by_function(
 
 def reannotate_decoy_labels(
     data: List[Dict[str, Any]] | Dict[str, Any],
-    by_mapping: Dict[bool | None, bool | None] | None = None,
-    by_decoy_protein_prefix: str | None = None,
-    by_decoy_protein_substring: str | None = None,
-    by_target_fasta: str | BinaryIO | None = None,
-    by_decoy_fasta: str | BinaryIO | None = None,
-    by_function: Callable[[Dict[str, Any]], Tuple[bool, bool]] | None = None,
+    by_mapping: Optional[Dict[bool | None, bool | None]] = None,
+    by_decoy_protein_prefix: Optional[str] = None,
+    by_decoy_protein_substring: Optional[str] = None,
+    by_target_fasta: Optional[str | BinaryIO] = None,
+    by_decoy_fasta: Optional[str | BinaryIO] = None,
+    by_function: Optional[Callable[[Dict[str, Any]], Tuple[bool, bool]]] | None = None,
 ) -> List[Dict[str, Any]] | Dict[str, Any]:
     r"""Reannotates decoy labels based on different parameters.
 
@@ -346,7 +347,7 @@ def reannotate_decoy_labels(
     TypeError
         If a wrong data type is provided.
     TypeError
-        If parameter 'by_mapping' is not a dictionary that maps bool | None -> bool | None.
+        If parameter 'by_mapping' is not a dictionary that maps ``bool | None`` -> ``bool | None``.
     RuntimeError
         If more than one parameter for reannotation is given.
 
