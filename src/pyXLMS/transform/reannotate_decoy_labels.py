@@ -391,7 +391,7 @@ def reannotate_decoy_labels(
             return data
         if "data_type" not in data[0]:
             raise TypeError(
-                "Can't annotate positions for input data. Input data has to be a list of crosslink-spectrum-matches or crosslinks "
+                "Can't reannotate decoy labels for input data. Input data has to be a list of crosslink-spectrum-matches or crosslinks "
                 "or a 'parser_result'!"
             )
         _ok = assert_data_type_same(data)
@@ -431,14 +431,14 @@ def reannotate_decoy_labels(
             return data
         else:
             raise TypeError(
-                f"Can't annotate decoy labels for data type {data[0]['data_type']}. Valid data types are:\n"
+                f"Can't reannotate decoy labels for data type {data[0]['data_type']}. Valid data types are:\n"
                 "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
             )
         return data
     _ok = check_input(data, "data", dict)
     if "data_type" not in data or data["data_type"] != "parser_result":
         raise TypeError(
-            "Can't annotate decoy labels for dict. Dict has to be a valid 'parser_result'!"
+            "Can't reannotate decoy labels for dict. Dict has to be a valid 'parser_result'!"
         )
     new_csms = (
         reannotate_decoy_labels(
