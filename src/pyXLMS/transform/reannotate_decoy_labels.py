@@ -307,48 +307,59 @@ def reannotate_decoy_labels(
     by_decoy_fasta: str | BinaryIO | None = None,
     by_function: Callable[[Dict[str, Any]], Tuple[bool, bool]] | None = None,
 ) -> List[Dict[str, Any]] | Dict[str, Any]:
-    r"""Reannotates protein crosslink positions for a given fasta file.
+    r"""Reannotates decoy labels based on different parameters.
 
-    Reannotates the crosslink and peptide positions of the given cross-linked peptide pair and
-    the specified fasta file. Takes a list of crosslink-spectrum-matches or crosslinks, or a
-    parser_result as input.
+    Reannotates the decoy labels based on a provided mapping, a decoy protein prefix, a decoy protein substring,
+    a target FASTA file, a decoy FASTA file, or a user-defined function. Takes a list of crosslink-spectrum-matches
+    or crosslinks, or a parser_result as input.
 
     Parameters
     ----------
     data : list of dict of str, any, or dict of str, any
         A list of crosslink-spectrum-matches or crosslinks to annotate, or a parser_result.
-    fasta : str, or file stream
-        The name/path of the fasta file containing protein sequences or a file-like object/stream.
-    title_to_accession : callable, or None, default = None
-        A function that parses the protein accession from the fasta title/header. If None (default)
-        the function ``fasta_title_to_accession`` is used.
+    by_mapping : dict of bool or None, bool or None, or None, default = None
+        A dictionary that maps possible ``alpha_decoy`` and ``beta_decoy`` values to their new values.
+        For example, if decoy labels that are ``None`` should be labelled as targets, provide ``{None: False}``.
+    by_decoy_protein_prefix : str, or None, default = None
+        Prefix that specifies that a protein is a decoy.
+    by_decoy_protein_substring : str, or None, default = None
+        Substring that specifies that a protein is a decoy.
+    by_target_fasta : str, or file stream, default = None
+        The name/path of the fasta file containing target protein sequences or a file-like object/stream.
+    by_decoy_fasta : str, or file stream, default = None
+        The name/path of the fasta file containing decoy protein sequences or a file-like object/stream.
+    by_function : callable, or None, default = None
+        A function that takes one crosslink-spectrum-match or crosslink as input and returns a tuple
+        of two boolean values. The first value should be the decoy label for the alpha peptide (``True``
+        if it is a decoy hit, ``False`` if it is a target hit) and the second value for the beta peptide.
 
     Returns
     -------
     list of dict of str, any, or dict of str, any
-        If a list of crosslink-spectrum-matches or crosslinks was provided, a list of annotated
+        If a list of crosslink-spectrum-matches or crosslinks was provided, a list of reannotated
         crosslink-spectrum-matches or crosslinks is returned. If a parser_result was provided,
-        an annotated parser_result will be returned.
+        an reannotated parser_result will be returned. Returns a copy of the original data to not
+        modify the original data.
 
     Raises
     ------
     TypeError
         If a wrong data type is provided.
+    TypeError
+        If parameter 'by_mapping' is not a dictionary that maps bool | None -> bool | None.
+    RuntimeError
+        If more than one parameter for reannotation is given.
 
     Examples
     --------
     >>> from pyXLMS.data import create_crosslink_min
-    >>> from pyXLMS.transform import reannotate_positions
+    >>> from pyXLMS.transform import reannotate_decoy_labels
     >>> xls = [create_crosslink_min("ADANLDK", 7, "GNTDRHSIK", 9)]
-    >>> xls = reannotate_positions(xls, "data/_fasta/Cas9_plus10.fasta")
-    >>> xls[0]["alpha_proteins"]
-    ["Cas9"]
-    >>> xls[0]["alpha_proteins_crosslink_positions"]
-    [1293]
-    >>> xls[0]["beta_proteins"]
-    ["Cas9"]
-    >>> xls[0]["beta_proteins_crosslink_positions"]
-    [48]
+    >>> xls = reannotate_positions(xls, by_mapping={None: False})
+    >>> xls[0]["alpha_decoy"]
+    False
+    >>> xls[0]["beta_decoy"]
+    False
     """
     _ok = (
         check_input(by_mapping, "by_mapping", dict) if by_mapping is not None else True
