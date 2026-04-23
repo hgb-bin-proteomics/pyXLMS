@@ -374,6 +374,17 @@ def reannotate_decoy_labels(
         if by_function is not None
         else True
     )
+    if [
+        by_mapping,
+        by_decoy_protein_prefix,
+        by_decoy_protein_substring,
+        by_target_fasta,
+        by_decoy_fasta,
+        by_function,
+    ].count(None) < 5:
+        raise RuntimeError(
+            "Please only specify one option for reannotation, e.g. 'by_mapping' or 'by_target_fasta' but not both!"
+        )
     if isinstance(data, list):
         _ok = check_input(data, "data", list, dict)
         if len(data) == 0:
