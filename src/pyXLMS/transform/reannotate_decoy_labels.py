@@ -300,9 +300,9 @@ def __annotate_by_function(
 
 def reannotate_decoy_labels(
     data: List[Dict[str, Any]] | Dict[str, Any],
-    by_protein_prefix: str | None = None,
-    by_protein_substring: str | None = None,
     by_mapping: Dict[bool | None, bool | None] | None = None,
+    by_decoy_protein_prefix: str | None = None,
+    by_decoy_protein_substring: str | None = None,
     by_target_fasta: str | BinaryIO | None = None,
     by_decoy_fasta: str | BinaryIO | None = None,
     by_function: Callable[[Dict[str, Any]], Tuple[bool, bool]] | None = None,
@@ -354,13 +354,13 @@ def reannotate_decoy_labels(
         check_input(by_mapping, "by_mapping", dict) if by_mapping is not None else True
     )
     _ok = (
-        check_input(by_protein_prefix, "by_protein_prefix", str)
-        if by_protein_prefix is not None
+        check_input(by_decoy_protein_prefix, "by_protein_prefix", str)
+        if by_decoy_protein_prefix is not None
         else True
     )
     _ok = (
-        check_input(by_protein_substring, "by_protein_substring", str)
-        if by_protein_substring is not None
+        check_input(by_decoy_protein_substring, "by_protein_substring", str)
+        if by_decoy_protein_substring is not None
         else True
     )
     _ok = (
@@ -387,16 +387,18 @@ def reannotate_decoy_labels(
             if by_mapping is not None:
                 print(f"Reannotating decoy labels by mapping: {by_mapping}!")
                 return __annotate_by_mapping(data_copy, by_mapping)
-            if by_protein_prefix is not None:
+            if by_decoy_protein_prefix is not None:
                 print(
-                    f"Reannotating decoy labels by protein prefix: {by_protein_prefix}!"
+                    f"Reannotating decoy labels by decoy protein prefix: {by_decoy_protein_prefix}!"
                 )
-                return __annotate_by_protein_prefix(data_copy, by_protein_prefix)
-            if by_protein_substring is not None:
+                return __annotate_by_protein_prefix(data_copy, by_decoy_protein_prefix)
+            if by_decoy_protein_substring is not None:
                 print(
-                    f"Reannotating decoy labels by protein substring: {by_protein_substring}!"
+                    f"Reannotating decoy labels by decoy protein substring: {by_decoy_protein_substring}!"
                 )
-                return __annotate_by_protein_substring(data_copy, by_protein_substring)
+                return __annotate_by_protein_substring(
+                    data_copy, by_decoy_protein_substring
+                )
             if by_target_fasta is not None:
                 print("Reannotating decoy labels by provided target fasta file!")
                 return __annotate_by_fasta(data_copy, by_target_fasta, is_target=True)
@@ -425,8 +427,8 @@ def reannotate_decoy_labels(
         reannotate_decoy_labels(
             data["crosslink-spectrum-matches"],
             by_mapping=by_mapping,
-            by_protein_prefix=by_protein_prefix,
-            by_protein_substring=by_protein_substring,
+            by_decoy_protein_prefix=by_decoy_protein_prefix,
+            by_decoy_protein_substring=by_decoy_protein_substring,
             by_target_fasta=by_target_fasta,
             by_decoy_fasta=by_decoy_fasta,
             by_function=by_function,
@@ -438,8 +440,8 @@ def reannotate_decoy_labels(
         reannotate_decoy_labels(
             data["crosslinks"],
             by_mapping=by_mapping,
-            by_protein_prefix=by_protein_prefix,
-            by_protein_substring=by_protein_substring,
+            by_decoy_protein_prefix=by_decoy_protein_prefix,
+            by_decoy_protein_substring=by_decoy_protein_substring,
             by_target_fasta=by_target_fasta,
             by_decoy_fasta=by_decoy_fasta,
             by_function=by_function,
