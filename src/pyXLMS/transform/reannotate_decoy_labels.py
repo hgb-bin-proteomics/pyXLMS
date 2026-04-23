@@ -187,36 +187,23 @@ def __annotate_by_protein_substring(
 
 
 def __is_peptide_in_protein_db(peptide: str, protein_db: List[str]) -> bool:
-    r"""Retrieve matching proteins and peptide positions for a specific peptide.
-
-    Matches the specified peptide against the given protein database and returns all proteins
-    that contain the peptide, as well as the corresponding peptide positions in those proteins.
-    Uses 0-based indexing.
+    r"""Checks if a specific peptide is in the given protein database.
 
     Parameters
     ----------
     peptide : str
         Unmodified peptide sequence.
     protein_db : list of str
-        A dictionary that maps protein accessions to their sequences.
+        A list of protein sequences.
 
     Returns
     -------
-    tuple of list of str, list of int
-        List of protein accessions, and list of peptide positions.
-
-    Raises
-    ------
-    RuntimeError
-        If the peptide could not be matched to any protein.
+    bool
+        Whether or not the protein database contains the peptide (``True``) or not (``False``).
 
     Notes
     -----
-    This function should not be called directly, it is called from ``reannotate_positions()``.
-
-    Warnings
-    --------
-    Contrary to most functions in pyXLMS, this function uses 0-based indexing.
+    This function should not be called directly, it is called from ``__annotate_by_fasta()``.
     """
     for base_seq in protein_db:
         seqs = __generate_all_sequences(base_seq)
@@ -229,6 +216,26 @@ def __is_peptide_in_protein_db(peptide: str, protein_db: List[str]) -> bool:
 def __annotate_by_fasta(
     data: List[Dict[str, Any]], fasta: str | BinaryIO, is_target: bool
 ) -> List[Dict[str, Any]]:
+    r"""Reannotates decoy labels based on a given FASTA file.
+
+    Parameters
+    ----------
+    data : list of dict of str, any
+        A list of crosslink-spectrum-matches or crosslinks to annotate.
+    fasta : str, or file stream
+        The name/path of the fasta file containing protein sequences or a file-like object/stream.
+    is_target : bool
+        If the FASTA file contains target sequences (``True``) or decoy sequences (``False``).
+
+    Returns
+    -------
+    list of dict of str, any
+        A list of reannotated crosslink-spectrum-matches or crosslinks is returned.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``reannotate_decoy_labels()``.
+    """
     protein_db = list()
     # read fasta file
     if isinstance(fasta, str):
