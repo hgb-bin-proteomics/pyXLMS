@@ -353,6 +353,12 @@ def reannotate_decoy_labels(
     _ok = (
         check_input(by_mapping, "by_mapping", dict) if by_mapping is not None else True
     )
+    if by_mapping is not None:
+        for k, v in by_mapping.items():
+            if k not in [None, True, False] or v not in [None, True, False]:
+                raise TypeError(
+                    "Parameter 'by_mapping' has to be a dictionary that maps bool | None -> bool | None!"
+                )
     _ok = (
         check_input(by_decoy_protein_prefix, "by_protein_prefix", str)
         if by_decoy_protein_prefix is not None
