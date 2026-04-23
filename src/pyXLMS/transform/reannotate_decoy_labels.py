@@ -300,9 +300,9 @@ def __annotate_by_function(
 
 def reannotate_decoy_labels(
     data: List[Dict[str, Any]] | Dict[str, Any],
-    by_mapping: Dict[bool | Any, bool | Any] | None = None,
     by_protein_prefix: str | None = None,
     by_protein_substring: str | None = None,
+    by_mapping: Dict[bool | None, bool | None] | None = None,
     by_target_fasta: str | BinaryIO | None = None,
     by_decoy_fasta: str | BinaryIO | None = None,
     by_function: Callable[[Dict[str, Any]], Tuple[bool, bool]] | None = None,
