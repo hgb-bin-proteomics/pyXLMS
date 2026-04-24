@@ -128,7 +128,7 @@ def test8():
         crosslinker="DSS",
     )
     peptide_pairs = filter_peptide_pair_distribution(
-        result["crosslink-spectrum-matches"]
+        result["crosslink-spectrum-matches"], prefix_decoys=False
     )
     peptide_pairs_found = list(peptide_pairs.keys())[:5]  # first 5 found peptide pairs
     peptide_pairs_should = [
@@ -157,6 +157,136 @@ def test9():
         crosslinker="DSS",
     )
     peptide_pairs = filter_peptide_pair_distribution(
+        result["crosslink-spectrum-matches"], prefix_decoys=False
+    )
+    assert len(peptide_pairs) == len(aggregate(result["crosslink-spectrum-matches"]))
+
+
+def test10():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import filter_peptide_pair_distribution
+
+    result = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    peptide_pairs = filter_peptide_pair_distribution(
+        result["crosslink-spectrum-matches"]
+    )
+    peptide_pairs_found = list(peptide_pairs.keys())[:5]  # first 5 found peptide pairs
+    peptide_pairs_should = [
+        "GQKNSR3-GQKNSR3",
+        "GQKNSR3-DECOY_GSQKDR4",
+        "SDKNR3-SDKNR3",
+        "DKQSGK2-DKQSGK2",
+        "DKQSGK2-HSIKK4",
+    ]
+    for p in peptide_pairs_should:
+        assert p in peptide_pairs_found
+    MTNFDKNLPNEK_SKLVSDFR = len(
+        peptide_pairs["MTNFDKNLPNEK6-SKLVSDFR2"]
+    )  # number of CSMs for peptide pair MTNFDKNLPNEK-SKLVSDFR
+    assert MTNFDKNLPNEK_SKLVSDFR == 21
+
+
+def test11():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import filter_peptide_pair_distribution
+    from pyXLMS.transform import aggregate
+
+    result = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    peptide_pairs = filter_peptide_pair_distribution(
         result["crosslink-spectrum-matches"]
     )
     assert len(peptide_pairs) == len(aggregate(result["crosslink-spectrum-matches"]))
+
+
+def test12():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import filter_residue_pair_distribution
+
+    result = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    residue_pairs = filter_residue_pair_distribution(
+        result["crosslink-spectrum-matches"]
+    )
+    residue_pairs_found = list(residue_pairs.keys())[:5]
+    residue_pairs_should = [
+        "Cas9:779-Cas9:779",
+        "Cas9:779-DECOY_Cas9:696",
+        "Cas9:866-Cas9:866",
+        "Cas9:677-Cas9:677",
+        "Cas9:48-Cas9:677",
+    ]
+    for r in residue_pairs_should:
+        assert r in residue_pairs_found
+    assert len(residue_pairs["Cas9:1122-Cas9:884"]) == 22
+
+
+def test13():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import filter_residue_pair_distribution
+    from pyXLMS.transform import aggregate
+
+    result = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    residue_pairs = filter_residue_pair_distribution(
+        result["crosslink-spectrum-matches"]
+    )
+    assert len(residue_pairs) == len(
+        aggregate(result["crosslink-spectrum-matches"], by="protein")
+    )
+
+
+def test14():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import filter_residue_pair_distribution
+
+    result = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    residue_pairs = filter_residue_pair_distribution(
+        result["crosslink-spectrum-matches"], prefix_decoys=False
+    )
+    residue_pairs_found = list(residue_pairs.keys())[:5]
+    residue_pairs_should = [
+        "Cas9:779-Cas9:779",
+        "Cas9:696-Cas9:779",
+        "Cas9:866-Cas9:866",
+        "Cas9:677-Cas9:677",
+        "Cas9:48-Cas9:677",
+    ]
+    for r in residue_pairs_should:
+        assert r in residue_pairs_found
+    assert len(residue_pairs["Cas9:1122-Cas9:884"]) == 22
+
+
+def test15():
+    from pyXLMS.parser import read
+    from pyXLMS.transform import filter_residue_pair_distribution
+    from pyXLMS.transform import aggregate
+
+    result = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    residue_pairs = filter_residue_pair_distribution(
+        result["crosslink-spectrum-matches"], prefix_decoys=False
+    )
+    assert len(residue_pairs) == len(
+        aggregate(result["crosslink-spectrum-matches"], by="protein")
+    )
