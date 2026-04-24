@@ -37,6 +37,7 @@ def pipeline(
         "pLink",
         "Scout",
         "xiSearch/xiFDR",
+        "xiNET/xiVIEW",
         "XlinkX",
     ],
     crosslinker: str,
@@ -57,7 +58,7 @@ def pipeline(
     ----------
     files : str, list of str, or file stream
         The name/path of the result file(s) or a file-like object/stream.
-    engine : "Custom", "MaxQuant", "MaxLynx", "MeroX", "MS Annika", "mzIdentML", "pLink", "Scout", "xiSearch/xiFDR", or "XlinkX"
+    engine : "Custom", "MaxQuant", "MaxLynx", "MeroX", "MS Annika", "mzIdentML", "pLink", "Scout", "xiSearch/xiFDR", "xiNET/xiVIEW", or "XlinkX"
         Crosslink search engine or format of the result file.
     crosslinker : str
         Name of the used cross-linking reagent, for example "DSSO".
