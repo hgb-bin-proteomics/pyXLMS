@@ -368,3 +368,22 @@ def test19():
         match=r"Can't filter by residue pair because not all necessary information is available!",
     ):
         _ = filter_residue_pair_distribution(result["crosslink-spectrum-matches"])
+
+
+def test20():
+    # this is technically test for transform.util.get_available_keys for @param always_revalidate
+    from pyXLMS.parser import read
+    from pyXLMS.transform import filter_residue_pair_distribution
+
+    result = read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    result["crosslink-spectrum-matches"][0]["beta_proteins_crosslink_positions"] = None
+
+    with pytest.raises(
+        RuntimeError,
+        match=r"Can't filter by residue pair because not all necessary information is available!",
+    ):
+        _ = filter_residue_pair_distribution(result["crosslink-spectrum-matches"])
