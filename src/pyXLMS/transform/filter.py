@@ -342,7 +342,7 @@ def filter_peptide_pair_distribution(
     r"""Get all crosslink-spectrum-matches sorted by their peptide pair.
 
     Sorts all crosslink-spectrum-matches into a dictionary that maps peptide pairs denoted as their
-    amino acid sequences plus their crosslink positions delimited by a hyphen (e.g. "MTNFDKNLPNEK6-SKLVSDFR2")
+    amino acid sequences plus their crosslink positions delimited by a hyphen (e.g. "MTNFDKNLPNEK:6-SKLVSDFR:2")
     to their associated crosslink-spectrum-matches.
 
     Parameters
@@ -376,10 +376,10 @@ def filter_peptide_pair_distribution(
     ...     result["crosslink-spectrum-matches"]
     ... )
     >>> list(peptide_pairs.keys())[:5]  # first 5 found peptide pairs
-    ['GQKNSR3-GQKNSR3', 'GQKNSR3-DECOY_GSQKDR4', 'SDKNR3-SDKNR3', 'DKQSGK2-DKQSGK2', 'DKQSGK2-HSIKK4']
+    ['GQKNSR:3-GQKNSR:3', 'GQKNSR:3-DECOY_GSQKDR:4', 'SDKNR:3-SDKNR:3', 'DKQSGK:2-DKQSGK:2', 'DKQSGK:2-HSIKK:4']
     >>> len(
-    ...     peptide_pairs["MTNFDKNLPNEK6-SKLVSDFR2"]
-    ... )  # number of CSMs for peptide pair MTNFDKNLPNEK6-SKLVSDFR2
+    ...     peptide_pairs["MTNFDKNLPNEK:6-SKLVSDFR:2"]
+    ... )  # number of CSMs for peptide pair MTNFDKNLPNEK:6-SKLVSDFR:2
     21
     """
     _ok = check_input(data, "data", list, dict)
@@ -390,8 +390,8 @@ def filter_peptide_pair_distribution(
                 "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
             )
         peptide_pair = (
-            f"{'DECOY_' if prefix_decoys and item['alpha_decoy'] else ''}{item['alpha_peptide']}{item['alpha_peptide_crosslink_position']}-"
-            f"{'DECOY_' if prefix_decoys and item['beta_decoy'] else ''}{item['beta_peptide']}{item['beta_peptide_crosslink_position']}"
+            f"{'DECOY_' if prefix_decoys and item['alpha_decoy'] else ''}{item['alpha_peptide']}:{item['alpha_peptide_crosslink_position']}-"
+            f"{'DECOY_' if prefix_decoys and item['beta_decoy'] else ''}{item['beta_peptide']}:{item['beta_peptide_crosslink_position']}"
         )
         if peptide_pair in peptide_pairs:
             peptide_pairs[peptide_pair].append(item)
