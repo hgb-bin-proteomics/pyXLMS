@@ -409,9 +409,9 @@ def filter_residue_pair_distribution(
     Sorts all crosslink-spectrum-matches into a dictionary that maps protein residue pairs denoted as their
     protein accessions plus their protein crosslink positions delimited by a hyphen (e.g. "Cas9:48-Cas9:677")
     to their associated crosslink-spectrum-matches. If a peptide matches to more than one protein, the residues
-    are delimited by commas (e.g. "Cas9:48,ALBU:36-Cas9:677"). Requires that ``alpha_proteins``, ``beta_proteins``,
-    ``alpha_proteins_crosslink_positions``, and ``beta_proteins_crosslink_positions`` fields are set for all
-    crosslink-spectrum-matches.
+    are delimited by commas (e.g. "Cas9:48,ALBU:36-Cas9:677").
+    Requires that ``alpha_proteins``, ``beta_proteins``, ``alpha_proteins_crosslink_positions``, and
+    ``beta_proteins_crosslink_positions`` fields are set for all crosslink-spectrum-matches.
 
     Parameters
     ----------
