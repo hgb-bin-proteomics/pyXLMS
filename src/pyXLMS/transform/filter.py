@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from ..data import check_input
 from ..data import check_input_multi
+from .util import get_available_keys
 
 from typing import Dict
 from typing import List
@@ -336,23 +337,26 @@ def filter_crosslink_type(data: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
 
 def filter_peptide_pair_distribution(
     data: List[Dict[str, Any]],
+    prefix_decoys: bool = True,
 ) -> Dict[str, List[Dict[str, Any]]]:
     r"""Get all crosslink-spectrum-matches sorted by their peptide pair.
 
     Sorts all crosslink-spectrum-matches into a dictionary that maps peptide pairs denoted as their
-    amino acid sequences delimited by a hyphen (e.g. "MTNFDKNLPNEK-SKLVSDFR") to their associated
-    crosslink-spectrum-matches.
+    amino acid sequences plus their crosslink positions delimited by a hyphen (e.g. "MTNFDKNLPNEK:6-SKLVSDFR:2")
+    to their associated crosslink-spectrum-matches.
 
     Parameters
     ----------
     data : list of dict of str, any
         A list of pyXLMS crosslink-spectrum-matches.
+    prefix_decoys : bool, default = True
+        Whether decoy peptides should be prefixed with a "DECOY_" string.
 
     Returns
     -------
     dict of str, list of dict
-        Returns a dictionary that maps peptide pairs denoted as their amino acid sequences delimited by a
-        hyphen to their associated crosslink-spectrum-matches.
+        Returns a dictionary that maps peptide pairs denoted as their amino acid sequences plus their
+        crosslink positions delimited by a hyphen to their associated crosslink-spectrum-matches.
 
     Raises
     ------
@@ -372,10 +376,10 @@ def filter_peptide_pair_distribution(
     ...     result["crosslink-spectrum-matches"]
     ... )
     >>> list(peptide_pairs.keys())[:5]  # first 5 found peptide pairs
-    ['GQKNSR-GQKNSR', 'GQKNSR-GSQKDR', 'SDKNR-SDKNR', 'DKQSGK-DKQSGK', 'DKQSGK-HSIKK']
+    ['GQKNSR:3-GQKNSR:3', 'GQKNSR:3-DECOY_GSQKDR:4', 'SDKNR:3-SDKNR:3', 'DKQSGK:2-DKQSGK:2', 'DKQSGK:2-HSIKK:4']
     >>> len(
-    ...     peptide_pairs["MTNFDKNLPNEK-SKLVSDFR"]
-    ... )  # number of CSMs for peptide pair MTNFDKNLPNEK-SKLVSDFR
+    ...     peptide_pairs["MTNFDKNLPNEK:6-SKLVSDFR:2"]
+    ... )  # number of CSMs for peptide pair MTNFDKNLPNEK:6-SKLVSDFR:2
     21
     """
     _ok = check_input(data, "data", list, dict)
@@ -385,9 +389,108 @@ def filter_peptide_pair_distribution(
             raise TypeError(
                 "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
             )
-        peptide_pair = f"{item['alpha_peptide']}-{item['beta_peptide']}"
+        peptide_pair = (
+            f"{'DECOY_' if prefix_decoys and item['alpha_decoy'] else ''}{item['alpha_peptide']}:{item['alpha_peptide_crosslink_position']}-"
+            f"{'DECOY_' if prefix_decoys and item['beta_decoy'] else ''}{item['beta_peptide']}:{item['beta_peptide_crosslink_position']}"
+        )
         if peptide_pair in peptide_pairs:
             peptide_pairs[peptide_pair].append(item)
         else:
             peptide_pairs[peptide_pair] = [item]
     return peptide_pairs
+
+
+def filter_residue_pair_distribution(
+    data: List[Dict[str, Any]],
+    prefix_decoys: bool = True,
+) -> Dict[str, List[Dict[str, Any]]]:
+    r"""Get all crosslink-spectrum-matches sorted by their protein residue pair.
+
+    Sorts all crosslink-spectrum-matches into a dictionary that maps protein residue pairs denoted as their
+    protein accessions plus their protein crosslink positions delimited by a hyphen (e.g. "Cas9:48-Cas9:677")
+    to their associated crosslink-spectrum-matches. If a peptide matches to more than one protein, the residues
+    are delimited by commas (e.g. "Cas9:48,ALBU:36-Cas9:677").
+    Requires that ``alpha_proteins``, ``beta_proteins``, ``alpha_proteins_crosslink_positions``, and
+    ``beta_proteins_crosslink_positions`` fields are set for all crosslink-spectrum-matches.
+
+    Parameters
+    ----------
+    data : list of dict of str, any
+        A list of pyXLMS crosslink-spectrum-matches.
+    prefix_decoys : bool, default = True
+        Whether decoy residues/proteins should be prefixed with a "DECOY_" string.
+
+    Returns
+    -------
+    dict of str, list of dict
+        Returns a dictionary that maps protein residue pairs denoted as their protein accessions plus their protein
+        crosslink positions delimited by a hyphen to their associated crosslink-spectrum-matches. If a peptide matches
+        to more than one protein, the residues are delimited by commas.
+
+    Raises
+    ------
+    TypeError
+        If an unsupported data type is provided.
+    RuntimeError
+        If any of the crosslink-spectrum-matches do not have associated proteins or protein crosslink positions.
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import filter_residue_pair_distribution
+    >>> result = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
+    >>> residue_pairs = filter_residue_pair_distribution(
+    ...     result["crosslink-spectrum-matches"]
+    ... )
+    >>> list(residue_pairs.keys())[:5]  # first 5 found residue pairs
+    ['Cas9:779-Cas9:779', 'Cas9:779-DECOY_Cas9:696', 'Cas9:866-Cas9:866', 'Cas9:677-Cas9:677', 'Cas9:48-Cas9:677']
+    >>> len(
+    ...     residue_pairs["Cas9:1122-Cas9:884"]
+    ... )  # number of CSMs for residue pair Cas9:1122-Cas9:884
+    22
+    """
+    _ok = check_input(data, "data", list, dict)
+    available_keys = get_available_keys(data)
+    if (
+        not available_keys["alpha_proteins"]
+        or not available_keys["beta_proteins"]
+        or not available_keys["alpha_proteins_crosslink_positions"]
+        or not available_keys["beta_proteins_crosslink_positions"]
+    ):
+        raise RuntimeError(
+            "Can't filter by residue pair because not all necessary information is available!"
+        )
+    residue_pairs = dict()
+    for item in data:
+        if "data_type" not in item or item["data_type"] != "crosslink-spectrum-match":
+            raise TypeError(
+                "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
+            )
+        alpha_residue = "DECOY_" if prefix_decoys and item["alpha_decoy"] else ""
+        alpha_residue += ",".join(
+            sorted(
+                [
+                    f"{item['alpha_proteins'][i]}:{item['alpha_proteins_crosslink_positions'][i]}"
+                    for i in range(len(item["alpha_proteins"]))
+                ]
+            )
+        )
+        beta_residue = "DECOY_" if prefix_decoys and item["beta_decoy"] else ""
+        beta_residue += ",".join(
+            sorted(
+                [
+                    f"{item['beta_proteins'][i]}:{item['beta_proteins_crosslink_positions'][i]}"
+                    for i in range(len(item["beta_proteins"]))
+                ]
+            )
+        )
+        residue_pair = "-".join(sorted([alpha_residue, beta_residue]))
+        if residue_pair in residue_pairs:
+            residue_pairs[residue_pair].append(item)
+        else:
+            residue_pairs[residue_pair] = [item]
+    return residue_pairs

@@ -97,7 +97,9 @@ def assert_data_type_same(data_list: List[Dict[str, Any]]) -> bool:
     return True
 
 
-def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
+def get_available_keys(
+    data_list: List[Dict[str, Any]], always_revalidate: bool = True
+) -> Dict[str, bool]:
     r"""Checks which data is available from a list of crosslinks or crosslink-spectrum-matches.
 
     Verifies which data fields have been set for all crosslinks or crosslink-spectrum-matches in the
@@ -108,6 +110,9 @@ def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
     ----------
     data_list : list of dict of str, any
         A list of crosslinks or crosslink-spectrum-matches.
+    always_revalidate : bool, default = True
+        If ``True`` (default) the assigned ``completeness`` will be ignored and all data fields
+        are re-checked. This is safer especially when data has been modified post reading.
 
     Returns
     -------
@@ -170,7 +175,7 @@ def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
     # parse available keys
     if data_type == "crosslink":
         for data in data_list:
-            if data["completeness"] != "full":
+            if data["completeness"] != "full" or always_revalidate:
                 if data["alpha_proteins"] is None:
                     proteins_a = False
                 if data["alpha_proteins_crosslink_positions"] is None:
@@ -206,7 +211,7 @@ def get_available_keys(data_list: List[Dict[str, Any]]) -> Dict[str, bool]:
         }
     if data_type == "crosslink-spectrum-match":
         for data in data_list:
-            if data["completeness"] != "full":
+            if data["completeness"] != "full" or always_revalidate:
                 if data["alpha_modifications"] is None:
                     modifications_a = False
                 if data["alpha_proteins"] is None:
