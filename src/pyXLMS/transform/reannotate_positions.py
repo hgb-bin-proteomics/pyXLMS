@@ -223,6 +223,7 @@ def reannotate_positions(
                     )
                 )
         else:
+            fasta.seek(0)
             for i, item in enumerate(SimpleFastaParser(fasta)):
                 protein_db[title_to_accession(item[0])] = item[1]
             if len(protein_db) != i + 1:

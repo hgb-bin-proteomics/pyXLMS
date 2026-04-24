@@ -238,6 +238,7 @@ def to_alphalink2(
             for item in SimpleFastaParser(f):
                 fasta_items.append(item)
     else:
+        fasta.seek(0)
         for item in SimpleFastaParser(fasta):
             fasta_items.append(item)
     if len(fasta_items) > len(CHAINS):
