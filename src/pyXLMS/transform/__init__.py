@@ -26,6 +26,7 @@ __all__ = [
     "intersection",
     "annotate_fdr",
     "reannotate_decoy_labels",
+    "filter_residue_pair_distribution",
 ]
 
 from .util import modifications_to_str
@@ -49,3 +50,4 @@ from .reannotate_positions import reannotate_positions
 from .intersection import intersection
 from .annotate_fdr import annotate_fdr
 from .reannotate_decoy_labels import reannotate_decoy_labels
+from .filter import filter_residue_pair_distribution
