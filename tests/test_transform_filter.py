@@ -132,16 +132,16 @@ def test8():
     )
     peptide_pairs_found = list(peptide_pairs.keys())[:5]  # first 5 found peptide pairs
     peptide_pairs_should = [
-        "GQKNSR-GQKNSR",
-        "GQKNSR-GSQKDR",
-        "SDKNR-SDKNR",
-        "DKQSGK-DKQSGK",
-        "DKQSGK-HSIKK",
+        "GQKNSR3-GQKNSR3",
+        "GQKNSR3-GSQKDR4",
+        "SDKNR3-SDKNR3",
+        "DKQSGK2-DKQSGK2",
+        "DKQSGK2-HSIKK4",
     ]
     for p in peptide_pairs_should:
         assert p in peptide_pairs_found
     MTNFDKNLPNEK_SKLVSDFR = len(
-        peptide_pairs["MTNFDKNLPNEK-SKLVSDFR"]
+        peptide_pairs["MTNFDKNLPNEK6-SKLVSDFR2"]
     )  # number of CSMs for peptide pair MTNFDKNLPNEK-SKLVSDFR
     assert MTNFDKNLPNEK_SKLVSDFR == 21
 
