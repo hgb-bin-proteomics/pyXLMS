@@ -340,8 +340,8 @@ def filter_peptide_pair_distribution(
     r"""Get all crosslink-spectrum-matches sorted by their peptide pair.
 
     Sorts all crosslink-spectrum-matches into a dictionary that maps peptide pairs denoted as their
-    amino acid sequences delimited by a hyphen (e.g. "MTNFDKNLPNEK-SKLVSDFR") to their associated
-    crosslink-spectrum-matches.
+    amino acid sequences plus their crosslink positions delimited by a hyphen (e.g. "MTNFDKNLPNEK6-SKLVSDFR2")
+    to their associated crosslink-spectrum-matches.
 
     Parameters
     ----------
@@ -351,8 +351,8 @@ def filter_peptide_pair_distribution(
     Returns
     -------
     dict of str, list of dict
-        Returns a dictionary that maps peptide pairs denoted as their amino acid sequences delimited by a
-        hyphen to their associated crosslink-spectrum-matches.
+        Returns a dictionary that maps peptide pairs denoted as their amino acid sequences plus their
+        crosslink positions delimited by a hyphen to their associated crosslink-spectrum-matches.
 
     Raises
     ------
@@ -372,10 +372,10 @@ def filter_peptide_pair_distribution(
     ...     result["crosslink-spectrum-matches"]
     ... )
     >>> list(peptide_pairs.keys())[:5]  # first 5 found peptide pairs
-    ['GQKNSR-GQKNSR', 'GQKNSR-GSQKDR', 'SDKNR-SDKNR', 'DKQSGK-DKQSGK', 'DKQSGK-HSIKK']
+    ['GQKNSR3-GQKNSR3', 'GQKNSR3-GSQKDR4', 'SDKNR3-SDKNR3', 'DKQSGK2-DKQSGK2', 'DKQSGK2-HSIKK4']
     >>> len(
-    ...     peptide_pairs["MTNFDKNLPNEK-SKLVSDFR"]
-    ... )  # number of CSMs for peptide pair MTNFDKNLPNEK-SKLVSDFR
+    ...     peptide_pairs["MTNFDKNLPNEK6-SKLVSDFR2"]
+    ... )  # number of CSMs for peptide pair MTNFDKNLPNEK6-SKLVSDFR2
     21
     """
     _ok = check_input(data, "data", list, dict)
@@ -385,7 +385,7 @@ def filter_peptide_pair_distribution(
             raise TypeError(
                 "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
             )
-        peptide_pair = f"{item['alpha_peptide']}-{item['beta_peptide']}"
+        peptide_pair = f"{item['alpha_peptide']}{item['alpha_peptide_crosslink_position']}-{item['beta_peptide']}{item['beta_peptide_crosslink_position']}"
         if peptide_pair in peptide_pairs:
             peptide_pairs[peptide_pair].append(item)
         else:
