@@ -336,6 +336,7 @@ def filter_crosslink_type(data: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
 
 def filter_peptide_pair_distribution(
     data: List[Dict[str, Any]],
+    prefix_decoys: bool = True,
 ) -> Dict[str, List[Dict[str, Any]]]:
     r"""Get all crosslink-spectrum-matches sorted by their peptide pair.
 
@@ -347,6 +348,8 @@ def filter_peptide_pair_distribution(
     ----------
     data : list of dict of str, any
         A list of pyXLMS crosslink-spectrum-matches.
+    prefix_decoys : bool, default = True
+        Whether decoy peptides should be prefixed with a "DECOY_" string.
 
     Returns
     -------
@@ -372,7 +375,7 @@ def filter_peptide_pair_distribution(
     ...     result["crosslink-spectrum-matches"]
     ... )
     >>> list(peptide_pairs.keys())[:5]  # first 5 found peptide pairs
-    ['GQKNSR3-GQKNSR3', 'GQKNSR3-GSQKDR4', 'SDKNR3-SDKNR3', 'DKQSGK2-DKQSGK2', 'DKQSGK2-HSIKK4']
+    ['GQKNSR3-GQKNSR3', 'GQKNSR3-DECOY_GSQKDR4', 'SDKNR3-SDKNR3', 'DKQSGK2-DKQSGK2', 'DKQSGK2-HSIKK4']
     >>> len(
     ...     peptide_pairs["MTNFDKNLPNEK6-SKLVSDFR2"]
     ... )  # number of CSMs for peptide pair MTNFDKNLPNEK6-SKLVSDFR2
@@ -385,7 +388,10 @@ def filter_peptide_pair_distribution(
             raise TypeError(
                 "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
             )
-        peptide_pair = f"{item['alpha_peptide']}{item['alpha_peptide_crosslink_position']}-{item['beta_peptide']}{item['beta_peptide_crosslink_position']}"
+        peptide_pair = (
+            f"{'DECOY_' if prefix_decoys and item['alpha_decoy'] else ''}{item['alpha_peptide']}{item['alpha_peptide_crosslink_position']}-"
+            f"{'DECOY_' if prefix_decoys and item['beta_decoy'] else ''}{item['beta_peptide']}{item['beta_peptide_crosslink_position']}"
+        )
         if peptide_pair in peptide_pairs:
             peptide_pairs[peptide_pair].append(item)
         else:
