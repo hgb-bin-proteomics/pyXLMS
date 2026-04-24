@@ -25,6 +25,7 @@ __all__ = [
     "reannotate_positions",
     "intersection",
     "annotate_fdr",
+    "reannotate_decoy_labels",
 ]
 
 from .util import modifications_to_str
@@ -47,3 +48,4 @@ from .reannotate_positions import fasta_title_to_accession
 from .reannotate_positions import reannotate_positions
 from .intersection import intersection
 from .annotate_fdr import annotate_fdr
+from .reannotate_decoy_labels import reannotate_decoy_labels
