@@ -35,7 +35,8 @@ dependencies = [
   "matplotlib",
   "matplotlib-venn",
   "pyarrow",
-  "lxml"
+  "lxml",
+  "requests"
 ]
 
 [project.optional-dependencies]
