@@ -256,16 +256,19 @@ def annotate_string_scores(
     KeyError
         If the organism could not be resolved to a taxon identifier.
     RuntimeError
+        If data with more than 2000 proteins/STRING IDs is provided.
+    RuntimeError
         If ``verbose = 2`` and the API request failed.
 
     Warns
     -----
+    RuntimeWarning
         If ``verbose = 1`` and the API request failed.
 
     Notes
     -----
-    STRING limits the number of nodes via the API two 2000 - exceeding that limit will return an empty network
-    or raise an error (if ``verbose = 2``).
+    STRING limits the number of nodes via the API two 2000 - exceeding that limit will return an empty
+    network/no annotation or raise an error (if ``verbose = 2``).
 
     Examples
     --------
