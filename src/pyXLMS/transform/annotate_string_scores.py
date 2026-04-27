@@ -99,7 +99,7 @@ def get_string_ids(
     # wait one second after request to delay subsequent requests - be polite
     time.sleep(1)
     if not response.ok:
-        raise RuntimeError()
+        raise RuntimeError(f"{response.text}")
     response_json = response.json()
     response_proteins: Dict[str, str] = dict()
     for item in response_json:
@@ -155,7 +155,7 @@ def get_string_network(
     # wait one second after request to delay subsequent requests - be polite
     time.sleep(1)
     if not response.ok:
-        raise RuntimeError()
+        raise RuntimeError(f"{response.text}")
     response_json = response.json()
     for item in response_json:
         a = str(item["stringId_A"]).strip()
