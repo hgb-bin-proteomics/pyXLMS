@@ -49,9 +49,6 @@ SCORES = {
     "highest confidence": 0.9,
 }
 
-# delete - this gives network len 28
-EXAMPLES = ["CDC42", "CDK1", "KIF23", "PLK1", "RAC2", "RACGAP1", "RHOA", "RHOB"]
-
 
 def __float_or_none(value: Any) -> float | None:
     try:
