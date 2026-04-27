@@ -303,6 +303,19 @@ def annotate_string_scores(
             for k, v in proteins_to_string_ids.items():
                 if v is not None:
                     string_ids.append(v)
+            # this is a hard limit as of 2026-04
+            if len(string_ids) >= 2000:
+                if verbose == 1:
+                    warnings.warn(
+                        RuntimeWarning(
+                            f"More than 2000 proteins/STRING IDs specified: {len(string_ids)}. Please reduce the number of proteins for a successful request!"
+                        )
+                    )
+                if verbose == 2:
+                    raise RuntimeError(
+                        f"More than 2000 proteins/STRING IDs specified: {len(string_ids)}. Please reduce the number of proteins for a successful request!"
+                    )
+                return data
             network = get_string_network(string_ids, organism, verbose)
             for item in tqdm(
                 inter,
