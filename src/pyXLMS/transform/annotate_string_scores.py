@@ -291,7 +291,7 @@ def annotate_string_scores(
             for item in tqdm(
                 inter,
                 total=len(inter),
-                description="Annotating STRING scores for inter-links...",
+                desc="Annotating STRING scores for inter-links...",
             ):
                 string_items: List[Dict[str, str | float | None]] = list()
                 string_scores: List[float] = list()
