@@ -96,7 +96,11 @@ def get_string_ids(
     # wait one second after request to delay subsequent requests - be polite
     time.sleep(1)
     if not response.ok:
-        raise RuntimeError(f"{response.text}")
+        if verbose == 1:
+            warnings.warn(RuntimeWarning(f"{response.text}"))
+        if verbose == 2:
+            raise RuntimeError(f"{response.text}")
+        return output_proteins
     response_json = response.json()
     response_proteins: Dict[str, str] = dict()
     for item in response_json:
@@ -152,7 +156,11 @@ def get_string_network(
     # wait one second after request to delay subsequent requests - be polite
     time.sleep(1)
     if not response.ok:
-        raise RuntimeError(f"{response.text}")
+        if verbose == 1:
+            warnings.warn(RuntimeWarning(f"{response.text}"))
+        if verbose == 2:
+            raise RuntimeError(f"{response.text}")
+        return network
     response_json = response.json()
     for item in response_json:
         a = str(item["stringId_A"]).strip()
