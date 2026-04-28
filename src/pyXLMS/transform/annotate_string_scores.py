@@ -52,6 +52,18 @@ STRING_SCORES = {
 
 
 def __float_or_none(value: Any) -> float | None:
+    r"""Converts a value to float if possible and returns None if otherwise.
+
+    Parameters
+    ----------
+    value : any
+        The value to convert to float.
+
+    Returns
+    -------
+    float, or None
+        Returns a float if the value can be cast to float, otherwise None.
+    """
     try:
         return float(value)
     except Exception as _e:
@@ -62,6 +74,50 @@ def __float_or_none(value: Any) -> float | None:
 def get_string_ids(
     proteins: List[str], organism: str | int, verbose: Literal[0, 1, 2] = 1
 ) -> Dict[str, str | None]:
+    r"""Map proteins to STRING IDs.
+
+    Calls the STRING API to resolve common protein or gene names, synonyms, or UniProt identifiers
+    and accession numbers to map them to the identifiers used internally by STRING.
+
+    Parameters
+    ----------
+    proteins : list of str
+        A list of protein/gene accessions, names, or symbols.
+    organism : str, or int
+        Organism name (e.g. Homo sapiens) or taxon identifier (e.g. 9606).
+        Taxon identifiers are preferred. See also
+        `string-db.org/cgi/organisms <https://string-db.org/cgi/organisms>`_.
+    verbose : 0, 1, or 2, default = 1
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
+
+    Returns
+    -------
+    dict of str, str or None
+        Returns a dictionary that maps the input proteins to their STRING IDs. If
+        a protein could not be resolved its STRING ID is None.
+
+    Raises
+    ------
+    TypeError
+        If parameter verbose was not set correctly.
+    KeyError
+        If the organism could not be resolved to a taxon identifier.
+    RuntimeError
+        If ``verbose = 2`` and the API request failed.
+
+    Warns
+    -----
+    RuntimeWarning
+        If ``verbose = 1`` and the API request failed.
+
+    Examples
+    --------
+    >>> from pyXLMS.transform import get_string_ids
+    >>> get_string_ids(["p53", "BRCA1", "cdk2", "Q99835"], organism=9606)
+    {'p53': '9606.ENSP00000269305', 'BRCA1': '9606.ENSP00000418960', 'cdk2': '9606.ENSP00000266970', 'Q99835': '9606.ENSP00000249373'}
+    """
     _ok = check_input(proteins, "proteins", list, str)
     _ok = check_input_multi(organism, "organism", [str, int])
     if isinstance(organism, str):
@@ -120,6 +176,64 @@ def get_string_ids(
 def get_string_network(
     string_ids: List[str], organism: str | int, verbose: Literal[0, 1, 2] = 1
 ) -> Dict[str, Dict[str, str | float | None]]:
+    r"""Retrieve a STRING interaction network.
+
+    Retrieves the STRING interaction network via the STRING API for the given STRING IDs
+    with interactions including the combined score and all the channel specific scores.
+
+    Parameters
+    ----------
+    string_ids : list of str
+        A list of STRING IDs for which the network should be created.
+    organism : str, or int
+        Organism name (e.g. Homo sapiens) or taxon identifier (e.g. 9606).
+        Taxon identifiers are preferred. See also
+        `string-db.org/cgi/organisms <https://string-db.org/cgi/organisms>`_.
+    verbose : 0, 1, or 2, default = 1
+        - 0: All warnings are ignored.
+        - 1: Warnings are printed to stdout.
+        - 2: Warnings are treated as errors.
+
+    Returns
+    -------
+    dict of str, dict of str, str or float or None
+        Returns a dictionary where every key is an interaction composed of the two
+        STRING IDs sorted alphabetically and joined via an underscore. The values are
+        dictionaries with keys ``A`` for STRING ID A, ``B`` for STRING ID B, and
+        ``score``, ``nscore``, ``fscore``, ``pscore``, ``ascore``, ``escore``,
+        ``dscore``, ``tscore`` for the various STRING scores. Scores may be None.
+
+    Raises
+    ------
+    TypeError
+        If parameter verbose was not set correctly.
+    KeyError
+        If the organism could not be resolved to a taxon identifier.
+    KeyError
+        If ``verbose = 2`` and more than one interaction per protein pair was found.
+    RuntimeError
+        If ``verbose = 2`` and the API request failed.
+
+    Warns
+    -----
+    RuntimeWarning
+        If ``verbose = 1`` and the API request failed.
+    RuntimeWarning
+        If ``verbose = 1`` and more than one interaction per protein pair was found.
+
+    Notes
+    -----
+    STRING limits the number of nodes via the API two 2000 - exceeding that limit will return an empty
+    network/no annotation or raise an error (if ``verbose = 2``).
+
+    Examples
+    --------
+    >>> from pyXLMS.transform import get_string_network
+    >>> get_string_network(
+    ...     ["9606.ENSP00000269305", "9606.ENSP00000418960"], organism=9606
+    ... )
+    {'9606.ENSP00000269305_9606.ENSP00000418960': {'A': '9606.ENSP00000269305', 'B': '9606.ENSP00000418960', 'score': 0.999, 'nscore': 0.0, 'fscore': 0.0, 'pscore': 0.0, 'ascore': 0.067, 'escore': 0.895, 'dscore': 0.5, 'tscore': 0.999}}
+    """
     _ok = check_input(string_ids, "string_ids", list, str)
     _ok = check_input_multi(organism, "organism", [str, int])
     if isinstance(organism, str):
@@ -254,6 +368,8 @@ def annotate_string_scores(
         If a wrong data type is provided.
     TypeError
         If parameter verbose was not set correctly.
+    ValueError
+        If the input data does not contain inter-links.
     KeyError
         If the organism could not be resolved to a taxon identifier.
     RuntimeError
@@ -267,6 +383,8 @@ def annotate_string_scores(
     -----
     RuntimeWarning
         If not all of the provided data does have associated proteins.
+    RuntimeWarning
+        If data with more than 2000 proteins/STRING IDs is provided.
     RuntimeWarning
         If ``verbose = 1`` and the API request failed.
 
