@@ -17,6 +17,7 @@ from ..data import create_parser_result
 from .filter import filter_crosslink_type
 from .filter import filter_protein_distribution
 from .util import assert_data_type_same
+from .util import get_available_keys
 
 from typing import List
 from typing import Dict
