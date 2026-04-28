@@ -277,7 +277,18 @@ def annotate_string_scores(
 
     Examples
     --------
+    >>> from pyXLMS import parser
+    >>> from pyXLMS.transform import filter_crosslink_type
     >>> from pyXLMS.transform import annotate_string_scores
+    >>> pr = parser.read_custom("data/ms_annika/Nucleus_Rep1_Crosslinks.parquet")
+    >>> xls = pr["crosslinks"]
+    >>> xls = annotate_string_scores(xls, organism="Homo sapiens")
+    >>> inter = filter_crosslink_type(xls)["Inter"]
+    >>> example = inter[4]  # example link with STRING score
+    >>> example["additional_information"]["pyXLMS_annotated_STRING_interactions"]
+    [{'A': '9606.ENSP00000441875', 'B': '9606.ENSP00000479488', 'score': 0.999, 'nscore': 0.0, 'fscore': 0.0, 'pscore': 0.068, 'ascore': 0.923, 'escore': 0.973, 'dscore': 0.9, 'tscore': 0.988}]
+    >>> example["additional_information"]["pyXLMS_annotated_STRING_score"]
+    0.999
     """
     _ok = check_input_multi(organism, "organism", [str, int])
     if isinstance(organism, str):
