@@ -350,7 +350,7 @@ def filter_peptide_pair_distribution(
     data : list of dict of str, any
         A list of pyXLMS crosslink-spectrum-matches.
     prefix_decoys : bool, default = True
-        Whether decoy peptides should be prefixed with a "DECOY_" string.
+        Whether decoy peptides should be prefixed with a "DECOY\_" string.
 
     Returns
     -------
@@ -418,7 +418,7 @@ def filter_residue_pair_distribution(
     data : list of dict of str, any
         A list of pyXLMS crosslink-spectrum-matches.
     prefix_decoys : bool, default = True
-        Whether decoy residues/proteins should be prefixed with a "DECOY_" string.
+        Whether decoy residues/proteins should be prefixed with a "DECOY\_" string.
 
     Returns
     -------
