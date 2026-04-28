@@ -306,6 +306,9 @@ def annotate_string_scores(
             for k, v in proteins_to_string_ids.items():
                 if v is not None:
                     string_ids.append(v)
+            print(
+                f"Mapped {len(string_ids)} of {len(proteins)} proteins ({len(string_ids) / len(proteins) * 100}%) to STRING IDs."
+            )
             # this is a hard limit as of 2026-04
             if len(string_ids) >= 2000:
                 if verbose == 1:
