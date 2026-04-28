@@ -317,6 +317,10 @@ def annotate_string_scores(
             or data[0]["data_type"] == "crosslink-spectrum-match"
         ):
             inter = filter_crosslink_type(data)["Inter"]
+            if len(inter) == 0:
+                raise ValueError(
+                    "Can't annotate STRING scores for input data because it does not contain inter-links!"
+                )
             proteins = list(filter_protein_distribution(inter).keys())
             proteins_to_string_ids = get_string_ids(proteins, organism, verbose)
             string_ids: List[str] = list()
