@@ -256,12 +256,16 @@ def annotate_string_scores(
     KeyError
         If the organism could not be resolved to a taxon identifier.
     RuntimeError
+        If not all of the provided data does have associated proteins.
+    RuntimeError
         If data with more than 2000 proteins/STRING IDs is provided.
     RuntimeError
         If ``verbose = 2`` and the API request failed.
 
     Warns
     -----
+    RuntimeWarning
+        If not all of the provided data does have associated proteins.
     RuntimeWarning
         If ``verbose = 1`` and the API request failed.
 
@@ -294,6 +298,18 @@ def annotate_string_scores(
                 "or a 'parser_result'!"
             )
         _ok = assert_data_type_same(data)
+        available_keys = get_available_keys(data)
+        if not available_keys["alpha_proteins"] or not available_keys["beta_proteins"]:
+            if verbose == 1:
+                warnings.warn(
+                    RuntimeWarning(
+                        "Some of your crosslink-spectrum-matches/crosslinks do not have associated proteins. Their STRING scores will be nan!"
+                    )
+                )
+            if verbose == 2:
+                raise RuntimeError(
+                    "Some of your crosslink-spectrum-matches/crosslinks do not have associated proteins!"
+                )
         # annotate STRING scores
         if (
             data[0]["data_type"] == "crosslink"
