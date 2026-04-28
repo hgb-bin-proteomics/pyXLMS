@@ -13,6 +13,7 @@ FILETREE                                                                        
 ¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1.zhrm                                  | MeroX         | DSS
 ¦                                                                               |               |
 +---ms_annika                                                                   |               |
+¦       Nucleus_Rep1_Crosslinks.parquet                                         | Custom        | DSBSO
 ¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1.mzid                                  | mzIdentML     | DSS
 ¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult                              | MS Annika     | DSS
 ¦       XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.txt                        | MS Annika     | DSS
