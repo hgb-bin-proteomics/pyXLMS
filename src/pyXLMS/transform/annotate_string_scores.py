@@ -30,7 +30,7 @@ except ImportError:
 
 STRING_STABLE_URL = "https://version-12-0.string-db.org/api"
 CALLER_IDENTITY = "https://github.com/hgb-bin-proteomics/pyXLMS"
-ORGANISMS = {
+STRING_ORGANISMS = {
     "Homo sapiens": 9606,
     "Mus musculus": 10090,
     "Arabidopsis thaliana": 3702,
@@ -42,7 +42,7 @@ ORGANISMS = {
     "Pseudomonas aeruginosa PAO1": 208964,
 }
 # from https://string-db.org/help/getting_started/
-SCORES = {
+STRING_SCORES = {
     "low confidence": 0.15,
     "medium confidence": 0.4,
     "high confidence": 0.7,
@@ -64,11 +64,11 @@ def get_string_ids(
     _ok = check_input(proteins, "proteins", list, str)
     _ok = check_input_multi(organism, "organism", [str, int])
     if isinstance(organism, str):
-        if organism not in ORGANISMS:
+        if organism not in STRING_ORGANISMS:
             raise KeyError(
                 f"Could not resolve organism {organism}, please specify taxon identifier manually!"
             )
-        organism = ORGANISMS[organism]
+        organism = STRING_ORGANISMS[organism]
     _ok = check_input(verbose, "verbose", int)
     if verbose not in [0, 1, 2]:
         raise TypeError("Verbose level has to be one of 0, 1, or 2!")
@@ -122,11 +122,11 @@ def get_string_network(
     _ok = check_input(string_ids, "string_ids", list, str)
     _ok = check_input_multi(organism, "organism", [str, int])
     if isinstance(organism, str):
-        if organism not in ORGANISMS:
+        if organism not in STRING_ORGANISMS:
             raise KeyError(
                 f"Could not resolve organism {organism}, please specify taxon identifier manually!"
             )
-        organism = ORGANISMS[organism]
+        organism = STRING_ORGANISMS[organism]
     _ok = check_input(verbose, "verbose", int)
     if verbose not in [0, 1, 2]:
         raise TypeError("Verbose level has to be one of 0, 1, or 2!")
@@ -276,11 +276,11 @@ def annotate_string_scores(
     """
     _ok = check_input_multi(organism, "organism", [str, int])
     if isinstance(organism, str):
-        if organism not in ORGANISMS:
+        if organism not in STRING_ORGANISMS:
             raise KeyError(
                 f"Could not resolve organism {organism}, please specify taxon identifier manually!"
             )
-        organism = ORGANISMS[organism]
+        organism = STRING_ORGANISMS[organism]
     _ok = check_input(verbose, "verbose", int)
     if verbose not in [0, 1, 2]:
         raise TypeError("Verbose level has to be one of 0, 1, or 2!")
