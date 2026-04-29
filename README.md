@@ -97,8 +97,8 @@ Many crosslink search engines do not report any kind of decoy matches which make
 analysis tools require varying input information which might not be consistently available from all crosslink search engines. Some of this can be mitigated by functionality
 in pyXLMS such as annotation or by additional information that needs to be passed to pyXLMS for a successful export. Generally, the export to all downstream analysis tools
 should work for all crosslink search engines and input formats, with the exception of the export to xiFDR which is limited to MaxLynx, MS Annika, and xiSearch for above reasons.
-For safety pyXLMS makes sure before the export that all the required information is available and will otherwise throw an error. For more information please check the
-[user guide](hgb-bin-proteomics.github.io/pyXLMS-docs) and the [documentation](https://hgb-bin-proteomics.github.io/pyXLMS).
+For safety pyXLMS makes sure before the export that all the required information is available and will otherwise throw an error. For more information please check the specific
+export pages in the [user guide](hgb-bin-proteomics.github.io/pyXLMS-docs) and the [documentation](https://hgb-bin-proteomics.github.io/pyXLMS).
 
 The web app supports most of the features of the python package, features that are not supported in the web app are listed in the [user guide](hgb-bin-proteomics.github.io/pyXLMS-docs)
 under `Documentation` ➡️ `Web Application` ➡️ `Feature Support`.
