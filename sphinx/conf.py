@@ -95,5 +95,5 @@ html_context = {
     "github_repo": "pyXLMS",
     "github_version": "master",
     "doc_path": "sphinx",
-    "default_mode": "light",
+    "default_mode": "auto",
 }
