@@ -345,6 +345,7 @@ def read_xiview(
     sep: str = ",",
     decimal: str = ".",
     verbose: Literal[0, 1, 2] = 1,
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a xiVIEW exported result file.
 
@@ -363,6 +364,8 @@ def read_xiview(
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -402,4 +405,5 @@ def read_xiview(
         sep,
         decimal,
         verbose,
+        **kwargs,
     )
