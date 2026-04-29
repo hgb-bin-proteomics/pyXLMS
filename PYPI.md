@@ -91,7 +91,9 @@ Not sure if pyXLMS is what you are looking for? You can find a collection of com
 
 Despite our best efforts pyXLMS still comes with some limitations that are a direct result of the differences in the output formats of crosslink search engines.
 Many crosslink search engines do not report any kind of decoy matches which makes validation in pyXLMS or export to xiFDR impossible which is why **we recommend**
-**using validated results for pyXLMS**. Validation within pyXLMS is currently only supported for MaxLynx, MS Annika, and xiSearch. Furthermore, the different down-stream
+**using validated results for pyXLMS**. Validation within pyXLMS is currently only supported for MaxLynx, MS Annika, and xiSearch.
+
+Furthermore, the different down-stream
 analysis tools require varying input information which might not be consistently available from all crosslink search engines. Some of this can be mitigated by functionality
 in pyXLMS such as annotation or by additional information that needs to be passed to pyXLMS for a successful export. Generally, the export to all downstream analysis tools
 should work for all crosslink search engines and input formats, with the exception of the export to xiFDR which is limited to MaxLynx, MS Annika, and xiSearch for above reasons.
