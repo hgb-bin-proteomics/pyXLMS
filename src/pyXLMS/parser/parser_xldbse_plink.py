@@ -573,9 +573,9 @@ def read_plink(
     ## process data
     for input in inputs:
         if (
-            detect_plink_filetype(input, sep=sep, decimal=decimal, **kwargs)
+            detect_plink_filetype(input, sep=sep, decimal=decimal, **kwargs)  # ty: ignore[invalid-argument-type]
             == "crosslinks"
-        ):  # ty: ignore[invalid-argument-type]
+        ):
             data = __read_plink_cross_linked_peptides_file(
                 input,  # ty: ignore[invalid-argument-type]
                 sep=sep,
