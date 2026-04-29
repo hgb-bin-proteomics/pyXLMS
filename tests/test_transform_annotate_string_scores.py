@@ -241,3 +241,35 @@ def test15():
         match=r"Some of your crosslink-spectrum-matches/crosslinks do not have associated proteins!",
     ):
         _ = annotate_string_scores(xls, organism="Homo sapiens", verbose=2)
+
+
+def test16():
+    from pyXLMS import parser
+    from pyXLMS.transform import filter_crosslink_type
+    from pyXLMS.transform import annotate_string_scores
+
+    pr = parser.read_custom("data/ms_annika/Nucleus_Rep1_Crosslinks.parquet")
+    xls = pr["crosslinks"]
+    intra = filter_crosslink_type(xls)["Intra"]
+    with pytest.raises(
+        ValueError,
+        match=r"Can't annotate STRING scores for input data because it does not contain inter-links!",
+    ):
+        _ = annotate_string_scores(intra, organism="Homo sapiens")
+
+
+def test17():
+    from pyXLMS import parser
+    from pyXLMS.transform import annotate_string_scores
+
+    pr = parser.read_msannika(
+        "data/_test/annotate_string_scores/Nucleus_Rep1_Crosslinks.txt",
+        unsafe=True,
+        verbose=0,
+    )
+    xls = pr["crosslinks"]
+    with pytest.raises(
+        RuntimeError,
+        match=r"More than 2000 proteins/STRING IDs specified: 17295. Please reduce the number of proteins for a successful request!",
+    ):
+        _ = annotate_string_scores(xls, organism="Homo sapiens", verbose=2)
