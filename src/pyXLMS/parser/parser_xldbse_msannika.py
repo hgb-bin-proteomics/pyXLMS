@@ -148,6 +148,7 @@ def read_msannika(
     decimal: str = ".",
     unsafe: bool = False,
     verbose: Literal[0, 1, 2] = 1,
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read an MS Annika result file.
 
@@ -177,6 +178,8 @@ def read_msannika(
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -306,10 +309,12 @@ def read_msannika(
                 or file_extension == ".csv"
             ):
                 data_objects = [
-                    pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+                    pd.read_csv(
+                        input, sep=sep, decimal=decimal, low_memory=False, **kwargs
+                    )
                 ]
             elif file_extension == ".xlsx":
-                data_objects = [pd.read_excel(input, engine="openpyxl")]
+                data_objects = [pd.read_excel(input, engine="openpyxl", **kwargs)]
             elif file_extension == ".pdresult":
                 data_objects = __read_msannika_pdresult(input)
             else:
@@ -318,10 +323,12 @@ def read_msannika(
                 )
         elif format in ["csv", "tsv", "txt", "xlsx"]:
             if format == "xlsx":
-                data_objects = [pd.read_excel(input, engine="openpyxl")]
+                data_objects = [pd.read_excel(input, engine="openpyxl", **kwargs)]
             else:
                 data_objects = [
-                    pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+                    pd.read_csv(
+                        input, sep=sep, decimal=decimal, low_memory=False, **kwargs
+                    )
                 ]
         elif format == "pdresult":
             if not isinstance(input, str):

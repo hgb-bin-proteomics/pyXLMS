@@ -582,6 +582,7 @@ def read_scout(
     sep: str = ",",
     decimal: str = ".",
     verbose: Literal[0, 1, 2] = 1,
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a Scout result file.
 
@@ -611,6 +612,8 @@ def read_scout(
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -700,7 +703,7 @@ def read_scout(
 
     for input in inputs:
         ## reading data
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         ## detect input file type
         scout_file_type = detect_scout_filetype(data)
         ## process data

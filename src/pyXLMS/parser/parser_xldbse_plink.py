@@ -217,7 +217,7 @@ def __parse_proteins_and_position_from_plink(
 
 
 def __read_plink_cross_linked_peptides_file(
-    file: str | BinaryIO, sep: str = ",", decimal: str = "."
+    file: str | BinaryIO, sep: str = ",", decimal: str = ".", **kwargs
 ) -> pd.DataFrame:
     r"""Reads a pLink cross-linked peptides file into a pandas DataFrame.
 
@@ -232,6 +232,8 @@ def __read_plink_cross_linked_peptides_file(
         Seperator used in the ``.csv`` file.
     decimal : str, default = "."
         Character to recognize as decimal point.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -265,7 +267,11 @@ def __read_plink_cross_linked_peptides_file(
         if not preprocessed_line.startswith(sep):
             lines.append(preprocessed_line)
     df = pd.read_csv(
-        io.StringIO("\n".join(lines)), sep=sep, decimal=decimal, low_memory=False
+        io.StringIO("\n".join(lines)),
+        sep=sep,
+        decimal=decimal,
+        low_memory=False,
+        **kwargs,
     )
     colnames = df.columns.values.tolist()
     if not (
@@ -331,7 +337,7 @@ def parse_scan_nr_from_plink(title: str) -> int:
 
 
 def detect_plink_filetype(
-    file: str | BinaryIO, sep: str = ",", decimal: str = "."
+    file: str | BinaryIO, sep: str = ",", decimal: str = ".", **kwargs
 ) -> Literal["crosslinks", "crosslink-spectrum-matches"]:
     r"""Detects the pLink-related file type of the data.
 
@@ -346,6 +352,8 @@ def detect_plink_filetype(
         Seperator used in the ``.csv`` file.
     decimal : str, default = "."
         Character to recognize as decimal point.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -396,7 +404,7 @@ def detect_plink_filetype(
     if len(lines) == 0:
         raise RuntimeError("The provided file does not contain any data!")
     if len(lines) == 1:
-        df = pd.read_csv(file, sep=sep, decimal=decimal, low_memory=False)
+        df = pd.read_csv(file, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         if not isinstance(file, str):
             file.seek(0)
         colnames = df.columns.values.tolist()
@@ -418,9 +426,11 @@ def detect_plink_filetype(
                 "The provided file seems not to be one of the support pLink input files!"
             )
     if lines[1].startswith(sep):
-        _ = __read_plink_cross_linked_peptides_file(file, sep=sep, decimal=decimal)
+        _ = __read_plink_cross_linked_peptides_file(
+            file, sep=sep, decimal=decimal, **kwargs
+        )
         return "crosslinks"
-    df = pd.read_csv(file, sep=sep, decimal=decimal, low_memory=False)
+    df = pd.read_csv(file, sep=sep, decimal=decimal, low_memory=False, **kwargs)
     if not isinstance(file, str):
         file.seek(0)
     colnames = df.columns.values.tolist()
@@ -452,6 +462,7 @@ def read_plink(
     sep: str = ",",
     decimal: str = ".",
     verbose: Literal[0, 1, 2] = 1,
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a pLink result file.
 
@@ -485,6 +496,8 @@ def read_plink(
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -557,11 +570,15 @@ def read_plink(
 
     ## process data
     for input in inputs:
-        if detect_plink_filetype(input, sep=sep, decimal=decimal) == "crosslinks":  # ty: ignore[invalid-argument-type]
+        if (
+            detect_plink_filetype(input, sep=sep, decimal=decimal, **kwargs)
+            == "crosslinks"
+        ):  # ty: ignore[invalid-argument-type]
             data = __read_plink_cross_linked_peptides_file(
                 input,  # ty: ignore[invalid-argument-type]
                 sep=sep,
                 decimal=decimal,
+                **kwargs,
             )
             for i, row in tqdm(
                 data.iterrows(), total=data.shape[0], desc="Reading pLink crosslinks..."
@@ -601,7 +618,9 @@ def read_plink(
                 )
                 crosslinks.append(crosslink)
         else:
-            data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+            data = pd.read_csv(
+                input, sep=sep, decimal=decimal, low_memory=False, **kwargs
+            )
             for i, row in tqdm(
                 data.iterrows(), total=data.shape[0], desc="Reading pLink CSMs..."
             ):

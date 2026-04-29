@@ -36,6 +36,7 @@ def read_xinet(
     sep: str = ",",
     decimal: str = ".",
     verbose: Literal[0, 1, 2] = 1,
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a xiNET exported result file.
 
@@ -54,6 +55,8 @@ def read_xinet(
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -195,7 +198,7 @@ def read_xinet(
 
     ## process data
     for input in inputs:
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         has_csms = "ScanNumber" in data and (
             "run" in data or "RawFileName" in data or "PeakListFileName" in data
         )

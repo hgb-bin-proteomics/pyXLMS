@@ -142,6 +142,7 @@ def read_maxquant(
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = "\t",
     decimal: str = ".",
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a MaxQuant result file.
 
@@ -168,6 +169,8 @@ def read_maxquant(
         Seperator used in the ``.txt`` file.
     decimal : str, default = "."
         Character to recognize as decimal point.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -234,7 +237,7 @@ def read_maxquant(
 
     ## process data
     for input in inputs:
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         xl = data.dropna(axis=0, subset=["Proteins2"])
         for i, row in tqdm(
             xl.iterrows(), total=xl.shape[0], desc="Reading MaxQuant CSMs..."
