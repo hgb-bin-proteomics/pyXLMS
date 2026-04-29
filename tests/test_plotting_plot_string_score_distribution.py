@@ -20,6 +20,7 @@ def cleanup_figures():
     plt.close(fig="all")
 
 
+@pytest.mark.external
 @pytest.mark.filterwarnings("ignore:'mode' parameter is deprecated")
 def test1():
     from pyXLMS import parser
@@ -32,6 +33,7 @@ def test1():
     assert ax is not None
 
 
+@pytest.mark.external
 @pytest.mark.filterwarnings("ignore:'mode' parameter is deprecated")
 def test2():
     from pyXLMS import parser
@@ -46,6 +48,7 @@ def test2():
     assert ax is not None
 
 
+@pytest.mark.external
 @pytest.mark.filterwarnings("ignore:'mode' parameter is deprecated")
 def test3():
     from pyXLMS import parser
