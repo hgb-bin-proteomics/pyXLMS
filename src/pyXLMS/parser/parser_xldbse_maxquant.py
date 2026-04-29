@@ -343,6 +343,7 @@ def read_maxlynx(
     modifications: Dict[str, float] = MODIFICATIONS,
     sep: str = "\t",
     decimal: str = ".",
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a MaxLynx result file.
 
@@ -369,6 +370,8 @@ def read_maxlynx(
         Seperator used in the ``.txt`` file.
     decimal : str, default = "."
         Character to recognize as decimal point.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -409,4 +412,5 @@ def read_maxlynx(
         modifications,
         sep,
         decimal,
+        **kwargs,
     )
