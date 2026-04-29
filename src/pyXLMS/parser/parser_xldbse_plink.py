@@ -257,6 +257,7 @@ def __read_plink_cross_linked_peptides_file(
             parsed_lines = f.readlines()
             f.close()
     else:
+        file.seek(0)
         parsed_lines = file.readlines()
         file.seek(0)
     if parsed_lines is None:
@@ -391,6 +392,7 @@ def detect_plink_filetype(
             parsed_lines = f.readlines()
             f.close()
     else:
+        file.seek(0)
         parsed_lines = file.readlines()
         file.seek(0)
     if parsed_lines is None:
