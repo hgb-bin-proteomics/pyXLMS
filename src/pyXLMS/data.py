@@ -91,7 +91,7 @@ def check_input_multi(
         Parameter to check class of.
     parameter_name : str
         Name of the parameter.
-    supported_class : list of any
+    supported_classes : list of any
         Classes the parameter has to be of.
     supported_subclass : any, or None, default = None
         Class of the values in case the parameter is a list or dict.

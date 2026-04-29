@@ -37,7 +37,7 @@ def parse_scan_nr_from_mzid(spectrum_id: str) -> int:
 
     Parameters
     ----------
-    title : str
+    spectrum_id : str
         The 'spectrumID' of the mass spectrum from an mzIdentML file read with ``pyteomics``.
 
     Returns
