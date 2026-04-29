@@ -78,6 +78,7 @@ def get_string_ids(
 
     Calls the STRING API to resolve common protein or gene names, synonyms, or UniProt identifiers
     and accession numbers to map them to the identifiers used internally by STRING.
+    STRING is accessible via `string-db.org <https://string-db.org>`_.
 
     Parameters
     ----------
@@ -180,6 +181,7 @@ def get_string_network(
 
     Retrieves the STRING interaction network via the STRING API for the given STRING IDs
     with interactions including the combined score and all the channel specific scores.
+    STRING is accessible via `string-db.org <https://string-db.org>`_.
 
     Parameters
     ----------
@@ -339,6 +341,7 @@ def annotate_string_scores(
 
     Annotates STRING interactions and STRING scores for inter-links based on their associated proteins.
     Takes a list of crosslink-spectrum-matches or crosslinks, or a parser_result as input.
+    STRING is accessible via `string-db.org <https://string-db.org>`_.
 
     Parameters
     ----------

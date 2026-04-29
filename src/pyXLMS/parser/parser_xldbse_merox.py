@@ -66,7 +66,7 @@ MEROX_COLNAMES = [
 
 
 def __read_merox_file(
-    file: str | BinaryIO, sep: str = ";", decimal: str = "."
+    file: str | BinaryIO, sep: str = ";", decimal: str = ".", **kwargs
 ) -> pd.DataFrame:
     r"""Helper function to read MeroX files into pandas DataFrames.
 
@@ -81,6 +81,8 @@ def __read_merox_file(
         Seperator used in the ``.csv`` or ``.zhrm`` file.
     decimal : str, default = "."
         Character to recognize as decimal point.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -104,10 +106,11 @@ def __read_merox_file(
                 sep=sep,
                 decimal=decimal,
                 low_memory=False,
+                **kwargs,
             )
     if not isinstance(file, str):
         file.seek(0)
-    return pd.read_csv(file, sep=sep, decimal=decimal, low_memory=False)
+    return pd.read_csv(file, sep=sep, decimal=decimal, low_memory=False, **kwargs)
 
 
 def __get_merox_sequence(
@@ -356,6 +359,7 @@ def read_merox(
     modifications: Dict[str, Dict[str, Any]] = MEROX_MODIFICATION_MAPPING,
     sep: str = ";",
     decimal: str = ".",
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a MeroX result file.
 
@@ -383,6 +387,8 @@ def read_merox(
         Seperator used in the ``.csv`` or ``.zhrm`` file.
     decimal : str, default = "."
         Character to recognize as decimal point.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -458,7 +464,7 @@ def read_merox(
 
     for input in inputs:
         ## reading data
-        data = __read_merox_file(input, sep=sep, decimal=decimal)  # ty: ignore[invalid-argument-type]
+        data = __read_merox_file(input, sep=sep, decimal=decimal, **kwargs)  # ty: ignore[invalid-argument-type]
         for i, row in tqdm(
             data.iterrows(),
             total=data.shape[0],

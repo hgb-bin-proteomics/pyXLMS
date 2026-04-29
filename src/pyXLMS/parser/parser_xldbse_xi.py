@@ -1060,6 +1060,7 @@ def read_xi(
     decimal: str = ".",
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a xiSearch/xiFDR result file.
 
@@ -1091,6 +1092,8 @@ def read_xi(
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -1152,7 +1155,7 @@ def read_xi(
 
     for input in inputs:
         ## reading data
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         ## detect input file type
         xi_file_type = detect_xi_filetype(data)
         ## set decoy prefix

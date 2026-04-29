@@ -8,6 +8,7 @@
 import pytest
 
 
+@pytest.mark.external
 def test1():
     from pyXLMS.transform import get_string_network
 
@@ -31,6 +32,7 @@ def test2():
     assert STRING_ORGANISMS["Pseudomonas aeruginosa PAO1"] == 208964
 
 
+@pytest.mark.external
 def test3():
     from pyXLMS.transform import get_string_ids
 
@@ -42,6 +44,7 @@ def test3():
     }
 
 
+@pytest.mark.external
 def test4():
     from pyXLMS.transform import get_string_ids
 
@@ -65,6 +68,7 @@ def test5():
         _ = get_string_ids(["p53", "BRCA1"], organism="s. pyogenes")
 
 
+@pytest.mark.external
 def test6():
     from pyXLMS.transform import get_string_network
 
@@ -86,6 +90,7 @@ def test6():
     }
 
 
+@pytest.mark.external
 def test7():
     from pyXLMS.transform import get_string_network
 
@@ -117,6 +122,7 @@ def test8():
         _ = get_string_network(["p53", "BRCA1"], organism="s. pyogenes")
 
 
+@pytest.mark.external
 def test9():
     from pyXLMS import parser
     from pyXLMS.transform import filter_crosslink_type
@@ -146,6 +152,7 @@ def test9():
     assert example["additional_information"]["pyXLMS_annotated_STRING_score"] == 0.999
 
 
+@pytest.mark.external
 def test10():
     from pyXLMS import parser
     from pyXLMS.transform import filter_crosslink_type
@@ -175,6 +182,7 @@ def test10():
     assert example["additional_information"]["pyXLMS_annotated_STRING_score"] == 0.999
 
 
+@pytest.mark.external
 def test11():
     from pyXLMS import parser
     from pyXLMS.transform import filter_crosslink_type
@@ -189,6 +197,7 @@ def test11():
         assert "pyXLMS_annotated_STRING_score" in item["additional_information"]
 
 
+@pytest.mark.external
 def test12():
     from pyXLMS import parser
     from pyXLMS.transform import filter_crosslink_type
@@ -215,6 +224,7 @@ def test13():
         _ = annotate_string_scores(["p53", "BRCA1"], organism="s. pyogenes")
 
 
+@pytest.mark.external
 def test14():
     from pyXLMS import parser
     from pyXLMS.transform import annotate_string_scores
@@ -258,6 +268,7 @@ def test16():
         _ = annotate_string_scores(intra, organism="Homo sapiens")
 
 
+@pytest.mark.external
 def test17():
     from pyXLMS import parser
     from pyXLMS.transform import annotate_string_scores

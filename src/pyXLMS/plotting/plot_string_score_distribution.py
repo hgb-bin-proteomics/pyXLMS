@@ -48,6 +48,7 @@ def plot_string_score_distribution(
 
     Plot the STRING score distribution as a barplot or histogram for inter-links of a
     set of crosslink-spectrum-matches or crosslinks.
+    STRING is accessible via `string-db.org <https://string-db.org>`_.
 
     Parameters
     ----------
