@@ -278,3 +278,187 @@ def get_available_keys(
         f"Unknown data type {data_type}. Data type must be 'crosslink' or 'crosslink-spectrum-match'!"
     )
     return {"err": True}
+
+
+def display(
+    data: Dict[str, Any],
+    show_additional_information: bool = False,
+    return_str: bool = False,
+) -> None | str:
+    r"""Pretty prints a crosslink-spectrum-match or crosslink or parser_result.
+
+    Parameters
+    ----------
+    data : dict of str, any
+        A crosslink-spectrum-match or crosslink or parser_result to display.
+    show_additional_information : bool, default = False
+        Also display data in the ``additional_information``.
+    return_str : bool, default = False
+        If the display string should be returned.
+
+    Returns
+    -------
+    None, or str
+        The display string of the crosslink-spectrum-match, crosslink, or parser_result
+        if ``return_str = True`` otherwise None.
+
+    Raises
+    ------
+    TypeError
+        If data is not a crosslink-spectrum-match, crosslink, or parser_result.
+
+    Examples
+    --------
+    >>> from pyXLMS import parser
+    >>> from pyXLMS import transform
+    >>> pr = parser.read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
+    >>> transform.display(pr)
+    Data Type:                            parser_result
+    Completeness:                         full
+    Identifying Search Engine:            MS Annika
+    Number of Crosslink-Spectrum-Matches: 826
+    Number of Crosslinks:                 300
+
+    >>> from pyXLMS import parser
+    >>> from pyXLMS import transform
+    >>> pr = parser.read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
+    >>> csms = pr["crosslink-spectrum-matches"]
+    >>> transform.display(csms[0])
+    Data Type:                          crosslink-spectrum-match
+    Completeness:                       full
+    Alpha Peptide:                      GQKNSR
+    Alpha Modifications:                {3: ('DSS', 138.06808)}
+    Alpha Peptide Crosslink Position:   3
+    Alpha Proteins:                     ['Cas9']
+    Alpha Proteins Crosslink Positions: [779]
+    Alpha Proteins Peptide Positions:   [777]
+    Alpha Peptide Score:                119.82548987540834
+    Alpha Decoy:                        False
+    Beta Peptide:                       GQKNSR
+    Beta Modifications:                 {3: ('DSS', 138.06808)}
+    Beta Peptide Crosslink Position:    3
+    Beta Proteins:                      ['Cas9']
+    Beta Proteins Crosslink Positions:  [779]
+    Beta Proteins Peptide Positions:    [777]
+    Beta Peptide Score:                 119.82547820493929
+    Beta Decoy:                         False
+    Crosslink Type:                     intra
+    CSM Score:                          119.82547820493929
+    Spectrum File:                      XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw
+    Scan Number:                        2257
+    Precursor Charge:                   3
+    Retention Time:                     733.1895599999999
+    Ion Mobility/FAIMS CV:              0.0
+
+    >>> from pyXLMS import parser
+    >>> from pyXLMS import transform
+    >>> pr = parser.read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
+    >>> xls = pr["crosslinks"]
+    >>> transform.display(xls[0])
+    Data Type:                          crosslink
+    Completeness:                       full
+    Alpha Peptide:                      GQKNSR
+    Alpha Peptide Crosslink Position:   3
+    Alpha Proteins:                     ['Cas9']
+    Alpha Proteins Crosslink Positions: [779]
+    Alpha Decoy:                        False
+    Beta Peptide:                       GQKNSR
+    Beta Peptide Crosslink Position:    3
+    Beta Proteins:                      ['Cas9']
+    Beta Proteins Crosslink Positions:  [779]
+    Beta Decoy:                         False
+    Crosslink Type:                     intra
+    Crosslink Score:                    119.82547820493929
+    """
+    _ok = check_input(data, "data", dict)
+    _ok = check_input(show_additional_information, "show_additional_information", bool)
+    if "data_type" not in data:
+        raise TypeError(
+            "Invalid input for data. Data must be a crosslink, crosslink-spectrum-match, or parser_result!"
+        )
+    data_type = data["data_type"]
+    display: str = ""
+    if data_type == "crosslink":
+        display += f"Data Type:                          {data['data_type']}\n"
+        display += f"Completeness:                       {data['completeness']}\n"
+        display += f"Alpha Peptide:                      {data['alpha_peptide']}\n"
+        display += f"Alpha Peptide Crosslink Position:   {data['alpha_peptide_crosslink_position']}\n"
+        display += f"Alpha Proteins:                     {data['alpha_proteins']}\n"
+        display += f"Alpha Proteins Crosslink Positions: {data['alpha_proteins_crosslink_positions']}\n"
+        display += f"Alpha Decoy:                        {data['alpha_decoy']}\n"
+        display += f"Beta Peptide:                       {data['beta_peptide']}\n"
+        display += f"Beta Peptide Crosslink Position:    {data['beta_peptide_crosslink_position']}\n"
+        display += f"Beta Proteins:                      {data['beta_proteins']}\n"
+        display += f"Beta Proteins Crosslink Positions:  {data['beta_proteins_crosslink_positions']}\n"
+        display += f"Beta Decoy:                         {data['beta_decoy']}\n"
+        display += f"Crosslink Type:                     {data['crosslink_type']}\n"
+        display += f"Crosslink Score:                    {data['score']}\n"
+        if show_additional_information:
+            display += f"Additional Information:             {data['additional_information']}\n"
+        display = display.strip()
+        print(display)
+        if return_str:
+            return display
+        return
+    if data_type == "crosslink-spectrum-match":
+        display += f"Data Type:                          {data['data_type']}\n"
+        display += f"Completeness:                       {data['completeness']}\n"
+        display += f"Alpha Peptide:                      {data['alpha_peptide']}\n"
+        display += f"Alpha Modifications:                {data['alpha_modifications']}\n"  # fmt: skip
+        display += f"Alpha Peptide Crosslink Position:   {data['alpha_peptide_crosslink_position']}\n"
+        display += f"Alpha Proteins:                     {data['alpha_proteins']}\n"
+        display += f"Alpha Proteins Crosslink Positions: {data['alpha_proteins_crosslink_positions']}\n"
+        display += f"Alpha Proteins Peptide Positions:   {data['alpha_proteins_peptide_positions']}\n"
+        display += f"Alpha Peptide Score:                {data['alpha_score']}\n"
+        display += f"Alpha Decoy:                        {data['alpha_decoy']}\n"
+        display += f"Beta Peptide:                       {data['beta_peptide']}\n"
+        display += f"Beta Modifications:                 {data['beta_modifications']}\n"
+        display += f"Beta Peptide Crosslink Position:    {data['beta_peptide_crosslink_position']}\n"
+        display += f"Beta Proteins:                      {data['beta_proteins']}\n"
+        display += f"Beta Proteins Crosslink Positions:  {data['beta_proteins_crosslink_positions']}\n"
+        display += f"Beta Proteins Peptide Positions:    {data['beta_proteins_peptide_positions']}\n"
+        display += f"Beta Peptide Score:                 {data['beta_score']}\n"
+        display += f"Beta Decoy:                         {data['beta_decoy']}\n"
+        display += f"Crosslink Type:                     {data['crosslink_type']}\n"
+        display += f"CSM Score:                          {data['score']}\n"
+        display += f"Spectrum File:                      {data['spectrum_file']}\n"
+        display += f"Scan Number:                        {data['scan_nr']}\n"
+        display += f"Precursor Charge:                   {data['charge']}\n"
+        display += f"Retention Time:                     {data['retention_time']}\n"
+        display += f"Ion Mobility/FAIMS CV:              {data['ion_mobility']}\n"
+        if show_additional_information:
+            display += f"Additional Information:             {data['additional_information']}\n"
+        display = display.strip()
+        print(display)
+        if return_str:
+            return display
+        return
+    if data_type == "parser_result":
+        csms = data["crosslink-spectrum-matches"]
+        xls = data["crosslinks"]
+        display += f"Data Type:                            {data['data_type']}\n"
+        display += f"Completeness:                         {data['completeness']}\n"
+        display += f"Identifying Search Engine:            {data['search_engine']}\n"
+        display += f"Number of Crosslink-Spectrum-Matches: {len(csms) if csms is not None else None}\n"
+        display += f"Number of Crosslinks:                 {len(xls) if xls is not None else None}\n"
+        display = display.strip()
+        print(display)
+        if return_str:
+            return display
+        return
+    raise TypeError(
+        f"Unknown data type {data_type}. Data type must be 'crosslink', 'crosslink-spectrum-match', or 'parser_result'!"
+    )
+    return
