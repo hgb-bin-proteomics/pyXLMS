@@ -384,6 +384,7 @@ def display(
     """
     _ok = check_input(data, "data", dict)
     _ok = check_input(show_additional_information, "show_additional_information", bool)
+    _ok = check_input(return_str, "return_str", bool)
     if "data_type" not in data:
         raise TypeError(
             "Invalid input for data. Data must be a crosslink, crosslink-spectrum-match, or parser_result!"
