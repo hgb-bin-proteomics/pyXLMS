@@ -152,11 +152,12 @@ CROSSLINKERS = {
     "DSBSO": 308.03883,
     "PhoX": 209.97181,
     "DSG": 96.0211293726,
+    "SDA": 82.041865,
 }
 r"""Dictionary of crosslinkers.
 
 Dictionary of pre-defined crosslinkers that maps crosslinker names to crosslinker delta masses.
-Currently contains `"BS3"`, `"DSS"`, `"DSSO"`, `"DSBU"`, `"ADH"`, `"DSBSO"`, `"PhoX"`, `"DSG"`.
+Currently contains `"BS3"`, `"DSS"`, `"DSSO"`, `"DSBU"`, `"ADH"`, `"DSBSO"`, `"PhoX"`, `"DSG"`, `"SDA"`.
 
 Examples
 --------

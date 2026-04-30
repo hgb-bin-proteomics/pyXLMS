@@ -712,7 +712,7 @@ def __read_xisearch(
                 __parse_int(__parse_float(p)) for p in str(row["Start1"]).split(";")
             ],
             score_a=__parse_float(row["Pep1Score"]),
-            decoy_a=get_bool_from_value(int(row["Protein1decoy"])),
+            decoy_a=get_bool_from_value(int(row["Protein1decoy"])),  # pyright: ignore[reportArgumentType]
             peptide_b=format_sequence(str(row["BasePeptide2"])),
             modifications_b=__parse_xisearch_modifications(
                 row, False, modifications, ignore_errors, verbose
@@ -734,7 +734,7 @@ def __read_xisearch(
                 __parse_int(__parse_float(p)) for p in str(row["Start2"]).split(";")
             ],
             score_b=__parse_float(row["Pep2Score"]),
-            decoy_b=get_bool_from_value(int(row["Protein2decoy"])),
+            decoy_b=get_bool_from_value(int(row["Protein2decoy"])),  # pyright: ignore[reportArgumentType]
             score=__parse_float(row["match score"]),
             spectrum_file=str(row["peakListFileName"]).strip(),
             scan_nr=__parse_int(row["Scan"]),
@@ -1060,6 +1060,7 @@ def read_xi(
     decimal: str = ".",
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a xiSearch/xiFDR result file.
 
@@ -1091,6 +1092,8 @@ def read_xi(
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -1152,7 +1155,7 @@ def read_xi(
 
     for input in inputs:
         ## reading data
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         ## detect input file type
         xi_file_type = detect_xi_filetype(data)
         ## set decoy prefix

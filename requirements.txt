@@ -11,3 +11,4 @@ streamlit
 xlsxwriter
 pyarrow
 lxml
+requests

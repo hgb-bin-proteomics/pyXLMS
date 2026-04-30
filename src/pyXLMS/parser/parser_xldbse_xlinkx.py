@@ -20,6 +20,7 @@ from ..constants import MODIFICATIONS
 from .util import format_sequence
 from .util import get_bool_from_value
 from .util import __serialize_pandas_series
+from .util import __parse_int, __parse_float
 
 from typing import Optional
 from typing import BinaryIO
@@ -141,6 +142,7 @@ def read_xlinkx(
     decimal: str = ".",
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read an XlinkX result file.
 
@@ -173,6 +175,8 @@ def read_xlinkx(
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -255,7 +259,7 @@ def read_xlinkx(
         mods = [mod.strip() for mod in modification_str.split(";")]
         parsed_mods = dict()
         for mod in mods:
-            mod_type = mod.split("(")[1].split(")")[0].strip()
+            mod_type = ")".join("(".join(mod.split("(")[1:]).split(")")[:-1]).strip()
             mod_pos = mod.split("(")[0].strip()
             if mod_type not in modifications:
                 raise KeyError(
@@ -267,7 +271,10 @@ def read_xlinkx(
             elif "Cterm" in mod_pos or "C-Term" in mod_pos:
                 parsed_mods[len(sequence)] = (mod_type, modifications[mod_type])
             else:
-                parsed_mods[int(mod_pos[1:])] = (mod_type, modifications[mod_type])
+                parsed_mods[__parse_int(mod_pos[1:])] = (
+                    mod_type,
+                    modifications[mod_type],
+                )
         return parsed_mods
 
     def get_crosslink_position_from_peptide_seq(
@@ -285,7 +292,20 @@ def read_xlinkx(
                 return i + 1
         for mod in mods:
             if xl in mod:
-                return int(mod.split("[")[1].split("]")[0][1:])
+                mod_pos: str = mod.split("[")[-1].split("]")[0].strip()
+                if "Nterm" in mod_pos or "N-Term" in mod_pos:
+                    return 0
+                if "Cterm" in mod_pos or "C-Term" in mod_pos:
+                    return len(format_sequence(sequence))
+                try:
+                    return __parse_int(mod_pos[1:])
+                except Exception as _e:
+                    pass
+                try:
+                    # legacy fallback, this should already be caught by the code above
+                    return __parse_int(mod.split("[")[1].split("]")[0][1:])
+                except Exception as _e:
+                    pass
         if verbose == 2 or not ignore_errors:
             raise RuntimeError(
                 f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!"
@@ -339,10 +359,12 @@ def read_xlinkx(
                 or file_extension == ".csv"
             ):
                 data_objects = [
-                    pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+                    pd.read_csv(
+                        input, sep=sep, decimal=decimal, low_memory=False, **kwargs
+                    )
                 ]
             elif file_extension == ".xlsx":
-                data_objects = [pd.read_excel(input, engine="openpyxl")]
+                data_objects = [pd.read_excel(input, engine="openpyxl", **kwargs)]
             elif file_extension == ".pdresult":
                 data_objects = __read_xlinkx_pdresult(input)
             else:
@@ -351,10 +373,12 @@ def read_xlinkx(
                 )
         elif format in ["csv", "tsv", "txt", "xlsx"]:
             if format == "xlsx":
-                data_objects = [pd.read_excel(input, engine="openpyxl")]
+                data_objects = [pd.read_excel(input, engine="openpyxl", **kwargs)]
             else:
                 data_objects = [
-                    pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+                    pd.read_csv(
+                        input, sep=sep, decimal=decimal, low_memory=False, **kwargs
+                    )
                 ]
         elif format == "pdresult":
             if not isinstance(input, str):
@@ -406,7 +430,7 @@ def read_xlinkx(
                             for protein in str(row["Accession A"]).split(";")
                         ],
                         xl_position_proteins_a=[
-                            adjust_protein_position(int(position))
+                            adjust_protein_position(__parse_int(position))
                             for position in str(row["Position A"]).split(";")
                         ],
                         decoy_a=get_bool_from_value(row["Is Decoy"]),
@@ -423,11 +447,11 @@ def read_xlinkx(
                             for protein in str(row["Accession B"]).split(";")
                         ],
                         xl_position_proteins_b=[
-                            adjust_protein_position(int(position))
+                            adjust_protein_position(__parse_int(position))
                             for position in str(row["Position B"]).split(";")
                         ],
                         decoy_b=get_bool_from_value(row["Is Decoy"]),
-                        score=float(row["Max. XlinkX Score"]),
+                        score=__parse_float(row["Max. XlinkX Score"]),
                         additional_information={
                             "source": __serialize_pandas_series(row)
                         },
@@ -449,7 +473,7 @@ def read_xlinkx(
                         if parse_modifications
                         else None,
                         xl_position_peptide_a=adjust_crosslink_position(
-                            int(row["Crosslinker Position A"]),
+                            __parse_int(row["Crosslinker Position A"]),
                             format_sequence(str(row["Sequence A"]).strip()),
                         ),
                         proteins_a=[
@@ -457,15 +481,15 @@ def read_xlinkx(
                             for protein in str(row["Protein Accession A"]).split(";")
                         ],
                         xl_position_proteins_a=[
-                            adjust_protein_position(int(position))
+                            adjust_protein_position(__parse_int(position))
                             for position in str(
                                 row["Leading Protein Position A"]
                             ).split(";")
                         ],
                         pep_position_proteins_a=[
-                            adjust_protein_position(int(position))
+                            adjust_protein_position(__parse_int(position))
                             - adjust_crosslink_position(
-                                int(row["Crosslinker Position A"]),
+                                __parse_int(row["Crosslinker Position A"]),
                                 format_sequence(str(row["Sequence A"]).strip()),
                             )
                             + 1
@@ -485,7 +509,7 @@ def read_xlinkx(
                         if parse_modifications
                         else None,
                         xl_position_peptide_b=adjust_crosslink_position(
-                            int(row["Crosslinker Position B"]),
+                            __parse_int(row["Crosslinker Position B"]),
                             format_sequence(str(row["Sequence B"])),
                         ),
                         proteins_b=[
@@ -493,15 +517,15 @@ def read_xlinkx(
                             for protein in str(row["Protein Accession B"]).split(";")
                         ],
                         xl_position_proteins_b=[
-                            adjust_protein_position(int(position))
+                            adjust_protein_position(__parse_int(position))
                             for position in str(
                                 row["Leading Protein Position B"]
                             ).split(";")
                         ],
                         pep_position_proteins_b=[
-                            adjust_protein_position(int(position))
+                            adjust_protein_position(__parse_int(position))
                             - adjust_crosslink_position(
-                                int(row["Crosslinker Position B"]),
+                                __parse_int(row["Crosslinker Position B"]),
                                 format_sequence(str(row["Sequence B"])),
                             )
                             + 1
@@ -513,11 +537,11 @@ def read_xlinkx(
                         decoy_b=get_bool_from_value(row["Is Decoy"])
                         if "Is Decoy" in col_names
                         else decoy,
-                        score=float(row["XlinkX Score"]),
+                        score=__parse_float(row["XlinkX Score"]),
                         spectrum_file=str(row["Spectrum File"]).strip(),
-                        scan_nr=int(row["First Scan"]),
-                        charge=int(row["Charge"]),
-                        rt=float(row["RT [min]"]) * 60.0,
+                        scan_nr=__parse_int(row["First Scan"]),
+                        charge=__parse_int(row["Charge"]),
+                        rt=__parse_float(row["RT [min]"]) * 60.0,
                         im_cv=None,
                         additional_information={
                             "source": __serialize_pandas_series(row)

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyXLMS"
-version = "1.7.5"
+version = "1.8.7"
 authors = [
   { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
 ]
@@ -35,7 +35,8 @@ dependencies = [
   "matplotlib",
   "matplotlib-venn",
   "pyarrow",
-  "lxml"
+  "lxml",
+  "requests"
 ]
 
 [project.optional-dependencies]
@@ -53,11 +54,13 @@ docs = [
 dev = [
   "streamlit>=1.50.0",
   "xlsxwriter",
+  "jupyterlab",
   "sphinx",
   "pydata-sphinx-theme",
   "myst-parser",
   "sphinx-copybutton",
   "uv",
+  "ty",
   "ruff",
   "pyright",
   "pytest",

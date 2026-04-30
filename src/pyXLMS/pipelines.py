@@ -37,6 +37,7 @@ def pipeline(
         "pLink",
         "Scout",
         "xiSearch/xiFDR",
+        "xiNET/xiVIEW",
         "XlinkX",
     ],
     crosslinker: str,
@@ -57,7 +58,7 @@ def pipeline(
     ----------
     files : str, list of str, or file stream
         The name/path of the result file(s) or a file-like object/stream.
-    engine : "Custom", "MaxQuant", "MaxLynx", "MeroX", "MS Annika", "mzIdentML", "pLink", "Scout", "xiSearch/xiFDR", or "XlinkX"
+    engine : "Custom", "MaxQuant", "MaxLynx", "MeroX", "MS Annika", "mzIdentML", "pLink", "Scout", "xiSearch/xiFDR", "xiNET/xiVIEW", or "XlinkX"
         Crosslink search engine or format of the result file.
     crosslinker : str
         Name of the used cross-linking reagent, for example "DSSO".
@@ -148,15 +149,15 @@ def pipeline(
             unique_params.update(unique)
             pr = transform_unique(
                 pr,
-                by=str(unique_params["by"]),  # pyright: ignore[reportArgumentType]
-                score=str(unique_params["score"]),  # pyright: ignore[reportArgumentType]
+                by=str(unique_params["by"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
+                score=str(unique_params["score"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
             )
         elif isinstance(unique, bool):
             if unique:
                 pr = transform_unique(
                     pr,
-                    by=str(unique_params["by"]),  # pyright: ignore[reportArgumentType]
-                    score=str(unique_params["score"]),  # pyright: ignore[reportArgumentType]
+                    by=str(unique_params["by"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
+                    score=str(unique_params["score"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
                 )
         else:
             raise TypeError(
@@ -176,8 +177,8 @@ def pipeline(
             pr = transform_validate(
                 pr,
                 fdr=float(validate_params["fdr"]),
-                formula=str(validate_params["formula"]),  # pyright: ignore[reportArgumentType]
-                score=str(validate_params["score"]),  # pyright: ignore[reportArgumentType]
+                formula=str(validate_params["formula"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
+                score=str(validate_params["score"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
                 separate_intra_inter=bool(validate_params["separate_intra_inter"]),
                 ignore_missing_labels=bool(validate_params["ignore_missing_labels"]),
             )
@@ -186,8 +187,8 @@ def pipeline(
                 pr = transform_validate(
                     pr,
                     fdr=float(validate_params["fdr"]),
-                    formula=str(validate_params["formula"]),  # pyright: ignore[reportArgumentType]
-                    score=str(validate_params["score"]),  # pyright: ignore[reportArgumentType]
+                    formula=str(validate_params["formula"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
+                    score=str(validate_params["score"]),  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
                     separate_intra_inter=bool(validate_params["separate_intra_inter"]),
                     ignore_missing_labels=bool(
                         validate_params["ignore_missing_labels"]

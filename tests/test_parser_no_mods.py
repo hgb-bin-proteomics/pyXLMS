@@ -101,6 +101,10 @@ NOT_SUPPORTED = {
         "engine": "mzIdentML",
         "crosslinker": "DSSO",
     },
+    "data/xiview/DDX39B_LCSDA_shared_links_open_clamped.csv": {
+        "engine": "xiNET/xiVIEW",
+        "crosslinker": "SDA",
+    },
 }
 
 

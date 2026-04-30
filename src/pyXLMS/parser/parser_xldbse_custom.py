@@ -17,6 +17,7 @@ from ..data import create_parser_result
 from .util import format_sequence
 from .util import get_bool_from_value
 from .util import __serialize_pandas_series
+from .util import __parse_int, __parse_float
 
 from typing import Optional
 from typing import BinaryIO
@@ -70,9 +71,9 @@ def pyxlms_modification_str_parser(modifications: str) -> Dict[int, Tuple[str, f
     """
     parsed_modifications = dict()
     for mod in modifications.split(";"):
-        pos = int(mod.split("(")[1].split(":")[0])
+        pos = __parse_int(mod.split("(")[1].split(":")[0])
         desc = mod.split("[")[1].split("|")[0].strip()
-        mass = float(mod.split("|")[1].split("]")[0])
+        mass = __parse_float(mod.split("|")[1].split("]")[0])
         # if this is really in pyXLMS format we don't need to check
         # if pos already exists, because that is impossible
         # but if the parser is used for other formats that recreate the
@@ -122,6 +123,7 @@ def read_custom(
     format: Literal["auto", "csv", "txt", "tsv", "parquet", "xlsx"] = "auto",
     sep: str = ",",
     decimal: str = ".",
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a custom or pyXLMS result file.
 
@@ -168,6 +170,8 @@ def read_custom(
         Seperator used in the ``.csv`` or ``.tsv`` file. Parameter is ignored if the file is in ``.xlsx`` format.
     decimal : str, default = "."
         Character to recognize as decimal point. Parameter is ignored if the file is in ``.xlsx`` format.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -228,7 +232,7 @@ def read_custom(
         if value is None:
             return None
         try:
-            return int(value)
+            return __parse_int(value)
         except Exception as _e:
             pass
         raise TypeError(f"Could not parse int from value {value}!")
@@ -238,7 +242,7 @@ def read_custom(
         if value is None:
             return None
         try:
-            return float(value)
+            return __parse_float(value)
         except Exception as _e:
             pass
         raise TypeError(f"Could not parse float from value {value}!")
@@ -273,22 +277,26 @@ def read_custom(
                 or file_extension == ".tsv"
                 or file_extension == ".csv"
             ):
-                data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+                data = pd.read_csv(
+                    input, sep=sep, decimal=decimal, low_memory=False, **kwargs
+                )
             elif file_extension == ".parquet":
-                data = pd.read_parquet(input)
+                data = pd.read_parquet(input, **kwargs)
             elif file_extension == ".xlsx":
-                data = pd.read_excel(input, engine="openpyxl")
+                data = pd.read_excel(input, engine="openpyxl", **kwargs)
             else:
                 raise ValueError(
                     f"Detected file extension {file_extension} is not supported! Input file has to be a valid file with extension '.csv', '.tsv', '.parquet' or '.xlsx'!"
                 )
         elif format in ["csv", "tsv", "txt", "parquet", "xlsx"]:
             if format == "xlsx":
-                data = pd.read_excel(input, engine="openpyxl")
+                data = pd.read_excel(input, engine="openpyxl", **kwargs)
             elif format == "parquet":
-                data = pd.read_parquet(input)
+                data = pd.read_parquet(input, **kwargs)
             else:
-                data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+                data = pd.read_csv(
+                    input, sep=sep, decimal=decimal, low_memory=False, **kwargs
+                )
         else:
             raise ValueError(
                 f"Provided input format {format} is not supported! Input format has to be of type 'csv', 'tsv', 'parquet' or 'xlsx'!"
@@ -317,7 +325,9 @@ def read_custom(
                 # create crosslink
                 crosslink = create_crosslink(
                     peptide_a=format_sequence(str(row["Alpha Peptide"])),
-                    xl_position_peptide_a=int(row["Alpha Peptide Crosslink Position"]),
+                    xl_position_peptide_a=__parse_int(
+                        row["Alpha Peptide Crosslink Position"]
+                    ),
                     proteins_a=[
                         protein.strip()
                         if protein.strip()[: len(decoy_prefix)] != decoy_prefix
@@ -329,7 +339,7 @@ def read_custom(
                     if __get_value(row, "Alpha Proteins") is not None
                     else None,
                     xl_position_proteins_a=[
-                        int(position)
+                        __parse_int(position)
                         for position in str(
                             __get_value(row, "Alpha Proteins Crosslink Positions")
                         ).split(";")
@@ -339,7 +349,9 @@ def read_custom(
                     else None,
                     decoy_a=get_is_decoy_value(row, decoy_prefix, True),
                     peptide_b=format_sequence(str(row["Beta Peptide"])),
-                    xl_position_peptide_b=int(row["Beta Peptide Crosslink Position"]),
+                    xl_position_peptide_b=__parse_int(
+                        row["Beta Peptide Crosslink Position"]
+                    ),
                     proteins_b=[
                         protein.strip()
                         if protein.strip()[: len(decoy_prefix)] != decoy_prefix
@@ -349,7 +361,7 @@ def read_custom(
                     if __get_value(row, "Beta Proteins") is not None
                     else None,
                     xl_position_proteins_b=[
-                        int(position)
+                        __parse_int(position)
                         for position in str(
                             __get_value(row, "Beta Proteins Crosslink Positions")
                         ).split(";")
@@ -376,7 +388,9 @@ def read_custom(
                     if parse_modifications
                     and __get_value(row, "Alpha Peptide Modifications") is not None
                     else None,
-                    xl_position_peptide_a=int(row["Alpha Peptide Crosslink Position"]),
+                    xl_position_peptide_a=__parse_int(
+                        row["Alpha Peptide Crosslink Position"]
+                    ),
                     proteins_a=[
                         protein.strip()
                         if protein.strip()[: len(decoy_prefix)] != decoy_prefix
@@ -388,7 +402,7 @@ def read_custom(
                     if __get_value(row, "Alpha Proteins") is not None
                     else None,
                     xl_position_proteins_a=[
-                        int(position)
+                        __parse_int(position)
                         for position in str(
                             __get_value(row, "Alpha Proteins Crosslink Positions")
                         ).split(";")
@@ -397,7 +411,7 @@ def read_custom(
                     is not None
                     else None,
                     pep_position_proteins_a=[
-                        int(position)
+                        __parse_int(position)
                         for position in str(
                             __get_value(row, "Alpha Proteins Peptide Positions")
                         ).split(";")
@@ -413,7 +427,9 @@ def read_custom(
                     if parse_modifications
                     and __get_value(row, "Beta Peptide Modifications") is not None
                     else None,
-                    xl_position_peptide_b=int(row["Beta Peptide Crosslink Position"]),
+                    xl_position_peptide_b=__parse_int(
+                        row["Beta Peptide Crosslink Position"]
+                    ),
                     proteins_b=[
                         protein.strip()
                         if protein.strip()[: len(decoy_prefix)] != decoy_prefix
@@ -423,7 +439,7 @@ def read_custom(
                     if __get_value(row, "Beta Proteins") is not None
                     else None,
                     xl_position_proteins_b=[
-                        int(position)
+                        __parse_int(position)
                         for position in str(
                             __get_value(row, "Beta Proteins Crosslink Positions")
                         ).split(";")
@@ -431,7 +447,7 @@ def read_custom(
                     if __get_value(row, "Beta Proteins Crosslink Positions") is not None
                     else None,
                     pep_position_proteins_b=[
-                        int(position)
+                        __parse_int(position)
                         for position in str(
                             __get_value(row, "Beta Proteins Peptide Positions")
                         ).split(";")
@@ -442,7 +458,7 @@ def read_custom(
                     decoy_b=get_is_decoy_value(row, decoy_prefix, False),
                     score=get_float(__get_value(row, "CSM Score")),
                     spectrum_file=str(row["Spectrum File"]).strip(),
-                    scan_nr=int(row["Scan Nr"]),
+                    scan_nr=__parse_int(row["Scan Nr"]),
                     charge=get_int(__get_value(row, "Precursor Charge")),
                     rt=get_float(__get_value(row, "Retention Time")),
                     im_cv=get_float(__get_value(row, "Ion Mobility")),

@@ -1,0 +1,13 @@
+[terminal]
+error-on-warning = true
+output-format = "full"
+
+[analysis]
+respect-type-ignore-comments = false
+
+[rules]
+all = "error"
+
+[environment]
+python-platform = "all"
+python-version = "3.12"

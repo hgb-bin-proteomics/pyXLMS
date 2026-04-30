@@ -18,6 +18,7 @@ from ..constants import SCOUT_MODIFICATION_MAPPING
 from .util import format_sequence
 from .util import get_bool_from_value
 from .util import __serialize_pandas_series
+from .util import __parse_int, __parse_float
 
 from typing import Optional
 from typing import BinaryIO
@@ -226,6 +227,8 @@ def __read_scout_csms_unfiltered(
     """
     csms = list()
     xl = data.dropna(axis=0, subset=["AlphaPeptide", "BetaPeptide"])
+    if "Type" in xl.columns:
+        xl = xl[xl["Type"] != "LoopLink"]
     for i, row in tqdm(
         xl.iterrows(), total=xl.shape[0], desc="Reading Scout unfiltered CSMs..."
     ):
@@ -233,7 +236,7 @@ def __read_scout_csms_unfiltered(
             peptide_a=format_sequence(str(row["AlphaPeptide"])),
             modifications_a=parse_modifications_from_scout_sequence(
                 str(row["AlphaPeptide"]),
-                int(row["AlphaPos"]) + 1,
+                __parse_int(row["AlphaPos"]) + 1,
                 crosslinker,
                 crosslinker_mass,
                 modifications,
@@ -241,18 +244,18 @@ def __read_scout_csms_unfiltered(
             )
             if parse_modifications
             else None,
-            xl_position_peptide_a=int(row["AlphaPos"]) + 1,
+            xl_position_peptide_a=__parse_int(row["AlphaPos"]) + 1,
             proteins_a=[
                 protein.strip() for protein in str(row["AlphaMappings"]).split(";")
             ],
             xl_position_proteins_a=None,
             pep_position_proteins_a=None,
-            score_a=float(row["AlphaScore"]),
+            score_a=__parse_float(row["AlphaScore"]),
             decoy_a=str(row["Class"]).strip() in ["FullDecoy", "BetaTarget"],
             peptide_b=format_sequence(str(row["BetaPeptide"])),
             modifications_b=parse_modifications_from_scout_sequence(
                 str(row["BetaPeptide"]),
-                int(row["BetaPos"]) + 1,
+                __parse_int(row["BetaPos"]) + 1,
                 crosslinker,
                 crosslinker_mass,
                 modifications,
@@ -260,35 +263,35 @@ def __read_scout_csms_unfiltered(
             )
             if parse_modifications
             else None,
-            xl_position_peptide_b=int(row["BetaPos"]) + 1,
+            xl_position_peptide_b=__parse_int(row["BetaPos"]) + 1,
             proteins_b=[
                 protein.strip() for protein in str(row["BetaMappings"]).split(";")
             ],
             xl_position_proteins_b=None,
             pep_position_proteins_b=None,
-            score_b=float(row["BetaScore"]),
+            score_b=__parse_float(row["BetaScore"]),
             decoy_b=str(row["Class"]) in ["FullDecoy", "AlphaTarget"],
-            score=float(row["XLScore"]),
+            score=__parse_float(row["XLScore"]),
             spectrum_file=str(row["FileName"]).strip(),
-            scan_nr=int(row["ScanNumber"]),
-            charge=int(row["Charge"]),
+            scan_nr=__parse_int(row["ScanNumber"]),
+            charge=__parse_int(row["Charge"]),
             rt=None,
             im_cv=None,
             additional_information={
                 "source": __serialize_pandas_series(row),
-                "ClassificationScore": float(row["ClassificationScore"])
+                "ClassificationScore": __parse_float(row["ClassificationScore"])
                 if "ClassificationScore" in row.index
                 else None,
-                "XlinkxAlpha": float(row["XlinkxAlpha"])
+                "XlinkxAlpha": __parse_float(row["XlinkxAlpha"])
                 if "XlinkxAlpha" in row.index
                 else None,
-                "XlinkxBeta": float(row["XlinkxBeta"])
+                "XlinkxBeta": __parse_float(row["XlinkxBeta"])
                 if "XlinkxBeta" in row.index
                 else None,
-                "XlinkxScore": float(row["XlinkxScore"])
+                "XlinkxScore": __parse_float(row["XlinkxScore"])
                 if "XlinkxScore" in row.index
                 else None,
-                "PoissonScore": float(row["PoissonScore"])
+                "PoissonScore": __parse_float(row["PoissonScore"])
                 if "PoissonScore" in row.index
                 else None,
             },
@@ -364,9 +367,9 @@ def __read_scout_csms_filtered(
             else str(row["Beta peptide"]).strip()
         )
         crosslink_position = (
-            int(row["Alpha peptide position"])
+            __parse_int(row["Alpha peptide position"])
             if alpha
-            else int(row["Beta peptide position"])
+            else __parse_int(row["Beta peptide position"])
         )
         if alpha and "Alpha modification(s)" not in row.index:
             return parse_modifications_from_scout_sequence(
@@ -425,7 +428,7 @@ def __read_scout_csms_filtered(
             ):
                 pos = len(sequence)
             else:
-                pos = int(rpos[1:])
+                pos = __parse_int(rpos[1:])
             if mod_key not in modifications:
                 raise KeyError(
                     f"Key {mod_key} not found in parameter 'modifications'. Are you missing a modification?"
@@ -433,7 +436,7 @@ def __read_scout_csms_filtered(
             if pos in parsed_modifications:
                 err_str = (
                     f"Modification at position {pos} already exists!\n"
-                    f"CSM Scan Number: {int(row['Scan'])}!\n"
+                    f"CSM Scan Number: {__parse_int(row['Scan'])}!\n"
                     f"Sequence: {sequence}, Crosslink position: {crosslink_position}, Modifications: {';'.join(mods)}"
                 )
                 if verbose == 1:
@@ -465,16 +468,17 @@ def __read_scout_csms_filtered(
             )
             if parse_modifications
             else None,
-            xl_position_peptide_a=int(row["Alpha peptide position"]),
+            xl_position_peptide_a=__parse_int(row["Alpha peptide position"]),
             proteins_a=[
                 protein.strip()
                 for protein in str(row["Alpha protein mapping(s)"]).split(";")
             ],
             xl_position_proteins_a=[
-                int(pos) for pos in str(row["Alpha protein(s) position(s)"]).split(";")
+                __parse_int(pos)
+                for pos in str(row["Alpha protein(s) position(s)"]).split(";")
             ],
             pep_position_proteins_a=[
-                int(pos) - int(row["Alpha peptide position"]) + 1
+                __parse_int(pos) - __parse_int(row["Alpha peptide position"]) + 1
                 for pos in str(row["Alpha protein(s) position(s)"]).split(";")
             ],
             score_a=None,
@@ -490,24 +494,25 @@ def __read_scout_csms_filtered(
             )
             if parse_modifications
             else None,
-            xl_position_peptide_b=int(row["Beta peptide position"]),
+            xl_position_peptide_b=__parse_int(row["Beta peptide position"]),
             proteins_b=[
                 protein.strip()
                 for protein in str(row["Beta protein mapping(s)"]).split(";")
             ],
             xl_position_proteins_b=[
-                int(pos) for pos in str(row["Beta protein(s) position(s)"]).split(";")
+                __parse_int(pos)
+                for pos in str(row["Beta protein(s) position(s)"]).split(";")
             ],
             pep_position_proteins_b=[
-                int(pos) - int(row["Beta peptide position"]) + 1
+                __parse_int(pos) - __parse_int(row["Beta peptide position"]) + 1
                 for pos in str(row["Beta protein(s) position(s)"]).split(";")
             ],
             score_b=None,
             decoy_b=get_bool_from_value(row["IsDecoy"]),
-            score=float(row["Score"]),
+            score=__parse_float(row["Score"]),
             spectrum_file=str(row["File"]).strip(),
-            scan_nr=int(row["Scan"]),
-            charge=int(row["Precursor charge"]),
+            scan_nr=__parse_int(row["Scan"]),
+            charge=__parse_int(row["Precursor charge"]),
             rt=None,
             im_cv=None,
             additional_information={"source": __serialize_pandas_series(row)},
@@ -540,26 +545,28 @@ def __read_scout_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
     ):
         crosslink = create_crosslink(
             peptide_a=format_sequence(str(row["Alpha peptide"])),
-            xl_position_peptide_a=int(row["Alpha peptide position"]),
+            xl_position_peptide_a=__parse_int(row["Alpha peptide position"]),
             proteins_a=[
                 protein.strip()
                 for protein in str(row["Alpha protein mapping(s)"]).split(";")
             ],
             xl_position_proteins_a=[
-                int(pos) for pos in str(row["Alpha protein(s) position(s)"]).split(";")
+                __parse_int(pos)
+                for pos in str(row["Alpha protein(s) position(s)"]).split(";")
             ],
             decoy_a=get_bool_from_value(row["IsDecoy"]),
             peptide_b=format_sequence(str(row["Beta peptide"])),
-            xl_position_peptide_b=int(row["Beta peptide position"]),
+            xl_position_peptide_b=__parse_int(row["Beta peptide position"]),
             proteins_b=[
                 protein.strip()
                 for protein in str(row["Beta protein mapping(s)"]).split(";")
             ],
             xl_position_proteins_b=[
-                int(pos) for pos in str(row["Beta protein(s) position(s)"]).split(";")
+                __parse_int(pos)
+                for pos in str(row["Beta protein(s) position(s)"]).split(";")
             ],
             decoy_b=get_bool_from_value(row["IsDecoy"]),
-            score=float(row["Score"]),
+            score=__parse_float(row["Score"]),
             additional_information={"source": __serialize_pandas_series(row)},
         )
         crosslinks.append(crosslink)
@@ -575,6 +582,7 @@ def read_scout(
     sep: str = ",",
     decimal: str = ".",
     verbose: Literal[0, 1, 2] = 1,
+    **kwargs,
 ) -> Dict[str, Any]:
     r"""Read a Scout result file.
 
@@ -604,6 +612,8 @@ def read_scout(
         - 0: All warnings are ignored.
         - 1: Warnings are printed to stdout.
         - 2: Warnings are treated as errors.
+    **kwargs
+        Any additional parameters will be passed to ``pandas.read*``.
 
     Returns
     -------
@@ -693,7 +703,7 @@ def read_scout(
 
     for input in inputs:
         ## reading data
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         ## detect input file type
         scout_file_type = detect_scout_filetype(data)
         ## process data
