@@ -522,7 +522,7 @@ def annotate_string_scores(
             return data
         else:
             raise TypeError(
-                f"Can't reannotate decoy labels for data type {data[0]['data_type']}. Valid data types are:\n"
+                f"Can't annotate STRING scores for data type {data[0]['data_type']}. Valid data types are:\n"
                 "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
             )
         return data
