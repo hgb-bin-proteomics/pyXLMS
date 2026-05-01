@@ -310,3 +310,108 @@ def test11():
     assert k["retention_time"]
     assert k["ion_mobility"]
     assert k["additional_information"]
+
+
+def test12():
+    from pyXLMS import parser
+    from pyXLMS import transform
+
+    pr = parser.read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    assert transform.display(pr, return_str=True) == (
+        """Data Type:                            parser_result
+Completeness:                         full
+Identifying Search Engine:            MS Annika
+Number of Crosslink-Spectrum-Matches: 826
+Number of Crosslinks:                 300"""
+    )
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert transform.display(csms[0], return_str=True) == (
+        """Data Type:                          crosslink-spectrum-match
+Completeness:                       full
+Alpha Peptide:                      GQKNSR
+Alpha Modifications:                {3: ('DSS', 138.06808)}
+Alpha Peptide Crosslink Position:   3
+Alpha Proteins:                     ['Cas9']
+Alpha Proteins Crosslink Positions: [779]
+Alpha Proteins Peptide Positions:   [777]
+Alpha Peptide Score:                119.82548987540834
+Alpha Decoy:                        False
+Beta Peptide:                       GQKNSR
+Beta Modifications:                 {3: ('DSS', 138.06808)}
+Beta Peptide Crosslink Position:    3
+Beta Proteins:                      ['Cas9']
+Beta Proteins Crosslink Positions:  [779]
+Beta Proteins Peptide Positions:    [777]
+Beta Peptide Score:                 119.82547820493929
+Beta Decoy:                         False
+Crosslink Type:                     intra
+CSM Score:                          119.82547820493929
+Spectrum File:                      XLpeplib_Beveridge_QEx-HFX_DSS_R1.raw
+Scan Number:                        2257
+Precursor Charge:                   3
+Retention Time:                     733.1895599999999
+Ion Mobility/FAIMS CV:              0.0"""
+    )
+
+    xls = pr["crosslinks"]
+    assert transform.display(xls[0], return_str=True) == (
+        """Data Type:                          crosslink
+Completeness:                       full
+Alpha Peptide:                      GQKNSR
+Alpha Peptide Crosslink Position:   3
+Alpha Proteins:                     ['Cas9']
+Alpha Proteins Crosslink Positions: [779]
+Alpha Decoy:                        False
+Beta Peptide:                       GQKNSR
+Beta Peptide Crosslink Position:    3
+Beta Proteins:                      ['Cas9']
+Beta Proteins Crosslink Positions:  [779]
+Beta Decoy:                         False
+Crosslink Type:                     intra
+Crosslink Score:                    119.82547820493929"""
+    )
+
+
+def test13():
+    from pyXLMS import parser
+    from pyXLMS import transform
+
+    pr = parser.read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    assert isinstance(
+        transform.display(pr, show_additional_information=True, return_str=True), str
+    )
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert "Additional Information" in transform.display(
+        csms[0], show_additional_information=True, return_str=True
+    )
+    xls = pr["crosslinks"]
+    assert "Additional Information" in transform.display(
+        xls[0], show_additional_information=True, return_str=True
+    )
+
+
+def test14():
+    from pyXLMS import parser
+    from pyXLMS import transform
+
+    pr = parser.read(
+        "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+        engine="MS Annika",
+        crosslinker="DSS",
+    )
+    assert transform.display(pr) is None
+
+    csms = pr["crosslink-spectrum-matches"]
+    assert transform.display(csms[0]) is None
+    xls = pr["crosslinks"]
+    assert transform.display(xls[0]) is None

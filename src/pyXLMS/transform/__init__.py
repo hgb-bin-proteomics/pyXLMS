@@ -30,6 +30,7 @@ __all__ = [
     "get_string_ids",
     "get_string_network",
     "annotate_string_scores",
+    "display",
 ]
 
 from .util import modifications_to_str
@@ -57,3 +58,4 @@ from .filter import filter_residue_pair_distribution
 from .annotate_string_scores import get_string_ids
 from .annotate_string_scores import get_string_network
 from .annotate_string_scores import annotate_string_scores
+from .util import display

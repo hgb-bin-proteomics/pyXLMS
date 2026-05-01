@@ -376,18 +376,18 @@ def annotate_string_scores(
     KeyError
         If the organism could not be resolved to a taxon identifier.
     RuntimeError
-        If not all of the provided data does have associated proteins.
+        If ``verbose = 2`` and not all of the provided data does have associated proteins.
     RuntimeError
-        If data with more than 2000 proteins/STRING IDs is provided.
+        If ``verbose = 2`` and data with more than 2000 proteins/STRING IDs is provided.
     RuntimeError
         If ``verbose = 2`` and the API request failed.
 
     Warns
     -----
     RuntimeWarning
-        If not all of the provided data does have associated proteins.
+        If ``verbose = 1`` and not all of the provided data does have associated proteins.
     RuntimeWarning
-        If data with more than 2000 proteins/STRING IDs is provided.
+        If ``verbose = 1`` and data with more than 2000 proteins/STRING IDs is provided.
     RuntimeWarning
         If ``verbose = 1`` and the API request failed.
 
@@ -522,7 +522,7 @@ def annotate_string_scores(
             return data
         else:
             raise TypeError(
-                f"Can't reannotate decoy labels for data type {data[0]['data_type']}. Valid data types are:\n"
+                f"Can't annotate STRING scores for data type {data[0]['data_type']}. Valid data types are:\n"
                 "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
             )
         return data

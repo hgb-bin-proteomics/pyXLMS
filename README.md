@@ -1,12 +1,12 @@
 # pyXLMS
 _a python package to process protein cross-linking data_
 
-<img src="https://github.com/hgb-bin-proteomics/pyXLMS/raw/master/docs/logo/logo_padded_shadow.png" align="left" width="200px" style="padding: 5px 20px 10px 20px;"/>
+<img src="https://github.com/hgb-bin-proteomics/pyXLMS/raw/master/docs/logo/logo_padded_shadow.png" class="dark-light" align="left" width="200px" style="padding: 5px 20px 10px 20px;"/>
 
 **pyXLMS** is a python package and web application with graphical user interface that aims to simplify and streamline the intermediate step of
 connecting crosslink search engine results with down-stream analysis tools, enabling researchers even without bioinformatics knowledge to
 conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
-insight. Currently pyXLMS supports input from seven different crosslink search engines:
+insight. Currently pyXLMS supports input from several different crosslink search engines including:
 [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
 [MeroX](https://www.stavrox.com/),
 [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
@@ -31,7 +31,7 @@ or [IMP-X-FDR](https://github.com/vbc-proteomics-org/imp-x-fdr).
 
 ## Installation
 
-pyXLMS supports python version 3.7 and greater!
+pyXLMS supports python **version 3.7 and greater**!
 
 pyXLMS can easily be installed via pip:
 ```
@@ -69,6 +69,8 @@ Maximum CSM score: 452.99
 ... )
 ```
 
+_For python projects using pyXLMS we also provide a project [template](https://github.com/hgb-bin-proteomics/pyXLMS-template)!_
+
 ## Web App
 
 The web app is publicly accessible for free via [hgb-bin-proteomics.github.io/pyXLMS-app](https://hgb-bin-proteomics.github.io/pyXLMS-app).
@@ -80,6 +82,30 @@ Additionally, it can be run locally or self-hosted as described here: [pyXLMS We
 - A user guide that documents all available functionality is available via [hgb-bin-proteomics.github.io/pyXLMS-docs](https://hgb-bin-proteomics.github.io/pyXLMS-docs).
 - Example jupyter notebooks can be found in `/examples`.
 - A full documentation of the python package can be accessed via [hgb-bin-proteomics.github.io/pyXLMS](https://hgb-bin-proteomics.github.io/pyXLMS).
+
+## FAQ
+
+Not sure if pyXLMS is what you are looking for? You can find a collection of common questions and answers about pyXLMS
+[here](https://github.com/hgb-bin-proteomics/pyXLMS/discussions/categories/q-a) or in the
+[user guide](https://hgb-bin-proteomics.github.io/pyXLMS-docs) under `Documentation` ➡️ `FAQ`.
+
+## Limitations
+
+Despite our best efforts pyXLMS still comes with some limitations that are a direct result of the differences in the output formats of crosslink search engines.
+Many crosslink search engines do not report any kind of decoy matches which makes validation in pyXLMS or export to xiFDR impossible which is why **we recommend**
+**using validated results for pyXLMS**. Validation within pyXLMS is currently only supported for MaxLynx, MS Annika, and xiSearch.
+
+Furthermore, the different down-stream
+analysis tools require varying input information which might not be consistently available from all crosslink search engines. Some of this can be mitigated by functionality
+in pyXLMS such as annotation or by additional information that needs to be passed to pyXLMS for a successful export. Generally, the export to all downstream analysis tools
+should work for all crosslink search engines and input formats, with the exception of the export to xiFDR which is limited to MaxLynx, MS Annika, and xiSearch for above reasons.
+For safety pyXLMS makes sure before the export that all the required information is available and will otherwise throw an error. For more information please check the specific
+export pages in the [user guide](https://hgb-bin-proteomics.github.io/pyXLMS-docs) and the [documentation](https://hgb-bin-proteomics.github.io/pyXLMS).
+
+The web app supports most of the features of the python package, features that are not supported in the web app are listed in the [user guide](https://hgb-bin-proteomics.github.io/pyXLMS-docs)
+under `Documentation` ➡️ `Web Application` ➡️ `Feature Support`.
+
+Interacting with [STRING](https://string-db.org/) requires an active internet connection and depends on the service availability of STRING.
 
 ## Citing
 

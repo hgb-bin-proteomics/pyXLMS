@@ -15,7 +15,7 @@ project = "pyXLMS"
 copyright = "2025, Bioinformatics Research Group, FH Oberösterreich Campus Hagenberg"
 author = "Micha Johannes Birklbauer"
 version = "1.8"
-release = "1.8.7"
+release = "1.8.8"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -95,5 +95,5 @@ html_context = {
     "github_repo": "pyXLMS",
     "github_version": "master",
     "doc_path": "sphinx",
-    "default_mode": "light",
+    "default_mode": "auto",
 }

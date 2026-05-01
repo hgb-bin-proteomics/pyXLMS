@@ -284,3 +284,18 @@ def test17():
         match=r"More than 2000 proteins/STRING IDs specified: 17295. Please reduce the number of proteins for a successful request!",
     ):
         _ = annotate_string_scores(xls, organism="Homo sapiens", verbose=2)
+
+
+@pytest.mark.external
+def test18():
+    from pyXLMS import parser
+    from pyXLMS.transform import filter_crosslink_type
+    from pyXLMS.transform import annotate_string_scores
+
+    pr = parser.read_custom("data/ms_annika/Nucleus_Rep1_CSMs.parquet")
+    csms = pr["crosslink-spectrum-matches"]
+    csms = annotate_string_scores(csms, organism="Homo sapiens")
+    inter = filter_crosslink_type(csms)["Inter"]
+    for item in inter:
+        assert "pyXLMS_annotated_STRING_interactions" in item["additional_information"]
+        assert "pyXLMS_annotated_STRING_score" in item["additional_information"]

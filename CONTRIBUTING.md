@@ -27,16 +27,22 @@ there are a few guidelines for code contributions:
   - All data remains easy to serialize
 - Preferably your code follows this functional-oriented style.
 - Code needs to be type-hinted and type-checked.
-  - Type-checking is done with `pyright`.
+  - We use [ty](https://docs.astral.sh/ty/) for type-checking.
+  - Type-checking is done with `ty check`.
   - `ignore` flags may be used when there is a clear issue with the type checker.
 - Code needs to pass linting and adhere to the formatting style.
+  - We use [ruff](https://docs.astral.sh/ruff/) for linting and formatting.
   - Linting is done with `ruff check`.
   - Formatting is done with `ruff format`.
 - Every function and object needs to be sufficiently documented.
 - Every function and object needs to have sufficient tests.
 - Every public function and object needs to have examples.
-- **Pull requests should be based on and target branch 'develop'. Merging directly**
+- **Pull requests should be based on and target the 'develop' branch. Merging directly**
   **into 'master' is not allowed.**
+- Please run [pytest](https://docs.pytest.org/en/stable/) before opening a pull request:
+  ```bash
+  pytest -c pytest.ini --runslow --runext tests/
+  ```
 - Pull requests must pass all GitHub actions checks.
 - If a new parser is implemented, make sure to update `parser.read()` and
   `pipelines.pipeline()`.

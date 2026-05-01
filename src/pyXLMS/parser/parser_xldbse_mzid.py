@@ -113,8 +113,6 @@ def read_mzid(
     RuntimeError
         If the file(s) could not be read or if the file(s) contain no crosslink-spectrum-matches.
     RuntimeError
-        If parser is used with ``verbose = 2``.
-    RuntimeError
         If there are warnings while reading the mzIdentML file (only for ``verbose = 2``).
     TypeError
         If parameter verbose was not set correctly.
@@ -124,12 +122,6 @@ def read_mzid(
 
     Notes
     -----
-    This parser is still a bit experimental, as I am not completely sure the mzIdentML structure is consistent accross all
-    different crosslink search engines. This parser was tested with mzIdentML files from MS Annika, XlinkX, and Scout
-    using mzIdentML versions 1.2 and 1.3!
-
-    Warnings
-    --------
     This parser only guarantees minimal data because some information might not be available from the mzIdentML file.
     The guaranteed available data is:
 
@@ -173,20 +165,6 @@ def read_mzid(
     ## set default parsers
     if scan_nr_parser is None:
         scan_nr_parser = parse_scan_nr_from_mzid
-
-    ## warning message
-    if verbose == 1:
-        warnings.warn(
-            RuntimeWarning(
-                "Please be aware that mzIdentML parsing while stable still features some experimental code!\n"
-                "Please check the documentation for parser.read_mzid for more information!"
-            )
-        )
-    if verbose == 2:
-        raise RuntimeError(
-            "Please be aware that mzIdentML parsing while stable still features some experimental code!\n"
-            "Please check the documentation for parser.read_mzid for more information!"
-        )
 
     ## helper functions
     def check_str(value: str | None) -> str:
@@ -296,7 +274,9 @@ def read_mzid(
         if verbose == 2 and len(wl) > 0:
             raise RuntimeError("Reading mzIdentML file raised warnings!")
         # iterate over all items
-        for item in tqdm(items):
+        for item in tqdm(
+            items, total=len(items), desc="Reading mzIdentML identifications..."
+        ):
             # set up empty variables that are needed for a minimal CSM
             csm_id: str | None = None
             scan: int | None = None
