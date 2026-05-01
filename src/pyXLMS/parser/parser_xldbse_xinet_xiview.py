@@ -204,6 +204,7 @@ def read_xinet(
         )
         if "PepSeq1" not in data or "PepSeq2" not in data:
             raise KeyError("Could not get a suitable column for the peptide sequence!")
+        data = data.dropna(axis=0, subset=["PepSeq1", "PepSeq2"])
         id = 0
         for i, row in tqdm(
             data.iterrows(),
