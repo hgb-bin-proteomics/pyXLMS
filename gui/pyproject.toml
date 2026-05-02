@@ -5,7 +5,7 @@ description = "Easy-to-use web app that offers most of the functionality of the 
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "pyxlms>=1.7.4",
+    "pyxlms>=1.8.8",
     "streamlit>=1.50.0",
     "xlsxwriter>=3.2.5",
 ]
