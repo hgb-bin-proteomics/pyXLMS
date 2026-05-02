@@ -85,7 +85,7 @@ def dataframe_to_xlsx_stream(
     dataframe: pd.DataFrame, sheet_name: str, index: bool
 ) -> io.BytesIO:
     buffer = io.BytesIO()
-    with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:  # pyright: ignore[reportArgumentType]
+    with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
         dataframe.to_excel(writer, index=index, sheet_name=sheet_name)
         writer.close()
     return buffer
