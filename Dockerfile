@@ -1,8 +1,8 @@
 # Dockerfile for pyXLMS GUI
 # author: Micha Birklbauer
-# version: 1.0.0
+# version: 1.0.1
 
-FROM python:3.12
+FROM python:3.14
 
 LABEL maintainer="micha.birklbauer@gmail.com"
 
@@ -12,8 +12,10 @@ WORKDIR pyXLMS
 
 RUN pip install --upgrade pip
 RUN pip install --upgrade setuptools
-RUN pip install --no-cache-dir .[gui]
+RUN pip install --no-cache-dir uv
 
 WORKDIR gui
 
-CMD  ["streamlit", "run", "streamlit_app.py"]
+RUN uv sync --no-cache
+
+CMD  ["uv", "run", "streamlit", "run", "streamlit_app.py"]

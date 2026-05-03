@@ -4,7 +4,7 @@
 # requires-python = ">=3.12"
 # dependencies = [
 #   "streamlit>=1.50.0",
-#   "pyxlms>=1.7.0",
+#   "pyxlms>=1.8.8",
 #   "xlsxwriter",
 # ]
 # ///
@@ -40,6 +40,7 @@ from pyXLMS import transform
 from pyXLMS import constants
 from pyXLMS import plotting
 from pyXLMS import exporter
+from pyXLMS.transform.annotate_string_scores import STRING_ORGANISMS
 from pyXLMS import __version__ as __pyxlms_version__
 
 import streamlit as st
@@ -58,7 +59,7 @@ except ImportError:
     from typing_extensions import Literal
 
 
-__version__ = "1.3.4"
+__version__ = "1.4.0"
 
 HELP_URL = "https://pyxlms.dev/docs/webapp"
 
@@ -118,12 +119,18 @@ def read_files(
                     crosslinker_mass=crosslinker_mass,
                 )
             except Exception as _e:
-                parser.read(
+                pass
+        if engine == "MS Annika":
+            try:
+                return parser.read(
                     filenames,
                     engine=engine,  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
                     crosslinker=crosslinker,
                     parse_modifications=parse_modifications,
+                    unsafe=True,
                 )
+            except Exception as _e:
+                pass
         return parser.read(
             filenames,
             engine=engine,  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
@@ -306,7 +313,7 @@ def input_tab():
     conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
     insight.
 
-    Currently pyXLMS supports input from seven different crosslink search engines:
+    Currently pyXLMS supports input from several different crosslink search engines including:
     [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
     [MeroX](https://www.stavrox.com/),
     [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
@@ -380,6 +387,7 @@ def input_tab():
                 "pLink",
                 "Scout",
                 "xiSearch/xiFDR",
+                "xiNET/xiVIEW",
                 "XlinkX",
             ],
             index=None,
@@ -462,7 +470,8 @@ def input_tab():
         parse_modifications_warning = st.warning(
             "pyXLMS is only able to parse a limited number of the most common post-translational modifications! "
             + "If parsing fails it is safer to leave option 'parse_modifications' turned off! More nuanced control "
-            + "for additional and custom modifications is available in the pyXLMS python package!"
+            + "for additional and custom modifications is available in the pyXLMS python package!",
+            icon="⚠️",
         )
         parse_modifications_info = st.info(
             "Lists of currently supported modifications for "
@@ -570,6 +579,16 @@ def input_tab():
             help="If a higher score is considered better, or a lower score is considered better.",
         )
 
+    if validate or validate_aggregated:
+        if search_engine not in ["MS Annika", "MaxQuant", "MaxLynx", "xiSearch/xiFDR"]:
+            validation_warning = st.warning(
+                "Please note that we only officially support validation for the search engines MS Annika, MaxLynx/MaxQuant, and "
+                "xiSearch/xiFDR! While validation will also work for most other search engines, the results will most likely differ "
+                "from the search engine's own validation! We recommend uploading results that are already validated! "
+                "You can read more [here](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/README.md#limitations).",
+                icon="⚠️",
+            )
+
     l7, center_7, r7 = st.columns(3)
 
     with center_7:
@@ -639,7 +658,10 @@ def input_tab():
                                 else "lower_better",
                             )
                     if validate_aggregated:
-                        if st.session_state["aggregated"] is not None:
+                        if (
+                            "aggregated" in st.session_state
+                            and st.session_state["aggregated"] is not None
+                        ):
                             st.session_state["aggregated"] = transform.validate(
                                 st.session_state["aggregated"],
                                 fdr=fdr,  # pyright: ignore[reportPossiblyUnboundVariable] # ty: ignore[possibly-unresolved-reference]
@@ -1563,20 +1585,40 @@ def filter_tab():
 # visualize tab
 def visualize_tab():
     visualization_header = st.subheader("Visualization Parameters", divider="grey")
-    bins = st.select_slider(
-        "Number of histogram bins:",
-        range(5, 105, 5),
-        value=25,
-        help="The number of histogram bins to use for the score distribution plot.",
-    )
-    top_n = st.number_input(
-        "Maximum number of proteins and peptide pairs to display:",
-        min_value=1,
-        max_value=None,
-        value=25,
-        step=1,
-        help="Maximum number of proteins and peptide pairs to display. Proteins and peptide pairs are sorted by the number of associated elements.",
-    )
+    left_col, right_col = st.columns(2)
+    with left_col:
+        bins = st.select_slider(
+            "Number of histogram bins:",
+            range(5, 105, 5),
+            value=25,
+            help="The number of histogram bins to use for the score distribution plot.",
+        )
+        string_organism = st.selectbox(
+            "Select an organism for STRING annotation:",
+            options=STRING_ORGANISMS,
+            index=None,
+            key="string_organism",
+            help="The STRING organism to be used for annotation of STRING scores.",
+        )
+    with right_col:
+        top_n = st.number_input(
+            "Maximum number of proteins, peptide pairs, and residue pairs to display:",
+            min_value=1,
+            max_value=None,
+            value=25,
+            step=1,
+            help="Maximum number of proteins, peptide pairs, and residue pairs to display. Proteins, peptide pairs, and residue pairs are sorted by the number of associated elements.",
+        )
+        string_taxon_id = st.number_input(
+            "[Alternatively to the STRING organism] Specify a STRING taxon identifier instead:",
+            min_value=1,
+            max_value=None,
+            value=None,
+            step=1,
+            placeholder="e.g. 9606 for Homo sapiens",
+            key="string_taxon_id",
+            help="The STRING organism's taxon identifier to be used for annotation of STRING scores. You can get the taxon identifier [here](https://string-db.org/cgi/organisms).",
+        )
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
         no_data = st.info("You need to upload at least one result file first!")
     if "pr" in st.session_state and st.session_state["pr"] is not None:
@@ -1597,6 +1639,7 @@ def visualize_tab():
             )
             available_keys = transform.get_available_keys(csms)
             plots = list()
+            string_plots_successful = True
             # target decoy distribution
             if available_keys["alpha_decoy"] and available_keys["beta_decoy"]:
                 fig, ax = plotting.plot_target_decoy_distribution(
@@ -1629,12 +1672,48 @@ def visualize_tab():
                 csms, top_n=top_n, figsize=(8.0, 4.5)
             )
             plots.append(fig)
+            # residue pair distribution
+            if (
+                available_keys["alpha_proteins"]
+                and available_keys["beta_proteins"]
+                and available_keys["alpha_proteins_crosslink_positions"]
+                and available_keys["beta_proteins_crosslink_positions"]
+            ):
+                fig, ax = plotting.plot_residue_pair_distribution(
+                    csms, top_n=top_n, figsize=(8.0, 4.5)
+                )
+                plots.append(fig)
+            # string score distribution
+            if string_organism is not None or string_taxon_id is not None:
+                string_input_id: int | str = (
+                    int(string_taxon_id)
+                    if string_taxon_id is not None
+                    else str(string_organism)
+                )
+                try:
+                    _ = transform.annotate_string_scores(csms, organism=string_input_id)
+                    fig, ax = plotting.plot_string_score_distribution(
+                        csms, plot_type="bar", bins=bins, figsize=(8.0, 4.5)
+                    )
+                    plots.append(fig)
+                    fig, ax = plotting.plot_string_score_distribution(
+                        csms, plot_type="hist", bins=bins, figsize=(8.0, 4.5)
+                    )
+                    plots.append(fig)
+                except Exception as _e:
+                    string_plots_successful = False
             if len(plots) > 0:
                 layout_plots(plots)
             else:
                 # technically impossible
                 csms_not_enough_data = st.info(
                     "Not enough data to plot anything for crosslink-spectrum-matches!"
+                )
+            if not string_plots_successful:
+                csms_string_plots_not_successful = st.warning(
+                    "STRING score annotation failed - make sure your data contains inter-links, canonical protein names, "
+                    "and that the right taxon identifier or organism is given!",
+                    icon="⚠️",
                 )
         if (
             st.session_state["pr"]["crosslinks"] is not None
@@ -1653,6 +1732,7 @@ def visualize_tab():
             )
             available_keys = transform.get_available_keys(crosslinks)
             plots = list()
+            string_plots_successful = True
             # target decoy distribution
             if available_keys["alpha_decoy"] and available_keys["beta_decoy"]:
                 fig, ax = plotting.plot_target_decoy_distribution(
@@ -1680,12 +1760,39 @@ def visualize_tab():
                     crosslinks, top_n=top_n, figsize=(8.0, 4.5)
                 )
                 plots.append(fig)
+            # string score distribution
+            if string_organism is not None or string_taxon_id is not None:
+                string_input_id: int | str = (
+                    int(string_taxon_id)
+                    if string_taxon_id is not None
+                    else str(string_organism)
+                )
+                try:
+                    _ = transform.annotate_string_scores(
+                        crosslinks, organism=string_input_id
+                    )
+                    fig, ax = plotting.plot_string_score_distribution(
+                        crosslinks, plot_type="bar", bins=bins, figsize=(8.0, 4.5)
+                    )
+                    plots.append(fig)
+                    fig, ax = plotting.plot_string_score_distribution(
+                        crosslinks, plot_type="hist", bins=bins, figsize=(8.0, 4.5)
+                    )
+                    plots.append(fig)
+                except Exception as _e:
+                    string_plots_successful = False
             if len(plots) > 0:
                 layout_plots(plots)
             else:
                 # technically impossible
                 crosslinks_not_enough_data = st.info(
                     "Not enough data to plot anything for crosslinks!"
+                )
+            if not string_plots_successful:
+                crosslinks_string_plots_not_successful = st.warning(
+                    "STRING score annotation failed - make sure your data contains inter-links, canonical protein names, "
+                    "and that the right taxon identifier or organism is given!",
+                    icon="⚠️",
                 )
     if (
         "aggregated" in st.session_state
@@ -1706,6 +1813,7 @@ def visualize_tab():
         )
         available_keys = transform.get_available_keys(aggregated_crosslinks)
         plots = list()
+        string_plots_successful = True
         # target decoy distribution
         if available_keys["alpha_decoy"] and available_keys["beta_decoy"]:
             fig, ax = plotting.plot_target_decoy_distribution(
@@ -1733,12 +1841,45 @@ def visualize_tab():
                 aggregated_crosslinks, top_n=top_n, figsize=(8.0, 4.5)
             )
             plots.append(fig)
+        # string score distribution
+        if string_organism is not None or string_taxon_id is not None:
+            string_input_id: int | str = (
+                int(string_taxon_id)
+                if string_taxon_id is not None
+                else str(string_organism)
+            )
+            try:
+                _ = transform.annotate_string_scores(
+                    aggregated_crosslinks, organism=string_input_id
+                )
+                fig, ax = plotting.plot_string_score_distribution(
+                    aggregated_crosslinks,
+                    plot_type="bar",
+                    bins=bins,
+                    figsize=(8.0, 4.5),
+                )
+                plots.append(fig)
+                fig, ax = plotting.plot_string_score_distribution(
+                    aggregated_crosslinks,
+                    plot_type="hist",
+                    bins=bins,
+                    figsize=(8.0, 4.5),
+                )
+                plots.append(fig)
+            except Exception as _e:
+                string_plots_successful = False
         if len(plots) > 0:
             layout_plots(plots)
         else:
             # technically impossible
             aggregated_crosslinks_not_enough_data = st.info(
                 "Not enough data to plot anything for aggregated crosslinks!"
+            )
+        if not string_plots_successful:
+            aggregated_crosslinks_string_plots_not_successful = st.warning(
+                "STRING score annotation failed - make sure your data contains inter-links, canonical protein names, "
+                "and that the right taxon identifier or organism is given!",
+                icon="⚠️",
             )
 
 
@@ -4053,7 +4194,7 @@ def about_tab():
         conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
         insight.
 
-        Currently pyXLMS supports input from seven different crosslink search engines:
+        Currently pyXLMS supports input from several different crosslink search engines including:
         [MaxLynx (part of MaxQuant)](https://www.maxquant.org/),
         [MeroX](https://www.stavrox.com/),
         [MS Annika](https://github.com/hgb-bin-proteomics/MSAnnika),
