@@ -55,6 +55,30 @@ def test4():
         assert parse_scan_nr_from_mzid("index=1") == 1
 
 
+def test_parse_scan_nr_thermo_native_id():
+    from pyXLMS.parser import parse_scan_nr_from_mzid
+
+    assert parse_scan_nr_from_mzid("controllerType=0 controllerNumber=1 scan=5321") == 5321
+
+
+def test_parse_scan_nr_hupo_psi_no_scan_no_index():
+    # Regression: HUPO-PSI mzIdentML crosslinking example files use spectrumIDs
+    # that contain neither 'scan=' nor 'index=' (issue #233). The parser must
+    # not raise IndexError; it must fall back to any embedded integer.
+    from pyXLMS.parser import parse_scan_nr_from_mzid
+
+    with pytest.warns(RuntimeWarning):
+        assert parse_scan_nr_from_mzid("spectrum=10") == 10
+
+
+def test_parse_scan_nr_no_digits_raises_value_error():
+    from pyXLMS.parser import parse_scan_nr_from_mzid
+
+    with pytest.warns(RuntimeWarning):
+        with pytest.raises(ValueError):
+            parse_scan_nr_from_mzid("opaque-id")
+
+
 def test5():
     from pyteomics import mzid
     from pyXLMS import parser as p

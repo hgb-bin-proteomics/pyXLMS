@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import re
 import warnings
 from tqdm import tqdm
 from pyteomics import mzid
@@ -59,19 +60,28 @@ def parse_scan_nr_from_mzid(spectrum_id: str) -> int:
     >>> from pyXLMS.parser import parse_scan_nr_from_mzid
     >>> parse_scan_nr_from_mzid("index=1")
     RuntimeWarning: Could not parse scan number from spectrum - using index instead!
-    Exception while parsing scan number: list index out of range
+    Exception while parsing scan number: 'scan=' not found in spectrumID
     1
     """
-    try:
-        return __parse_int(str(spectrum_id).split("scan=")[1].split(",")[0])
-    except Exception as e:
-        warnings.warn(
-            RuntimeWarning(
-                "Could not parse scan number from spectrum - using index instead!\n"
-                f"Exception while parsing scan number: {e}"
-            )
+    spectrum_id_str = str(spectrum_id)
+    scan_match = re.search(r"scan=(\d+)", spectrum_id_str)
+    if scan_match is not None:
+        return __parse_int(scan_match.group(1))
+    warnings.warn(
+        RuntimeWarning(
+            "Could not parse scan number from spectrum - using index instead!\n"
+            "Exception while parsing scan number: 'scan=' not found in spectrumID"
         )
-    return __parse_int(str(spectrum_id).split("index=")[1].split(",")[0])
+    )
+    index_match = re.search(r"index=(\d+)", spectrum_id_str)
+    if index_match is not None:
+        return __parse_int(index_match.group(1))
+    fallback_match = re.search(r"(\d+)", spectrum_id_str)
+    if fallback_match is not None:
+        return __parse_int(fallback_match.group(1))
+    raise ValueError(
+        f"Could not parse scan number or index from spectrumID: {spectrum_id_str!r}"
+    )
 
 
 def read_mzid(
