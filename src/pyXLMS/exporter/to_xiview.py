@@ -103,6 +103,121 @@ def __xls_to_xiview_minimal(
     return xiview_df
 
 
+def __csms_to_xiview_no_peaks(
+    csms: List[Dict[str, Any]],
+    filename: Optional[str] = None,
+) -> pd.DataFrame:
+    r"""Exports crosslink-spectrum-matches to xiVIEW format.
+
+    Parameters
+    ----------
+    csms : list of dict of str, any
+        A list of crosslink-spectrum-matches.
+    filename : str, or None
+        If not None, the data will be written to a file with the specified filename.
+
+    Returns
+    -------
+    pd.DataFrame
+        A pandas DataFrame in xiVIEW format.
+
+    Notes
+    -----
+    This function should not be called directly, it is called from ``to_xiview()``.
+    """
+    pepseq1 = list()
+    pepseq2 = list()
+    peppos1 = list()
+    peppos2 = list()
+    linkpos1 = list()
+    linkpos2 = list()
+    protein1 = list()
+    protein2 = list()
+    scanid = list()
+    peaklistfilename = list()
+    decoy1 = list()
+    decoy2 = list()
+    score = list()
+    id = list()
+    has_decoys = True
+    has_scores = True
+
+    for i, csm in enumerate(csms):
+        pos1 = csm["alpha_peptide_crosslink_position"]
+        pos2 = csm["beta_peptide_crosslink_position"]
+        pepseq1.append(csm["alpha_peptide"])
+        pepseq2.append(csm["beta_peptide"])
+        peppos1.append(
+            ";".join(
+                [
+                    str(pos - pos1 + 1)
+                    for pos in csm["alpha_proteins_crosslink_positions"]
+                ]
+            )
+        )
+        peppos2.append(
+            ";".join(
+                [
+                    str(pos - pos2 + 1)
+                    for pos in csm["beta_proteins_crosslink_positions"]
+                ]
+            )
+        )
+        linkpos1.append(pos1)
+        linkpos2.append(pos2)
+        protein1.append(";".join(csm["alpha_proteins"]))
+        protein2.append(";".join(csm["beta_proteins"]))
+        scanid.append(csm["scan_nr"])
+        peaklistfilename.append(csm["spectrum_file"])
+        if has_decoys:
+            if csm["alpha_decoy"] is not None and csm["beta_decoy"] is not None:
+                if csm["alpha_decoy"]:
+                    # decoy1.append(";".join(["TRUE" for p in csm["alpha_proteins"]]))
+                    decoy1.append("TRUE")
+                else:
+                    # decoy1.append(";".join(["FALSE" for p in csm["alpha_proteins"]]))
+                    decoy1.append("FALSE")
+                if csm["beta_decoy"]:
+                    # decoy2.append(";".join(["TRUE" for p in csm["beta_proteins"]]))
+                    decoy2.append("TRUE")
+                else:
+                    # decoy2.append(";".join(["FALSE" for p in csm["beta_proteins"]]))
+                    decoy2.append("FALSE")
+            else:
+                has_decoys = False
+        if has_scores:
+            if csm["score"] is not None:
+                score.append(csm["score"])
+            else:
+                has_scores = False
+        id.append(i + 1)
+
+    xiview_df = pd.DataFrame(
+        {
+            "PepSeq1": pepseq1,
+            "PepSeq2": pepseq2,
+            "PepPos1": peppos1,
+            "PepPos2": peppos2,
+            "LinkPos1": linkpos1,
+            "LinkPos2": linkpos2,
+            "Protein1": protein1,
+            "Protein2": protein2,
+            "ScanId": scanid,
+            "PeakListFileName": peaklistfilename,
+            "Id": id,
+        }
+    )
+    if has_decoys:
+        xiview_df["Decoy 1"] = decoy1
+        xiview_df["Decoy 2"] = decoy2
+    if has_scores:
+        xiview_df["Score"] = score
+
+    if filename is not None:
+        xiview_df.to_csv(__get_filename(filename, "csv"), index=False)
+    return xiview_df
+
+
 def __get_PeakListFileName(filename: str) -> str:
     ## replaces file extension with "mzML"
     return ".".join(filename.split(".")[:-1]) + ".mzML"
@@ -237,49 +352,50 @@ def __csms_to_xiview_with_peaks(
 
 
 def to_xiview(
-    crosslinks: List[Dict[str, Any]],
+    data: List[Dict[str, Any]],
     filename: Optional[str],
     minimal: bool = True,
 ) -> pd.DataFrame:
-    r"""Exports a list of crosslinks to xiVIEW format.
+    r"""Exports a list of crosslink-spectrum-matches or crosslinks to xiVIEW format.
 
-    Exports a list of crosslinks to xiVIEW format. The tool xiVIEW is accessible
+    Exports a list of crosslink-spectrum-matches or crosslinks to xiVIEW format. The tool xiVIEW is accessible
     via the link
     `xiview.org/ <https://xiview.org/>`_.
     Requires that ``alpha_proteins``, ``beta_proteins``, ``alpha_proteins_crosslink_positions`` and
-    ``beta_proteins_crosslink_positions`` fields are set for all crosslinks.
+    ``beta_proteins_crosslink_positions`` fields are set for all crosslink-spectrum-matches or crosslinks.
 
     Parameters
     ----------
-    crosslinks : list of dict of str, any
-        A list of crosslinks.
+    data : list of dict of str, any
+        A list of crosslink-spectrum-matches or crosslinks.
     filename : str, or None
         If not None, the exported data will be written to a file with the specified filename.
     minimal : bool, default = True
         Which xiVIEW format to return, if ``minimal = True`` the minimal xiVIEW format is returned. Otherwise
         the "CSV without peak lists" format is returned (internally this just calls ``exporter.to_xinet()``).
         For more information on the xiVIEW formats please refer to the `xiVIEW specification <https://xiview.org/csv-formats.php>`_.
+        Only applies if parameter 'data' is a list of crosslinks.
 
     Returns
     -------
     pd.DataFrame
-        A pandas DataFrame containing crosslinks in xiVIEW format.
+        A pandas DataFrame containing crosslink-spectrum-matches or crosslinks in xiVIEW format.
 
     Raises
     ------
     TypeError
         If a wrong data type is provided.
     TypeError
-        If 'crosslinks' parameter contains elements of mixed data type.
+        If 'data' parameter contains elements of mixed data type.
     ValueError
-        If the provided 'crosslinks' parameter contains no elements.
+        If the provided 'data' parameter contains no elements.
     RuntimeError
         If not all of the required information is present in the input data.
 
     Notes
     -----
-    The optional ``Score`` column in the xiVIEW table will only be available if all crosslinks have assigned scores,
-    the optional ``Decoy*`` columns will only be available if all crosslinks have assigned target and decoy labels.
+    The optional ``Score`` column in the xiVIEW table will only be available if all crosslink-spectrum-matches or crosslinks have assigned scores,
+    the optional ``Decoy*`` columns will only be available if all crosslink-spectrum-matches or crosslinks have assigned target and decoy labels.
 
     Examples
     --------
@@ -348,15 +464,18 @@ def to_xiview(
     252     Cas9    1176    SSFEKNPIDFLEAK         5     Cas9    1176  SSFEKNPIDFLEAK         5  437.10  253
     [253 rows x 10 columns]
     """
-    _ok = check_input(crosslinks, "crosslinks", list, dict)
+    _ok = check_input(data, "data", list, dict)
     _ok = check_input(filename, "filename", str) if filename is not None else True
-    if len(crosslinks) == 0:
-        raise ValueError("Provided crosslinks contain no elements!")
-    if "data_type" not in crosslinks[0] or crosslinks[0]["data_type"] != "crosslink":
+    if len(data) == 0:
+        raise ValueError("Provided data contains no elements!")
+    if "data_type" not in data[0] or data[0]["data_type"] not in [
+        "crosslink-spectrum-match",
+        "crosslink",
+    ]:
         raise TypeError(
-            "Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!"
+            "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-matches or crosslinks!"
         )
-    available_keys = get_available_keys(crosslinks)
+    available_keys = get_available_keys(data)
     if (
         not available_keys["alpha_proteins"]
         or not available_keys["beta_proteins"]
@@ -366,6 +485,8 @@ def to_xiview(
         raise RuntimeError(
             "Can't export to xiVIEW because not all necessary information is available!"
         )
+    if data[0]["data_type"] == "crosslink-spectrum-match":
+        return __csms_to_xiview_no_peaks(data, filename)
     if minimal:
-        return __xls_to_xiview_minimal(crosslinks, filename)
-    return to_xinet(crosslinks, filename)
+        return __xls_to_xiview_minimal(data, filename)
+    return to_xinet(data, filename)
