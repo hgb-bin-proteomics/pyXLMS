@@ -4,7 +4,7 @@
 # requires-python = ">=3.12"
 # dependencies = [
 #   "streamlit>=1.50.0",
-#   "pyxlms>=1.8.8",
+#   "pyxlms>=1.8.11",
 #   "xlsxwriter",
 # ]
 # ///
@@ -281,6 +281,7 @@ def reset_exports() -> None:
     st.session_state["export_csms_msannika"] = None
     st.session_state["export_csms_proxl"] = None
     st.session_state["export_csms_xifdr"] = None
+    st.session_state["export_csms_xiview"] = None
     # crosslinks
     st.session_state["export_crosslinks_alphalink2"] = None
     st.session_state["export_crosslinks_impxfdr"] = None
@@ -1904,7 +1905,7 @@ def export_tab():
             export_csms_header = st.subheader(
                 "Export Crosslink-Spectrum-Matches", divider="grey"
             )
-            export_csms_options = ["IMP-X-FDR", "MS Annika", "ProXL", "xiFDR"]
+            export_csms_options = ["IMP-X-FDR", "MS Annika", "ProXL", "xiFDR", "xiVIEW"]
             export_csms_picker = st.selectbox(
                 "Export crosslink-spectrum-matches to:",
                 options=export_csms_options,
@@ -2261,6 +2262,71 @@ def export_tab():
                         "Go to xiFDR!",
                         url="https://www.rappsilberlab.org/software/xifdr/",
                         help="Go to the xiFDR download page.",
+                        type="primary",
+                        icon="🔗",
+                        width="stretch",
+                    )
+            # xiVIEW
+            elif export_csms_picker == "xiVIEW":
+                export_csms_xiview_info = st.info(
+                    "To export to xiVIEW your crosslink-spectrum-matches should be **unique** and [optionally] **not** "
+                    + "**contain any decoy matches**! Usually you would also want to filter for high-confidence crosslink-spectrum-matches!"
+                    + "It is also required that all crosslink-spectrum-matches have "
+                    + "associated proteins for the alpha and beta peptide as well as the corresponding crosslink "
+                    + "positions in those proteins! It is **not necessary to check this preemptively** as the exporter "
+                    + "automatically checks that this information is available and will throw an error otherwise! "
+                    + "You can additionally check this yourself in the "
+                    + "**'Load Data'** tab in the **'Summary Statistics'** of your loaded result!"
+                )
+                export_csms_xiview_button = st.button(
+                    "Export to xiVIEW!",
+                    type="primary",
+                    width="stretch",
+                    key="export_csms_xiview_button",
+                )
+                if export_csms_xiview_button:
+                    with st.spinner(
+                        "Exporting crosslink-spectrum-matches to xiVIEW...",
+                        show_time=True,
+                    ):
+                        try:
+                            st.session_state["export_csms_xiview"] = exporter.to_xiview(
+                                csms, filename=None
+                            )
+                        except Exception as e:
+                            _ = st.error(
+                                "Something went wrong! This is most likely due to missing information in the results!",
+                                icon="⚠️",
+                            )
+                            with st.expander("Show exception"):
+                                _ = st.exception(e)
+                if (
+                    "export_csms_xiview" in st.session_state
+                    and st.session_state["export_csms_xiview"] is not None
+                ):
+                    export_csms_xiview_download_info = st.markdown(
+                        "Your exported crosslink-spectrum-matches in xiVIEW format are ready for download:"
+                    )
+                    export_csms_xiview_download = st.download_button(
+                        label="Download in xiVIEW format!",
+                        data=dataframe_to_csv_stream(
+                            st.session_state["export_csms_xiview"],
+                            sep=",",
+                            index=False,
+                        ),
+                        file_name="crosslink-spectrum-matches_xiview.csv",
+                        on_click="ignore",
+                        type="primary",
+                        mime="text/csv",
+                        icon=":material/download:",
+                        width="stretch",
+                        help="Downloads the exported crosslink-spectrum-matches in xiVIEW format.",
+                        key="export_csms_xiview_download",
+                    )
+                    export_csms_xiview_download_goto_tool = st.link_button(
+                        "Go to xiVIEW!",
+                        url="https://xiview.org/",
+                        help="Go to the xiVIEW website.",
                         type="primary",
                         icon="🔗",
                         width="stretch",
