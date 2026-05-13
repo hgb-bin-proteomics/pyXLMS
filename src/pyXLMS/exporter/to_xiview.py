@@ -64,13 +64,17 @@ def __xls_to_xiview_minimal(
         if has_decoys:
             if xl["alpha_decoy"] is not None and xl["beta_decoy"] is not None:
                 if xl["alpha_decoy"]:
-                    decoy1.append(";".join(["TRUE" for p in xl["alpha_proteins"]]))
+                    # decoy1.append(";".join(["TRUE" for p in xl["alpha_proteins"]]))
+                    decoy1.append("TRUE")
                 else:
-                    decoy1.append(";".join(["FALSE" for p in xl["alpha_proteins"]]))
+                    # decoy1.append(";".join(["FALSE" for p in xl["alpha_proteins"]]))
+                    decoy1.append("FALSE")
                 if xl["beta_decoy"]:
-                    decoy2.append(";".join(["TRUE" for p in xl["beta_proteins"]]))
+                    # decoy2.append(";".join(["TRUE" for p in xl["beta_proteins"]]))
+                    decoy2.append("TRUE")
                 else:
-                    decoy2.append(";".join(["FALSE" for p in xl["beta_proteins"]]))
+                    # decoy2.append(";".join(["FALSE" for p in xl["beta_proteins"]]))
+                    decoy2.append("FALSE")
             else:
                 has_decoys = False
         if has_scores:
@@ -186,13 +190,17 @@ def __csms_to_xiview_with_peaks(
         if has_decoys:
             if csm["alpha_decoy"] is not None and csm["beta_decoy"] is not None:
                 if csm["alpha_decoy"]:
-                    decoy1.append(";".join(["TRUE" for p in csm["alpha_proteins"]]))
+                    # decoy1.append(";".join(["TRUE" for p in csm["alpha_proteins"]]))
+                    decoy1.append("TRUE")
                 else:
-                    decoy1.append(";".join(["FALSE" for p in csm["alpha_proteins"]]))
+                    # decoy1.append(";".join(["FALSE" for p in csm["alpha_proteins"]]))
+                    decoy1.append("FALSE")
                 if csm["beta_decoy"]:
-                    decoy2.append(";".join(["TRUE" for p in csm["beta_proteins"]]))
+                    # decoy2.append(";".join(["TRUE" for p in csm["beta_proteins"]]))
+                    decoy2.append("TRUE")
                 else:
-                    decoy2.append(";".join(["FALSE" for p in csm["beta_proteins"]]))
+                    # decoy2.append(";".join(["FALSE" for p in csm["beta_proteins"]]))
+                    decoy2.append("FALSE")
             else:
                 has_decoys = False
         if has_scores:
