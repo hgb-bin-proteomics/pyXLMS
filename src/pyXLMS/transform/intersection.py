@@ -258,7 +258,7 @@ def intersection(
             set(crosslinks_b.keys())
         )
         crosslinks_intersection = list()
-        for key in keys_intersection:
+        for key in sorted(list(keys_intersection)):
             if use == "data_a":
                 crosslinks_intersection.append(crosslinks_a[key])
             elif use == "data_b":
@@ -291,7 +291,7 @@ def intersection(
         csms_b[__get_csm_key(csm)] = csm
     keys_intersection = set(csms_a.keys()).intersection(set(csms_b.keys()))
     csms_intersection = list()
-    for key in keys_intersection:
+    for key in sorted(list(keys_intersection)):
         if use == "data_a":
             csms_intersection.append(csms_a[key])
         elif use == "data_b":
