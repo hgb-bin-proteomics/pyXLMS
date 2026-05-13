@@ -14,6 +14,7 @@ from matplotlib_venn import venn3, venn3_circles
 
 from ..data import check_input
 from ..transform.util import get_available_keys
+from ..transform.aggregate import __get_xl_key as __get_key
 
 from typing import Optional
 from typing import List
@@ -27,47 +28,6 @@ try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal
-
-
-def __get_key(data: Dict[str, Any], by: Literal["peptide", "protein"]) -> str:
-    r"""Get the unique key for a crosslink-spectrum-match or crosslink.
-
-    Parameters
-    ----------
-    data : dict of str, any
-        A pyXLMS crosslink-spectrum-match or crosslink object.
-    by : str, one of "peptide" or "protein"
-        If peptide or protein crosslink position should be used for determining if a crosslink-spectrum-match
-        or crosslink is unique.
-
-    Returns
-    -------
-    str
-        The unique key for the crosslink-spectrum-match or crosslink.
-
-    Notes
-    -----
-    This function should not be called directly, it is called from ``plot_venn_diagram()``.
-    """
-    if by == "peptide":
-        return f"{data['alpha_peptide']}_{data['alpha_peptide_crosslink_position']}-{data['beta_peptide']}_{data['beta_peptide_crosslink_position']}"
-    prot_pos_a = "-".join(
-        sorted(
-            [
-                f"{data['alpha_proteins'][i]}_{data['alpha_proteins_crosslink_positions'][i]}"
-                for i in range(len(data["alpha_proteins"]))
-            ]
-        )
-    )
-    prot_pos_b = "-".join(
-        sorted(
-            [
-                f"{data['beta_proteins'][i]}_{data['beta_proteins_crosslink_positions'][i]}"
-                for i in range(len(data["beta_proteins"]))
-            ]
-        )
-    )
-    return ":".join(sorted([prot_pos_a, prot_pos_b]))
 
 
 def venn(
