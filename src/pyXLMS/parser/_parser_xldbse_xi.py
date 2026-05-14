@@ -1156,7 +1156,7 @@ def read_xi(
 
     for input in inputs:
         ## reading data
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
         ## detect input file type
         xi_file_type = detect_xi_filetype(data)
         ## set decoy prefix
