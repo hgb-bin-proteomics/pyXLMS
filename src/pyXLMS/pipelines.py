@@ -6,11 +6,12 @@
 
 from __future__ import annotations
 
+from .data._parser_result import ParserResult
 from .parser import read
-from .transform.summary import summary as transform_summary
-from .transform.aggregate import unique as transform_unique
-from .transform.validate import validate as transform_validate
-from .transform.targets_only import targets_only as transform_targets_only
+from .transform._summary import summary as transform_summary
+from .transform._aggregate import unique as transform_unique
+from .transform._validate import validate as transform_validate
+from .transform._targets_only import targets_only as transform_targets_only
 
 from typing import Optional
 from typing import BinaryIO
@@ -45,7 +46,7 @@ def pipeline(
     validate: Optional[bool | Dict[str, Any]] = True,
     targets_only: Optional[bool] = True,
     **kwargs,
-) -> Dict[str, Any]:
+) -> ParserResult:
     r"""Runs a standard down-stream analysis pipeline for crosslinks and crosslink-spectrum-matches.
 
     Runs a standard down-stream analysis pipeline for crosslinks and crosslink-spectrum-matches. The pipeline first reads
