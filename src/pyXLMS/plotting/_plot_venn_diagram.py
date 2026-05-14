@@ -473,9 +473,9 @@ def plot_venn_diagram(
                     "This error might be fixable with 'transform.reannotate_positions()'!"
                 )
             for item in data_1:
-                set_1.add(__get_key(item, by))
+                set_1.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
             for item in data_2:
-                set_2.add(__get_key(item, by))
+                set_2.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
         else:
             available_keys_3 = get_available_keys(data_3)
             alpha_proteins = (
@@ -509,24 +509,24 @@ def plot_venn_diagram(
                     "This error might be fixable with 'transform.reannotate_positions()'!"
                 )
             for item in data_1:
-                set_1.add(__get_key(item, by))
+                set_1.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
             for item in data_2:
-                set_2.add(__get_key(item, by))
+                set_2.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
             for item in data_3:
-                set_3.add(__get_key(item, by))
+                set_3.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
     else:
         if data_3 is None:
             for item in data_1:
-                set_1.add(__get_key(item, by))
+                set_1.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
             for item in data_2:
-                set_2.add(__get_key(item, by))
+                set_2.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
         else:
             for item in data_1:
-                set_1.add(__get_key(item, by))
+                set_1.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
             for item in data_2:
-                set_2.add(__get_key(item, by))
+                set_2.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
             for item in data_3:
-                set_3.add(__get_key(item, by))
+                set_3.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
 
     return venn(
         set_1,
