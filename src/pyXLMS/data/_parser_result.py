@@ -24,7 +24,7 @@ from typing import Tuple
 from typing import Any
 
 class ParserResult(BaseModel):
-    search_engine: str,
+    search_engine: str
     crosslink_spectrum_matches: Optional[List[CrosslinkSpectrumMatch]]
     crosslinks: Optional[List[Crosslink]]
     
@@ -38,7 +38,7 @@ class ParserResult(BaseModel):
     def completeness(self) -> str:
         if self.crosslink_spectrum_matches is not None and self.crosslinks is not None:
             return "full"
-        if self.crosslink_spectrum_matches is None and self.crosslinks not None:
+        if self.crosslink_spectrum_matches is None and self.crosslinks is None:
             return "empty"
         return "partial"
     
@@ -113,8 +113,8 @@ class ParserResult(BaseModel):
 
 def create_parser_result(
     search_engine: str,
-    csms: Optional[CrosslinkSpectrumMatch]],
-    crosslinks: Optional[List[Crosslink]]],
+    csms: Optional[List[CrosslinkSpectrumMatch]],
+    crosslinks: Optional[List[Crosslink]],
 ) -> ParserResult:
     r"""Creates a parser result data structure.
 

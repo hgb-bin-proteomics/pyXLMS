@@ -25,9 +25,9 @@ from ._util import check_indexing
 from ._crosslink import Crosslink
 from ._crosslink import create_crosslink
 from ._crosslink import create_crosslink_min
-from ._crosslink import create_crosslink_from_csm
 from ._csm import CrosslinkSpectrumMatch
 from ._csm import create_csm
 from ._csm import create_csm_min
+from ._csm import create_crosslink_from_csm
 from ._parser_result import ParserResult
 from ._parser_result import create_parser_result
