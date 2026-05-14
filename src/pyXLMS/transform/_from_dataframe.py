@@ -12,7 +12,7 @@ from tqdm import tqdm
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
-from ..data._util import create_crosslink
+from ..data._crosslink import create_crosslink
 from ..data._csm import create_csm
 from ..parser._parser_xldbse_custom import __get_value
 from ..parser._parser_xldbse_custom import pyxlms_modification_str_parser
