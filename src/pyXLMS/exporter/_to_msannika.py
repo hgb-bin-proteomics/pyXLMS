@@ -441,5 +441,5 @@ def to_msannika(
     if not assert_data_type_same(data):
         raise TypeError("Not all elements in data have the same data type!")
     if data[0]["data_type"] == "crosslink":
-        return __xls_to_msannika(data, filename, format)
-    return __csms_to_msannika(data, filename, format)
+        return __xls_to_msannika(data, filename, format)  # ty: ignore[invalid-argument-type]
+    return __csms_to_msannika(data, filename, format)  # ty: ignore[invalid-argument-type]
