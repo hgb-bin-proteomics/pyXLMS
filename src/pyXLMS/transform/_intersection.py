@@ -245,10 +245,10 @@ def intersection(
     if unique_a[0]["data_type"] == "crosslink":
         crosslinks_a = dict()
         for xl in unique_a:
-            crosslinks_a[__get_xl_key(xl, by=by)] = xl
+            crosslinks_a[__get_xl_key(xl, by=by)] = xl  # ty: ignore[invalid-argument-type]
         crosslinks_b = dict()
         for xl in unique_b:
-            crosslinks_b[__get_xl_key(xl, by=by)] = xl
+            crosslinks_b[__get_xl_key(xl, by=by)] = xl  # ty: ignore[invalid-argument-type]
         keys_intersection = set(crosslinks_a.keys()).intersection(
             set(crosslinks_b.keys())
         )
@@ -280,10 +280,10 @@ def intersection(
         )
     csms_a = dict()
     for csm in unique_a:
-        csms_a[__get_csm_key(csm)] = csm
+        csms_a[__get_csm_key(csm)] = csm  # ty: ignore[invalid-argument-type]
     csms_b = dict()
     for csm in unique_b:
-        csms_b[__get_csm_key(csm)] = csm
+        csms_b[__get_csm_key(csm)] = csm  # ty: ignore[invalid-argument-type]
     keys_intersection = set(csms_a.keys()).intersection(set(csms_b.keys()))
     csms_intersection = list()
     for key in sorted(list(keys_intersection)):
