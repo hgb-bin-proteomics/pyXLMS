@@ -10,7 +10,7 @@ import pandas as pd
 
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
-from ..data._crosslink import create_crosslink_from_csm
+from ..data._csm import create_crosslink_from_csm
 from ..data._util import check_input
 from ..transform._util import get_available_keys
 from ..transform._filter import filter_target_decoy
@@ -148,5 +148,7 @@ def to_impxfdr(
     if data[0]["data_type"] == "crosslink":
         return to_msannika(data, filename, format="xlsx")
     return to_msannika(
-        [create_crosslink_from_csm(csm) for csm in data], filename, format="xlsx"
+        [create_crosslink_from_csm(csm) for csm in data],  # ty: ignore[invalid-argument-type]
+        filename,
+        format="xlsx",
     )
