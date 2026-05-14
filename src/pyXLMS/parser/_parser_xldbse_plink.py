@@ -621,7 +621,7 @@ def read_plink(
                 )
                 crosslinks.append(crosslink)
         else:
-            data = pd.read_csv(
+            data = pd.read_csv(  # ty: ignore[no-matching-overload]
                 input, sep=sep, decimal=decimal, low_memory=False, **kwargs
             )
             for i, row in tqdm(
