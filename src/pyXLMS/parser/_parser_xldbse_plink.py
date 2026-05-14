@@ -11,14 +11,15 @@ import warnings
 import pandas as pd
 from tqdm import tqdm
 
-from ..data import check_input
-from ..data import create_csm
-from ..data import create_crosslink
-from ..data import create_parser_result
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._csm import create_csm
+from ..data._crosslink import create_crosslink
+from ..data._parser_result import create_parser_result
 from ..constants import MODIFICATIONS
-from .util import format_sequence
-from .util import __serialize_pandas_series
-from .util import __parse_int, __parse_float
+from ._util import format_sequence
+from ._util import __serialize_pandas_series
+from ._util import __parse_int, __parse_float
 
 from typing import Optional
 from typing import BinaryIO
@@ -465,7 +466,7 @@ def read_plink(
     decimal: str = ".",
     verbose: Literal[0, 1, 2] = 1,
     **kwargs,
-) -> Dict[str, Any]:
+) -> ParserResult:
     r"""Read a pLink result file.
 
     Reads a pLink crosslink-spectrum-matches result file "\*cross-linked_spectra.csv"

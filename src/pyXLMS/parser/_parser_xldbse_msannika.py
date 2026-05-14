@@ -12,15 +12,16 @@ import pandas as pd
 from tqdm import tqdm
 from os.path import splitext
 
-from ..data import check_input
-from ..data import create_crosslink
-from ..data import create_csm
-from ..data import create_parser_result
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._crosslink import create_crosslink
+from ..data._csm import create_csm
+from ..data._parser_result import create_parser_result
 from ..constants import MODIFICATIONS
-from .util import format_sequence
-from .util import get_bool_from_value
-from .util import __serialize_pandas_series
-from .util import __parse_int, __parse_float
+from ._util import format_sequence
+from ._util import get_bool_from_value
+from ._util import __serialize_pandas_series
+from ._util import __parse_int, __parse_float
 
 from typing import BinaryIO
 from typing import Dict
@@ -149,7 +150,7 @@ def read_msannika(
     unsafe: bool = False,
     verbose: Literal[0, 1, 2] = 1,
     **kwargs,
-) -> Dict[str, Any]:
+) -> ParserResult:
     r"""Read an MS Annika result file.
 
     Reads an MS Annika crosslink-spectrum-matches result file or crosslink result file in ``.csv`` or ``.xlsx`` format,

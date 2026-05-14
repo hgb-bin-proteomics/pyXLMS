@@ -60,7 +60,7 @@ def __parse_float(value: Any) -> float:
 
 def __serialize_pandas_series(
     pds: pd.Series, nan_values: List[str] = ["", "nan", "null", "none"]
-) -> Dict[str, Any]:
+) -> Dict[str, int | float | str | None]:
     r"""Serialize a pandas Series to a python native dictionary with native types.
 
     Parameters

@@ -9,13 +9,14 @@ from __future__ import annotations
 import pandas as pd
 from tqdm import tqdm
 
-from ..data import check_input
-from ..data import create_csm
-from ..data import create_parser_result
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._csm import create_csm
+from ..data._parser_result import create_parser_result
 from ..constants import MODIFICATIONS
-from .util import format_sequence
-from .util import __serialize_pandas_series
-from .util import __parse_int, __parse_float
+from ._util import format_sequence
+from ._util import __serialize_pandas_series
+from ._util import __parse_int, __parse_float
 
 from typing import Optional
 from typing import BinaryIO
@@ -143,7 +144,7 @@ def read_maxquant(
     sep: str = "\t",
     decimal: str = ".",
     **kwargs,
-) -> Dict[str, Any]:
+) -> ParserResult:
     r"""Read a MaxQuant result file.
 
     Reads a MaxQuant crosslink-spectrum-matches result file "crosslinkMsms.txt" in ``.txt`` (tab delimited) format

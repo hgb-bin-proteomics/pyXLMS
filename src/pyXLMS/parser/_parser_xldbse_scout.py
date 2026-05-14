@@ -10,15 +10,18 @@ import warnings
 import pandas as pd
 from tqdm import tqdm
 
-from ..data import check_input
-from ..data import create_crosslink
-from ..data import create_csm
-from ..data import create_parser_result
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._crosslink import create_crosslink
+from ..data._csm import create_csm
+from ..data._parser_result import create_parser_result
 from ..constants import SCOUT_MODIFICATION_MAPPING
-from .util import format_sequence
-from .util import get_bool_from_value
-from .util import __serialize_pandas_series
-from .util import __parse_int, __parse_float
+from ._util import format_sequence
+from ._util import get_bool_from_value
+from ._util import __serialize_pandas_series
+from ._util import __parse_int, __parse_float
 
 from typing import Optional
 from typing import BinaryIO
@@ -194,7 +197,7 @@ def __read_scout_csms_unfiltered(
     parse_modifications: bool,
     modifications: Dict[str, Tuple[str, float]],
     verbose: Literal[0, 1, 2],
-) -> List[Dict[str, Any]]:
+) -> List[CrosslinkSpectrumMatch]:
     r"""Reads crosslink-spectrum-matches from a Scout unfiltered CSMs result.
 
     Parameters
@@ -307,7 +310,7 @@ def __read_scout_csms_filtered(
     parse_modifications: bool,
     modifications: Dict[str, Tuple[str, float]],
     verbose: Literal[0, 1, 2],
-) -> List[Dict[str, Any]]:
+) -> List[CrosslinkSpectrumMatch]:
     r"""Reads crosslink-spectrum-matches from a Scout filtered CSMs result.
 
     Parameters
@@ -521,7 +524,7 @@ def __read_scout_csms_filtered(
     return csms
 
 
-def __read_scout_crosslinks(data: pd.DataFrame) -> List[Dict[str, Any]]:
+def __read_scout_crosslinks(data: pd.DataFrame) -> List[Crosslink]:
     r"""Reads crosslinks from a Scout crosslink/residue pair result.
 
     Parameters
@@ -583,7 +586,7 @@ def read_scout(
     decimal: str = ".",
     verbose: Literal[0, 1, 2] = 1,
     **kwargs,
-) -> Dict[str, Any]:
+) -> ParserResult:
     r"""Read a Scout result file.
 
     Reads a Scout filtered or unfiltered crosslink-spectrum-matches result file or crosslink/residue pair result file in ``.csv`` format

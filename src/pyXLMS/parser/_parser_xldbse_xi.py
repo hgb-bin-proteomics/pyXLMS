@@ -10,14 +10,17 @@ import warnings
 import pandas as pd
 from tqdm import tqdm
 
-from ..data import check_input
-from ..data import create_crosslink
-from ..data import create_csm
-from ..data import create_parser_result
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._crosslink import create_crosslink
+from ..data._csm import create_csm
+from ..data._parser_result import create_parser_result
 from ..constants import XI_MODIFICATION_MAPPING
-from .util import format_sequence
-from .util import get_bool_from_value
-from .util import __serialize_pandas_series
+from ._util import format_sequence
+from ._util import get_bool_from_value
+from ._util import __serialize_pandas_series
 
 from typing import Optional
 from typing import BinaryIO
@@ -650,7 +653,7 @@ def __read_xisearch(
     modifications: Dict[str, Tuple[str, float]],
     ignore_errors: bool,
     verbose: Literal[0, 1, 2],
-) -> List[Dict[str, Any]]:
+) -> List[CrosslinkSpectrumMatch]:
     r"""Reads a xiSearch pandas dataframe and returns a list of crosslink-spectrum-matches.
 
     Parameters
@@ -890,7 +893,7 @@ def __read_xifdr_csms(
     modifications: Dict[str, Tuple[str, float]],
     ignore_errors: bool,
     verbose: Literal[0, 1, 2],
-) -> List[Dict[str, Any]]:
+) -> List[CrosslinkSpectrumMatch]:
     r"""Reads a xiFDR CSM pandas dataframe and returns a list of crosslink-spectrum-matches.
 
     Parameters
@@ -987,7 +990,7 @@ def __read_xifdr_csms(
 
 def __read_xifdr_crosslinks(
     data: pd.DataFrame, decoy_prefix: str
-) -> List[Dict[str, Any]]:
+) -> List[Crosslink]:
     r"""Reads a xiFDR Links pandas dataframe and returns a list of crosslinks.
 
     Parameters
@@ -1061,7 +1064,7 @@ def read_xi(
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
     **kwargs,
-) -> Dict[str, Any]:
+) -> ParserResult:
     r"""Read a xiSearch/xiFDR result file.
 
     Reads a xiSearch crosslink-spectrum-matches result file or a xiFDR crosslink-spectrum-matches

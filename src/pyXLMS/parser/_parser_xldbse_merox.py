@@ -11,14 +11,15 @@ import zipfile
 import pandas as pd
 from tqdm import tqdm
 
-from ..data import check_input
-from ..data import create_csm
-from ..data import create_parser_result
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._csm import create_csm
+from ..data._parser_result import create_parser_result
 from ..constants import AMINO_ACIDS
 from ..constants import MODIFICATIONS
 from ..constants import MEROX_MODIFICATION_MAPPING
-from .util import __serialize_pandas_series
-from .util import __parse_int, __parse_float
+from ._util import __serialize_pandas_series
+from ._util import __parse_int, __parse_float
 
 from typing import Optional
 from typing import BinaryIO
@@ -360,7 +361,7 @@ def read_merox(
     sep: str = ";",
     decimal: str = ".",
     **kwargs,
-) -> Dict[str, Any]:
+) -> ParserResult:
     r"""Read a MeroX result file.
 
     Reads a MeroX crosslink-spectrum-matches result file in ``.csv`` or ``.zhrm`` format

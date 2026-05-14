@@ -10,13 +10,14 @@ import warnings
 from tqdm import tqdm
 from pyteomics import mzid
 
-from ..data import check_input
-from ..data import create_csm
-from ..data import create_parser_result
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._csm import create_csm
+from ..data._parser_result import create_parser_result
 from ..constants import CROSSLINKERS
-from .util import format_sequence
-from .util import get_bool_from_value
-from .util import __parse_int
+from ._util import format_sequence
+from ._util import get_bool_from_value
+from ._util import __parse_int
 
 from typing import Optional
 from typing import BinaryIO
@@ -80,7 +81,7 @@ def read_mzid(
     decoy: Optional[bool] = None,
     crosslinkers: Dict[str, float] = CROSSLINKERS,
     verbose: Literal[0, 1, 2] = 1,
-) -> Dict[str, Any]:
+) -> ParserResult:
     r"""Read a mzIdentML (mzid) file.
 
     Reads crosslink-spectrum-matches from a mzIdentML (mzid) file and
