@@ -6,10 +6,11 @@
 
 from __future__ import annotations
 
-from ..data import check_input
-from ..data import check_input_multi
-from ..transform.util import assert_data_type_same
-from .to_pyxlinkviewer import to_pyxlinkviewer
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..data._util import check_input_multi
+from ..transform._util import assert_data_type_same
+from ._to_pyxlinkviewer import to_pyxlinkviewer
 
 from typing import Optional
 from typing import BinaryIO
@@ -19,7 +20,7 @@ from typing import List
 
 
 def to_xlmstools(
-    crosslinks: List[Dict[str, Any]],
+    crosslinks: List[Crosslink],
     pdb_file: str | BinaryIO,
     gap_open: int | float = -10.0,
     gap_extension: int | float = -1.0,
@@ -114,7 +115,7 @@ def to_xlmstools(
     >>> parsed_pdb_residue_numbers = xlmstools_result["Parsed PDB residue numbers"]
     >>> exported_files = xlmstools_result["Exported files"]
     """
-    _ok = check_input(crosslinks, "crosslinks", list, dict)
+    _ok = check_input(crosslinks, "crosslinks", list)
     _ok = check_input_multi(gap_open, "gap_open", [int, float])
     _ok = check_input_multi(gap_extension, "gap_extension", [int, float])
     _ok = check_input(min_sequence_identity, "min_sequence_identity", float)
@@ -131,7 +132,7 @@ def to_xlmstools(
         )
     if len(crosslinks) == 0:
         raise ValueError("Provided crosslinks contain no elements!")
-    if "data_type" not in crosslinks[0] or crosslinks[0]["data_type"] != "crosslink":
+    if crosslinks[0]["data_type"] != "crosslink":
         raise TypeError(
             "Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!"
         )

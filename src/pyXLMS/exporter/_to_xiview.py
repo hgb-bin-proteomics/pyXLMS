@@ -8,10 +8,12 @@ from __future__ import annotations
 
 import pandas as pd
 
-from ..data import check_input
-from ..transform.util import get_available_keys
-from .to_xinet import to_xinet
-from .util import __get_filename
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..transform._util import get_available_keys
+from ._to_xinet import to_xinet
+from ._util import __get_filename
 
 from typing import Optional
 from typing import Dict
@@ -21,7 +23,7 @@ from typing import Callable
 
 
 def __xls_to_xiview_minimal(
-    xls: List[Dict[str, Any]],
+    xls: List[Crosslink],
     filename: Optional[str],
 ) -> pd.DataFrame:
     r"""Exports crosslinks to xiVIEW format.
@@ -104,7 +106,7 @@ def __xls_to_xiview_minimal(
 
 
 def __csms_to_xiview_no_peaks(
-    csms: List[Dict[str, Any]],
+    csms: List[CrosslinkSpectrumMatch],
     filename: Optional[str] = None,
 ) -> pd.DataFrame:
     r"""Exports crosslink-spectrum-matches to xiVIEW format.
@@ -224,7 +226,7 @@ def __get_PeakListFileName(filename: str) -> str:
 
 
 def __csms_to_xiview_with_peaks(
-    csms: List[Dict[str, Any]],
+    csms: List[CrosslinkSpectrumMatch],
     crosslinker_mass: float,
     get_PeakListFileName: Optional[Callable[[str], str]] = None,
     filename: Optional[str] = None,
@@ -352,7 +354,7 @@ def __csms_to_xiview_with_peaks(
 
 
 def to_xiview(
-    data: List[Dict[str, Any]],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
     filename: Optional[str],
     minimal: bool = True,
 ) -> pd.DataFrame:
@@ -468,7 +470,7 @@ def to_xiview(
     _ok = check_input(filename, "filename", str) if filename is not None else True
     if len(data) == 0:
         raise ValueError("Provided data contains no elements!")
-    if "data_type" not in data[0] or data[0]["data_type"] not in [
+    if data[0]["data_type"] not in [
         "crosslink-spectrum-match",
         "crosslink",
     ]:

@@ -8,9 +8,10 @@ from __future__ import annotations
 
 import pandas as pd
 
-from ..data import check_input
-from ..transform.util import get_available_keys
-from .util import __get_filename
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..transform._util import get_available_keys
+from ._util import __get_filename
 
 from typing import Optional
 from typing import Dict
@@ -19,7 +20,7 @@ from typing import List
 
 
 def __xls_to_xinet(
-    xls: List[Dict[str, Any]],
+    xls: List[Crosslink],
     filename: Optional[str],
 ) -> pd.DataFrame:
     r"""Exports crosslinks to xiNET format.
@@ -114,7 +115,7 @@ def __xls_to_xinet(
 
 
 def to_xinet(
-    crosslinks: List[Dict[str, Any]],
+    crosslinks: List[Crosslink],
     filename: Optional[str],
 ) -> pd.DataFrame:
     r"""Exports a list of crosslinks to xiNET format.
@@ -193,11 +194,11 @@ def to_xinet(
     >>> cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
     >>> df = to_xinet(cas9, filename=None)
     """
-    _ok = check_input(crosslinks, "crosslinks", list, dict)
+    _ok = check_input(crosslinks, "crosslinks", list)
     _ok = check_input(filename, "filename", str) if filename is not None else True
     if len(crosslinks) == 0:
         raise ValueError("Provided crosslinks contain no elements!")
-    if "data_type" not in crosslinks[0] or crosslinks[0]["data_type"] != "crosslink":
+    if crosslinks[0]["data_type"] != "crosslink":
         raise TypeError(
             "Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!"
         )

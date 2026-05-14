@@ -8,10 +8,11 @@ from __future__ import annotations
 
 import pandas as pd
 
-from ..data import check_input
-from ..transform.filter import filter_target_decoy
-from ..transform.util import get_available_keys
-from .util import __get_filename
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._util import check_input
+from ..transform._filter import filter_target_decoy
+from ..transform._util import get_available_keys
+from ._util import __get_filename
 
 from typing import Optional
 from typing import Dict
@@ -20,7 +21,7 @@ from typing import List
 
 
 def __csms_to_xifdr(
-    csms: List[Dict[str, Any]],
+    csms: List[CrosslinkSpectrumMatch],
     filename: Optional[str],
 ) -> pd.DataFrame:
     r"""Exports crosslink-spectrum-matches to xiFDR format.
@@ -98,7 +99,7 @@ def __csms_to_xifdr(
 
 
 def to_xifdr(
-    csms: List[Dict[str, Any]],
+    csms: List[CrosslinkSpectrumMatch],
     filename: Optional[str],
 ) -> pd.DataFrame:
     r"""Exports a list of crosslink-spectrum-matches to xiFDR format.
@@ -168,11 +169,11 @@ def to_xifdr(
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> df = to_xifdr(csms, filename=None)
     """
-    _ok = check_input(csms, "csms", list, dict)
+    _ok = check_input(csms, "csms", list)
     _ok = check_input(filename, "filename", str) if filename is not None else True
     if len(csms) == 0:
         raise ValueError("Provided crosslink-spectrum-matches contain no elements!")
-    if "data_type" not in csms[0] or csms[0]["data_type"] != "crosslink-spectrum-match":
+    if csms[0]["data_type"] != "crosslink-spectrum-match":
         raise TypeError(
             "Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!"
         )

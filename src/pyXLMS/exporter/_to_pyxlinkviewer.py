@@ -17,9 +17,10 @@ from Bio.Align import substitution_matrices
 from biopandas.pdb import PandasPdb
 
 from ..constants import AMINO_ACIDS_3TO1
-from ..data import check_input
-from ..data import check_input_multi
-from ..transform.util import assert_data_type_same
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..data._util import check_input_multi
+from ..transform._util import assert_data_type_same
 
 from typing import Optional
 from typing import BinaryIO
@@ -291,7 +292,7 @@ def __to_dataframe(pyxlinkviewer: str) -> pd.DataFrame:
 
 
 def __to_pyxlinkviewer(
-    crosslinks: List[Dict[str, Any]],
+    crosslinks: List[Crosslink],
     pdb_file: str | BinaryIO,
     gap_open: float,
     gap_extension: float,
@@ -391,7 +392,7 @@ def __to_pyxlinkviewer(
 
 
 def to_pyxlinkviewer(
-    crosslinks: List[Dict[str, Any]],
+    crosslinks: List[Crosslink],
     pdb_file: str | BinaryIO,
     gap_open: int | float = -10.0,
     gap_extension: int | float = -1.0,
@@ -483,7 +484,7 @@ def to_pyxlinkviewer(
     >>> parsed_pdb_residue_numbers = pyxlinkviewer_result["Parsed PDB residue numbers"]
     >>> exported_files = pyxlinkviewer_result["Exported files"]
     """
-    _ok = check_input(crosslinks, "crosslinks", list, dict)
+    _ok = check_input(crosslinks, "crosslinks", list)
     _ok = check_input_multi(gap_open, "gap_open", [int, float])
     _ok = check_input_multi(gap_extension, "gap_extension", [int, float])
     _ok = check_input(min_sequence_identity, "min_sequence_identity", float)
@@ -500,7 +501,7 @@ def to_pyxlinkviewer(
         )
     if len(crosslinks) == 0:
         raise ValueError("Provided crosslinks contain no elements!")
-    if "data_type" not in crosslinks[0] or crosslinks[0]["data_type"] != "crosslink":
+    if crosslinks[0]["data_type"] != "crosslink":
         raise TypeError(
             "Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!"
         )

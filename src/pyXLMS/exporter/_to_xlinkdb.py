@@ -8,9 +8,10 @@ from __future__ import annotations
 
 import pandas as pd
 
-from ..data import check_input
-from ..transform.util import get_available_keys
-from .util import __get_filename
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..transform._util import get_available_keys
+from ._util import __get_filename
 
 from typing import Optional
 from typing import Dict
@@ -19,7 +20,7 @@ from typing import List
 
 
 def __xls_to_xlinkdb(
-    xls: List[Dict[str, Any]],
+    xls: List[Crosslink],
     filename: Optional[str],
 ) -> pd.DataFrame:
     r"""Exports crosslinks to XLinkDB format.
@@ -74,7 +75,7 @@ def __xls_to_xlinkdb(
 
 
 def to_xlinkdb(
-    crosslinks: List[Dict[str, Any]],
+    crosslinks: List[Crosslink],
     filename: Optional[str],
 ) -> pd.DataFrame:
     r"""Exports a list of crosslinks to XLinkDB format.
@@ -151,7 +152,7 @@ def to_xlinkdb(
     >>> crosslinks = pr["crosslinks"]
     >>> df = to_xlinkdb(crosslinks, filename=None)
     """
-    _ok = check_input(crosslinks, "crosslinks", list, dict)
+    _ok = check_input(crosslinks, "crosslinks", list)
     _ok = check_input(filename, "filename", str) if filename is not None else True
     if filename is not None and not filename.isalnum():
         raise ValueError(
@@ -159,7 +160,7 @@ def to_xlinkdb(
         )
     if len(crosslinks) == 0:
         raise ValueError("Provided crosslinks contain no elements!")
-    if "data_type" not in crosslinks[0] or crosslinks[0]["data_type"] != "crosslink":
+    if crosslinks[0]["data_type"] != "crosslink":
         raise TypeError(
             "Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!"
         )

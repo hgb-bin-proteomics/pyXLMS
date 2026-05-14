@@ -8,11 +8,13 @@ from __future__ import annotations
 
 import pandas as pd
 
-from ..data import check_input
-from ..data import create_crosslink_from_csm
-from ..transform.util import get_available_keys
-from ..transform.filter import filter_target_decoy
-from .to_msannika import to_msannika
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._crosslink import create_crosslink_from_csm
+from ..data._util import check_input
+from ..transform._util import get_available_keys
+from ..transform._filter import filter_target_decoy
+from ._to_msannika import to_msannika
 
 from typing import Optional
 from typing import Dict
@@ -21,7 +23,7 @@ from typing import List
 
 
 def to_impxfdr(
-    data: List[Dict[str, Any]],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
     filename: Optional[str],
     targets_only: bool = True,
 ) -> pd.DataFrame:
@@ -114,7 +116,7 @@ def to_impxfdr(
     410          Intra     QIT[K]HVAQILDSR           4        Cas9          933  ...          6         Cas9          350          6.808  False
     [411 rows x 11 columns]
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     _ok = check_input(filename, "filename", str) if filename is not None else True
     _ok = check_input(targets_only, "targets_only", bool)
     if targets_only:
@@ -128,7 +130,7 @@ def to_impxfdr(
             raise ValueError(
                 "Provided data does not contain any crosslinks or crosslink-spectrum-matches!"
             )
-    if "data_type" not in data[0] or data[0]["data_type"] not in [
+    if data[0]["data_type"] not in [
         "crosslink",
         "crosslink-spectrum-match",
     ]:

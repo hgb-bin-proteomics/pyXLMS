@@ -11,12 +11,13 @@ from lxml import etree  # pyright: ignore[reportAttributeAccessIssue] # ty: igno
 import urllib.request as ur
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
-from ..data import check_input
-from .to_proxl_util import __local_schema
-from .util import __get_filename
-from .to_alphalink2 import __protein_supported_by_crosslink
-from ..transform.util import get_available_keys
-from ..transform.util import modifications_to_str as mts
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._util import check_input
+from ._to_proxl_util import __local_schema
+from ._util import __get_filename
+from ._to_alphalink2 import __protein_supported_by_crosslink
+from ..transform._util import get_available_keys
+from ..transform._util import modifications_to_str as mts
 from ..constants import MODIFICATIONS
 
 from typing import Optional
@@ -106,7 +107,7 @@ def __build_header(
     return lines
 
 
-def __get_reported_peptide_string(csm: Dict[str, Any]) -> str:
+def __get_reported_peptide_string(csm: CrosslinkSpectrumMatch) -> str:
     r"""Creates a unique 'reported_peptide_string' for a crosslink-spectrum-match.
 
     Parameters
@@ -130,8 +131,8 @@ def __get_reported_peptide_string(csm: Dict[str, Any]) -> str:
 
 
 def __get_reported_peptides(
-    csms: List[Dict[str, Any]],
-) -> Dict[str, List[Dict[str, Any]]]:
+    csms: List[CrosslinkSpectrumMatch],
+) -> Dict[str, List[CrosslinkSpectrumMatch]]:
     r"""Groups crosslink-spectrum-matches by their unique 'reported_peptide_string'.
 
     Parameters
@@ -160,7 +161,7 @@ def __get_reported_peptides(
 
 
 def __build_psm(
-    csm: Dict[str, Any], crosslinker_mass: float, search_engine: str
+    csm: CrosslinkSpectrumMatch, crosslinker_mass: float, search_engine: str
 ) -> List[str]:
     r"""Builds the 'psm' section of the ProXL XML.
 
@@ -197,7 +198,7 @@ def __build_psm(
     return lines
 
 
-def __build_modifications(csm: Dict[str, Any]) -> Tuple[List[str], List[str]]:
+def __build_modifications(csm: CrosslinkSpectrumMatch) -> Tuple[List[str], List[str]]:
     r"""Builds the 'modifications' section of the ProXL XML.
 
     Parameters
@@ -249,7 +250,7 @@ def __build_modifications(csm: Dict[str, Any]) -> Tuple[List[str], List[str]]:
 
 
 def __build_reported_peptides(
-    reported_peptides: Dict[str, List[Dict[str, Any]]],
+    reported_peptides: Dict[str, List[CrosslinkSpectrumMatch]],
     crosslinker_mass: float,
     search_engine: str,
 ) -> List[str]:
@@ -309,7 +310,7 @@ def __build_reported_peptides(
 
 
 def __build_matched_proteins(
-    csms: List[Dict[str, Any]],
+    csms: List[CrosslinkSpectrumMatch],
     fasta_filename: str,
     title_to_accession: Optional[Callable[[str], str]],
 ) -> List[str]:
@@ -384,7 +385,7 @@ def __validate_schema(
 
 
 def to_proxl(
-    csms: List[Dict[str, Any]],
+    csms: List[CrosslinkSpectrumMatch],
     fasta_filename: str,
     search_engine: str,
     search_engine_version: str,
@@ -477,7 +478,7 @@ def to_proxl(
     ...     filename="DSS_Cas9_ProXL.xml",
     ... )
     """
-    _ok = check_input(csms, "csms", list, dict)
+    _ok = check_input(csms, "csms", list)
     _ok = check_input(fasta_filename, "fasta_filename", str)
     _ok = check_input(search_engine, "search_engine", str)
     _ok = check_input(search_engine_version, "search_engine_version", str)
@@ -519,7 +520,7 @@ def to_proxl(
             crosslinker_mass = modifications[crosslinker]
     if len(csms) == 0:
         raise ValueError("Provided crosslink-spectrum-matches contain no elements!")
-    if "data_type" not in csms[0] or csms[0]["data_type"] != "crosslink-spectrum-match":
+    if csms[0]["data_type"] != "crosslink-spectrum-match":
         raise TypeError(
             "Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!"
         )

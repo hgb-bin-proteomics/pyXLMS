@@ -8,9 +8,11 @@ from __future__ import annotations
 
 import pandas as pd
 
-from ..data import check_input
-from ..transform.util import assert_data_type_same
-from .util import __get_filename
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..transform._util import assert_data_type_same
+from ._util import __get_filename
 
 from typing import Optional
 from typing import Dict
@@ -129,7 +131,7 @@ def __get_xl_isdecoy(
 
 
 def __csms_to_msannika(
-    csms: List[Dict[str, Any]],
+    csms: List[CrosslinkSpectrumMatch],
     filename: Optional[str],
     format: Literal["csv", "tsv", "xlsx"],
 ) -> pd.DataFrame:
@@ -247,7 +249,7 @@ def __csms_to_msannika(
 
 
 def __xls_to_msannika(
-    xls: List[Dict[str, Any]],
+    xls: List[Crosslink],
     filename: Optional[str],
     format: Literal["csv", "tsv", "xlsx"],
 ) -> pd.DataFrame:
@@ -342,7 +344,7 @@ def __xls_to_msannika(
 
 
 def to_msannika(
-    data: List[Dict[str, Any]],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
     filename: Optional[str] = None,
     format: Literal["csv", "tsv", "xlsx"] = "csv",
 ) -> pd.DataFrame:
@@ -422,7 +424,7 @@ def to_msannika(
     >>> csms = [csm1, csm2]
     >>> df = to_msannika(csms, filename="csms.csv", format="csv")
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     _ok = check_input(filename, "filename", str) if filename is not None else True
     _ok = check_input(format, "format", str)
     if format not in ["csv", "tsv", "xlsx"]:
@@ -431,7 +433,7 @@ def to_msannika(
         raise ValueError(
             "Provided data does not contain any crosslinks or crosslink-spectrum-matches!"
         )
-    if "data_type" not in data[0] or data[0]["data_type"] not in [
+    if data[0]["data_type"] not in [
         "crosslink",
         "crosslink-spectrum-match",
     ]:
