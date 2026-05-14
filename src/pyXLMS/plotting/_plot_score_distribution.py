@@ -9,9 +9,11 @@ from __future__ import annotations
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from ..data import check_input
-from ..transform.util import get_available_keys
-from ..transform.filter import filter_target_decoy
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..transform._util import get_available_keys
+from ..transform._filter import filter_target_decoy
 
 from typing import Optional
 from typing import List
@@ -21,7 +23,7 @@ from typing import Any
 
 
 def plot_score_distribution(
-    data: List[Dict[str, Any]],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
     bins: int = 25,
     density: bool = False,
     colors: List[str] = ["#00a087", "#3c5488", "#e64b35"],
@@ -78,7 +80,7 @@ def plot_score_distribution(
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> fig, ax = plotting.plot_score_distribution(csms)
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     _ok = check_input(bins, "bins", int)
     _ok = check_input(density, "density", bool)
     _ok = check_input(colors, "colors", list, str)
@@ -93,7 +95,7 @@ def plot_score_distribution(
         raise ValueError(
             "Can't plot score distribution if no crosslink-spectrum-matches or crosslinks are given!"
         )
-    if "data_type" not in data[0] or data[0]["data_type"] not in [
+    if data[0]["data_type"] not in [
         "crosslink",
         "crosslink-spectrum-match",
     ]:

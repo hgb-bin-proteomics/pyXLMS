@@ -6,12 +6,13 @@
 
 from __future__ import annotations
 
+import pandas as pd
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from ..data import check_input
-from ..transform.util import get_available_keys
-from ..transform.filter import filter_target_decoy
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._util import check_input
+from ..transform._filter import filter_peptide_pair_distribution
 
 from typing import Optional
 from typing import List
@@ -20,25 +21,28 @@ from typing import Tuple
 from typing import Any
 
 
-def plot_target_decoy_distribution(
-    data: List[Dict[str, Any]],
-    colors: List[str] = ["#00a087", "#3c5488", "#e64b35"],
-    title: str = "Target and Decoy Distribution",
+def plot_peptide_pair_distribution(
+    data: List[CrosslinkSpectrumMatch],
+    top_n: int = 25,
+    color: str = "#6d4bff",
+    title: str = "Peptide Pair Distribution",
     figsize: Tuple[float, float] = (16.0, 9.0),
     filename_prefix: Optional[str] = None,
 ) -> Tuple[Figure, Any]:
-    r"""Plot the target-decoy distribution for a set of crosslink-spectrum-matches or crosslinks.
+    r"""Plot the peptide pair distribution for a set of crosslink-spectrum-matches.
 
-    Plot the target-target, target-decoy, and decoy-decoy distribution as a barplot for a
-    set of crosslink-spectrum-matches or crosslinks.
+    Plot the peptide pair distribution as a barplot for a set of crosslink-spectrum-matches.
 
     Parameters
     ----------
     data : list of dict of str, any
-        A list of crosslink-spectrum-matches or crosslinks.
-    colors : list of str, default = ["#00a087", "#3c5488", "#e64b35"]
-        Colors of the bars.
-    title : str, default = "Target and Decoy Distribution"
+        A list of crosslink-spectrum-matches.
+    top_n : int, default = 25
+        Number of peptide pairs to plot. Peptide pairs are sorted by number of
+        crosslink-spectrum-matches.
+    color : str, default = "#6d4bff"
+        Color of the bars.
+    title : str, default = "Peptide Pair Distribution"
         The title of the barplot.
     figsize : tuple of float, float, default = (16.0, 9.0)
         Width, height in inches.
@@ -56,9 +60,7 @@ def plot_target_decoy_distribution(
     TypeError
         If a wrong data type is provided.
     ValueError
-        If parameter data does not contain any crosslink-spectrum-matches or crosslinks.
-    ValueError
-        If attribute 'alpha_decoy', or 'beta_decoy' is not available for any of the data.
+        If parameter data does not contain any crosslink-spectrum-matches.
 
     Examples
     --------
@@ -68,10 +70,11 @@ def plot_target_decoy_distribution(
     ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx"
     ... )
     >>> csms = pr["crosslink-spectrum-matches"]
-    >>> fig, ax = plotting.plot_target_decoy_distribution(csms)
+    >>> fig, ax = plotting.plot_peptide_pair_distribution(csms)
     """
-    _ok = check_input(data, "data", list, dict)
-    _ok = check_input(colors, "colors", list, str)
+    _ok = check_input(data, "data", list)
+    _ok = check_input(top_n, "top_n", int)
+    _ok = check_input(color, "color", str)
     _ok = check_input(title, "title", str)
     _ok = check_input(figsize, "figsize", tuple)
     _ok = (
@@ -81,40 +84,36 @@ def plot_target_decoy_distribution(
     )
     if len(data) == 0:
         raise ValueError(
-            "Can't plot target-decoy distribution if no crosslink-spectrum-matches or crosslinks are given!"
+            "Can't plot peptide pair distribution if no crosslink-spectrum-matches are given!"
         )
-    if "data_type" not in data[0] or data[0]["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ]:
+    if data[0]["data_type"] != "crosslink-spectrum-match":
         raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
+            "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
         )
-    available_keys = get_available_keys(data)
-    if not available_keys["alpha_decoy"] or not available_keys["beta_decoy"]:
-        raise ValueError(
-            "Can't plot target-decoy distribution if target/decoy labels are missing!"
-        )
-    ylabel = (
-        "crosslink-spectrum-matches"
-        if data[0]["data_type"] == "crosslink-spectrum-match"
-        else "crosslinks"
-    )
-    filtered = filter_target_decoy(data)
-    tt = len(filtered["Target-Target"])
-    td = len(filtered["Target-Decoy"])
-    dd = len(filtered["Decoy-Decoy"])
+    pps = filter_peptide_pair_distribution(data)
+    pp_names = list()
+    pp_total = list()
+    for pp in pps:
+        pp_names.append(pp)
+        pp_total.append(len(pps[pp]))
+
+    sorted = pd.DataFrame(
+        {
+            "peptide_pair": pp_names,
+            "total": pp_total,
+        }
+    ).sort_values(by="total", axis=0, ascending=False)
+    pp_names = sorted["peptide_pair"].values.tolist()[:top_n]
+    pp_total = sorted["total"].values.tolist()[:top_n]
 
     fig, ax = plt.subplots(figsize=figsize)
 
-    bar = ax.bar(
-        ["Target-Target", "Target-Decoy", "Decoy-Decoy"],
-        [tt, td, dd],
-        color=colors,
-    )
+    bar = ax.bar(pp_names, pp_total, color=color)
     ax.bar_label(bar, padding=3.0)
-    ax.set_ylabel(f"Number of {ylabel}")
-    ax.set_xlabel("Type")
+
+    ax.set_xticks(range(len(pp_names)), pp_names, rotation=45, ha="right")
+    ax.set_ylabel("Number of crosslink-spectrum-matches")
+    ax.set_xlabel("Peptide Pair")
 
     if filename_prefix is not None:
         plt.savefig(

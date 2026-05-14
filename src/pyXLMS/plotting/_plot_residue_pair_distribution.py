@@ -10,8 +10,10 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from ..data import check_input
-from ..transform.filter import filter_residue_pair_distribution
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..transform._filter import filter_residue_pair_distribution
 
 from typing import Optional
 from typing import List
@@ -21,7 +23,7 @@ from typing import Any
 
 
 def plot_residue_pair_distribution(
-    data: List[Dict[str, Any]],
+    data: List[CrosslinkSpectrumMatch],
     top_n: int = 25,
     color: str = "#6d4bff",
     title: str = "Residue Pair Distribution",
@@ -73,7 +75,7 @@ def plot_residue_pair_distribution(
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> fig, ax = plotting.plot_residue_pair_distribution(csms)
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     _ok = check_input(top_n, "top_n", int)
     _ok = check_input(color, "color", str)
     _ok = check_input(title, "title", str)
@@ -87,7 +89,7 @@ def plot_residue_pair_distribution(
         raise ValueError(
             "Can't plot residue pair distribution if no crosslink-spectrum-matches are given!"
         )
-    if "data_type" not in data[0] or data[0]["data_type"] != "crosslink-spectrum-match":
+    if data[0]["data_type"] != "crosslink-spectrum-match":
         raise TypeError(
             "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
         )

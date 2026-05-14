@@ -10,10 +10,12 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from ..data import check_input
-from ..transform.util import get_available_keys
-from ..transform.filter import filter_protein_distribution
-from ..transform.filter import filter_crosslink_type
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..transform._util import get_available_keys
+from ..transform._filter import filter_protein_distribution
+from ..transform._filter import filter_crosslink_type
 
 from typing import Optional
 from typing import List
@@ -23,7 +25,7 @@ from typing import Any
 
 
 def plot_protein_distribution(
-    data: List[Dict[str, Any]],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
     top_n: int = 25,
     colors: List[str] = ["#6d4bff", "#ac99ff"],
     title: str = "Protein Distribution",
@@ -77,7 +79,7 @@ def plot_protein_distribution(
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> fig, ax = plotting.plot_protein_distribution(csms)
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     _ok = check_input(top_n, "top_n", int)
     _ok = check_input(colors, "colors", list, str)
     _ok = check_input(title, "title", str)
@@ -93,7 +95,7 @@ def plot_protein_distribution(
         raise ValueError(
             "Can't plot protein distribution if no crosslink-spectrum-matches or crosslinks are given!"
         )
-    if "data_type" not in data[0] or data[0]["data_type"] not in [
+    if data[0]["data_type"] not in [
         "crosslink",
         "crosslink-spectrum-match",
     ]:

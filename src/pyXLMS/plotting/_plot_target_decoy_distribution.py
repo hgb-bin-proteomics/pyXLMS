@@ -9,8 +9,11 @@ from __future__ import annotations
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from ..data import check_input
-from ..transform.filter import filter_crosslink_type
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..transform._util import get_available_keys
+from ..transform._filter import filter_target_decoy
 
 from typing import Optional
 from typing import List
@@ -18,36 +21,27 @@ from typing import Dict
 from typing import Tuple
 from typing import Any
 
-# legacy
-try:
-    from typing import Literal
-except ImportError:
-    from typing_extensions import Literal
 
-
-def plot_crosslink_type_distribution(
-    data: List[Dict[str, Any]],
-    plot_type: Literal["bar", "pie"] = "bar",
-    colors: List[str] = ["#6d4bff", "#ac99ff"],
-    title: str = "Crosslink Type Distribution",
+def plot_target_decoy_distribution(
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
+    colors: List[str] = ["#00a087", "#3c5488", "#e64b35"],
+    title: str = "Target and Decoy Distribution",
     figsize: Tuple[float, float] = (16.0, 9.0),
     filename_prefix: Optional[str] = None,
 ) -> Tuple[Figure, Any]:
-    r"""Plot the crosslink type distribution for a set of crosslink-spectrum-matches or crosslinks.
+    r"""Plot the target-decoy distribution for a set of crosslink-spectrum-matches or crosslinks.
 
-    Plot the crosslink type distribution (intra- and inter-links) as a bar or pie chart for a set of
-    crosslink-spectrum-matches or crosslinks.
+    Plot the target-target, target-decoy, and decoy-decoy distribution as a barplot for a
+    set of crosslink-spectrum-matches or crosslinks.
 
     Parameters
     ----------
     data : list of dict of str, any
         A list of crosslink-spectrum-matches or crosslinks.
-    plot_type : str, one of "bar" or "pie", default = "bar"
-        Plot type, whether to plot as a bar or pie chart.
-    colors : list of str, default = ["#6d4bff", "#ac99ff"]
-        Colors of the bars/pie slices (intra-link and inter-link).
-    title : str, default = "Crosslink Type Distribution"
-        The title of the plot.
+    colors : list of str, default = ["#00a087", "#3c5488", "#e64b35"]
+        Colors of the bars.
+    title : str, default = "Target and Decoy Distribution"
+        The title of the barplot.
     figsize : tuple of float, float, default = (16.0, 9.0)
         Width, height in inches.
     filename_prefix : str, or None
@@ -66,9 +60,7 @@ def plot_crosslink_type_distribution(
     ValueError
         If parameter data does not contain any crosslink-spectrum-matches or crosslinks.
     ValueError
-        If parameter plot type was set incorrectly.
-    IndexError
-        If not enough colors where specified.
+        If attribute 'alpha_decoy', or 'beta_decoy' is not available for any of the data.
 
     Examples
     --------
@@ -78,10 +70,9 @@ def plot_crosslink_type_distribution(
     ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx"
     ... )
     >>> csms = pr["crosslink-spectrum-matches"]
-    >>> fig, ax = plotting.plot_crosslink_type_distribution(csms)
+    >>> fig, ax = plotting.plot_target_decoy_distribution(csms)
     """
-    _ok = check_input(data, "data", list, dict)
-    _ok = check_input(plot_type, "plot_type", str)
+    _ok = check_input(data, "data", list)
     _ok = check_input(colors, "colors", list, str)
     _ok = check_input(title, "title", str)
     _ok = check_input(figsize, "figsize", tuple)
@@ -90,50 +81,42 @@ def plot_crosslink_type_distribution(
         if filename_prefix is not None
         else True
     )
-    if plot_type not in ["bar", "pie"]:
-        raise ValueError("Plot type needs to be one of 'bar' or 'pie'!")
-    if len(colors) < 2:
-        raise IndexError("At least two colors need to be given for the plot!")
     if len(data) == 0:
         raise ValueError(
-            "Can't plot crosslink type distribution if no crosslink-spectrum-matches or crosslinks are given!"
+            "Can't plot target-decoy distribution if no crosslink-spectrum-matches or crosslinks are given!"
         )
-    if "data_type" not in data[0] or data[0]["data_type"] not in [
+    if data[0]["data_type"] not in [
         "crosslink",
         "crosslink-spectrum-match",
     ]:
         raise TypeError(
             "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
         )
-    axis_label = (
+    available_keys = get_available_keys(data)
+    if not available_keys["alpha_decoy"] or not available_keys["beta_decoy"]:
+        raise ValueError(
+            "Can't plot target-decoy distribution if target/decoy labels are missing!"
+        )
+    ylabel = (
         "crosslink-spectrum-matches"
         if data[0]["data_type"] == "crosslink-spectrum-match"
         else "crosslinks"
     )
-    intra_inter = filter_crosslink_type(data)
-    values = [len(intra_inter["Intra"]), len(intra_inter["Inter"])]
-    labels = ["intra-links", "inter-links"]
+    filtered = filter_target_decoy(data)
+    tt = len(filtered["Target-Target"])
+    td = len(filtered["Target-Decoy"])
+    dd = len(filtered["Decoy-Decoy"])
 
     fig, ax = plt.subplots(figsize=figsize)
 
-    if plot_type == "pie":
-        ax.pie(
-            values,
-            labels=labels,
-            colors=colors,
-            autopct="%1.1f%%",
-        )
-
-        ax.set_xlabel(
-            f"Total number of {axis_label}: {sum([len(intra_inter['Intra']), len(intra_inter['Inter'])])}"
-        )
-    else:
-        bar = ax.bar(labels, values, color=colors)
-        ax.bar_label(bar, padding=3.0)
-
-        ax.set_xticks(range(len(labels)), labels, rotation=45, ha="right")
-        ax.set_ylabel(f"Number of {axis_label}")
-        ax.set_xlabel("Crosslink Type")
+    bar = ax.bar(
+        ["Target-Target", "Target-Decoy", "Decoy-Decoy"],
+        [tt, td, dd],
+        color=colors,
+    )
+    ax.bar_label(bar, padding=3.0)
+    ax.set_ylabel(f"Number of {ylabel}")
+    ax.set_xlabel("Type")
 
     if filename_prefix is not None:
         plt.savefig(

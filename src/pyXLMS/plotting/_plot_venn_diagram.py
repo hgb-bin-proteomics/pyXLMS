@@ -12,9 +12,11 @@ from matplotlib.figure import Figure
 from matplotlib_venn import venn2, venn2_circles
 from matplotlib_venn import venn3, venn3_circles
 
-from ..data import check_input
-from ..transform.util import get_available_keys
-from ..transform.aggregate import __get_xl_key as __get_key
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..transform._util import get_available_keys
+from ..transform._aggregate import __get_xl_key as __get_key
 
 from typing import Optional
 from typing import List
@@ -268,9 +270,9 @@ def venn(
 
 
 def plot_venn_diagram(
-    data_1: List[Dict[str, Any]],
-    data_2: List[Dict[str, Any]],
-    data_3: Optional[List[Dict[str, Any]]] = None,
+    data_1: List[CrosslinkSpectrumMatch] | List[Crosslink],
+    data_2: List[CrosslinkSpectrumMatch] | List[Crosslink],
+    data_3: Optional[List[CrosslinkSpectrumMatch] | List[Crosslink]] = None,
     by: Literal["peptide", "protein"] = "peptide",
     labels: List[str] = ["Set 1", "Set 2", "Set 3"],
     colors: List[str] = ["#4361EE", "#4CC9F0", "#F72585"],
@@ -383,9 +385,9 @@ def plot_venn_diagram(
     ...     a, b, c, labels=["MS Annika", "MaxQuant", "pLink"], contour=True
     ... )
     """
-    _ok = check_input(data_1, "data_1", list, dict)
-    _ok = check_input(data_2, "data_2", list, dict)
-    _ok = check_input(data_3, "data_3", list, dict) if data_3 is not None else True
+    _ok = check_input(data_1, "data_1", list)
+    _ok = check_input(data_2, "data_2", list)
+    _ok = check_input(data_3, "data_3", list) if data_3 is not None else True
     _ok = check_input(by, "by", str)
     _ok = check_input(labels, "labels", list, str)
     _ok = check_input(colors, "colors", list, str)
@@ -416,14 +418,14 @@ def plot_venn_diagram(
         raise ValueError(
             "Can't plot 3-set venn diagram if no crosslink-spectrum-matches or crosslinks are given in data_3!"
         )
-    if "data_type" not in data_1[0] or data_1[0]["data_type"] not in [
+    if data_1[0]["data_type"] not in [
         "crosslink",
         "crosslink-spectrum-match",
     ]:
         raise TypeError(
             "Unsupported data type for input data! Parameter data_1 has to be a list of crosslink or crosslink-spectrum-match!"
         )
-    if "data_type" not in data_2[0] or data_2[0]["data_type"] not in [
+    if data_2[0]["data_type"] not in [
         "crosslink",
         "crosslink-spectrum-match",
     ]:
@@ -431,7 +433,7 @@ def plot_venn_diagram(
             "Unsupported data type for input data! Parameter data_2 has to be a list of crosslink or crosslink-spectrum-match!"
         )
     if data_3 is not None:
-        if "data_type" not in data_3[0] or data_3[0]["data_type"] not in [
+        if data_3[0]["data_type"] not in [
             "crosslink",
             "crosslink-spectrum-match",
         ]:

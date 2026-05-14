@@ -10,13 +10,15 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from ..data import check_input
-from ..data import check_input_multi
-from ..transform.util import assert_data_type_same
-from ..transform.filter import filter_target_decoy
-from ..transform.filter import filter_crosslink_type
-from ..transform.annotate_string_scores import annotate_string_scores
-from ..transform.annotate_string_scores import STRING_SCORES
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..data._util import check_input_multi
+from ..transform._util import assert_data_type_same
+from ..transform._filter import filter_target_decoy
+from ..transform._filter import filter_crosslink_type
+from ..transform._annotate_string_scores import annotate_string_scores
+from ..transform._annotate_string_scores import STRING_SCORES
 
 from typing import Optional
 from typing import List
@@ -32,7 +34,7 @@ except ImportError:
 
 
 def plot_string_score_distribution(
-    data: List[Dict[str, Any]],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
     organism: Optional[str | int] = None,
     plot_type: Literal["bar", "hist"] = "bar",
     bins: int = 25,
@@ -125,7 +127,7 @@ def plot_string_score_distribution(
     >>> xls = pr["crosslinks"]
     >>> fig, ax = plotting.plot_string_score_distribution(xls, organism="Homo sapiens")
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     _ok = (
         check_input_multi(organism, "organism", [str, int])
         if organism is not None
@@ -161,7 +163,7 @@ def plot_string_score_distribution(
         raise ValueError(
             "Can't plot STRING score distribution if no crosslink-spectrum-matches or crosslinks are given!"
         )
-    if "data_type" not in data[0] or data[0]["data_type"] not in [
+    if data[0]["data_type"] not in [
         "crosslink",
         "crosslink-spectrum-match",
     ]:
