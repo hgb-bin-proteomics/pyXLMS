@@ -14,10 +14,11 @@ import pandas as pd
 from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
-from ..data import check_input
-from ..data import check_input_multi
-from ..transform.reannotate_positions import __generate_all_sequences
-from ..transform.util import assert_data_type_same
+from ..data._crosslink import Crosslink
+from ..data._util import check_input
+from ..data._util import check_input_multi
+from ..transform._reannotate_positions import __generate_all_sequences
+from ..transform._util import assert_data_type_same
 
 from typing import Optional
 from typing import BinaryIO
@@ -89,7 +90,7 @@ def __get_proteins_and_positions(
 
 
 def __protein_supported_by_crosslink(
-    sequence: str, crosslinks: List[Dict[str, Any]]
+    sequence: str, crosslinks: List[Crosslink]
 ) -> bool:
     r"""Check if a specific protein is supported by any of the given crosslinks.
 
@@ -123,7 +124,7 @@ def __protein_supported_by_crosslink(
 
 
 def to_alphalink2(
-    crosslinks: List[Dict[str, Any]],
+    crosslinks: List[Crosslink],
     fasta: str | BinaryIO,
     annotated_fdr: float | List[float] = 0.01,
     try_use_annotated_fdr: bool = True,
@@ -207,7 +208,7 @@ def to_alphalink2(
     ...     cas9, fasta="data/_fasta/Cas9_plus10.fasta", filename_prefix="Cas9"
     ... )
     """
-    _ok = check_input(crosslinks, "crosslinks", list, dict)
+    _ok = check_input(crosslinks, "crosslinks", list, Crosslink)
     _ok = check_input_multi(annotated_fdr, "annotated_fdr", [float, list], float)
     _ok = check_input(try_use_annotated_fdr, "try_use_annotated_fdr", bool)
     _ok = (
@@ -225,10 +226,6 @@ def to_alphalink2(
         )
     if len(crosslinks) == 0:
         raise ValueError("Provided crosslinks contain no elements!")
-    if "data_type" not in crosslinks[0] or crosslinks[0]["data_type"] != "crosslink":
-        raise TypeError(
-            "Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!"
-        )
     _ok = assert_data_type_same(crosslinks)
     protein_db = dict()
     # read fasta file
