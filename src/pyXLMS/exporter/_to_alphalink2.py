@@ -14,6 +14,7 @@ import pandas as pd
 from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
+from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
 from ..data._util import check_input_multi
@@ -90,7 +91,7 @@ def __get_proteins_and_positions(
 
 
 def __protein_supported_by_crosslink(
-    sequence: str, crosslinks: List[Crosslink]
+    sequence: str, crosslinks: List[Crosslink] | List[CrosslinkSpectrumMatch]
 ) -> bool:
     r"""Check if a specific protein is supported by any of the given crosslinks.
 
