@@ -486,7 +486,7 @@ def to_xiview(
             "Can't export to xiVIEW because not all necessary information is available!"
         )
     if data[0]["data_type"] == "crosslink-spectrum-match":
-        return __csms_to_xiview_no_peaks(data, filename)
+        return __csms_to_xiview_no_peaks(data, filename)  # ty: ignore[invalid-argument-type]
     if minimal:
-        return __xls_to_xiview_minimal(data, filename)
-    return to_xinet(data, filename)
+        return __xls_to_xiview_minimal(data, filename)  # ty: ignore[invalid-argument-type]
+    return to_xinet(data, filename)  # ty: ignore[invalid-argument-type]
