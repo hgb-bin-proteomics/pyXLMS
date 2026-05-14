@@ -268,9 +268,9 @@ def to_dataframe(data: List[CrosslinkSpectrumMatch] | List[Crosslink]) -> pd.Dat
     ## function calls
     if len(data) > 0:
         if data[0]["data_type"] == "crosslink":
-            return __crosslinks_to_dataframe(data)
+            return __crosslinks_to_dataframe(data)  # ty: ignore[invalid-argument-type]
         elif data[0]["data_type"] == "crosslink-spectrum-match":
-            return __csms_to_dataframe(data)
+            return __csms_to_dataframe(data)  # ty: ignore[invalid-argument-type]
         else:
             raise TypeError("The given data object is not supported!")
     raise ValueError("Parameter data has to be at least of length one!")
