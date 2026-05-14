@@ -46,7 +46,7 @@ class CrosslinkSpectrumMatch(BaseModel):
     charge: Optional[float] = None
     retention_time: Optional[float] = None
     ion_mobility: Optional[float] = None
-    additional_information: Optional[Dict[str, int | float | str | None]] = None
+    additional_information: Optional[Dict[str, Any]] = None
     
     @computed_field
     @property

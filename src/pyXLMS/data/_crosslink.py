@@ -34,7 +34,7 @@ class Crosslink(BaseModel):
     beta_proteins_crosslink_positions: Optional[List[int]] = None
     beta_decoy: Optional[bool] = None
     score: Optional[float] = None
-    additional_information: Optional[Dict[str, int | float | str | None]] = None
+    additional_information: Optional[Dict[str, Any]] = None
     
     @computed_field
     @property
