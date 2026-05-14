@@ -117,25 +117,17 @@ def targets_only(
         else None
     )
     if new_csms is not None:
-        if not isinstance(new_csms, list):
-            raise RuntimeError(
-                "Something went wrong while getting target crosslink-spectrum-matches.\n"
-                f"Expected data type: list. Got: {type(new_csms)}."
-            )
         if len(new_csms) == 0:
             raise RuntimeError(
                 "No target crosslink-spectrum-matches found! Are you sure they are labelled?"
             )
     if new_xls is not None:
-        if not isinstance(new_xls, list):
-            raise RuntimeError(
-                "Something went wrong while getting target crosslinks.\n"
-                f"Expected data type: list. Got: {type(new_xls)}."
-            )
         if len(new_xls) == 0:
             raise RuntimeError(
                 "No target crosslinks found! Are you sure they are labelled?"
             )
     return create_parser_result(
-        search_engine=data["search_engine"], csms=new_csms, crosslinks=new_xls
+        search_engine=data["search_engine"],
+        csms=new_csms,  # ty: ignore[invalid-argument-type]
+        crosslinks=new_xls,  # ty: ignore[invalid-argument-type]
     )
