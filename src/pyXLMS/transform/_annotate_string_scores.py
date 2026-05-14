@@ -11,13 +11,16 @@ import requests
 import warnings
 from tqdm import tqdm
 
-from ..data import check_input
-from ..data import check_input_multi
-from ..data import create_parser_result
-from .filter import filter_crosslink_type
-from .filter import filter_protein_distribution
-from .util import assert_data_type_same
-from .util import get_available_keys
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._util import check_input_multi
+from ..data._parser_result import create_parser_result
+from ._filter import filter_crosslink_type
+from ._filter import filter_protein_distribution
+from ._util import assert_data_type_same
+from ._util import get_available_keys
 
 from typing import List
 from typing import Dict
@@ -333,10 +336,10 @@ def get_string_network(
 
 
 def annotate_string_scores(
-    data: List[Dict[str, Any]] | Dict[str, Any],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult,
     organism: str | int,
     verbose: Literal[0, 1, 2] = 1,
-) -> List[Dict[str, Any]] | Dict[str, Any]:
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
     r"""Annotates STRING interactions and scores for inter-links.
 
     Annotates STRING interactions and STRING scores for inter-links based on their associated proteins.
@@ -422,7 +425,7 @@ def annotate_string_scores(
     if verbose not in [0, 1, 2]:
         raise TypeError("Verbose level has to be one of 0, 1, or 2!")
     if isinstance(data, list):
-        _ok = check_input(data, "data", list, dict)
+        _ok = check_input(data, "data", list)
         if len(data) == 0:
             return data
         if "data_type" not in data[0]:
@@ -526,11 +529,7 @@ def annotate_string_scores(
                 "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
             )
         return data
-    _ok = check_input(data, "data", dict)
-    if "data_type" not in data or data["data_type"] != "parser_result":
-        raise TypeError(
-            "Can't annotate STRING scores for dict. Dict has to be a valid 'parser_result'!"
-        )
+    _ok = check_input(data, "data", ParserResult)
     new_csms = (
         annotate_string_scores(
             data["crosslink-spectrum-matches"], organism=organism, verbose=verbose

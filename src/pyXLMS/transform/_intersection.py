@@ -8,11 +8,14 @@ from __future__ import annotations
 
 import warnings
 
-from ..data import check_input
-from .aggregate import __score_better
-from .aggregate import __get_xl_key
-from .aggregate import unique
-from .util import get_available_keys
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ._aggregate import __score_better
+from ._aggregate import __get_xl_key
+from ._aggregate import unique
+from ._util import get_available_keys
 
 from typing import Dict
 from typing import List
@@ -25,7 +28,7 @@ except ImportError:
     from typing_extensions import Literal
 
 
-def __get_csm_key(csm: Dict[str, Any]) -> str:
+def __get_csm_key(csm: CrosslinkSpectrumMatch) -> str:
     r"""Get the unique intersection key for a crosslink-spectrum-match.
 
     Parameters
@@ -48,8 +51,8 @@ def __get_csm_key(csm: Dict[str, Any]) -> str:
 
 
 def intersection(
-    data_a: List[Dict[str, Any]],
-    data_b: List[Dict[str, Any]],
+    data_a: List[CrosslinkSpectrumMatch] | List[Crosslink],
+    data_b: List[CrosslinkSpectrumMatch] | List[Crosslink],
     use: Literal["better_score", "data_a", "data_b"] = "better_score",
     by: Literal["peptide", "protein"] = "peptide",
     score: Literal["higher_better", "lower_better"] = "higher_better",
@@ -186,8 +189,8 @@ def intersection(
     >>> len(crosslinks_intersection)
     203
     """
-    _ok = check_input(data_a, "data_a", list, dict)
-    _ok = check_input(data_b, "data_b", list, dict)
+    _ok = check_input(data_a, "data_a", list)
+    _ok = check_input(data_b, "data_b", list)
     _ok = check_input(use, "use", str)
     _ok = check_input(by, "by", str)
     _ok = check_input(score, "score", str)
@@ -212,14 +215,12 @@ def intersection(
     if len(data_a) == 0 or len(data_b) == 0:
         return []
     if (
-        "data_type" not in data_a[0]
-        or data_a[0]["data_type"]
+        data_a[0]["data_type"]
         not in [
             "crosslink",
             "crosslink-spectrum-match",
         ]
-        or "data_type" not in data_b[0]
-        or data_b[0]["data_type"]
+        data_b[0]["data_type"]
         not in [
             "crosslink",
             "crosslink-spectrum-match",

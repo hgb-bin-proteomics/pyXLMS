@@ -11,10 +11,13 @@ import warnings
 from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
-from ..data import check_input
-from ..data import create_parser_result
-from .util import assert_data_type_same
-from .reannotate_positions import __generate_all_sequences
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._parser_result import create_parser_result
+from ._util import assert_data_type_same
+from ._reannotate_positions import __generate_all_sequences
 
 from typing import Optional
 from typing import BinaryIO
@@ -26,8 +29,8 @@ from typing import Any
 
 
 def __annotate_by_mapping(
-    data: List[Dict[str, Any]], by_mapping: Dict[bool | None, bool | None]
-) -> List[Dict[str, Any]]:
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink], by_mapping: Dict[bool | None, bool | None]
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Reannotates decoy labels based on a given label mapping.
 
     Parameters
@@ -63,8 +66,8 @@ def __annotate_by_mapping(
 
 
 def __annotate_by_protein_prefix(
-    data: List[Dict[str, Any]], by_decoy_protein_prefix: str
-) -> List[Dict[str, Any]]:
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink], by_decoy_protein_prefix: str
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Reannotates decoy labels based on a given decoy protein prefix.
 
     Parameters
@@ -126,8 +129,8 @@ def __annotate_by_protein_prefix(
 
 
 def __annotate_by_protein_substring(
-    data: List[Dict[str, Any]], by_decoy_protein_substring: str
-) -> List[Dict[str, Any]]:
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink], by_decoy_protein_substring: str
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Reannotates decoy labels based on a given decoy protein substring.
 
     Parameters
@@ -216,8 +219,8 @@ def __is_peptide_in_protein_db(peptide: str, protein_db: List[str]) -> bool:
 
 
 def __annotate_by_fasta(
-    data: List[Dict[str, Any]], fasta: str | BinaryIO, is_target: bool
-) -> List[Dict[str, Any]]:
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink], fasta: str | BinaryIO, is_target: bool
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Reannotates decoy labels based on a given FASTA file.
 
     Parameters
@@ -263,9 +266,9 @@ def __annotate_by_fasta(
 
 
 def __annotate_by_function(
-    data: List[Dict[str, Any]],
+    List[CrosslinkSpectrumMatch] | List[Crosslink],
     by_function: Callable[[Dict[str, Any]], Tuple[bool, bool]],
-) -> List[Dict[str, Any]]:
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Reannotates decoy labels based on a given function.
 
     Parameters
@@ -301,14 +304,14 @@ def __annotate_by_function(
 
 
 def reannotate_decoy_labels(
-    data: List[Dict[str, Any]] | Dict[str, Any],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult,
     by_mapping: Optional[Dict[bool | None, bool | None]] = None,
     by_decoy_protein_prefix: Optional[str] = None,
     by_decoy_protein_substring: Optional[str] = None,
     by_target_fasta: Optional[str | BinaryIO] = None,
     by_decoy_fasta: Optional[str | BinaryIO] = None,
     by_function: Optional[Callable[[Dict[str, Any]], Tuple[bool, bool]]] | None = None,
-) -> List[Dict[str, Any]] | Dict[str, Any]:
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
     r"""Reannotates decoy labels based on different parameters.
 
     Reannotates the decoy labels based on a provided mapping, a decoy protein prefix, a decoy protein substring,
@@ -399,7 +402,7 @@ def reannotate_decoy_labels(
             "Please only specify one option for reannotation, e.g. 'by_mapping' or 'by_target_fasta' but not both!"
         )
     if isinstance(data, list):
-        _ok = check_input(data, "data", list, dict)
+        _ok = check_input(data, "data", list)
         if len(data) == 0:
             return data
         if "data_type" not in data[0]:
@@ -448,11 +451,7 @@ def reannotate_decoy_labels(
                 "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
             )
         return data
-    _ok = check_input(data, "data", dict)
-    if "data_type" not in data or data["data_type"] != "parser_result":
-        raise TypeError(
-            "Can't reannotate decoy labels for dict. Dict has to be a valid 'parser_result'!"
-        )
+    _ok = check_input(data, "data", ParserResult)
     new_csms = (
         reannotate_decoy_labels(
             data["crosslink-spectrum-matches"],

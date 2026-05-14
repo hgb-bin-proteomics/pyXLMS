@@ -6,7 +6,10 @@
 
 from __future__ import annotations
 
-from ..data import check_input
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
 
 from typing import Optional
 from typing import Dict
@@ -54,7 +57,7 @@ def modifications_to_str(
     return modifications_str.rstrip(";")
 
 
-def assert_data_type_same(data_list: List[Dict[str, Any]]) -> bool:
+def assert_data_type_same(data_list: List[CrosslinkSpectrumMatch] | List[Crosslink] | List[ParserResult]) -> bool:
     r"""Checks that all data is of the same data type.
 
     Verifies that all elements in the provided list are of the same data type.
@@ -89,7 +92,7 @@ def assert_data_type_same(data_list: List[Dict[str, Any]]) -> bool:
     >>> assert_data_type_same(data_list)
     False
     """
-    _ok = check_input(data_list, "data_list", list, dict)
+    _ok = check_input(data_list, "data_list", list)
     data_type = data_list[0]["data_type"]
     for item in data_list[1:]:
         if item["data_type"] != data_type:
@@ -98,7 +101,7 @@ def assert_data_type_same(data_list: List[Dict[str, Any]]) -> bool:
 
 
 def get_available_keys(
-    data_list: List[Dict[str, Any]], always_revalidate: bool = True
+    data_list: List[CrosslinkSpectrumMatch] | List[Crosslink], always_revalidate: bool = True
 ) -> Dict[str, bool]:
     r"""Checks which data is available from a list of crosslinks or crosslink-spectrum-matches.
 
@@ -281,7 +284,7 @@ def get_available_keys(
 
 
 def display(
-    data: Dict[str, Any],
+    data: CrosslinkSpectrumMatch | Crosslink | ParserResult,
     show_additional_information: bool = False,
     return_str: bool = False,
 ) -> None | str:
@@ -382,13 +385,9 @@ def display(
     Crosslink Type:                     intra
     Crosslink Score:                    119.82547820493929
     """
-    _ok = check_input(data, "data", dict)
+    _ok = check_input_multi(data, "data", [CrosslinkSpectrumMatch, Crosslink, ParserResult])
     _ok = check_input(show_additional_information, "show_additional_information", bool)
     _ok = check_input(return_str, "return_str", bool)
-    if "data_type" not in data:
-        raise TypeError(
-            "Invalid input for data. Data must be a crosslink, crosslink-spectrum-match, or parser_result!"
-        )
     data_type = data["data_type"]
     display: str = ""
     if data_type == "crosslink":

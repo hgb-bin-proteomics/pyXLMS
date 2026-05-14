@@ -6,9 +6,12 @@
 
 from __future__ import annotations
 
-from ..data import check_input
-from ..data import check_input_multi
-from .util import get_available_keys
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._util import check_input_multi
+from ._util import get_available_keys
 
 from typing import Dict
 from typing import List
@@ -16,7 +19,7 @@ from typing import Set
 from typing import Any
 
 
-def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+def filter_target_decoy(data: List[CrosslinkSpectrumMatch] | List[Crosslink]) -> Dict[str, List[CrosslinkSpectrumMatch]] | Dict[str, List[Crosslink]]:
     r"""Seperate crosslinks or crosslink-spectrum-matches based on target and decoy matches.
 
     Seperates crosslinks or crosslink-spectrum-matches based on if both peptides match to the
@@ -78,12 +81,12 @@ def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
     >>> len(target_and_decoys["Decoy-Decoy"])
     35
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     tt = list()
     td = list()
     dd = list()
     for item in data:
-        if "data_type" not in item or item["data_type"] not in [
+        if item["data_type"] not in [
             "crosslink",
             "crosslink-spectrum-match",
         ]:
@@ -101,8 +104,8 @@ def filter_target_decoy(data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
 
 
 def filter_proteins(
-    data: List[Dict[str, Any]], proteins: Set[str] | List[str]
-) -> Dict[str, List[Any]]:
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink], proteins: Set[str] | List[str]
+) -> Dict[str, List[str] | List[CrosslinkSpectrumMatch]] | Dict[str, List[str] | List[Crosslink]]:
     r"""Get all crosslinks or crosslink-spectrum-matches originating from proteins of interest.
 
     Gets all crosslinks or crosslink-spectrum-matches originating from a list of proteins of interest and
@@ -168,13 +171,13 @@ def filter_proteins(
     >>> len(proteins_xls["One"])
     21
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     _ok = check_input_multi(proteins, "proteins", [set, list], str)
     proteins = set(proteins)
     intra = list()
     inter = list()
     for item in data:
-        if "data_type" not in item or item["data_type"] not in [
+        if item["data_type"] not in [
             "crosslink",
             "crosslink-spectrum-match",
         ]:
@@ -197,8 +200,8 @@ def filter_proteins(
 
 
 def filter_protein_distribution(
-    data: List[Dict[str, Any]],
-) -> Dict[str, List[Dict[str, Any]]]:
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
+) -> Dict[str, List[CrosslinkSpectrumMatch]] | Dict[str, List[Crosslink]]:
     r"""Get all crosslinks or crosslink-spectrum-matches sorted by their associated proteins.
 
     Sorts all crosslinks or crosslink-spectrum-matches into a dictionary that maps protein
@@ -242,10 +245,10 @@ def filter_protein_distribution(
     >>> len(proteins_csms["Cas9"])  # number of CSMs for protein Cas9
     728
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     proteins = dict()
     for item in data:
-        if "data_type" not in item or item["data_type"] not in [
+        if item["data_type"] not in [
             "crosslink",
             "crosslink-spectrum-match",
         ]:
@@ -264,7 +267,7 @@ def filter_protein_distribution(
     return proteins
 
 
-def filter_crosslink_type(data: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
+def filter_crosslink_type(data: List[CrosslinkSpectrumMatch] | List[Crosslink]) -> Dict[str, List[CrosslinkSpectrumMatch]] | Dict[str, List[Crosslink]]:
     r"""Separate crosslinks and crosslink-spectrum-matches by their crosslink type.
 
     Gets all crosslinks or crosslink-spectrum-matches depending on crosslink type. Will separate based
@@ -317,11 +320,11 @@ def filter_crosslink_type(data: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
     >>> len(crosslink_type_filtered_crosslinks["Inter"])
     21
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     intra = list()
     inter = list()
     for item in data:
-        if "data_type" not in item or item["data_type"] not in [
+        if item["data_type"] not in [
             "crosslink",
             "crosslink-spectrum-match",
         ]:
@@ -336,9 +339,9 @@ def filter_crosslink_type(data: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
 
 
 def filter_peptide_pair_distribution(
-    data: List[Dict[str, Any]],
+    data: List[CrosslinkSpectrumMatch],
     prefix_decoys: bool = True,
-) -> Dict[str, List[Dict[str, Any]]]:
+) -> Dict[str, List[CrosslinkSpectrumMatch]]:
     r"""Get all crosslink-spectrum-matches sorted by their peptide pair.
 
     Sorts all crosslink-spectrum-matches into a dictionary that maps peptide pairs denoted as their
@@ -382,10 +385,10 @@ def filter_peptide_pair_distribution(
     ... )  # number of CSMs for peptide pair MTNFDKNLPNEK:6-SKLVSDFR:2
     21
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     peptide_pairs = dict()
     for item in data:
-        if "data_type" not in item or item["data_type"] != "crosslink-spectrum-match":
+        if item["data_type"] != "crosslink-spectrum-match":
             raise TypeError(
                 "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
             )
@@ -401,9 +404,9 @@ def filter_peptide_pair_distribution(
 
 
 def filter_residue_pair_distribution(
-    data: List[Dict[str, Any]],
+    data: List[CrosslinkSpectrumMatch],
     prefix_decoys: bool = True,
-) -> Dict[str, List[Dict[str, Any]]]:
+) -> Dict[str, List[CrosslinkSpectrumMatch]]:
     r"""Get all crosslink-spectrum-matches sorted by their protein residue pair.
 
     Sorts all crosslink-spectrum-matches into a dictionary that maps protein residue pairs denoted as their
@@ -453,7 +456,7 @@ def filter_residue_pair_distribution(
     ... )  # number of CSMs for residue pair Cas9:1122-Cas9:884
     22
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     available_keys = get_available_keys(data)
     if (
         not available_keys["alpha_proteins"]
@@ -466,7 +469,7 @@ def filter_residue_pair_distribution(
         )
     residue_pairs = dict()
     for item in data:
-        if "data_type" not in item or item["data_type"] != "crosslink-spectrum-match":
+        if item["data_type"] != "crosslink-spectrum-match":
             raise TypeError(
                 "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
             )

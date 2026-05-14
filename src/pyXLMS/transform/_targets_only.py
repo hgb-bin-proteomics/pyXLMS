@@ -6,10 +6,13 @@
 
 from __future__ import annotations
 
-from ..data import check_input
-from ..data import check_input_multi
-from ..data import create_parser_result
-from .filter import filter_target_decoy
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._util import check_input_multi
+from ..data._parser_result import create_parser_result
+from ._filter import filter_target_decoy
 
 from typing import Dict
 from typing import List
@@ -17,8 +20,8 @@ from typing import Any
 
 
 def targets_only(
-    data: List[Dict[str, Any]] | Dict[str, Any],
-) -> List[Dict[str, Any]] | Dict[str, Any]:
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult,
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
     r"""Get target crosslinks or crosslink-spectrum-matches.
 
     Get target crosslinks or crosslink-spectrum-matches from a list of target and decoy crosslinks or
@@ -86,12 +89,12 @@ def targets_only(
     >>> len(result_targets["crosslinks"])
     265
     """
-    _ok = check_input_multi(data, "data", [dict, list])
+    _ok = check_input_multi(data, "data", [ParserResult, list])
     if isinstance(data, list):
         _ok = check_input(data, "data", list, dict)
         if len(data) == 0:
             return data
-        if "data_type" not in data[0] or data[0]["data_type"] not in [
+        if data[0]["data_type"] not in [
             "crosslink",
             "crosslink-spectrum-match",
         ]:
@@ -105,10 +108,6 @@ def targets_only(
                 "No target matches found! Are you sure your data is labelled?"
             )
         return targets
-    if "data_type" not in data or data["data_type"] != "parser_result":
-        raise TypeError(
-            "Can't filter target matches for dict. Dict has to be a valid 'parser_result'!"
-        )
     new_csms = (
         filter_target_decoy(data["crosslink-spectrum-matches"])["Target-Target"]
         if data["crosslink-spectrum-matches"] is not None

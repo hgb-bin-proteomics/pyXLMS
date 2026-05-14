@@ -6,11 +6,14 @@
 
 from __future__ import annotations
 
-from ..data import check_input
-from ..data import check_input_multi
-from ..data import create_crosslink_from_csm
-from ..data import create_parser_result
-from .util import get_available_keys
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._util import check_input_multi
+from ..data._csm import create_crosslink_from_csm
+from ..data._parser_result import create_parser_result
+from ._util import get_available_keys
 
 from typing import Dict
 from typing import List
@@ -49,7 +52,7 @@ def __score_better(
     return score < reference
 
 
-def __get_csm_key(csm: Dict[str, Any]) -> str:
+def __get_csm_key(csm: CrosslinkSpectrumMatch) -> str:
     r"""Get the unique key for a crosslink-spectrum-match.
 
     Parameters
@@ -65,7 +68,7 @@ def __get_csm_key(csm: Dict[str, Any]) -> str:
     return f"{csm['spectrum_file']}_{csm['scan_nr']}"
 
 
-def __get_xl_key(xl: Dict[str, Any], by: Literal["peptide", "protein"]) -> str:
+def __get_xl_key(xl: Crosslink, by: Literal["peptide", "protein"]) -> str:
     r"""Get the unique key for a crosslink.
 
     Parameters
@@ -115,7 +118,7 @@ def __get_xl_key(xl: Dict[str, Any], by: Literal["peptide", "protein"]) -> str:
 
 
 def __unique_csms(
-    csms: List[Dict[str, Any]],
+    csms: List[CrosslinkSpectrumMatch],
     has_scores: bool,
     score: Literal["higher_better", "lower_better"],
 ) -> List[Dict[str, Any]]:
@@ -161,7 +164,7 @@ def __unique_csms(
 
 
 def __unique_xls(
-    xls: List[Dict[str, Any]],
+    xls: List[Crosslink],
     by: Literal["peptide", "protein"],
     has_scores: bool,
     score: Literal["higher_better", "lower_better"],
@@ -210,10 +213,10 @@ def __unique_xls(
 
 
 def unique(
-    data: List[Dict[str, Any]] | Dict[str, Any],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult,
     by: Literal["peptide", "protein"] = "peptide",
     score: Literal["higher_better", "lower_better"] = "higher_better",
-) -> List[Dict[str, Any]] | Dict[str, Any]:
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
     r"""Filter for unique crosslinks or crosslink-spectrum-matches.
 
     Filters for unique crosslinks from a list on non-unique crosslinks. A crosslink is considered unique if there is no
@@ -298,7 +301,7 @@ def unique(
     >>> len(unique_protein["crosslinks"])
     2
     """
-    _ok = check_input_multi(data, "data", [dict, list])
+    _ok = check_input_multi(data, "data", [ParserResult, list])
     _ok = check_input(by, "by", str)
     _ok = check_input(score, "score", str)
     if by not in ["peptide", "protein"]:
@@ -312,10 +315,10 @@ def unique(
             "-matches are found, the one with the higher score is kept if 'higher_better' is selected, and vice versa."
         )
     if isinstance(data, list):
-        _ok = check_input(data, "data", list, dict)
+        _ok = check_input(data, "data", list)
         if len(data) == 0:
             return data
-        if "data_type" not in data[0] or data[0]["data_type"] not in [
+        if data[0]["data_type"] not in [
             "crosslink",
             "crosslink-spectrum-match",
         ]:
@@ -343,10 +346,6 @@ def unique(
         else:
             unique_items += __unique_csms(data, available_keys["score"], score)
         return unique_items
-    if "data_type" not in data or data["data_type"] != "parser_result":
-        raise TypeError(
-            "Can't annotate positions for dict. Dict has to be a valid 'parser_result'!"
-        )
     new_csms = (
         unique(data["crosslink-spectrum-matches"], by, score)
         if data["crosslink-spectrum-matches"] is not None
@@ -375,10 +374,10 @@ def unique(
 
 
 def aggregate(
-    csms: List[Dict[str, Any]],
+    csms: List[CrosslinkSpectrumMatch],
     by: Literal["peptide", "protein"] = "peptide",
     score: Literal["higher_better", "lower_better"] = "higher_better",
-) -> List[Dict[str, Any]]:
+) -> List[Crosslink]:
     r"""Aggregate crosslink-spectrum-matches to crosslinks.
 
     Aggregates a list of crosslink-spectrum-matches to unique crosslinks. A crosslink is considered unique if there is no
@@ -443,7 +442,7 @@ def aggregate(
     >>> len(aggregate_protein)
     2
     """
-    _ok = check_input(csms, "csms", list, dict)
+    _ok = check_input(csms, "csms", list, CrosslinkSpectrumMatch)
     _ok = check_input(by, "by", str)
     _ok = check_input(score, "score", str)
     if by not in ["peptide", "protein"]:
@@ -458,7 +457,7 @@ def aggregate(
         )
     if len(csms) == 0:
         return csms
-    if "data_type" not in csms[0] or csms[0]["data_type"] != "crosslink-spectrum-match":
+    if csms[0]["data_type"] != "crosslink-spectrum-match":
         raise TypeError(
             "Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!"
         )

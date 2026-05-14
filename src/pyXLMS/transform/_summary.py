@@ -6,18 +6,21 @@
 
 from __future__ import annotations
 
-from ..data import check_input
-from ..data import check_input_multi
-from .aggregate import unique
-from .filter import filter_crosslink_type
-from .filter import filter_target_decoy
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._util import check_input_multi
+from ._aggregate import unique
+from ._filter import filter_crosslink_type
+from ._filter import filter_target_decoy
 
 from typing import Dict
 from typing import List
 from typing import Any
 
 
-def __summary_csm(data: List[Dict[str, Any]]) -> Dict[str, float]:
+def __summary_csm(data: List[CrosslinkSpectrumMatch]) -> Dict[str, float]:
     r"""Extracts summary stats from a list of crosslink-spectrum-matches.
 
     Parameters
@@ -68,7 +71,7 @@ def __summary_csm(data: List[Dict[str, Any]]) -> Dict[str, float]:
     }
 
 
-def __summary_xl(data: List[Dict[str, Any]]) -> Dict[str, float]:
+def __summary_xl(data: List[Crosslink]) -> Dict[str, float]:
     r"""Extracts summary stats from a list of crosslinks.
 
     Parameters
@@ -126,7 +129,7 @@ def __summary_xl(data: List[Dict[str, Any]]) -> Dict[str, float]:
     }
 
 
-def summary(data: List[Dict[str, Any]] | Dict[str, Any]) -> Dict[str, float]:
+def summary(data: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult) -> Dict[str, float]:
     r"""Extracts summary stats from a list of crosslinks or crosslink-spectrum-matches, or a
     parser_result.
 
@@ -217,10 +220,10 @@ def summary(data: List[Dict[str, Any]] | Dict[str, Any]) -> Dict[str, float]:
     Minimum crosslink score: 1.11
     Maximum crosslink score: 452.99
     """
-    _ok = check_input_multi(data, "data", [dict, list])
+    _ok = check_input_multi(data, "data", [ParserResult, list])
     if isinstance(data, list):
-        _ok = check_input(data, "data", list, dict)
-        if "data_type" not in data[0] or data[0]["data_type"] not in [
+        _ok = check_input(data, "data", list)
+        if data[0]["data_type"] not in [
             "crosslink",
             "crosslink-spectrum-match",
         ]:
@@ -237,10 +240,6 @@ def summary(data: List[Dict[str, Any]] | Dict[str, Any]) -> Dict[str, float]:
         for k, v in xl_summary.items():
             print(f"{k}: {v}")
         return xl_summary
-    if "data_type" not in data or data["data_type"] != "parser_result":
-        raise TypeError(
-            "Can't annotate positions for dict. Dict has to be a valid 'parser_result'!"
-        )
     csm_summary = (
         __summary_csm(data["crosslink-spectrum-matches"])
         if data["crosslink-spectrum-matches"] is not None

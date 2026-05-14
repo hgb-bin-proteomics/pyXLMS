@@ -7,8 +7,11 @@
 from __future__ import annotations
 
 import pandas as pd
-from ..data import check_input
-from .util import modifications_to_str
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ._util import modifications_to_str
 
 from typing import Optional
 from typing import List
@@ -39,7 +42,7 @@ def __cc(input_list: Optional[List[Any]], sep: str = ";") -> str | None:
     return s.rstrip(sep)
 
 
-def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
+def __crosslinks_to_dataframe(data: List[Crosslink]) -> pd.DataFrame:
     r"""Returns a pandas DataFrame of the given crosslinks.
 
     Parameters
@@ -119,7 +122,7 @@ def __crosslinks_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     )
 
 
-def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
+def __csms_to_dataframe(data: List[CrosslinkSpectrumMatch]]) -> pd.DataFrame:
     r"""Returns a pandas DataFrame of the given crosslink-spectrum-matches.
 
     Parameters
@@ -232,7 +235,7 @@ def __csms_to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     )
 
 
-def to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
+def to_dataframe(data: List[CrosslinkSpectrumMatch] | List[Crosslink]) -> pd.DataFrame:
     r"""Returns a pandas DataFrame of the given crosslinks or crosslink-spectrum-matches.
 
     Parameters
@@ -263,17 +266,16 @@ def to_dataframe(data: List[Dict[str, Any]]) -> pd.DataFrame:
     >>> csm_dataframe = to_dataframe(csms)
     """
     ## input checks
-    check_input(data, "data", list, dict)
+    check_input(data, "data", list)
     ## function calls
     if len(data) > 0:
-        if "data_type" in data[0] and data[0]["data_type"] == "crosslink":
+        if data[0]["data_type"] == "crosslink":
             return __crosslinks_to_dataframe(data)
         elif (
-            "data_type" in data[0]
-            and data[0]["data_type"] == "crosslink-spectrum-match"
+            data[0]["data_type"] == "crosslink-spectrum-match"
         ):
             return __csms_to_dataframe(data)
         else:
             raise TypeError("The given data object is not supported!")
-    else:
-        raise ValueError("Parameter data has to be at least of length one!")
+    raise ValueError("Parameter data has to be at least of length one!")
+    return pd.DataFrame()

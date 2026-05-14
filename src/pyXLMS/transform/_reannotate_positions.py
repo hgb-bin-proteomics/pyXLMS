@@ -11,12 +11,15 @@ import warnings
 from tqdm import tqdm
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
 from ..constants import AMINO_ACIDS_REPLACEMENTS
-from ..data import check_input
-from ..data import create_csm
-from ..data import create_crosslink
-from ..data import create_parser_result
-from .util import assert_data_type_same
+from ..data._util import check_input
+from ..data._csm import create_csm
+from ..data._crosslink import create_crosslink
+from ..data._parser_result import create_parser_result
+from ._util import assert_data_type_same
 
 from typing import Optional
 from typing import BinaryIO
@@ -147,10 +150,10 @@ def fasta_title_to_accession(title: str) -> str:
 
 
 def reannotate_positions(
-    data: List[Dict[str, Any]] | Dict[str, Any],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult,
     fasta: str | BinaryIO,
     title_to_accession: Optional[Callable[[str], str]] = None,
-) -> List[Dict[str, Any]] | Dict[str, Any]:
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
     r"""Reannotates protein crosslink positions for a given fasta file.
 
     Reannotates the crosslink and peptide positions of the given cross-linked peptide pair and
@@ -199,7 +202,7 @@ def reannotate_positions(
     else:
         title_to_accession = fasta_title_to_accession
     if isinstance(data, list):
-        _ok = check_input(data, "data", list, dict)
+        _ok = check_input(data, "data", list)
         if len(data) == 0:
             return data
         if "data_type" not in data[0]:
@@ -317,11 +320,7 @@ def reannotate_positions(
                 "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
             )
         return reannoted
-    _ok = check_input(data, "data", dict)
-    if "data_type" not in data or data["data_type"] != "parser_result":
-        raise TypeError(
-            "Can't annotate positions for dict. Dict has to be a valid 'parser_result'!"
-        )
+    _ok = check_input(data, "data", ParserResult)
     new_csms = (
         reannotate_positions(
             data["crosslink-spectrum-matches"], fasta, title_to_accession

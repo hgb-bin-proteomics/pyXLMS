@@ -9,14 +9,17 @@ from __future__ import annotations
 import pandas as pd
 from tqdm import tqdm
 
-from ..data import check_input
-from ..data import create_crosslink
-from ..data import create_csm
-from ..parser.parser_xldbse_custom import __get_value
-from ..parser.parser_xldbse_custom import pyxlms_modification_str_parser
-from ..parser.util import format_sequence
-from ..parser.util import get_bool_from_value
-from ..parser.util import __serialize_pandas_series
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._util import create_crosslink
+from ..data._csm import create_csm
+from ..parser._parser_xldbse_custom import __get_value
+from ..parser._parser_xldbse_custom import pyxlms_modification_str_parser
+from ..parser._util import format_sequence
+from ..parser._util import get_bool_from_value
+from ..parser._util import __serialize_pandas_series
 
 from typing import Optional
 from typing import Dict
@@ -32,7 +35,7 @@ def from_dataframe(
     parse_modifications: bool = True,
     modification_parser: Optional[Callable[[str], Dict[int, Tuple[str, float]]]] = None,
     decoy_prefix: str = "REV_",
-) -> List[Dict[str, Any]]:
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Read a pandas DataFrame in custom or pyXLMS format.
 
     Reads a pandas DataFrame in custom or pyXLMS format and returns a list of crosslink-spectrum-matches or crosslinks.

@@ -8,8 +8,11 @@ from __future__ import annotations
 
 import pandas as pd
 
-from ..data import check_input
-from ..data import check_input_multi
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._util import check_input_multi
 
 from typing import Optional
 from typing import Dict
@@ -83,7 +86,7 @@ def __get_modified_peptide(
     return sequence
 
 
-def __to_proforma_csm(csm: Dict[str, Any], crosslinker: Optional[str | float]) -> str:
+def __to_proforma_csm(csm: CrosslinkSpectrumMatch, crosslinker: Optional[str | float]) -> str:
     r"""Returns the Proforma string for a single crosslink-spectrum-match.
 
     Parameters
@@ -123,7 +126,7 @@ def __to_proforma_csm(csm: Dict[str, Any], crosslinker: Optional[str | float]) -
     return f"{peptide_a}//{peptide_b}"
 
 
-def __to_proforma_xl(xl: Dict[str, Any], crosslinker: Optional[str | float]) -> str:
+def __to_proforma_xl(xl: Crosslink, crosslinker: Optional[str | float]) -> str:
     r"""Returns the Proforma string for a single crosslink.
 
     Parameters
@@ -156,7 +159,7 @@ def __to_proforma_xl(xl: Dict[str, Any], crosslinker: Optional[str | float]) -> 
 
 
 def to_proforma(
-    data: Dict[str, Any] | List[Dict[str, Any]],
+    data: CrosslinkSpectrumMatch | Crosslink | List[CrosslinkSpectrumMatch] | List[Crosslink],
     crosslinker: Optional[str | float] = None,
 ) -> str | List[str]:
     r"""Returns the Proforma string for a single crosslink or crosslink-spectrum-match, or for
@@ -283,10 +286,10 @@ def to_proforma(
         else True
     )
     if isinstance(data, list):
-        _ok = check_input(data, "data", list, dict)
+        _ok = check_input(data, "data", list)
         return [to_proforma(item, crosslinker) for item in data]  # pyright: ignore[reportReturnType] # ty: ignore[invalid-return-type]
     _ok = check_input(data, "data", dict)
-    if "data_type" not in data or data["data_type"] not in [
+    if data["data_type"] not in [
         "crosslink",
         "crosslink-spectrum-match",
     ]:

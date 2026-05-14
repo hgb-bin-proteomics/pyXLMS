@@ -9,12 +9,15 @@ from __future__ import annotations
 import warnings
 from tqdm import tqdm
 
-from ..data import check_input
-from ..data import check_input_multi
-from ..data import create_parser_result
-from .util import get_available_keys
-from .filter import filter_target_decoy
-from .filter import filter_crosslink_type
+from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
+from ..data._parser_result import ParserResult
+from ..data._util import check_input
+from ..data._util import check_input_multi
+from ..data._parser_result import create_parser_result
+from ._util import get_available_keys
+from ._filter import filter_target_decoy
+from ._filter import filter_crosslink_type
 
 from typing import Dict
 from typing import List
@@ -28,9 +31,9 @@ except ImportError:
 
 
 def __annotate_fdr_strict(
-    data: List[Dict[str, Any]],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
     score: Literal["higher_better", "lower_better"],
-) -> List[Dict[str, Any]]:
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Annotates a list of crosslinks or crosslink-spectrum-matches with their false discover rate by strict false discovery rate estimation.
 
     Annotates a list of crosslinks or crosslink-spectrum-matches with their false discover rate (FDR) by strict false discovery rate estimation
@@ -107,9 +110,9 @@ def __annotate_fdr_strict(
 
 
 def __annotate_fdr_relaxed(
-    data: List[Dict[str, Any]],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
     score: Literal["higher_better", "lower_better"],
-) -> List[Dict[str, Any]]:
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Annotates a list of crosslinks or crosslink-spectrum-matches with their false discover rate by relaxed false discovery rate estimation.
 
     Annotates a list of crosslinks or crosslink-spectrum-matches with their false discover rate (FDR) by relaxed false discovery rate estimation
@@ -196,12 +199,12 @@ def __annotate_fdr_relaxed(
 
 
 def annotate_fdr(
-    data: List[Dict[str, Any]] | Dict[str, Any],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult,
     formula: Literal["D/T", "(TD+DD)/TT", "(TD-DD)/TT"] = "D/T",
     score: Literal["higher_better", "lower_better"] = "higher_better",
     separate_intra_inter: bool = False,
     ignore_missing_labels: bool = False,
-) -> List[Dict[str, Any]] | Dict[str, Any]:
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
     r"""Annotates a list of crosslinks or crosslink-spectrum-matches, or a parser_result with their false dicovery rate by estimating the false discovery rate.
 
     Annotates a list of crosslinks or crosslink-spectrum-matches, or a parser_result with their false discovery rate (FDR) by estimating false discovery rate
@@ -301,7 +304,7 @@ def annotate_fdr(
     >>> len(validated_xls)
     226
     """
-    _ok = check_input_multi(data, "data", [dict, list])
+    _ok = check_input_multi(data, "data", [ParserResult, list])
     _ok = check_input(formula, "formula", str)
     _ok = check_input(score, "score", str)
     _ok = check_input(separate_intra_inter, "separate_intra_inter", bool)
@@ -316,10 +319,10 @@ def annotate_fdr(
             "Parameter 'score' has to be one of 'higher_better' or 'lower_better'!"
         )
     if isinstance(data, list):
-        _ok = check_input(data, "data", list, dict)
+        _ok = check_input(data, "data", list)
         if len(data) == 0:
             return data
-        if "data_type" not in data[0] or data[0]["data_type"] not in [
+        if data[0]["data_type"] not in [
             "crosslink",
             "crosslink-spectrum-match",
         ]:
@@ -360,8 +363,6 @@ def annotate_fdr(
                 separate["Intra"], score
             ) + __annotate_fdr_strict(separate["Inter"], score)
         return __annotate_fdr_strict(data, score)
-    if "data_type" not in data or data["data_type"] != "parser_result":
-        raise TypeError("Can't validate dict. Dict has to be a valid 'parser_result'!")
     new_csms = (
         annotate_fdr(
             data["crosslink-spectrum-matches"],
