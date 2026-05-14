@@ -705,7 +705,7 @@ def read_scout(
 
     for input in inputs:
         ## reading data
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
         ## detect input file type
         scout_file_type = detect_scout_filetype(data)
         ## process data
