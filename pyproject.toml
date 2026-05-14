@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pyXLMS"
+name = "pyXLMS-pydantic"
 version = "1.8.11"
 authors = [
   { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
@@ -15,7 +15,7 @@ readme = "PYPI.md"
 license = {file = "LICENSE"}
 description = "A python package to process protein cross-linking data."
 keywords = ["crosslink", "crosslinker", "crosslinking", "mass spectrometry", "proteomics"]
-requires-python = ">=3.7"
+requires-python = ">=3.14"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "License :: OSI Approved :: MIT License",
@@ -25,26 +25,22 @@ classifiers = [
   "Development Status :: 5 - Production/Stable"
 ]
 dependencies = [
-  "numpy",
-  "pandas",
-  "openpyxl",
-  "tqdm",
-  "pyteomics[XML]",
-  "biopython",
-  "biopandas",
-  "matplotlib",
-  "matplotlib-venn",
-  "pyarrow",
-  "lxml",
-  "requests"
+    "biopandas>=0.5.1",
+    "biopython>=1.87",
+    "lxml>=6.1.0",
+    "matplotlib>=3.10.9",
+    "matplotlib-venn>=1.1.2",
+    "numpy>=2.4.4",
+    "openpyxl>=3.1.5",
+    "pandas>=3.0.3",
+    "pyarrow>=24.0.0",
+    "pydantic>=2.13.4",
+    "pyteomics[xml]==4.7.5",
+    "requests>=2.34.1",
+    "tqdm>=4.67.3",
 ]
 
 [project.optional-dependencies]
-gui = [
-  "streamlit>=1.50.0",
-  "xlsxwriter",
-  "uv"
-]
 docs = [
   "sphinx",
   "pydata-sphinx-theme",
@@ -52,8 +48,6 @@ docs = [
   "sphinx-copybutton"
 ]
 dev = [
-  "streamlit>=1.50.0",
-  "xlsxwriter",
   "jupyterlab",
   "sphinx",
   "pydata-sphinx-theme",
