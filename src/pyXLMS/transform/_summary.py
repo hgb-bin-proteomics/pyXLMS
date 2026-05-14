@@ -39,7 +39,7 @@ def __summary_csm(data: List[CrosslinkSpectrumMatch]) -> Dict[str, float]:
     # number of CSMs
     nr = float(len(data))
     # number of unique CSMs
-    nr_unique = float(len(unique(data)))
+    nr_unique = float(len(unique(data)))  # ty: ignore[invalid-argument-type]
     csm_types = filter_crosslink_type(data)
     # number of intra CSMs
     nr_intra = float(len(csm_types["Intra"]))
@@ -90,11 +90,11 @@ def __summary_xl(data: List[Crosslink]) -> Dict[str, float]:
     # number of crosslinks
     nr = float(len(data))
     # number of unique crosslinks by peptide
-    nr_unique_peptide = float(len(unique(data, by="peptide")))
+    nr_unique_peptide = float(len(unique(data, by="peptide")))  # ty: ignore[invalid-argument-type]
     # number of unique crosslinks by protein
     nr_unique_protein = float("nan")
     try:
-        nr_unique_protein = float(len(unique(data, by="protein")))
+        nr_unique_protein = float(len(unique(data, by="protein")))  # ty: ignore[invalid-argument-type]
     except Exception as _e:
         pass
     xl_types = filter_crosslink_type(data)
@@ -233,11 +233,11 @@ def summary(
                 "or a parser_result!"
             )
         if data[0]["data_type"] == "crosslink-spectrum-match":
-            csm_summary = __summary_csm(data)
+            csm_summary = __summary_csm(data)  # ty: ignore[invalid-argument-type]
             for k, v in csm_summary.items():
                 print(f"{k}: {v}")
             return csm_summary
-        xl_summary = __summary_xl(data)
+        xl_summary = __summary_xl(data)  # ty: ignore[invalid-argument-type]
         for k, v in xl_summary.items():
             print(f"{k}: {v}")
         return xl_summary
