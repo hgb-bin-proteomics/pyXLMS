@@ -332,18 +332,8 @@ def reannotate_positions(
         if data["crosslinks"] is not None
         else None
     )
-    if new_csms is not None:
-        if not isinstance(new_csms, list):
-            raise RuntimeError(
-                "Something went wrong while reannotating positions.\n"
-                f"Expected data type: list. Got: {type(new_csms)}."
-            )
-    if new_xls is not None:
-        if not isinstance(new_xls, list):
-            raise RuntimeError(
-                "Something went wrong while reannotating positions.\n"
-                f"Expected data type: list. Got: {type(new_xls)}."
-            )
     return create_parser_result(
-        search_engine=data["search_engine"], csms=new_csms, crosslinks=new_xls
+        search_engine=data["search_engine"],
+        csms=new_csms,  # ty: ignore[invalid-argument-type]
+        crosslinks=new_xls,  # ty: ignore[invalid-argument-type]
     )
