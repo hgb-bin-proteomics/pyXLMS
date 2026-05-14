@@ -1,8 +1,0 @@
-blank_issues_enabled: false
-contact_links:
-  - name: pyXLMS Discussions
-    url: https://github.com/hgb-bin-proteomics/pyXLMS/discussions
-    about: Please ask and answer questions here.
-  - name: Contact us directly
-    url: https://github.com/hgb-bin-proteomics/pyXLMS?tab=readme-ov-file#contact
-    about: In case you want to reach us directly please write us at this email.
