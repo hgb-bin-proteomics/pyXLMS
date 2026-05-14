@@ -238,7 +238,7 @@ def read_maxquant(
 
     ## process data
     for input in inputs:
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
         xl = data.dropna(axis=0, subset=["Proteins2"])
         for i, row in tqdm(
             xl.iterrows(), total=xl.shape[0], desc="Reading MaxQuant CSMs..."
@@ -345,7 +345,7 @@ def read_maxlynx(
     sep: str = "\t",
     decimal: str = ".",
     **kwargs,
-) -> Dict[str, Any]:
+) -> ParserResult:
     r"""Read a MaxLynx result file.
 
     Reads a MaxLynx crosslink-spectrum-matches result file "crosslinkMsms.txt" in ``.txt`` (tab delimited) format
