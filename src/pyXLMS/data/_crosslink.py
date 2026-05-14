@@ -131,32 +131,26 @@ class Crosslink(BaseModel):
         }
         keys = sorted(list(crosslink.keys()))
         alpha_proteins_clean = (
-            [str(protein).strip() for protein in crosslink[keys[0]]["proteins"]]
+            [str(protein).strip() for protein in crosslink[keys[0]]["proteins"]]  # ty: ignore[not-iterable]
             if crosslink[keys[0]]["proteins"] is not None
             else None
         )
         beta_proteins_clean = (
-            [str(protein).strip() for protein in crosslink[keys[1]]["proteins"]]
+            [str(protein).strip() for protein in crosslink[keys[1]]["proteins"]]  # ty: ignore[not-iterable]
             if crosslink[keys[1]]["proteins"] is not None
             else None
         )
         # re-assign
-        self.alpha_peptide = crosslink[keys[0]]["peptide"]
-        self.alpha_peptide_crosslink_position = crosslink[keys[0]][
-            "xl_position_peptide"
-        ]
+        self.alpha_peptide = crosslink[keys[0]]["peptide"]  # ty: ignore[invalid-assignment]
+        self.alpha_peptide_crosslink_position = crosslink[keys[0]]["xl_position_peptide"]  # fmt: skip # ty: ignore[invalid-assignment]
         self.alpha_proteins = alpha_proteins_clean
-        self.alpha_proteins_crosslink_positions = crosslink[keys[0]][
-            "xl_position_proteins"
-        ]
-        self.alpha_decoy = crosslink[keys[0]]["decoy"]
-        self.beta_peptide = crosslink[keys[1]]["peptide"]
-        self.beta_peptide_crosslink_position = crosslink[keys[1]]["xl_position_peptide"]
+        self.alpha_proteins_crosslink_positions = crosslink[keys[0]]["xl_position_proteins"]  # fmt: skip # ty: ignore[invalid-assignment]
+        self.alpha_decoy = crosslink[keys[0]]["decoy"]  # ty: ignore[invalid-assignment]
+        self.beta_peptide = crosslink[keys[1]]["peptide"]  # ty: ignore[invalid-assignment]
+        self.beta_peptide_crosslink_position = crosslink[keys[1]]["xl_position_peptide"]  # ty: ignore[invalid-assignment]
         self.beta_proteins = beta_proteins_clean
-        self.beta_proteins_crosslink_positions = crosslink[keys[1]][
-            "xl_position_proteins"
-        ]
-        self.beta_decoy = crosslink[keys[1]]["decoy"]
+        self.beta_proteins_crosslink_positions = crosslink[keys[1]]["xl_position_proteins"]  # fmt: skip # ty: ignore[invalid-assignment]
+        self.beta_decoy = crosslink[keys[1]]["decoy"]  # ty: ignore[invalid-assignment]
         if self.score is not None:
             if np.isnan(self.score):
                 self.score = None
