@@ -197,7 +197,7 @@ def read_xinet(
 
     ## process data
     for input in inputs:
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
         has_csms = "ScanNumber" in data and (
             "run" in data or "RawFileName" in data or "PeakListFileName" in data
         )
