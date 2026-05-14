@@ -235,42 +235,32 @@ class CrosslinkSpectrumMatch(BaseModel):
         }
         keys = sorted(list(crosslink.keys()))
         alpha_proteins_clean = (
-            [str(protein).strip() for protein in crosslink[keys[0]]["proteins"]]
+            [str(protein).strip() for protein in crosslink[keys[0]]["proteins"]]  # ty: ignore[not-iterable]
             if crosslink[keys[0]]["proteins"] is not None
             else None
         )
         beta_proteins_clean = (
-            [str(protein).strip() for protein in crosslink[keys[1]]["proteins"]]
+            [str(protein).strip() for protein in crosslink[keys[1]]["proteins"]]  # ty: ignore[not-iterable]
             if crosslink[keys[1]]["proteins"] is not None
             else None
         )
         # re-assign
-        self.alpha_peptide = crosslink[keys[0]]["peptide"]
-        self.alpha_modifications = crosslink[keys[0]]["modifications"]
-        self.alpha_peptide_crosslink_position = crosslink[keys[0]][
-            "xl_position_peptide"
-        ]
+        self.alpha_peptide = crosslink[keys[0]]["peptide"]  # ty: ignore[invalid-assignment]
+        self.alpha_modifications = crosslink[keys[0]]["modifications"]  # ty: ignore[invalid-assignment]
+        self.alpha_peptide_crosslink_position = crosslink[keys[0]]["xl_position_peptide"]  # fmt: skip # ty: ignore[invalid-assignment]
         self.alpha_proteins = alpha_proteins_clean
-        self.alpha_proteins_crosslink_positions = crosslink[keys[0]][
-            "xl_position_proteins"
-        ]
-        self.alpha_proteins_peptide_positions = crosslink[keys[0]][
-            "pep_position_proteins"
-        ]
-        self.alpha_score = crosslink[keys[0]]["score"]
-        self.alpha_decoy = crosslink[keys[0]]["decoy"]
-        self.beta_peptide = crosslink[keys[1]]["peptide"]
-        self.beta_modifications = crosslink[keys[1]]["modifications"]
-        self.beta_peptide_crosslink_position = crosslink[keys[1]]["xl_position_peptide"]
+        self.alpha_proteins_crosslink_positions = crosslink[keys[0]]["xl_position_proteins"]  # fmt: skip # ty: ignore[invalid-assignment]
+        self.alpha_proteins_peptide_positions = crosslink[keys[0]]["pep_position_proteins"]  # fmt: skip # ty: ignore[invalid-assignment]
+        self.alpha_score = crosslink[keys[0]]["score"]  # ty: ignore[invalid-assignment]
+        self.alpha_decoy = crosslink[keys[0]]["decoy"]  # ty: ignore[invalid-assignment]
+        self.beta_peptide = crosslink[keys[1]]["peptide"]  # ty: ignore[invalid-assignment]
+        self.beta_modifications = crosslink[keys[1]]["modifications"]  # ty: ignore[invalid-assignment]
+        self.beta_peptide_crosslink_position = crosslink[keys[1]]["xl_position_peptide"]  # ty: ignore[invalid-assignment]
         self.beta_proteins = beta_proteins_clean
-        self.beta_proteins_crosslink_positions = crosslink[keys[1]][
-            "xl_position_proteins"
-        ]
-        self.beta_proteins_peptide_positions = crosslink[keys[1]][
-            "pep_position_proteins"
-        ]
-        self.beta_score = crosslink[keys[1]]["score"]
-        self.beta_decoy = crosslink[keys[1]]["decoy"]
+        self.beta_proteins_crosslink_positions = crosslink[keys[1]]["xl_position_proteins"]  # fmt: skip # ty: ignore[invalid-assignment]
+        self.beta_proteins_peptide_positions = crosslink[keys[1]]["pep_position_proteins"]  # fmt: skip # ty: ignore[invalid-assignment]
+        self.beta_score = crosslink[keys[1]]["score"]  # ty: ignore[invalid-assignment]
+        self.beta_decoy = crosslink[keys[1]]["decoy"]  # ty: ignore[invalid-assignment]
         if self.alpha_score is not None:
             if np.isnan(self.alpha_score):
                 self.alpha_score = None
