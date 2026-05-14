@@ -6,12 +6,9 @@
 
 from __future__ import annotations
 
-import pandas as pd
 
 from typing import Optional
 from typing import List
-from typing import Dict
-from typing import Tuple
 from typing import Any
 
 

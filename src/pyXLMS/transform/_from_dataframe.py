@@ -11,7 +11,6 @@ from tqdm import tqdm
 
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
-from ..data._parser_result import ParserResult
 from ..data._util import check_input
 from ..data._util import create_crosslink
 from ..data._csm import create_csm

@@ -63,8 +63,6 @@ from ._parser_xldbse_maxquant import parse_modifications_from_maxquant_sequence
 from ..data._parser_result import ParserResult
 
 from typing import BinaryIO
-from typing import Dict
-from typing import Any
 from typing import List
 
 # legacy

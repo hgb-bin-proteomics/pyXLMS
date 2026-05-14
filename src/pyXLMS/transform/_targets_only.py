@@ -14,9 +14,7 @@ from ..data._util import check_input_multi
 from ..data._parser_result import create_parser_result
 from ._filter import filter_target_decoy
 
-from typing import Dict
 from typing import List
-from typing import Any
 
 
 def targets_only(

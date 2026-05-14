@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
-from ..data._parser_result import ParserResult
 from ..data._util import check_input
 from ..data._util import check_input_multi
 from ._util import get_available_keys
@@ -16,10 +15,11 @@ from ._util import get_available_keys
 from typing import Dict
 from typing import List
 from typing import Set
-from typing import Any
 
 
-def filter_target_decoy(data: List[CrosslinkSpectrumMatch] | List[Crosslink]) -> Dict[str, List[CrosslinkSpectrumMatch]] | Dict[str, List[Crosslink]]:
+def filter_target_decoy(
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
+) -> Dict[str, List[CrosslinkSpectrumMatch]] | Dict[str, List[Crosslink]]:
     r"""Seperate crosslinks or crosslink-spectrum-matches based on target and decoy matches.
 
     Seperates crosslinks or crosslink-spectrum-matches based on if both peptides match to the
@@ -105,7 +105,10 @@ def filter_target_decoy(data: List[CrosslinkSpectrumMatch] | List[Crosslink]) ->
 
 def filter_proteins(
     data: List[CrosslinkSpectrumMatch] | List[Crosslink], proteins: Set[str] | List[str]
-) -> Dict[str, List[str] | List[CrosslinkSpectrumMatch]] | Dict[str, List[str] | List[Crosslink]]:
+) -> (
+    Dict[str, List[str] | List[CrosslinkSpectrumMatch]]
+    | Dict[str, List[str] | List[Crosslink]]
+):
     r"""Get all crosslinks or crosslink-spectrum-matches originating from proteins of interest.
 
     Gets all crosslinks or crosslink-spectrum-matches originating from a list of proteins of interest and
@@ -267,7 +270,9 @@ def filter_protein_distribution(
     return proteins
 
 
-def filter_crosslink_type(data: List[CrosslinkSpectrumMatch] | List[Crosslink]) -> Dict[str, List[CrosslinkSpectrumMatch]] | Dict[str, List[Crosslink]]:
+def filter_crosslink_type(
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
+) -> Dict[str, List[CrosslinkSpectrumMatch]] | Dict[str, List[Crosslink]]:
     r"""Separate crosslinks and crosslink-spectrum-matches by their crosslink type.
 
     Gets all crosslinks or crosslink-spectrum-matches depending on crosslink type. Will separate based

@@ -17,8 +17,6 @@ from ..transform._filter import filter_target_decoy
 from ._to_msannika import to_msannika
 
 from typing import Optional
-from typing import Dict
-from typing import Any
 from typing import List
 
 

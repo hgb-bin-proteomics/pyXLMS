@@ -29,7 +29,8 @@ from typing import Any
 
 
 def __annotate_by_mapping(
-    data: List[CrosslinkSpectrumMatch] | List[Crosslink], by_mapping: Dict[bool | None, bool | None]
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
+    by_mapping: Dict[bool | None, bool | None],
 ) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Reannotates decoy labels based on a given label mapping.
 
@@ -129,7 +130,8 @@ def __annotate_by_protein_prefix(
 
 
 def __annotate_by_protein_substring(
-    data: List[CrosslinkSpectrumMatch] | List[Crosslink], by_decoy_protein_substring: str
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
+    by_decoy_protein_substring: str,
 ) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Reannotates decoy labels based on a given decoy protein substring.
 
@@ -219,7 +221,9 @@ def __is_peptide_in_protein_db(peptide: str, protein_db: List[str]) -> bool:
 
 
 def __annotate_by_fasta(
-    data: List[CrosslinkSpectrumMatch] | List[Crosslink], fasta: str | BinaryIO, is_target: bool
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
+    fasta: str | BinaryIO,
+    is_target: bool,
 ) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Reannotates decoy labels based on a given FASTA file.
 
@@ -266,7 +270,7 @@ def __annotate_by_fasta(
 
 
 def __annotate_by_function(
-    List[CrosslinkSpectrumMatch] | List[Crosslink],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
     by_function: Callable[[Dict[str, Any]], Tuple[bool, bool]],
 ) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Reannotates decoy labels based on a given function.

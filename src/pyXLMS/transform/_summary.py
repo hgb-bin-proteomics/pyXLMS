@@ -17,7 +17,6 @@ from ._filter import filter_target_decoy
 
 from typing import Dict
 from typing import List
-from typing import Any
 
 
 def __summary_csm(data: List[CrosslinkSpectrumMatch]) -> Dict[str, float]:
@@ -129,7 +128,9 @@ def __summary_xl(data: List[Crosslink]) -> Dict[str, float]:
     }
 
 
-def summary(data: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult) -> Dict[str, float]:
+def summary(
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult,
+) -> Dict[str, float]:
     r"""Extracts summary stats from a list of crosslinks or crosslink-spectrum-matches, or a
     parser_result.
 

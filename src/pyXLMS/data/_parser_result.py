@@ -6,33 +6,28 @@
 
 from __future__ import annotations
 
-import copy
-import numpy as np
 from pydantic import BaseModel
 from pydantic import computed_field
 
 from ._csm import CrosslinkSpectrumMatch
 from ._crosslink import Crosslink
 from ._util import check_input
-from ._util import check_indexing
 
-from typing import override
 from typing import Optional
 from typing import List
-from typing import Dict
-from typing import Tuple
 from typing import Any
+
 
 class ParserResult(BaseModel):
     search_engine: str
     crosslink_spectrum_matches: Optional[List[CrosslinkSpectrumMatch]]
     crosslinks: Optional[List[Crosslink]]
-    
+
     @computed_field
     @property
     def data_type(self) -> str:
         return "parser_result"
-    
+
     @computed_field
     @property
     def completeness(self) -> str:
@@ -41,7 +36,7 @@ class ParserResult(BaseModel):
         if self.crosslink_spectrum_matches is None and self.crosslinks is None:
             return "empty"
         return "partial"
-    
+
     def __getitem__(self, key: str) -> Any:
         if key == "crosslink-spectrum-matches":
             return self.crosslink_spectrum_matches
@@ -49,36 +44,33 @@ class ParserResult(BaseModel):
             return getattr(self, key)
         except AttributeError:
             raise KeyError(f"'{key}' is not a valid field!")
-    
-    
+
     def csms(self) -> List[CrosslinkSpectrumMatch] | None:
         return self.crosslink_spectrum_matches
-    
-    
+
     def xls(self) -> List[Crosslink] | None:
         return self.crosslinks
-    
-    
+
     def display(
         self,
         show_additional_information: bool = False,
         return_str: bool = False,
     ) -> None | str:
         r"""Pretty prints the parser_result.
-    
+
         Parameters
         ----------
         show_additional_information : bool, default = False
             Also display data in the ``additional_information``.
         return_str : bool, default = False
             If the display string should be returned.
-    
+
         Returns
         -------
         None, or str
             The display string of the crosslink-spectrum-match, crosslink, or parser_result
             if ``return_str = True`` otherwise None.
-    
+
         Examples
         --------
         >>> from pyXLMS import parser
@@ -95,7 +87,9 @@ class ParserResult(BaseModel):
         Number of Crosslink-Spectrum-Matches: 826
         Number of Crosslinks:                 300
         """
-        _ok = check_input(show_additional_information, "show_additional_information", bool)
+        _ok = check_input(
+            show_additional_information, "show_additional_information", bool
+        )
         _ok = check_input(return_str, "return_str", bool)
         display: str = ""
         csms = self.crosslink_spectrum_matches
@@ -110,6 +104,7 @@ class ParserResult(BaseModel):
         if return_str:
             return display
         return
+
 
 def create_parser_result(
     search_engine: str,

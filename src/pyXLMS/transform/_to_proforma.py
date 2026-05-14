@@ -10,7 +10,6 @@ import pandas as pd
 
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
-from ..data._parser_result import ParserResult
 from ..data._util import check_input
 from ..data._util import check_input_multi
 
@@ -18,7 +17,6 @@ from typing import Optional
 from typing import Dict
 from typing import List
 from typing import Tuple
-from typing import Any
 
 
 def __get_modified_peptide(
@@ -86,7 +84,9 @@ def __get_modified_peptide(
     return sequence
 
 
-def __to_proforma_csm(csm: CrosslinkSpectrumMatch, crosslinker: Optional[str | float]) -> str:
+def __to_proforma_csm(
+    csm: CrosslinkSpectrumMatch, crosslinker: Optional[str | float]
+) -> str:
     r"""Returns the Proforma string for a single crosslink-spectrum-match.
 
     Parameters
@@ -159,7 +159,10 @@ def __to_proforma_xl(xl: Crosslink, crosslinker: Optional[str | float]) -> str:
 
 
 def to_proforma(
-    data: CrosslinkSpectrumMatch | Crosslink | List[CrosslinkSpectrumMatch] | List[Crosslink],
+    data: CrosslinkSpectrumMatch
+    | Crosslink
+    | List[CrosslinkSpectrumMatch]
+    | List[Crosslink],
     crosslinker: Optional[str | float] = None,
 ) -> str | List[str]:
     r"""Returns the Proforma string for a single crosslink or crosslink-spectrum-match, or for

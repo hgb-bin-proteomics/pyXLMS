@@ -10,7 +10,6 @@ import warnings
 
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
-from ..data._parser_result import ParserResult
 from ..data._util import check_input
 from ._aggregate import __score_better
 from ._aggregate import __get_xl_key
@@ -214,18 +213,13 @@ def intersection(
         raise TypeError("Verbose level has to be one of 0, 1, or 2!")
     if len(data_a) == 0 or len(data_b) == 0:
         return []
-    if (
-        data_a[0]["data_type"]
-        not in [
-            "crosslink",
-            "crosslink-spectrum-match",
-        ]
-        data_b[0]["data_type"]
-        not in [
-            "crosslink",
-            "crosslink-spectrum-match",
-        ]
-    ):
+    if data_a[0]["data_type"] not in [
+        "crosslink",
+        "crosslink-spectrum-match",
+    ] or data_b[0]["data_type"] not in [
+        "crosslink",
+        "crosslink-spectrum-match",
+    ]:
         raise TypeError(
             "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
         )

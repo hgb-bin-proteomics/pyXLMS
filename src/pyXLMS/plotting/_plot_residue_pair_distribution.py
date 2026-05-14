@@ -11,13 +11,11 @@ from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
 from ..data._csm import CrosslinkSpectrumMatch
-from ..data._crosslink import Crosslink
 from ..data._util import check_input
 from ..transform._filter import filter_residue_pair_distribution
 
 from typing import Optional
 from typing import List
-from typing import Dict
 from typing import Tuple
 from typing import Any
 

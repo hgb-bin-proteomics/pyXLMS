@@ -18,7 +18,6 @@ from typing import override
 from typing import Optional
 from typing import List
 from typing import Dict
-from typing import Tuple
 from typing import Any
 
 
@@ -35,26 +34,28 @@ class Crosslink(BaseModel):
     beta_decoy: Optional[bool] = None
     score: Optional[float] = None
     additional_information: Optional[Dict[str, Any]] = None
-    
+
     @computed_field
     @property
     def data_type(self) -> str:
         return "crosslink"
-    
+
     @computed_field
     @property
     def completeness(self) -> str:
-        full = all([
-            self.alpha_proteins is not None,
-            self.alpha_proteins_crosslink_positions is not None,
-            self.alpha_decoy is not None,
-            self.beta_proteins is not None,
-            self.beta_proteins_crosslink_positions is not None,
-            self.beta_decoy is not None,
-            self.score is not None,
-        ])
+        full = all(
+            [
+                self.alpha_proteins is not None,
+                self.alpha_proteins_crosslink_positions is not None,
+                self.alpha_decoy is not None,
+                self.beta_proteins is not None,
+                self.beta_proteins_crosslink_positions is not None,
+                self.beta_decoy is not None,
+                self.score is not None,
+            ]
+        )
         return "full" if full else "partial"
-    
+
     @computed_field
     @property
     def crosslink_type(self) -> str:
@@ -69,16 +70,22 @@ class Crosslink(BaseModel):
             else []
         )
         return "intra" if len(a_prot.intersection(b_prot)) > 0 else "inter"
-    
+
     @override
     def model_post_init(self, context: Any = None) -> None:
         # extra validation
-        if self.alpha_proteins is not None and self.alpha_proteins_crosslink_positions is not None:
+        if (
+            self.alpha_proteins is not None
+            and self.alpha_proteins_crosslink_positions is not None
+        ):
             if len(self.alpha_proteins) != len(self.alpha_proteins_crosslink_positions):
                 raise ValueError(
                     "Crosslink position has to be given for every protein! Length of alpha_proteins and alpha_proteins_crosslink_positions has to match!"
                 )
-        if self.beta_proteins is not None and self.beta_proteins_crosslink_positions is not None:
+        if (
+            self.beta_proteins is not None
+            and self.beta_proteins_crosslink_positions is not None
+        ):
             if len(self.beta_proteins) != len(self.beta_proteins_crosslink_positions):
                 raise ValueError(
                     "Crosslink position has to be given for every protein! Length of beta_proteins and beta_proteins_crosslink_positions has to match!"
@@ -107,14 +114,18 @@ class Crosslink(BaseModel):
                 "peptide": self.alpha_peptide.strip(),
                 "xl_position_peptide": self.alpha_peptide_crosslink_position,
                 "proteins": copy.deepcopy(self.alpha_proteins),
-                "xl_position_proteins": copy.deepcopy(self.alpha_proteins_crosslink_positions),
+                "xl_position_proteins": copy.deepcopy(
+                    self.alpha_proteins_crosslink_positions
+                ),
                 "decoy": self.alpha_decoy,
             },
             key_b: {
                 "peptide": self.beta_peptide.strip(),
                 "xl_position_peptide": self.beta_peptide_crosslink_position,
                 "proteins": copy.deepcopy(self.beta_proteins),
-                "xl_position_proteins": copy.deepcopy(self.beta_proteins_crosslink_positions),
+                "xl_position_proteins": copy.deepcopy(
+                    self.beta_proteins_crosslink_positions
+                ),
                 "decoy": self.beta_decoy,
             },
         }
@@ -131,14 +142,20 @@ class Crosslink(BaseModel):
         )
         # re-assign
         self.alpha_peptide = crosslink[keys[0]]["peptide"]
-        self.alpha_peptide_crosslink_position = crosslink[keys[0]]["xl_position_peptide"]
+        self.alpha_peptide_crosslink_position = crosslink[keys[0]][
+            "xl_position_peptide"
+        ]
         self.alpha_proteins = alpha_proteins_clean
-        self.alpha_proteins_crosslink_positions = crosslink[keys[0]]["xl_position_proteins"]
+        self.alpha_proteins_crosslink_positions = crosslink[keys[0]][
+            "xl_position_proteins"
+        ]
         self.alpha_decoy = crosslink[keys[0]]["decoy"]
         self.beta_peptide = crosslink[keys[1]]["peptide"]
         self.beta_peptide_crosslink_position = crosslink[keys[1]]["xl_position_peptide"]
         self.beta_proteins = beta_proteins_clean
-        self.beta_proteins_crosslink_positions = crosslink[keys[1]]["xl_position_proteins"]
+        self.beta_proteins_crosslink_positions = crosslink[keys[1]][
+            "xl_position_proteins"
+        ]
         self.beta_decoy = crosslink[keys[1]]["decoy"]
         if self.score is not None:
             if np.isnan(self.score):
@@ -150,28 +167,27 @@ class Crosslink(BaseModel):
             return getattr(self, key)
         except AttributeError:
             raise KeyError(f"'{key}' is not a valid field!")
-        
-        
+
     def display(
         self,
         show_additional_information: bool = False,
         return_str: bool = False,
     ) -> None | str:
         r"""Pretty prints the crosslink.
-    
+
         Parameters
         ----------
         show_additional_information : bool, default = False
             Also display data in the ``additional_information``.
         return_str : bool, default = False
             If the display string should be returned.
-    
+
         Returns
         -------
         None, or str
             The display string of the crosslink-spectrum-match, crosslink, or parser_result
             if ``return_str = True`` otherwise None.
-    
+
         Examples
         --------
         >>> from pyXLMS import parser
@@ -197,7 +213,9 @@ class Crosslink(BaseModel):
         Crosslink Type:                     intra
         Crosslink Score:                    119.82547820493929
         """
-        _ok = check_input(show_additional_information, "show_additional_information", bool)
+        _ok = check_input(
+            show_additional_information, "show_additional_information", bool
+        )
         _ok = check_input(return_str, "return_str", bool)
         display: str = ""
         display += f"Data Type:                          {self.data_type}\n"
@@ -215,7 +233,9 @@ class Crosslink(BaseModel):
         display += f"Crosslink Type:                     {self.crosslink_type}\n"
         display += f"Crosslink Score:                    {self.score}\n"
         if show_additional_information:
-            display += f"Additional Information:             {self.additional_information}\n"
+            display += (
+                f"Additional Information:             {self.additional_information}\n"
+            )
         display = display.strip()
         print(display)
         if return_str:

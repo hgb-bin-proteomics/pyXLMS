@@ -10,12 +10,12 @@ from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._parser_result import ParserResult
 from ..data._util import check_input
+from ..data._util import check_input_multi
 
 from typing import Optional
 from typing import Dict
 from typing import Tuple
 from typing import List
-from typing import Any
 
 
 def modifications_to_str(
@@ -57,7 +57,9 @@ def modifications_to_str(
     return modifications_str.rstrip(";")
 
 
-def assert_data_type_same(data_list: List[CrosslinkSpectrumMatch] | List[Crosslink] | List[ParserResult]) -> bool:
+def assert_data_type_same(
+    data_list: List[CrosslinkSpectrumMatch] | List[Crosslink] | List[ParserResult],
+) -> bool:
     r"""Checks that all data is of the same data type.
 
     Verifies that all elements in the provided list are of the same data type.
@@ -101,7 +103,8 @@ def assert_data_type_same(data_list: List[CrosslinkSpectrumMatch] | List[Crossli
 
 
 def get_available_keys(
-    data_list: List[CrosslinkSpectrumMatch] | List[Crosslink], always_revalidate: bool = True
+    data_list: List[CrosslinkSpectrumMatch] | List[Crosslink],
+    always_revalidate: bool = True,
 ) -> Dict[str, bool]:
     r"""Checks which data is available from a list of crosslinks or crosslink-spectrum-matches.
 
@@ -385,7 +388,9 @@ def display(
     Crosslink Type:                     intra
     Crosslink Score:                    119.82547820493929
     """
-    _ok = check_input_multi(data, "data", [CrosslinkSpectrumMatch, Crosslink, ParserResult])
+    _ok = check_input_multi(
+        data, "data", [CrosslinkSpectrumMatch, Crosslink, ParserResult]
+    )
     _ok = check_input(show_additional_information, "show_additional_information", bool)
     _ok = check_input(return_str, "return_str", bool)
     data_type = data["data_type"]

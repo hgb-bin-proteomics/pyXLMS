@@ -22,7 +22,6 @@ from ..transform._annotate_string_scores import STRING_SCORES
 
 from typing import Optional
 from typing import List
-from typing import Dict
 from typing import Tuple
 from typing import Any
 

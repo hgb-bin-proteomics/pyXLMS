@@ -9,13 +9,11 @@ from __future__ import annotations
 import pandas as pd
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
-from ..data._parser_result import ParserResult
 from ..data._util import check_input
 from ._util import modifications_to_str
 
 from typing import Optional
 from typing import List
-from typing import Dict
 from typing import Any
 
 
@@ -122,7 +120,7 @@ def __crosslinks_to_dataframe(data: List[Crosslink]) -> pd.DataFrame:
     )
 
 
-def __csms_to_dataframe(data: List[CrosslinkSpectrumMatch]]) -> pd.DataFrame:
+def __csms_to_dataframe(data: List[CrosslinkSpectrumMatch]) -> pd.DataFrame:
     r"""Returns a pandas DataFrame of the given crosslink-spectrum-matches.
 
     Parameters
@@ -271,9 +269,7 @@ def to_dataframe(data: List[CrosslinkSpectrumMatch] | List[Crosslink]) -> pd.Dat
     if len(data) > 0:
         if data[0]["data_type"] == "crosslink":
             return __crosslinks_to_dataframe(data)
-        elif (
-            data[0]["data_type"] == "crosslink-spectrum-match"
-        ):
+        elif data[0]["data_type"] == "crosslink-spectrum-match":
             return __csms_to_dataframe(data)
         else:
             raise TypeError("The given data object is not supported!")

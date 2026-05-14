@@ -19,9 +19,7 @@ from ._util import get_available_keys
 from ._filter import filter_target_decoy
 from ._filter import filter_crosslink_type
 
-from typing import Dict
 from typing import List
-from typing import Any
 
 # legacy
 try:

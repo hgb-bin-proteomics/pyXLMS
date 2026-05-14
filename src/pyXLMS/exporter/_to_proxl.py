@@ -25,7 +25,6 @@ from typing import Callable
 from typing import List
 from typing import Dict
 from typing import Tuple
-from typing import Any
 
 # legacy
 try:

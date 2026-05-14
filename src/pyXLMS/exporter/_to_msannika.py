@@ -15,8 +15,6 @@ from ..transform._util import assert_data_type_same
 from ._util import __get_filename
 
 from typing import Optional
-from typing import Dict
-from typing import Any
 from typing import List
 
 # legacy

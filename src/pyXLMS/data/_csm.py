@@ -23,6 +23,7 @@ from typing import Dict
 from typing import Tuple
 from typing import Any
 
+
 class CrosslinkSpectrumMatch(BaseModel):
     alpha_peptide: str
     alpha_peptide_crosslink_position: int
@@ -47,35 +48,37 @@ class CrosslinkSpectrumMatch(BaseModel):
     retention_time: Optional[float] = None
     ion_mobility: Optional[float] = None
     additional_information: Optional[Dict[str, Any]] = None
-    
+
     @computed_field
     @property
     def data_type(self) -> str:
         return "crosslink-spectrum-match"
-    
+
     @computed_field
     @property
     def completeness(self) -> str:
-        full = all([
-            self.alpha_modifications is not None,
-            self.alpha_proteins is not None,
-            self.alpha_proteins_crosslink_positions is not None,
-            self.alpha_proteins_peptide_positions is not None,
-            self.alpha_score is not None,
-            self.alpha_decoy is not None,
-            self.beta_modifications is not None,
-            self.beta_proteins is not None,
-            self.beta_proteins_crosslink_positions is not None,
-            self.beta_proteins_peptide_positions is not None,
-            self.beta_score is not None,
-            self.beta_decoy is not None,
-            self.score is not None,
-            self.charge is not None,
-            self.retention_time is not None,
-            self.ion_mobility is not None,
-        ])
+        full = all(
+            [
+                self.alpha_modifications is not None,
+                self.alpha_proteins is not None,
+                self.alpha_proteins_crosslink_positions is not None,
+                self.alpha_proteins_peptide_positions is not None,
+                self.alpha_score is not None,
+                self.alpha_decoy is not None,
+                self.beta_modifications is not None,
+                self.beta_proteins is not None,
+                self.beta_proteins_crosslink_positions is not None,
+                self.beta_proteins_peptide_positions is not None,
+                self.beta_score is not None,
+                self.beta_decoy is not None,
+                self.score is not None,
+                self.charge is not None,
+                self.retention_time is not None,
+                self.ion_mobility is not None,
+            ]
+        )
         return "full" if full else "partial"
-    
+
     @computed_field
     @property
     def crosslink_type(self) -> str:
@@ -90,26 +93,38 @@ class CrosslinkSpectrumMatch(BaseModel):
             else []
         )
         return "intra" if len(a_prot.intersection(b_prot)) > 0 else "inter"
-    
+
     @override
     def model_post_init(self, context: Any = None) -> None:
         # extra validation
-        if self.alpha_proteins is not None and self.alpha_proteins_crosslink_positions is not None:
+        if (
+            self.alpha_proteins is not None
+            and self.alpha_proteins_crosslink_positions is not None
+        ):
             if len(self.alpha_proteins) != len(self.alpha_proteins_crosslink_positions):
                 raise ValueError(
                     "Crosslink position has to be given for every protein! Length of alpha_proteins and alpha_proteins_crosslink_positions has to match!"
                 )
-        if self.beta_proteins is not None and self.beta_proteins_crosslink_positions is not None:
+        if (
+            self.beta_proteins is not None
+            and self.beta_proteins_crosslink_positions is not None
+        ):
             if len(self.beta_proteins) != len(self.beta_proteins_crosslink_positions):
                 raise ValueError(
                     "Crosslink position has to be given for every protein! Length of beta_proteins and beta_proteins_crosslink_positions has to match!"
                 )
-        if self.alpha_proteins is not None and self.alpha_proteins_peptide_positions is not None:
+        if (
+            self.alpha_proteins is not None
+            and self.alpha_proteins_peptide_positions is not None
+        ):
             if len(self.alpha_proteins) != len(self.alpha_proteins_peptide_positions):
                 raise ValueError(
                     "Peptide position has to be given for every protein! Length of alpha_proteins and alpha_proteins_peptide_positions has to match!"
                 )
-        if self.beta_proteins is not None and self.beta_proteins_peptide_positions is not None:
+        if (
+            self.beta_proteins is not None
+            and self.beta_proteins_peptide_positions is not None
+        ):
             if len(self.beta_proteins) != len(self.beta_proteins_peptide_positions):
                 raise ValueError(
                     "Peptide position has to be given for every protein! Length of beta_proteins and beta_proteins_peptide_positions has to match!"
@@ -137,17 +152,27 @@ class CrosslinkSpectrumMatch(BaseModel):
             else True
         )
         ## validity
-        if self.alpha_proteins_crosslink_positions is not None and self.alpha_proteins_peptide_positions is not None:
+        if (
+            self.alpha_proteins_crosslink_positions is not None
+            and self.alpha_proteins_peptide_positions is not None
+        ):
             for i in range(len(self.alpha_proteins_crosslink_positions)):
                 if (
-                    self.alpha_proteins_crosslink_positions[i] - self.alpha_proteins_peptide_positions[i] + 1
+                    self.alpha_proteins_crosslink_positions[i]
+                    - self.alpha_proteins_peptide_positions[i]
+                    + 1
                     != self.alpha_peptide_crosslink_position
                 ):
                     _ok = check_indexing(0)
-        if self.beta_proteins_crosslink_positions is not None and self.beta_proteins_peptide_positions is not None:
+        if (
+            self.beta_proteins_crosslink_positions is not None
+            and self.beta_proteins_peptide_positions is not None
+        ):
             for i in range(len(self.beta_proteins_crosslink_positions)):
                 if (
-                    self.beta_proteins_crosslink_positions[i] - self.beta_proteins_peptide_positions[i] + 1
+                    self.beta_proteins_crosslink_positions[i]
+                    - self.beta_proteins_peptide_positions[i]
+                    + 1
                     != self.beta_peptide_crosslink_position
                 ):
                     _ok = check_indexing(0)
@@ -161,37 +186,49 @@ class CrosslinkSpectrumMatch(BaseModel):
         crosslink = {
             key_a: {
                 "peptide": self.alpha_peptide.strip(),
-                "modifications": copy.deepcopy({
-                    int(key): (
-                        self.alpha_modifications[key][0].strip(),
-                        float(self.alpha_modifications[key][1]),
-                    )
-                    for key in self.alpha_modifications.keys()
-                })
+                "modifications": copy.deepcopy(
+                    {
+                        int(key): (
+                            self.alpha_modifications[key][0].strip(),
+                            float(self.alpha_modifications[key][1]),
+                        )
+                        for key in self.alpha_modifications.keys()
+                    }
+                )
                 if self.alpha_modifications is not None
                 else None,
                 "xl_position_peptide": self.alpha_peptide_crosslink_position,
                 "proteins": copy.deepcopy(self.alpha_proteins),
-                "xl_position_proteins": copy.deepcopy(self.alpha_proteins_crosslink_positions),
-                "pep_position_proteins": copy.deepcopy(self.alpha_proteins_peptide_positions),
+                "xl_position_proteins": copy.deepcopy(
+                    self.alpha_proteins_crosslink_positions
+                ),
+                "pep_position_proteins": copy.deepcopy(
+                    self.alpha_proteins_peptide_positions
+                ),
                 "score": self.alpha_score,
                 "decoy": self.alpha_decoy,
             },
             key_b: {
                 "peptide": self.beta_peptide.strip(),
-                "modifications": copy.deepcopy({
-                    int(key): (
-                        self.beta_modifications[key][0].strip(),
-                        float(self.beta_modifications[key][1]),
-                    )
-                    for key in self.beta_modifications.keys()
-                })
+                "modifications": copy.deepcopy(
+                    {
+                        int(key): (
+                            self.beta_modifications[key][0].strip(),
+                            float(self.beta_modifications[key][1]),
+                        )
+                        for key in self.beta_modifications.keys()
+                    }
+                )
                 if self.beta_modifications is not None
                 else None,
                 "xl_position_peptide": self.beta_peptide_crosslink_position,
                 "proteins": copy.deepcopy(self.beta_proteins),
-                "xl_position_proteins": copy.deepcopy(self.beta_proteins_crosslink_positions),
-                "pep_position_proteins": copy.deepcopy(self.beta_proteins_peptide_positions),
+                "xl_position_proteins": copy.deepcopy(
+                    self.beta_proteins_crosslink_positions
+                ),
+                "pep_position_proteins": copy.deepcopy(
+                    self.beta_proteins_peptide_positions
+                ),
                 "score": self.beta_score,
                 "decoy": self.beta_decoy,
             },
@@ -210,18 +247,28 @@ class CrosslinkSpectrumMatch(BaseModel):
         # re-assign
         self.alpha_peptide = crosslink[keys[0]]["peptide"]
         self.alpha_modifications = crosslink[keys[0]]["modifications"]
-        self.alpha_peptide_crosslink_position = crosslink[keys[0]]["xl_position_peptide"]
+        self.alpha_peptide_crosslink_position = crosslink[keys[0]][
+            "xl_position_peptide"
+        ]
         self.alpha_proteins = alpha_proteins_clean
-        self.alpha_proteins_crosslink_positions = crosslink[keys[0]]["xl_position_proteins"]
-        self.alpha_proteins_peptide_positions = crosslink[keys[0]]["pep_position_proteins"]
+        self.alpha_proteins_crosslink_positions = crosslink[keys[0]][
+            "xl_position_proteins"
+        ]
+        self.alpha_proteins_peptide_positions = crosslink[keys[0]][
+            "pep_position_proteins"
+        ]
         self.alpha_score = crosslink[keys[0]]["score"]
         self.alpha_decoy = crosslink[keys[0]]["decoy"]
         self.beta_peptide = crosslink[keys[1]]["peptide"]
         self.beta_modifications = crosslink[keys[1]]["modifications"]
         self.beta_peptide_crosslink_position = crosslink[keys[1]]["xl_position_peptide"]
         self.beta_proteins = beta_proteins_clean
-        self.beta_proteins_crosslink_positions = crosslink[keys[1]]["xl_position_proteins"]
-        self.beta_proteins_peptide_positions = crosslink[keys[1]]["pep_position_proteins"]
+        self.beta_proteins_crosslink_positions = crosslink[keys[1]][
+            "xl_position_proteins"
+        ]
+        self.beta_proteins_peptide_positions = crosslink[keys[1]][
+            "pep_position_proteins"
+        ]
         self.beta_score = crosslink[keys[1]]["score"]
         self.beta_decoy = crosslink[keys[1]]["decoy"]
         if self.alpha_score is not None:
@@ -246,7 +293,7 @@ class CrosslinkSpectrumMatch(BaseModel):
             return getattr(self, key)
         except AttributeError:
             raise KeyError(f"'{key}' is not a valid field!")
-    
+
     def to_crosslink(self) -> Crosslink:
         return create_crosslink(
             peptide_a=self.alpha_peptide,
@@ -262,7 +309,7 @@ class CrosslinkSpectrumMatch(BaseModel):
             score=self.score,
             additional_information=self.additional_information,
         )
-    
+
     def display(
         self,
         show_additional_information: bool = False,
@@ -319,7 +366,9 @@ class CrosslinkSpectrumMatch(BaseModel):
         Retention Time:                     733.1895599999999
         Ion Mobility/FAIMS CV:              0.0
         """
-        _ok = check_input(show_additional_information, "show_additional_information", bool)
+        _ok = check_input(
+            show_additional_information, "show_additional_information", bool
+        )
         _ok = check_input(return_str, "return_str", bool)
         display: str = ""
         display += f"Data Type:                          {self.data_type}\n"
@@ -348,7 +397,9 @@ class CrosslinkSpectrumMatch(BaseModel):
         display += f"Retention Time:                     {self.retention_time}\n"
         display += f"Ion Mobility/FAIMS CV:              {self.ion_mobility}\n"
         if show_additional_information:
-            display += f"Additional Information:             {self.additional_information}\n"
+            display += (
+                f"Additional Information:             {self.additional_information}\n"
+            )
         display = display.strip()
         print(display)
         if return_str:
@@ -544,7 +595,7 @@ def create_csm(
         charge=charge,
         retention_time=rt,
         ion_mobility=im_cv,
-        additional_information=additional_information
+        additional_information=additional_information,
     )
 
 

@@ -988,9 +988,7 @@ def __read_xifdr_csms(
     return csms
 
 
-def __read_xifdr_crosslinks(
-    data: pd.DataFrame, decoy_prefix: str
-) -> List[Crosslink]:
+def __read_xifdr_crosslinks(data: pd.DataFrame, decoy_prefix: str) -> List[Crosslink]:
     r"""Reads a xiFDR Links pandas dataframe and returns a list of crosslinks.
 
     Parameters
