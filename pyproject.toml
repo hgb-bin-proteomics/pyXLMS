@@ -11,7 +11,7 @@ authors = [
 maintainers = [
   { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
 ]
-readme = "PYPI.md"
+readme = "README.md"
 license = {file = "LICENSE"}
 description = "A python package to process protein cross-linking data."
 keywords = ["crosslink", "crosslinker", "crosslinking", "mass spectrometry", "proteomics"]
@@ -62,7 +62,7 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://hgb-bin-proteomics.github.io/pyXLMS"
-Documentation = "https://hgb-bin-proteomics.github.io/pyXLMS-docs"
-Repository = "https://github.com/hgb-bin-proteomics/pyXLMS.git"
+Homepage = "https://hgb-bin-proteomics.github.io/pyXLMS-pydantic"
+Documentation = "https://hgb-bin-proteomics.github.io/pyXLMS-pydantic"
+Repository = "https://github.com/hgb-bin-proteomics/pyXLMS-pydantic.git"
 Issues = "https://github.com/hgb-bin-proteomics/pyXLMS/issues"
