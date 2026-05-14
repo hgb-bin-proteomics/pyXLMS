@@ -335,16 +335,16 @@ def unique(
                 and available_keys["beta_proteins"]
                 and available_keys["beta_proteins_crosslink_positions"]
             ):
-                unique_items += __unique_xls(data, by, available_keys["score"], score)
+                unique_items += __unique_xls(data, by, available_keys["score"], score)  # ty: ignore[invalid-argument-type]
             else:
                 raise ValueError(
                     "Grouping by protein crosslink position is only available if all crosslinks have defined protein crosslink positions!\n"
                     "This error might be fixable with 'transform.reannotate_positions()'!"
                 )
         elif data[0]["data_type"] == "crosslink":
-            unique_items += __unique_xls(data, by, available_keys["score"], score)
+            unique_items += __unique_xls(data, by, available_keys["score"], score)  # ty: ignore[invalid-argument-type]
         else:
-            unique_items += __unique_csms(data, available_keys["score"], score)
+            unique_items += __unique_csms(data, available_keys["score"], score)  # ty: ignore[invalid-argument-type]
         return unique_items
     new_csms = (
         unique(data["crosslink-spectrum-matches"], by, score)
@@ -356,20 +356,10 @@ def unique(
         if data["crosslinks"] is not None
         else None
     )
-    if new_csms is not None:
-        if not isinstance(new_csms, list):
-            raise RuntimeError(
-                "Something went wrong while getting unique crosslink-spectrum-matches.\n"
-                f"Expected data type: list. Got: {type(new_csms)}."
-            )
-    if new_xls is not None:
-        if not isinstance(new_xls, list):
-            raise RuntimeError(
-                "Something went wrong while getting unique crosslinks.\n"
-                f"Expected data type: list. Got: {type(new_xls)}."
-            )
     return create_parser_result(
-        search_engine=data["search_engine"], csms=new_csms, crosslinks=new_xls
+        search_engine=data["search_engine"],
+        csms=new_csms,  # ty: ignore[invalid-argument-type]
+        crosslinks=new_xls,  # ty: ignore[invalid-argument-type]
     )
 
 
@@ -456,7 +446,7 @@ def aggregate(
             "-matches are found, the one with the higher score is kept if 'higher_better' is selected, and vice versa."
         )
     if len(csms) == 0:
-        return csms
+        return csms  # ty: ignore[invalid-return-type]
     if csms[0]["data_type"] != "crosslink-spectrum-match":
         raise TypeError(
             "Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!"
@@ -483,4 +473,4 @@ def aggregate(
             "Something went wrong while aggregating crosslinks.\n"
             f"Expected data type: list. Got: {type(aggregated)}."
         )
-    return aggregated
+    return aggregated  # ty: ignore[invalid-return-type]
