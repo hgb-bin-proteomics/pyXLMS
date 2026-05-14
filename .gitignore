@@ -76,6 +76,7 @@ docs/_build/
 html/
 sphinx/modules.rst
 sphinx/pyXLMS.rst
+sphinx/pyXLMS.data.rst
 sphinx/pyXLMS.exporter.rst
 sphinx/pyXLMS.parser.rst
 sphinx/pyXLMS.plotting.rst

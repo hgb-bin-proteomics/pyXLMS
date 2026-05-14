@@ -33,7 +33,7 @@ templates_path = ["_templates"]
 exclude_patterns = ["build"]
 root_doc = "index"
 autosummary_generate = True
-autodoc_default_options = {"members": True, "inherited-members": True}
+autodoc_default_options = {"members": True, "inherited-members": False}
 python_maximum_signature_line_length = 88
 
 # -- Options for HTML output -------------------------------------------------
