@@ -299,6 +299,6 @@ def to_proforma(
         raise TypeError(
             "Unsupported data type for input data! Parameter data has to be a (list of) crosslink or crosslink-spectrum-match!"
         )
-    if data["data_type"] == "crosslink":
+    if isinstance(data, Crosslink):
         return __to_proforma_xl(data, crosslinker)
     return __to_proforma_csm(data, crosslinker)
