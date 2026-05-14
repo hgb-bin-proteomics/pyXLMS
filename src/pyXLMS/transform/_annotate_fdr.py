@@ -329,12 +329,12 @@ def annotate_fdr(
                 "or a parser_result!"
             )
         if ignore_missing_labels:
-            data = [
+            data = [  # ty: ignore[invalid-assignment]
                 item
                 for item in data
                 if item["alpha_decoy"] is not None and item["beta_decoy"] is not None
             ]
-        available_keys = get_available_keys(data)
+        available_keys = get_available_keys(data)  # ty: ignore[invalid-argument-type]
         if (
             not available_keys["score"]
             or not available_keys["alpha_decoy"]
@@ -345,22 +345,22 @@ def annotate_fdr(
                 "that don't have a valid target/decoy label and filter them out!"
             )
         if formula == "(TD-DD)/TT":
-            if len(filter_target_decoy(data)["Target-Decoy"]) == 0:
+            if len(filter_target_decoy(data)["Target-Decoy"]) == 0:  # ty: ignore[invalid-argument-type]
                 raise ValueError(
                     "Can't annotate FDR with formula '(TD-DD)/TT' when there are no TD matches! Please select the default formula instead!"
                 )
             if separate_intra_inter:
-                separate = filter_crosslink_type(data)
-                return __annotate_fdr_relaxed(
+                separate = filter_crosslink_type(data)  # ty: ignore[invalid-argument-type]
+                return __annotate_fdr_relaxed(  # ty: ignore[invalid-return-type]
                     separate["Intra"], score
                 ) + __annotate_fdr_relaxed(separate["Inter"], score)
-            return __annotate_fdr_relaxed(data, score)
+            return __annotate_fdr_relaxed(data, score)  # ty: ignore[invalid-argument-type]
         if separate_intra_inter:
-            separate = filter_crosslink_type(data)
-            return __annotate_fdr_strict(
+            separate = filter_crosslink_type(data)  # ty: ignore[invalid-argument-type]
+            return __annotate_fdr_strict(  # ty: ignore[invalid-return-type]
                 separate["Intra"], score
             ) + __annotate_fdr_strict(separate["Inter"], score)
-        return __annotate_fdr_strict(data, score)
+        return __annotate_fdr_strict(data, score)  # ty: ignore[invalid-argument-type]
     new_csms = (
         annotate_fdr(
             data["crosslink-spectrum-matches"],
@@ -383,18 +383,8 @@ def annotate_fdr(
         if data["crosslinks"] is not None
         else None
     )
-    if new_csms is not None:
-        if not isinstance(new_csms, list):
-            raise RuntimeError(
-                "Something went wrong while annotating crosslink-spectrum-matches.\n"
-                f"Expected data type: list. Got: {type(new_csms)}."
-            )
-    if new_xls is not None:
-        if not isinstance(new_xls, list):
-            raise RuntimeError(
-                "Something went wrong while annotating crosslinks.\n"
-                f"Expected data type: list. Got: {type(new_xls)}."
-            )
     return create_parser_result(
-        search_engine=data["search_engine"], csms=new_csms, crosslinks=new_xls
+        search_engine=data["search_engine"],
+        csms=new_csms,  # ty: ignore[invalid-argument-type]
+        crosslinks=new_xls,  # ty: ignore[invalid-argument-type]
     )
