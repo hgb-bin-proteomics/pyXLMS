@@ -21,7 +21,6 @@ from ._util import __parse_int, __parse_float
 from typing import Optional
 from typing import BinaryIO
 from typing import Dict
-from typing import Any
 from typing import Tuple
 from typing import List
 

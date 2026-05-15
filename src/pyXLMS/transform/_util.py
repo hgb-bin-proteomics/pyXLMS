@@ -13,6 +13,7 @@ from ..data._util import check_input
 from ..data._util import check_input_multi
 
 from typing import Optional
+from typing import Any
 from typing import Dict
 from typing import Tuple
 from typing import List
@@ -55,6 +56,44 @@ def modifications_to_str(
     for modification_pos in sorted(modifications.keys()):
         modifications_str += f"({modification_pos}:[{modifications[modification_pos][0]}|{modifications[modification_pos][1]}]);"
     return modifications_str.rstrip(";")
+
+
+def assert_csms(maybe_csms: Any) -> List[CrosslinkSpectrumMatch]:
+    csms: List[CrosslinkSpectrumMatch] = list()
+    if isinstance(maybe_csms, list):
+        for item in maybe_csms:
+            if isinstance(item, CrosslinkSpectrumMatch):
+                csms.append(item)
+            else:
+                raise TypeError()
+        return csms
+    raise TypeError()
+    return csms
+
+
+def assert_xls(maybe_xls: Any) -> List[Crosslink]:
+    xls: List[Crosslink] = list()
+    if isinstance(maybe_xls, list):
+        for item in maybe_xls:
+            if isinstance(item, Crosslink):
+                xls.append(item)
+            else:
+                raise TypeError()
+        return xls
+    raise TypeError()
+    return xls
+
+
+def assert_csms_or_xls(
+    maybe_csms_or_xls: Any,
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
+    if isinstance(maybe_csms_or_xls, list):
+        if all(isinstance(item, CrosslinkSpectrumMatch) for item in maybe_csms_or_xls):
+            return assert_csms(maybe_csms_or_xls)
+        if all(isinstance(item, Crosslink) for item in maybe_csms_or_xls):
+            return assert_xls(maybe_csms_or_xls)
+    raise TypeError()
+    return []
 
 
 def assert_data_type_same(
