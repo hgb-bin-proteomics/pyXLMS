@@ -4,7 +4,7 @@ _a python package to process protein cross-linking data_
 <img src="https://github.com/hgb-bin-proteomics/pyXLMS/raw/master/docs/logo/logo_padded_shadow.png" class="dark-light" align="left" width="200px" style="padding: 5px 20px 10px 20px;"/>
 
 **pyXLMS-pydantic** is the [Pydantic](https://pydantic.dev/) version of [**pyXLMS**](https://github.com/hgb-bin-proteomics/pyXLMS):
-**pyXLMS** is a python package and web application with graphical user interface that aims to simplify and streamline the intermediate step of
+a python package that aims to simplify and streamline the intermediate step of
 connecting crosslink search engine results with down-stream analysis tools, enabling researchers even without bioinformatics knowledge to
 conduct in-depth crosslink analyses and shifting the focus from data transformation to data interpretation and therefore gaining biological
 insight. Currently pyXLMS supports input from several different crosslink search engines including:
@@ -30,18 +30,23 @@ PyMOL (via [PyXlinkViewer](https://github.com/BobSchiffrin/PyXlinkViewer)),
 ChimeraX (via [XMAS](https://github.com/ScheltemaLab/ChimeraX_XMAS_bundle)),
 or [IMP-X-FDR](https://github.com/vbc-proteomics-org/imp-x-fdr).
 
-## Why Pydantic?
+## Why pyXLMS-pydantic and what are the differences to the classic pyXLMS?
 
-Increased type safety and validation, programmatically easier handling of crosslink-spectrum-matches and crosslinks. However at the cost of performance.
+pyXLMS-pydantic is the [Pydantic](https://pydantic.dev/) version of the [classic pyXLMS](https://github.com/hgb-bin-proteomics/pyXLMS). Using Pydantic offers
+increased type safety and validation, programmatically easier handling of crosslink-spectrum-matches and crosslinks. However, this comes at the slight cost of
+performance and compatibility - pyXLMS-pydantic requires python version 3.14 or newer!
+
+For writing code there should not be any differences between the Pydantic and classic version, e.g. all the code written for the classic pyXLMS should also work for
+pyXLMS-pydantic. Crosslink-spectrum-matches, crosslinks, and parser results are now standalone classes based on the Pydantic
+[BaseModel](https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/)
+instead of dictionaries though. Some private functions have also been moved. The terms pyXLMS and pyXLMS-pydantic are used synonymously throughout this repository, unless
+specifically stated!
 
 ## Installation
 
-> [!CAUTION]
-> **Installing pyXLMS-pydantic will override the [classic pyXLMS](https://github.com/hgb-bin-proteomics/pyXLMS) version!** 
+**Installing pyXLMS-pydantic will override the [classic pyXLMS](https://github.com/hgb-bin-proteomics/pyXLMS) version if it was previously installed!** 
 
-pyXLMS-pydantic supports python **version 3.14 and greater**!
-
-pyXLMS can easily be installed via pip:
+pyXLMS-pydantic supports python **version 3.14 and greater** and can easily be installed via pip:
 ```
 pip install git+https://github.com/hgb-bin-proteomics/pyXLMS-pydantic.git
 ```
@@ -108,12 +113,7 @@ Interacting with [STRING](https://string-db.org/) requires an active internet co
 
 ## Citing
 
-If you are using pyXLMS please cite the following publication:
-
-- Manuscript in preparation
-  ```
-  (wip)
-  ```
+If you are using pyXLMS please cite as described [here](https://github.com/hgb-bin-proteomics/pyXLMS).
 
 ## Acknowledgements
 
