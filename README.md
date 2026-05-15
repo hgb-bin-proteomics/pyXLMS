@@ -36,7 +36,7 @@ pyXLMS-pydantic is the [Pydantic](https://pydantic.dev/) version of the [classic
 increased type safety and validation, programmatically easier handling of crosslink-spectrum-matches and crosslinks. However, this comes at the slight cost of
 performance and compatibility - pyXLMS-pydantic requires python version 3.14 or newer!
 
-For writing code there should not be any differences between the Pydantic and classic version, e.g. all the code written for the classic pyXLMS should also work for
+For writing code there should not be any differences between the Pydantic and classic version, e.g. all the code written with the classic pyXLMS should also work with
 pyXLMS-pydantic. Crosslink-spectrum-matches, crosslinks, and parser results are now standalone classes based on the Pydantic
 [BaseModel](https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/)
 instead of dictionaries though. Some private functions have also been moved. The terms pyXLMS and pyXLMS-pydantic are used synonymously throughout this repository, unless
