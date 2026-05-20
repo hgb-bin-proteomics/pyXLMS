@@ -4,6 +4,19 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+__all__ = [
+    "AMINO_ACIDS",
+    "AMINO_ACIDS_REPLACEMENTS",
+    "AMINO_ACIDS_3TO1",
+    "AMINO_ACIDS_1TO3",
+    "CROSSLINKERS",
+    "MODIFICATIONS",
+    "XI_MODIFICATION_MAPPING",
+    "SCOUT_MODIFICATION_MAPPING",
+    "SCOUT_CROSSLINKER_MAPPING",
+    "MEROX_MODIFICATION_MAPPING",
+]
+
 AMINO_ACIDS = {
     "A",
     "R",
