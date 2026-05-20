@@ -6,12 +6,12 @@
 
 from __future__ import annotations
 
-from ._data._parser_result import ParserResult
-from ._parser import read
-from ._transform._summary import summary as transform_summary
-from ._transform._aggregate import unique as transform_unique
-from ._transform._validate import validate as transform_validate
-from ._transform._targets_only import targets_only as transform_targets_only
+from .data._parser_result import ParserResult
+from .parser import read
+from .transform._summary import summary as transform_summary
+from .transform._aggregate import unique as transform_unique
+from .transform._validate import validate as transform_validate
+from .transform._targets_only import targets_only as transform_targets_only
 
 from typing import Optional
 from typing import BinaryIO
