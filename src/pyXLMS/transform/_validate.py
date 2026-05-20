@@ -17,6 +17,9 @@ from ..data._util import check_input
 from ..data._util import check_input_multi
 from ..data._parser_result import create_parser_result
 from ._util import get_available_keys
+from ._util import assert_csms
+from ._util import assert_xls
+from ._util import assert_csms_or_xls
 from ._filter import filter_target_decoy
 from ._filter import filter_crosslink_type
 
@@ -481,24 +484,17 @@ def validate(
             "Parameter 'score' has to be one of 'higher_better' or 'lower_better'!"
         )
     if isinstance(data, list):
-        _ok = check_input(data, "data", list)
-        if len(data) == 0:
-            return data
-        if data[0]["data_type"] not in [
-            "crosslink",
-            "crosslink-spectrum-match",
-        ]:
-            raise TypeError(
-                "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match, "
-                "or a parser_result!"
-            )
+        csms_or_xls = assert_csms_or_xls(data)
+        if len(csms_or_xls) == 0:
+            return csms_or_xls
         if ignore_missing_labels:
-            data = [  # ty: ignore[invalid-assignment]
+            csms_or_xls = [
                 item
-                for item in data
+                for item in csms_or_xls
                 if item["alpha_decoy"] is not None and item["beta_decoy"] is not None
             ]
-        available_keys = get_available_keys(data)  # ty: ignore[invalid-argument-type]
+        csms_or_xls = assert_csms_or_xls(data)
+        available_keys = get_available_keys(csms_or_xls)
         if (
             not available_keys["score"]
             or not available_keys["alpha_decoy"]
@@ -509,22 +505,24 @@ def validate(
                 "that don't have a valid target/decoy label and filter them out!"
             )
         if formula == "(TD-DD)/TT":
-            if len(filter_target_decoy(data)["Target-Decoy"]) == 0:  # ty: ignore[invalid-argument-type]
+            if len(filter_target_decoy(csms_or_xls)["Target-Decoy"]) == 0:
                 raise ValueError(
                     "Can't estimate FDR with formula '(TD-DD)/TT' when there are no TD matches! Please select the default formula instead!"
                 )
             if separate_intra_inter:
-                separate = filter_crosslink_type(data)  # ty: ignore[invalid-argument-type]
-                return __validate_relaxed(  # ty: ignore[invalid-return-type]
-                    separate["Intra"], fdr, score
-                ) + __validate_relaxed(separate["Inter"], fdr, score)
-            return __validate_relaxed(data, fdr, score)  # ty: ignore[invalid-argument-type]
+                separate = filter_crosslink_type(csms_or_xls)
+                return assert_csms_or_xls(
+                    __validate_relaxed(separate["Intra"], fdr, score)
+                    + __validate_relaxed(separate["Inter"], fdr, score)
+                )
+            return __validate_relaxed(csms_or_xls, fdr, score)
         if separate_intra_inter:
-            separate = filter_crosslink_type(data)  # ty: ignore[invalid-argument-type]
-            return __validate_strict(separate["Intra"], fdr, score) + __validate_strict(  # ty: ignore[invalid-return-type]
-                separate["Inter"], fdr, score
+            separate = filter_crosslink_type(csms_or_xls)
+            return assert_csms_or_xls(
+                __validate_strict(separate["Intra"], fdr, score)
+                + __validate_strict(separate["Inter"], fdr, score)
             )
-        return __validate_strict(data, fdr, score)  # ty: ignore[invalid-argument-type]
+        return __validate_strict(csms_or_xls, fdr, score)
     new_csms = (
         validate(
             data["crosslink-spectrum-matches"],
@@ -551,6 +549,6 @@ def validate(
     )
     return create_parser_result(
         search_engine=data["search_engine"],
-        csms=new_csms,  # ty: ignore[invalid-argument-type]
-        crosslinks=new_xls,  # ty: ignore[invalid-argument-type]
+        csms=assert_csms(new_csms),
+        crosslinks=assert_xls(new_xls),
     )
