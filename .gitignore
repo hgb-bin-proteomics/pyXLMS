@@ -81,6 +81,8 @@ sphinx/pyXLMS.exporter.rst
 sphinx/pyXLMS.parser.rst
 sphinx/pyXLMS.plotting.rst
 sphinx/pyXLMS.transform.rst
+sphinx/pyXLMS.constants.rst
+sphinx/pyXLMS.pipelines.rst
 
 # PyBuilder
 .pybuilder/
