@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 from pydantic import Field
+from pydantic import ConfigDict
 from pydantic import computed_field
 
 from ._csm import CrosslinkSpectrumMatch
@@ -35,6 +36,10 @@ class ParserResult(BaseModel):
         Optional[List[Crosslink]],
         Field(frozen=True, description="List of parsed crosslinks."),
     ]
+    model_config = ConfigDict(validate_assignment=True)
+    r"""
+    Configuration for the model.
+    """
 
     @computed_field(description="Data type of the object.")
     @property

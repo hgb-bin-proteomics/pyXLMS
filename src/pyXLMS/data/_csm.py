@@ -10,6 +10,7 @@ import copy
 import numpy as np
 from pydantic import BaseModel
 from pydantic import Field
+from pydantic import ConfigDict
 from pydantic import computed_field
 
 from ._crosslink import Crosslink
@@ -173,6 +174,10 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="A dictionary with additional information associated with the crosslink-spectrum-match.",
         ),
     ] = None
+    model_config = ConfigDict(validate_assignment=True)
+    r"""
+    Configuration for the model.
+    """
 
     @computed_field(description="Data type of the object.")
     @property
