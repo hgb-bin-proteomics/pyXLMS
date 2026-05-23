@@ -6,12 +6,12 @@
 
 from __future__ import annotations
 
-import pandas as pd
 
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
-from ..data._util import check_input
 from ..data._util import check_input_multi
+from ..data._util import __get_modified_peptide as __gmp
+from ._util import assert_csms_or_xls
 
 from typing import Optional
 from typing import Dict
@@ -19,6 +19,7 @@ from typing import List
 from typing import Tuple
 
 
+# this is just kept here for legacy purposes
 def __get_modified_peptide(
     sequence: str,
     modifications: Optional[Dict[int, Tuple[str, float]]],
@@ -51,39 +52,10 @@ def __get_modified_peptide(
     - If no modifications are given, only the crosslink modification will be encoded in the Proforma.
     - If no modifications are given and no crosslinker is given, the unmodified peptide Proforma will be returned.
     """
-    if isinstance(crosslinker, float):
-        crosslinker = f"+{crosslinker}" if crosslinker > 0.0 else f"{crosslinker}"
-    pep_len = len(sequence)
-    if modifications is not None:
-        new_modifications = dict()
-        for pos, mod in modifications.items():
-            if not pd.isna(mod[1]):
-                new_modifications[pos] = (
-                    mod[0],
-                    f"+{mod[1]}" if mod[1] > 0.0 else f"{mod[1]}",
-                )
-        if crosslink_position not in new_modifications and crosslinker is not None:
-            new_modifications[crosslink_position] = ("", f"{crosslinker}")
-        for pos in sorted(new_modifications.keys(), reverse=True):
-            if pos == 0:
-                sequence = f"[{new_modifications[pos][1]}]-" + sequence
-            elif pos == pep_len + 1:
-                sequence = sequence + f"-[{new_modifications[pos][1]}]"
-            else:
-                sequence = (
-                    sequence[:pos] + f"[{new_modifications[pos][1]}]" + sequence[pos:]
-                )
-        return sequence
-    if crosslinker is not None:
-        sequence = (
-            sequence[:crosslink_position]
-            + f"[{crosslinker}]"
-            + sequence[crosslink_position:]
-        )
-        return sequence
-    return sequence
+    return __gmp(sequence, modifications, crosslink_position, crosslinker)
 
 
+# this is just kept here for legacy purposes
 def __to_proforma_csm(
     csm: CrosslinkSpectrumMatch, crosslinker: Optional[str | float]
 ) -> str:
@@ -109,23 +81,10 @@ def __to_proforma_csm(
     - If no modifications are given, only the crosslink modification will be encoded in the Proforma.
     - If no modifications are given and no crosslinker is given, the unmodified peptide Proforma will be returned.
     """
-    peptide_a = __get_modified_peptide(
-        csm["alpha_peptide"],
-        csm["alpha_modifications"],
-        csm["alpha_peptide_crosslink_position"],
-        crosslinker,
-    )
-    peptide_b = __get_modified_peptide(
-        csm["beta_peptide"],
-        csm["beta_modifications"],
-        csm["beta_peptide_crosslink_position"],
-        crosslinker,
-    )
-    if csm["charge"] is not None:
-        return f"{peptide_a}//{peptide_b}/{csm['charge']}"
-    return f"{peptide_a}//{peptide_b}"
+    return csm.to_proforma(crosslinker)
 
 
+# this is just kept here for legacy purposes
 def __to_proforma_xl(xl: Crosslink, crosslinker: Optional[str | float]) -> str:
     r"""Returns the Proforma string for a single crosslink.
 
@@ -149,13 +108,7 @@ def __to_proforma_xl(xl: Crosslink, crosslinker: Optional[str | float]) -> str:
     - If no modifications are given, only the crosslink modification will be encoded in the Proforma.
     - If no modifications are given and no crosslinker is given, the unmodified peptide Proforma will be returned.
     """
-    peptide_a = __get_modified_peptide(
-        xl["alpha_peptide"], None, xl["alpha_peptide_crosslink_position"], crosslinker
-    )
-    peptide_b = __get_modified_peptide(
-        xl["beta_peptide"], None, xl["beta_peptide_crosslink_position"], crosslinker
-    )
-    return f"{peptide_a}//{peptide_b}"
+    return xl.to_proforma(crosslinker)
 
 
 def to_proforma(
@@ -170,7 +123,7 @@ def to_proforma(
 
     Parameters
     ----------
-    data : dict of str, any, or list of dict of str, any
+    data : CrosslinkSpectrumMatch, Crosslink, list of CrosslinkSpectrumMatch, or list of Crosslink
         A pyXLMS crosslink object, e.g. see ``data.create_crosslink()``. Or a pyXLMS crosslink-spectrum-match
         object, e.g. see ``data.create_csm()``. Alternatively, a list of crosslinks or crosslink-spectrum-matches
         can also be provided.
@@ -181,7 +134,7 @@ def to_proforma(
 
     Returns
     -------
-    str
+    str, or list of str
         The Proforma string of the crosslink or crosslink-spectrum-match. If a list was provided
         a list containing all Proforma strings is returned.
 
@@ -283,22 +236,13 @@ def to_proforma(
     >>> to_proforma(csm, crosslinker="Xlink:DSSO")
     'K[+158.00376]PM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE/3'
     """
+    _ok = check_input_multi(data, "data", [list, CrosslinkSpectrumMatch, Crosslink])
     _ok = (
         check_input_multi(crosslinker, "crosslinker", [str, float])
         if crosslinker is not None
         else True
     )
     if isinstance(data, list):
-        _ok = check_input(data, "data", list)
-        return [to_proforma(item, crosslinker) for item in data]  # pyright: ignore[reportReturnType] # ty: ignore[invalid-return-type]
-    _ok = check_input(data, "data", dict)
-    if data["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ]:
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a (list of) crosslink or crosslink-spectrum-match!"
-        )
-    if isinstance(data, Crosslink):
-        return __to_proforma_xl(data, crosslinker)
-    return __to_proforma_csm(data, crosslinker)
+        csms_or_xls = assert_csms_or_xls(data)
+        return [item.to_proforma(crosslinker) for item in csms_or_xls]
+    return data.to_proforma(crosslinker)

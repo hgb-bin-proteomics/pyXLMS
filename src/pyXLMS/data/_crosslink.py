@@ -15,6 +15,7 @@ from pydantic import computed_field
 
 from ._util import check_input
 from ._util import check_indexing
+from ._util import __get_modified_peptide
 
 from typing import override
 from typing import Annotated
@@ -355,6 +356,49 @@ class Crosslink(BaseModel):
         if return_str:
             return display
         return
+
+    def to_proforma(self, crosslinker: Optional[str | float] = None) -> str:
+        r"""Returns the Proforma string for the crosslink.
+
+        Parameters
+        ----------
+        crosslinker : str, or float, or None, default = None
+            Optional name or mass of the crosslink reagent. If the name is given, it should be a valid
+            name from XLMOD.
+
+        Returns
+        -------
+        str
+            The Proforma string of the crosslink.
+
+        Notes
+        -----
+        - If no crosslinker is given, the unmodified peptide Proforma will be returned.
+
+        Examples
+        --------
+        >>> from pyXLMS.data import create_crosslink_min
+        >>> from pyXLMS.transform import to_proforma
+        >>> xl = create_crosslink_min("PEPKTIDE", 4, "KPEPTIDE", 1)
+        >>> xl.to_proforma()
+        'KPEPTIDE//PEPKTIDE'
+
+        >>> from pyXLMS.data import create_crosslink_min
+        >>> from pyXLMS.transform import to_proforma
+        >>> xl = create_crosslink_min("PEPKTIDE", 4, "KPEPTIDE", 1)
+        >>> xl.to_proforma(crosslinker="Xlink:DSSO")
+        'K[Xlink:DSSO]PEPTIDE//PEPK[Xlink:DSSO]TIDE'
+        """
+        peptide_a = __get_modified_peptide(
+            self.alpha_peptide,
+            None,
+            self.alpha_peptide_crosslink_position,
+            crosslinker,
+        )
+        peptide_b = __get_modified_peptide(
+            self.beta_peptide, None, self.beta_peptide_crosslink_position, crosslinker
+        )
+        return f"{peptide_a}//{peptide_b}"
 
 
 def create_crosslink(

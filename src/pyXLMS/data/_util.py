@@ -6,9 +6,12 @@
 
 from __future__ import annotations
 
+import pandas as pd
 
 from typing import Optional
+from typing import Dict
 from typing import List
+from typing import Tuple
 from typing import Any
 
 
@@ -165,3 +168,68 @@ def check_indexing(value: int | List[int]) -> bool:
                     "0-based value found! All positions must use 1-based indexing!"
                 )
     return True
+
+
+def __get_modified_peptide(
+    sequence: str,
+    modifications: Optional[Dict[int, Tuple[str, float]]],
+    crosslink_position: int,
+    crosslinker: Optional[str | float],
+) -> str:
+    r"""Returns the Proforma string for a single peptide.
+
+    Parameters
+    ----------
+    sequence : str
+        The unmodified peptide sequence.
+    modifications : dict of int, tuple of str and float
+        The pyXLMS specific modifications object. See ``data.create_csm()`` for reference.
+    crosslink_position : int
+        Crosslink position in the peptide sequence (1-based).
+    crosslinker : str, or float, or None
+        Optional name or mass of the crosslink reagent. If the name is given, it should be a valid
+        name from XLMOD.
+
+    Returns
+    -------
+    str
+        The Proforma string of the peptidoform.
+
+    Notes
+    -----
+    - This function should not be called directly, it is called from ``__to_proforma_csm()`` and ``__to_proforma_xl``.
+    - Modifications with unknown mass are skipped.
+    - If no modifications are given, only the crosslink modification will be encoded in the Proforma.
+    - If no modifications are given and no crosslinker is given, the unmodified peptide Proforma will be returned.
+    """
+    if isinstance(crosslinker, float):
+        crosslinker = f"+{crosslinker}" if crosslinker > 0.0 else f"{crosslinker}"
+    pep_len = len(sequence)
+    if modifications is not None:
+        new_modifications = dict()
+        for pos, mod in modifications.items():
+            if not pd.isna(mod[1]):
+                new_modifications[pos] = (
+                    mod[0],
+                    f"+{mod[1]}" if mod[1] > 0.0 else f"{mod[1]}",
+                )
+        if crosslink_position not in new_modifications and crosslinker is not None:
+            new_modifications[crosslink_position] = ("", f"{crosslinker}")
+        for pos in sorted(new_modifications.keys(), reverse=True):
+            if pos == 0:
+                sequence = f"[{new_modifications[pos][1]}]-" + sequence
+            elif pos == pep_len + 1:
+                sequence = sequence + f"-[{new_modifications[pos][1]}]"
+            else:
+                sequence = (
+                    sequence[:pos] + f"[{new_modifications[pos][1]}]" + sequence[pos:]
+                )
+        return sequence
+    if crosslinker is not None:
+        sequence = (
+            sequence[:crosslink_position]
+            + f"[{crosslinker}]"
+            + sequence[crosslink_position:]
+        )
+        return sequence
+    return sequence

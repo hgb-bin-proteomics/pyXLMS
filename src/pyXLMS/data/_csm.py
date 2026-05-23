@@ -17,6 +17,7 @@ from ._crosslink import Crosslink
 from ._crosslink import create_crosslink
 from ._util import check_input
 from ._util import check_indexing
+from ._util import __get_modified_peptide
 
 from typing import override
 from typing import Annotated
@@ -604,6 +605,117 @@ class CrosslinkSpectrumMatch(BaseModel):
         if return_str:
             return display
         return
+
+    def to_proforma(self, crosslinker: Optional[str | float] = None) -> str:
+        r"""Returns the Proforma string for the crosslink-spectrum-match.
+
+        Parameters
+        ----------
+        crosslinker : str, or float, or None, default = None
+            Optional name or mass of the crosslink reagent. If the name is given, it should be a valid
+            name from XLMOD.
+
+        Returns
+        -------
+        str
+            The Proforma string of the crosslink-spectrum-match.
+
+        Notes
+        -----
+        - Modifications with unknown mass are skipped.
+        - If no modifications are given, only the crosslink modification will be encoded in the Proforma.
+        - If no modifications are given and no crosslinker is given, the unmodified peptide Proforma will be returned.
+
+        Examples
+        --------
+        >>> from pyXLMS.data import create_csm_min
+        >>> from pyXLMS.transform import to_proforma
+        >>> csm = create_csm_min("PEPKTIDE", 4, "KPEPTIDE", 1, "RUN_1", 1)
+        >>> csm.to_proforma()
+        'KPEPTIDE//PEPKTIDE'
+
+        >>> from pyXLMS.data import create_csm_min
+        >>> from pyXLMS.transform import to_proforma
+        >>> csm = create_csm_min("PEPKTIDE", 4, "KPEPTIDE", 1, "RUN_1", 1)
+        >>> csm.to_proforma(crosslinker="Xlink:DSSO")
+        'K[Xlink:DSSO]PEPTIDE//PEPK[Xlink:DSSO]TIDE'
+
+        >>> from pyXLMS.data import create_csm_min
+        >>> from pyXLMS.transform import to_proforma
+        >>> csm = create_csm_min(
+        ...     "PEPKTIDE",
+        ...     4,
+        ...     "KPMEPTIDE",
+        ...     1,
+        ...     "RUN_1",
+        ...     1,
+        ...     modifications_b={3: ("Oxidation", 15.994915)},
+        ... )
+        >>> csm.to_proforma(crosslinker="Xlink:DSSO")
+        'K[Xlink:DSSO]PM[+15.994915]EPTIDE//PEPK[Xlink:DSSO]TIDE'
+
+        >>> from pyXLMS.data import create_csm_min
+        >>> from pyXLMS.transform import to_proforma
+        >>> csm = create_csm_min(
+        ...     "PEPKTIDE",
+        ...     4,
+        ...     "KPMEPTIDE",
+        ...     1,
+        ...     "RUN_1",
+        ...     1,
+        ...     modifications_b={3: ("Oxidation", 15.994915)},
+        ...     charge=3,
+        ... )
+        >>> csm.to_proforma(crosslinker="Xlink:DSSO")
+        'K[Xlink:DSSO]PM[+15.994915]EPTIDE//PEPK[Xlink:DSSO]TIDE/3'
+
+        >>> from pyXLMS.data import create_csm_min
+        >>> from pyXLMS.transform import to_proforma
+        >>> csm = create_csm_min(
+        ...     "PEPKTIDE",
+        ...     4,
+        ...     "KPMEPTIDE",
+        ...     1,
+        ...     "RUN_1",
+        ...     1,
+        ...     modifications_a={4: ("DSSO", 158.00376)},
+        ...     modifications_b={1: ("DSSO", 158.00376), 3: ("Oxidation", 15.994915)},
+        ...     charge=3,
+        ... )
+        >>> csm.to_proforma()
+        'K[+158.00376]PM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE/3'
+
+        >>> from pyXLMS.data import create_csm_min
+        >>> from pyXLMS.transform import to_proforma
+        >>> csm = create_csm_min(
+        ...     "PEPKTIDE",
+        ...     4,
+        ...     "KPMEPTIDE",
+        ...     1,
+        ...     "RUN_1",
+        ...     1,
+        ...     modifications_a={4: ("DSSO", 158.00376)},
+        ...     modifications_b={1: ("DSSO", 158.00376), 3: ("Oxidation", 15.994915)},
+        ...     charge=3,
+        ... )
+        >>> csm.to_proforma(crosslinker="Xlink:DSSO")
+        'K[+158.00376]PM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE/3'
+        """
+        peptide_a = __get_modified_peptide(
+            self.alpha_peptide,
+            self.alpha_modifications,
+            self.alpha_peptide_crosslink_position,
+            crosslinker,
+        )
+        peptide_b = __get_modified_peptide(
+            self.beta_peptide,
+            self.beta_modifications,
+            self.beta_peptide_crosslink_position,
+            crosslinker,
+        )
+        if self.charge is not None:
+            return f"{peptide_a}//{peptide_b}/{self.charge}"
+        return f"{peptide_a}//{peptide_b}"
 
 
 def create_csm(
