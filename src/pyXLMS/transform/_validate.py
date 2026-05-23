@@ -16,7 +16,7 @@ from ..data._parser_result import ParserResult
 from ..data._util import check_input
 from ..data._util import check_input_multi
 from ..data._parser_result import create_parser_result
-from ._util import get_available_keys
+from ._util import check_available_keys
 from ._util import assert_csms
 from ._util import assert_xls
 from ._util import assert_csms_or_xls
@@ -46,7 +46,7 @@ def __verify_fdr_strict(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks to validate.
     fdr : float
         The target FDR, must be given as a real number between 0 and 1.
@@ -98,7 +98,7 @@ def __validate_strict(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks to validate.
     fdr : float
         The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
@@ -182,7 +182,7 @@ def __verify_fdr_relaxed(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks to validate.
     fdr : float
         The target FDR, must be given as a real number between 0 and 1.
@@ -250,7 +250,7 @@ def __validate_relaxed(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks to validate.
     fdr : float
         The target FDR, must be given as a real number between 0 and 1.
@@ -354,7 +354,7 @@ def validate(
 
     Parameters
     ----------
-    data : list of dict of str, any, or dict of str, any
+    data : list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         A list of crosslink-spectrum-matches or crosslinks to validate, or a parser_result.
     fdr : float, default = 0.01
         The target FDR, must be given as a real number between 0 and 1. The default of 0.01 corresponds to 1% FDR.
@@ -372,7 +372,7 @@ def validate(
 
     Returns
     -------
-    list of dict of str, any, or dict of str, any
+    list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         If a list of crosslink-spectrum-matches or crosslinks was provided, a list of validated
         crosslink-spectrum-matches or crosslinks is returned. If a parser_result was provided,
         an parser_result with validated crosslink-spectrum-matches and/or validated crosslinks will
@@ -388,11 +388,6 @@ def validate(
         If parameter score is not one of 'higher_better' or 'lower_better'.
     ValueError
         If parameter fdr is outside of the supported range.
-    ValueError
-        If attribute 'score' is not available for any of the data.
-    ValueError
-        If attribute 'alpha_decoy' or 'beta_decoy' is not available for any of the data and parameter ignore_missing_labels
-        is set to False.
     ValueError
         If the number of DD matches exceeds the number of TD matches for formula '(TD-DD)/TT'.
         FDR cannot be estimated with the formula '(TD-DD)/TT' in these cases.
@@ -494,16 +489,7 @@ def validate(
                 if item["alpha_decoy"] is not None and item["beta_decoy"] is not None
             ]
         csms_or_xls = assert_csms_or_xls(data)
-        available_keys = get_available_keys(csms_or_xls)
-        if (
-            not available_keys["score"]
-            or not available_keys["alpha_decoy"]
-            or not available_keys["beta_decoy"]
-        ):
-            raise ValueError(
-                "Can't validate data if 'score' or target/decoy labels are missing! Selecting 'ignore_missing_labels = True' will ignore crosslinks and crosslink-spectrum-matches "
-                "that don't have a valid target/decoy label and filter them out!"
-            )
+        _ok = check_available_keys(["score", "alpha_decoy", "beta_decoy"], csms_or_xls)
         if formula == "(TD-DD)/TT":
             if len(filter_target_decoy(csms_or_xls)["Target-Decoy"]) == 0:
                 raise ValueError(
