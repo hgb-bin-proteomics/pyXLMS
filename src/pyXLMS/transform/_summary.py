@@ -9,11 +9,12 @@ from __future__ import annotations
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._parser_result import ParserResult
-from ..data._util import check_input
 from ..data._util import check_input_multi
 from ._aggregate import unique
 from ._filter import filter_crosslink_type
 from ._filter import filter_target_decoy
+from ._util import assert_csms
+from ._util import assert_xls
 
 from typing import Dict
 from typing import List
@@ -24,7 +25,7 @@ def __summary_csm(data: List[CrosslinkSpectrumMatch]) -> Dict[str, float]:
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches.
 
     Returns
@@ -75,7 +76,7 @@ def __summary_xl(data: List[Crosslink]) -> Dict[str, float]:
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of Crosslink
         A list of crosslinks.
 
     Returns
@@ -173,13 +174,20 @@ def summary(
 
     Parameters
     ----------
-    data : list of dict of str, any, or dict of str, any
+    data : list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         A list of crosslinks or crosslink-spectrum-matches, or a parser_result.
 
     Returns
     -------
     dict of str, float
         A dictionary with summary statistics.
+
+    Raises
+    ------
+    TypeError
+        If a wrong data type is provided.
+    ValueError
+        If the input data does not contain any elements.
 
     Examples
     --------
@@ -223,24 +231,22 @@ def summary(
     """
     _ok = check_input_multi(data, "data", [ParserResult, list])
     if isinstance(data, list):
-        _ok = check_input(data, "data", list)
-        if data[0]["data_type"] not in [
-            "crosslink",
-            "crosslink-spectrum-match",
-        ]:
-            raise TypeError(
-                "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match, "
-                "or a parser_result!"
-            )
-        if data[0]["data_type"] == "crosslink-spectrum-match":
-            csm_summary = __summary_csm(data)  # ty: ignore[invalid-argument-type]
+        if len(data) == 0:
+            raise ValueError("Input data does not contain any elements!")
+        if isinstance(data[0], CrosslinkSpectrumMatch):
+            csms = assert_csms(data)
+            csm_summary = __summary_csm(csms)
             for k, v in csm_summary.items():
                 print(f"{k}: {v}")
             return csm_summary
-        xl_summary = __summary_xl(data)  # ty: ignore[invalid-argument-type]
-        for k, v in xl_summary.items():
-            print(f"{k}: {v}")
-        return xl_summary
+        elif isinstance(data[0], Crosslink):
+            xls = assert_xls(data)
+            xl_summary = __summary_xl(xls)
+            for k, v in xl_summary.items():
+                print(f"{k}: {v}")
+            return xl_summary
+        else:
+            raise TypeError(f"Invalid data type {type(data[0])} provided!")
     csm_summary = (
         __summary_csm(data["crosslink-spectrum-matches"])
         if data["crosslink-spectrum-matches"] is not None
