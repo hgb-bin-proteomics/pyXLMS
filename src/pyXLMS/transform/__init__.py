@@ -6,8 +6,12 @@
 
 __all__ = [
     "modifications_to_str",
+    "assert_csms",
+    "assert_xls",
+    "assert_csms_or_xls",
     "assert_data_type_same",
     "get_available_keys",
+    "check_available_keys",
     "filter_target_decoy",
     "filter_proteins",
     "filter_protein_distribution",
@@ -34,8 +38,12 @@ __all__ = [
 ]
 
 from ._util import modifications_to_str
+from ._util import assert_csms
+from ._util import assert_xls
+from ._util import assert_csms_or_xls
 from ._util import assert_data_type_same
 from ._util import get_available_keys
+from ._util import check_available_keys
 from ._filter import filter_target_decoy
 from ._filter import filter_proteins
 from ._filter import filter_protein_distribution

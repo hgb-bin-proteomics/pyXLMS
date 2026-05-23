@@ -18,6 +18,12 @@ from typing import Dict
 from typing import Tuple
 from typing import List
 
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
 
 def modifications_to_str(
     modifications: Optional[Dict[int, Tuple[str, float]]],
@@ -59,40 +65,99 @@ def modifications_to_str(
 
 
 def assert_csms(maybe_csms: Any) -> List[CrosslinkSpectrumMatch]:
+    r"""Checks that the provided input is a list of type CrosslinkSpectrumMatch.
+
+    Parameters
+    ----------
+    maybe_csms : any
+        The input data to be checked.
+
+    Returns
+    -------
+    list of CrosslinkSpectrumMatch
+        Returns a list of type CrosslinkSpectrumMatch if the provided data was one.
+
+    Raises
+    ------
+    TypeError
+        If the provided data was not a list of CrosslinkSpectrumMatch.
+    """
     csms: List[CrosslinkSpectrumMatch] = list()
     if isinstance(maybe_csms, list):
         for item in maybe_csms:
             if isinstance(item, CrosslinkSpectrumMatch):
                 csms.append(item)
             else:
-                raise TypeError()
+                raise TypeError(
+                    "Provided input is not a valid list of type CrosslinkSpectrumMatch!"
+                )
         return csms
-    raise TypeError()
+    raise TypeError(
+        "Provided input is not a valid list of type CrosslinkSpectrumMatch!"
+    )
     return csms
 
 
 def assert_xls(maybe_xls: Any) -> List[Crosslink]:
+    r"""Checks that the provided input is a list of type Crosslink.
+
+    Parameters
+    ----------
+    maybe_xls : any
+        The input data to be checked.
+
+    Returns
+    -------
+    list of Crosslink
+        Returns a list of type Crosslink if the provided data was one.
+
+    Raises
+    ------
+    TypeError
+        If the provided data was not a list of Crosslink.
+    """
     xls: List[Crosslink] = list()
     if isinstance(maybe_xls, list):
         for item in maybe_xls:
             if isinstance(item, Crosslink):
                 xls.append(item)
             else:
-                raise TypeError()
+                raise TypeError("Provided input is not a valid list of type Crosslink!")
         return xls
-    raise TypeError()
+    raise TypeError("Provided input is not a valid list of type Crosslink!")
     return xls
 
 
 def assert_csms_or_xls(
     maybe_csms_or_xls: Any,
 ) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
+    r"""Checks that the provided input is a list of type CrosslinkSpectrumMatch or Crosslink.
+
+    Parameters
+    ----------
+    maybe_csms_or_xls : any
+        The input data to be checked.
+
+    Returns
+    -------
+    list of CrosslinkSpectrumMatch, or list of Crosslink
+        Returns a list of type CrosslinkSpectrumMatch, or a list of type Crosslink
+        if the provided data was either.
+
+    Raises
+    ------
+    TypeError
+        If the provided data was neither a list of CrosslinkSpectrumMatch nor a list
+        of Crosslink.
+    """
     if isinstance(maybe_csms_or_xls, list):
         if all(isinstance(item, CrosslinkSpectrumMatch) for item in maybe_csms_or_xls):
             return assert_csms(maybe_csms_or_xls)
         if all(isinstance(item, Crosslink) for item in maybe_csms_or_xls):
             return assert_xls(maybe_csms_or_xls)
-    raise TypeError()
+    raise TypeError(
+        "Provided input is not a valid list of type CrosslinkSpectrumMatch or Crosslink!"
+    )
     return []
 
 
@@ -112,6 +177,11 @@ def assert_data_type_same(
     -------
     bool
         If all elements are of the same data type.
+
+    Raises
+    ------
+    TypeError
+        If the item in the data list are not of type CrosslinkSpectrumMatch, Crosslink, or ParserResult.
 
     Examples
     --------
@@ -134,11 +204,22 @@ def assert_data_type_same(
     False
     """
     _ok = check_input(data_list, "data_list", list)
-    data_type = data_list[0]["data_type"]
+    if len(data_list) == 0:
+        return True
+    data_type = type(data_list[0])
     for item in data_list[1:]:
-        if item["data_type"] != data_type:
+        if not isinstance(item, data_type):
             return False
-    return True
+    if isinstance(data_list[0], CrosslinkSpectrumMatch):
+        return True
+    if isinstance(data_list[0], Crosslink):
+        return True
+    if isinstance(data_list[0], ParserResult):
+        return True
+    raise TypeError(
+        "Input list contains elements that are not of type CrosslinkSpectrumMatch, Crosslink, or ParserResult!"
+    )
+    return False
 
 
 def get_available_keys(
@@ -198,7 +279,8 @@ def get_available_keys(
     """
     if not assert_data_type_same(data_list):
         raise TypeError("Not all elements of the list have the same data type!")
-    data_type = data_list[0]["data_type"]
+    if len(data_list) == 0:
+        raise ValueError("Provided data does not contain any elements!")
     # available keys
     modifications_a = True
     proteins_a = True
@@ -218,7 +300,7 @@ def get_available_keys(
     im_cv = True
     additional_information = True
     # parse available keys
-    if data_type == "crosslink":
+    if isinstance(data_list[0], Crosslink):
         for data in data_list:
             if data["completeness"] != "full" or always_revalidate:
                 if data["alpha_proteins"] is None:
@@ -254,7 +336,7 @@ def get_available_keys(
             "score": score,
             "additional_information": additional_information,
         }
-    if data_type == "crosslink-spectrum-match":
+    if isinstance(data_list[0], CrosslinkSpectrumMatch):
         for data in data_list:
             if data["completeness"] != "full" or always_revalidate:
                 if data["alpha_modifications"] is None:
@@ -320,9 +402,87 @@ def get_available_keys(
             "additional_information": additional_information,
         }
     raise TypeError(
-        f"Unknown data type {data_type}. Data type must be 'crosslink' or 'crosslink-spectrum-match'!"
+        f"Unknown data type {type(data_list[0])}. Data type must be Crosslink or CrosslinkSpectrumMatch!"
     )
     return {"err": True}
+
+
+def check_available_keys(
+    required_keys: List[
+        Literal[
+            "data_type",
+            "completeness",
+            "alpha_peptide",
+            "alpha_modifications",
+            "alpha_peptide_crosslink_position",
+            "alpha_proteins",
+            "alpha_proteins_crosslink_positions",
+            "alpha_proteins_peptide_positions",
+            "alpha_score",
+            "alpha_decoy",
+            "beta_peptide",
+            "beta_modifications",
+            "beta_peptide_crosslink_position",
+            "beta_proteins",
+            "beta_proteins_crosslink_positions",
+            "beta_proteins_peptide_positions",
+            "beta_score",
+            "beta_decoy",
+            "crosslink_type",
+            "score",
+            "spectrum_file",
+            "scan_nr",
+            "charge",
+            "retention_time",
+            "ion_mobility",
+            "additional_information",
+        ]
+    ],
+    data_list: List[CrosslinkSpectrumMatch] | List[Crosslink],
+    always_revalidate: bool = True,
+) -> bool:
+    r"""Checks if all required keys are available in a list of crosslinks or crosslink-spectrum-matches.
+
+    Parameters
+    ----------
+    required_keys : list of keys
+        A list of valid Crosslink or CrosslinkSpectrumMatch keys/attributes to be checked.
+    data_list : list of dict of str, any
+        A list of crosslinks or crosslink-spectrum-matches.
+    always_revalidate : bool, default = True
+        If ``True`` (default) the assigned ``completeness`` will be ignored and all data fields
+        are re-checked. This is safer especially when data has been modified post reading.
+
+    Returns
+    -------
+    bool
+        True if all items in the data list have the required keys and are not None.
+
+    Raises
+    ------
+    ValueError
+        If one of the keys is not available or None in any of the items in the data list.
+
+    Examples
+    --------
+    >>> from pyXLMS.transform import check_available_keys
+    >>> from pyXLMS import data
+    >>> data_list = [
+    ...     data.create_crosslink_min("PEPK", 4, "PKEP", 2),
+    ...     data.create_crosslink_min("KPEP", 1, "PEKP", 3),
+    ... ]
+    >>> check_available_keys(["alpha_peptide"], data_list)
+    True
+    >>> check_available_keys(["score"], data_list)
+    ValueError: Attribute 'score' is missing in at least one element but is required!
+    """
+    available_keys = get_available_keys(data_list, always_revalidate)
+    for key in required_keys:
+        if key not in available_keys or not available_keys[key]:
+            raise ValueError(
+                f"Attribute '{key}' is missing in at least one element but is required!"
+            )
+    return True
 
 
 def display(
