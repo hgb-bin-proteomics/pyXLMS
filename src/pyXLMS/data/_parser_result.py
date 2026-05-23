@@ -7,28 +7,41 @@
 from __future__ import annotations
 
 from pydantic import BaseModel
+from pydantic import Field
 from pydantic import computed_field
 
 from ._csm import CrosslinkSpectrumMatch
 from ._crosslink import Crosslink
 from ._util import check_input
 
+from typing import Annotated
 from typing import Optional
 from typing import List
 from typing import Any
 
 
 class ParserResult(BaseModel):
-    search_engine: str
-    crosslink_spectrum_matches: Optional[List[CrosslinkSpectrumMatch]]
-    crosslinks: Optional[List[Crosslink]]
+    search_engine: Annotated[
+        str,
+        Field(
+            frozen=True, description="Name of the identifying crosslink search engine."
+        ),
+    ]
+    crosslink_spectrum_matches: Annotated[
+        Optional[List[CrosslinkSpectrumMatch]],
+        Field(frozen=True, description="List of parsed crosslink-spectrum-matches."),
+    ]
+    crosslinks: Annotated[
+        Optional[List[Crosslink]],
+        Field(frozen=True, description="List of parsed crosslinks."),
+    ]
 
-    @computed_field
+    @computed_field(description="Data type of the object.")
     @property
     def data_type(self) -> str:
         return "parser_result"
 
-    @computed_field
+    @computed_field(description="Completeness of the parser result.")
     @property
     def completeness(self) -> str:
         if self.crosslink_spectrum_matches is not None and self.crosslinks is not None:

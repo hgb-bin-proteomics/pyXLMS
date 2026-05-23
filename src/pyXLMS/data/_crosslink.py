@@ -9,12 +9,14 @@ from __future__ import annotations
 import copy
 import numpy as np
 from pydantic import BaseModel
+from pydantic import Field
 from pydantic import computed_field
 
 from ._util import check_input
 from ._util import check_indexing
 
 from typing import override
+from typing import Annotated
 from typing import Optional
 from typing import List
 from typing import Dict
@@ -22,25 +24,93 @@ from typing import Any
 
 
 class Crosslink(BaseModel):
-    alpha_peptide: str
-    alpha_peptide_crosslink_position: int
-    beta_peptide: str
-    beta_peptide_crosslink_position: int
-    alpha_proteins: Optional[List[str]] = None
-    alpha_proteins_crosslink_positions: Optional[List[int]] = None
-    alpha_decoy: Optional[bool] = None
-    beta_proteins: Optional[List[str]] = None
-    beta_proteins_crosslink_positions: Optional[List[int]] = None
-    beta_decoy: Optional[bool] = None
-    score: Optional[float] = None
-    additional_information: Optional[Dict[str, Any]] = None
+    alpha_peptide: Annotated[
+        str,
+        Field(
+            frozen=True,
+            description="The unmodified amino acid sequence of the first peptide.",
+        ),
+    ]
+    alpha_peptide_crosslink_position: Annotated[
+        int,
+        Field(
+            frozen=True,
+            description="The position of the crosslinker in the sequence of the first peptide (1-based).",
+        ),
+    ]
+    beta_peptide: Annotated[
+        str,
+        Field(
+            frozen=True,
+            description="The unmodified amino acid sequence of the second peptide.",
+        ),
+    ]
+    beta_peptide_crosslink_position: Annotated[
+        int,
+        Field(
+            frozen=True,
+            description="The position of the crosslinker in the sequence of the second peptide (1-based).",
+        ),
+    ]
+    alpha_proteins: Annotated[
+        Optional[List[str]],
+        Field(
+            frozen=True,
+            description="The accessions of proteins that the first peptide is associated with.",
+        ),
+    ] = None
+    alpha_proteins_crosslink_positions: Annotated[
+        Optional[List[int]],
+        Field(
+            frozen=True,
+            description="Positions of the crosslink in the proteins of the first peptide (1-based).",
+        ),
+    ] = None
+    alpha_decoy: Annotated[
+        Optional[bool],
+        Field(
+            frozen=True,
+            description="Whether the alpha peptide is from the decoy database or not.",
+        ),
+    ] = None
+    beta_proteins: Annotated[
+        Optional[List[str]],
+        Field(
+            frozen=True,
+            description="The accessions of proteins that the second peptide is associated with.",
+        ),
+    ] = None
+    beta_proteins_crosslink_positions: Annotated[
+        Optional[List[int]],
+        Field(
+            frozen=True,
+            description="Positions of the crosslink in the proteins of the second peptide (1-based).",
+        ),
+    ] = None
+    beta_decoy: Annotated[
+        Optional[bool],
+        Field(
+            frozen=True,
+            description="Whether the beta peptide is from the decoy database or not.",
+        ),
+    ] = None
+    score: Annotated[
+        Optional[float], Field(frozen=True, description="Score of the crosslink.")
+    ] = None
+    additional_information: Annotated[
+        Optional[Dict[str, Any]],
+        Field(
+            frozen=False,
+            description="A dictionary with additional information associated with the crosslink.",
+        ),
+    ] = None
 
-    @computed_field
+    @computed_field(description="Data type of the object.")
     @property
     def data_type(self) -> str:
         return "crosslink"
 
-    @computed_field
+    @computed_field(description="Completeness of the crosslink.")
     @property
     def completeness(self) -> str:
         full = all(
@@ -56,7 +126,7 @@ class Crosslink(BaseModel):
         )
         return "full" if full else "partial"
 
-    @computed_field
+    @computed_field(description="Link type of the crosslink.")
     @property
     def crosslink_type(self) -> str:
         a_prot = set(
@@ -141,19 +211,19 @@ class Crosslink(BaseModel):
             else None
         )
         # re-assign
-        self.alpha_peptide = crosslink[keys[0]]["peptide"]  # ty: ignore[invalid-assignment]
-        self.alpha_peptide_crosslink_position = crosslink[keys[0]]["xl_position_peptide"]  # fmt: skip # ty: ignore[invalid-assignment]
-        self.alpha_proteins = alpha_proteins_clean
-        self.alpha_proteins_crosslink_positions = crosslink[keys[0]]["xl_position_proteins"]  # fmt: skip # ty: ignore[invalid-assignment]
-        self.alpha_decoy = crosslink[keys[0]]["decoy"]  # ty: ignore[invalid-assignment]
-        self.beta_peptide = crosslink[keys[1]]["peptide"]  # ty: ignore[invalid-assignment]
-        self.beta_peptide_crosslink_position = crosslink[keys[1]]["xl_position_peptide"]  # ty: ignore[invalid-assignment]
-        self.beta_proteins = beta_proteins_clean
-        self.beta_proteins_crosslink_positions = crosslink[keys[1]]["xl_position_proteins"]  # fmt: skip # ty: ignore[invalid-assignment]
-        self.beta_decoy = crosslink[keys[1]]["decoy"]  # ty: ignore[invalid-assignment]
+        self.__dict__["alpha_peptide"] = crosslink[keys[0]]["peptide"]
+        self.__dict__["alpha_peptide_crosslink_position"] = crosslink[keys[0]]["xl_position_peptide"]  # fmt: skip
+        self.__dict__["alpha_proteins"] = alpha_proteins_clean
+        self.__dict__["alpha_proteins_crosslink_positions"] = crosslink[keys[0]]["xl_position_proteins"]  # fmt: skip
+        self.__dict__["alpha_decoy"] = crosslink[keys[0]]["decoy"]
+        self.__dict__["beta_peptide"] = crosslink[keys[1]]["peptide"]
+        self.__dict__["beta_peptide_crosslink_position"] = crosslink[keys[1]]["xl_position_peptide"]  # fmt: skip
+        self.__dict__["beta_proteins"] = beta_proteins_clean
+        self.__dict__["beta_proteins_crosslink_positions"] = crosslink[keys[1]]["xl_position_proteins"]  # fmt: skip
+        self.__dict__["beta_decoy"] = crosslink[keys[1]]["decoy"]
         if self.score is not None:
             if np.isnan(self.score):
-                self.score = None
+                self.__dict__["score"] = None
         return
 
     def __getitem__(self, key: str) -> Any:
@@ -161,6 +231,48 @@ class Crosslink(BaseModel):
             return getattr(self, key)
         except AttributeError:
             raise KeyError(f"'{key}' is not a valid field!")
+
+    def copy_with_update(self, update: Dict[str, Any] = {}) -> Crosslink:
+        return Crosslink(
+            alpha_peptide=self.alpha_peptide
+            if "alpha_peptide" not in update
+            else update["alpha_peptide"],
+            alpha_peptide_crosslink_position=self.alpha_peptide_crosslink_position
+            if "alpha_peptide_crosslink_position" not in update
+            else update["alpha_peptide_crosslink_position"],
+            beta_peptide=self.beta_peptide
+            if "beta_peptide" not in update
+            else update["beta_peptide"],
+            beta_peptide_crosslink_position=self.beta_peptide_crosslink_position
+            if "beta_peptide_crosslink_position" not in update
+            else update["beta_peptide_crosslink_position"],
+            alpha_proteins=copy.deepcopy(self.alpha_proteins)
+            if "alpha_proteins" not in update
+            else update["alpha_proteins"],
+            alpha_proteins_crosslink_positions=copy.deepcopy(
+                self.alpha_proteins_crosslink_positions
+            )
+            if "alpha_proteins_crosslink_positions" not in update
+            else update["alpha_proteins_crosslink_positions"],
+            alpha_decoy=self.alpha_decoy
+            if "alpha_decoy" not in update
+            else update["alpha_decoy"],
+            beta_proteins=copy.deepcopy(self.beta_proteins)
+            if "beta_proteins" not in update
+            else update["beta_proteins"],
+            beta_proteins_crosslink_positions=copy.deepcopy(
+                self.beta_proteins_crosslink_positions
+            )
+            if "beta_proteins_crosslink_positions" not in update
+            else update["beta_proteins_crosslink_positions"],
+            beta_decoy=self.beta_decoy
+            if "beta_decoy" not in update
+            else update["beta_decoy"],
+            score=self.score if "score" not in update else update["score"],
+            additional_information=copy.deepcopy(self.additional_information)
+            if "additional_information" not in update
+            else update["additional_information"],
+        )
 
     def display(
         self,
