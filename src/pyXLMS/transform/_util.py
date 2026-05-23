@@ -234,7 +234,7 @@ def get_available_keys(
 
     Parameters
     ----------
-    data_list : list of dict of str, any
+    data_list : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslinks or crosslink-spectrum-matches.
     always_revalidate : bool, default = True
         If ``True`` (default) the assigned ``completeness`` will be ignored and all data fields
@@ -447,7 +447,7 @@ def check_available_keys(
     ----------
     required_keys : list of keys
         A list of valid Crosslink or CrosslinkSpectrumMatch keys/attributes to be checked.
-    data_list : list of dict of str, any
+    data_list : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslinks or crosslink-spectrum-matches.
     always_revalidate : bool, default = True
         If ``True`` (default) the assigned ``completeness`` will be ignored and all data fields
@@ -456,7 +456,7 @@ def check_available_keys(
     Returns
     -------
     bool
-        True if all items in the data list have the required keys and are not None.
+        True if all items in the data list have the required keys and the keys are not None.
 
     Raises
     ------
@@ -494,7 +494,7 @@ def display(
 
     Parameters
     ----------
-    data : dict of str, any
+    data : CrosslinkSpectrumMatch, Crosslink, or ParserResult
         A crosslink-spectrum-match or crosslink or parser_result to display.
     show_additional_information : bool, default = False
         Also display data in the ``additional_information``.
@@ -592,9 +592,8 @@ def display(
     )
     _ok = check_input(show_additional_information, "show_additional_information", bool)
     _ok = check_input(return_str, "return_str", bool)
-    data_type = data["data_type"]
     display: str = ""
-    if data_type == "crosslink":
+    if isinstance(data, Crosslink):
         display += f"Data Type:                          {data['data_type']}\n"
         display += f"Completeness:                       {data['completeness']}\n"
         display += f"Alpha Peptide:                      {data['alpha_peptide']}\n"
@@ -616,7 +615,7 @@ def display(
         if return_str:
             return display
         return
-    if data_type == "crosslink-spectrum-match":
+    if isinstance(data, CrosslinkSpectrumMatch):
         display += f"Data Type:                          {data['data_type']}\n"
         display += f"Completeness:                       {data['completeness']}\n"
         display += f"Alpha Peptide:                      {data['alpha_peptide']}\n"
@@ -649,7 +648,7 @@ def display(
         if return_str:
             return display
         return
-    if data_type == "parser_result":
+    if isinstance(data, ParserResult):
         csms = data["crosslink-spectrum-matches"]
         xls = data["crosslinks"]
         display += f"Data Type:                            {data['data_type']}\n"
@@ -663,6 +662,6 @@ def display(
             return display
         return
     raise TypeError(
-        f"Unknown data type {data_type}. Data type must be 'crosslink', 'crosslink-spectrum-match', or 'parser_result'!"
+        f"Unknown data type {type(data)}. Data type must be CrosslinkSpectrumMatch, Crosslink, or ParserResult!"
     )
     return
