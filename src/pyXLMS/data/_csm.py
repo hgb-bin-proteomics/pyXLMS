@@ -147,7 +147,7 @@ class CrosslinkSpectrumMatch(BaseModel):
         Field(frozen=True, description="Score of the crosslink-spectrum-match."),
     ] = None
     charge: Annotated[
-        Optional[float],
+        Optional[int],
         Field(
             frozen=True,
             description="The precursor charge of the corresponding mass spectrum of the crosslink-spectrum-match.",
