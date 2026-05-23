@@ -56,14 +56,22 @@ def __annotate_by_mapping(
         if data[0]["data_type"] == "crosslink"
         else "crosslink-spectrum-matches"
     )
+    reannotated = list()
     for _i, item in tqdm(
         enumerate(data), total=len(data), desc=f"Annotating {data_type}..."
     ):
+        alpha_decoy = item["alpha_decoy"]
+        beta_decoy = item["beta_decoy"]
         if item["alpha_decoy"] in by_mapping:
-            item["alpha_decoy"] = by_mapping[item["alpha_decoy"]]
+            alpha_decoy = by_mapping[item["alpha_decoy"]]
         if item["beta_decoy"] in by_mapping:
-            item["beta_decoy"] = by_mapping[item["beta_decoy"]]
-    return data
+            beta_decoy = by_mapping[item["beta_decoy"]]
+        reannotated.append(
+            item.copy_with_update(
+                update={"alpha_decoy": alpha_decoy, "beta_decoy": beta_decoy}
+            )
+        )
+    return reannotated
 
 
 def __annotate_by_protein_prefix(
@@ -97,11 +105,14 @@ def __annotate_by_protein_prefix(
         if data[0]["data_type"] == "crosslink"
         else "crosslink-spectrum-matches"
     )
+    reannotated = list()
     for i, item in tqdm(
         enumerate(data), total=len(data), desc=f"Annotating {data_type}..."
     ):
+        alpha_decoy = item["alpha_decoy"]
+        beta_decoy = item["beta_decoy"]
         if item["alpha_proteins"] is not None and len(item["alpha_proteins"]) > 0:
-            item["alpha_decoy"] = all(
+            alpha_decoy = all(
                 [
                     protein.startswith(by_decoy_protein_prefix)
                     for protein in item["alpha_proteins"]
@@ -114,7 +125,7 @@ def __annotate_by_protein_prefix(
                 )
             )
         if item["beta_proteins"] is not None and len(item["beta_proteins"]) > 0:
-            item["beta_decoy"] = all(
+            beta_decoy = all(
                 [
                     protein.startswith(by_decoy_protein_prefix)
                     for protein in item["beta_proteins"]
@@ -126,7 +137,12 @@ def __annotate_by_protein_prefix(
                     f"Could not annotate beta decoy label at index={i} because beta proteins is 'None'!"
                 )
             )
-    return data
+        reannotated.append(
+            item.copy_with_update(
+                update={"alpha_decoy": alpha_decoy, "beta_decoy": beta_decoy}
+            )
+        )
+    return reannotated
 
 
 def __annotate_by_protein_substring(
@@ -161,11 +177,14 @@ def __annotate_by_protein_substring(
         if data[0]["data_type"] == "crosslink"
         else "crosslink-spectrum-matches"
     )
+    reannotated = list()
     for i, item in tqdm(
         enumerate(data), total=len(data), desc=f"Annotating {data_type}..."
     ):
+        alpha_decoy = item["alpha_decoy"]
+        beta_decoy = item["beta_decoy"]
         if item["alpha_proteins"] is not None and len(item["alpha_proteins"]) > 0:
-            item["alpha_decoy"] = all(
+            alpha_decoy = all(
                 [
                     by_decoy_protein_substring in protein
                     for protein in item["alpha_proteins"]
@@ -178,7 +197,7 @@ def __annotate_by_protein_substring(
                 )
             )
         if item["beta_proteins"] is not None and len(item["beta_proteins"]) > 0:
-            item["beta_decoy"] = all(
+            beta_decoy = all(
                 [
                     by_decoy_protein_substring in protein
                     for protein in item["beta_proteins"]
@@ -190,7 +209,12 @@ def __annotate_by_protein_substring(
                     f"Could not annotate beta decoy label at index={i} because beta proteins is 'None'!"
                 )
             )
-    return data
+        reannotated.append(
+            item.copy_with_update(
+                update={"alpha_decoy": alpha_decoy, "beta_decoy": beta_decoy}
+            )
+        )
+    return reannotated
 
 
 def __is_peptide_in_protein_db(peptide: str, protein_db: List[str]) -> bool:
@@ -261,12 +285,18 @@ def __annotate_by_fasta(
         if data[0]["data_type"] == "crosslink"
         else "crosslink-spectrum-matches"
     )
+    reannotated = list()
     for item in tqdm(data, total=len(data), desc=f"Annotating {data_type}..."):
         alpha_in_db = __is_peptide_in_protein_db(item["alpha_peptide"], protein_db)
         beta_in_db = __is_peptide_in_protein_db(item["beta_peptide"], protein_db)
-        item["alpha_decoy"] = not alpha_in_db if is_target else alpha_in_db
-        item["beta_decoy"] = not beta_in_db if is_target else beta_in_db
-    return data
+        alpha_decoy = not alpha_in_db if is_target else alpha_in_db
+        beta_decoy = not beta_in_db if is_target else beta_in_db
+        reannotated.append(
+            item.copy_with_update(
+                update={"alpha_decoy": alpha_decoy, "beta_decoy": beta_decoy}
+            )
+        )
+    return reannotated
 
 
 def __annotate_by_function(
@@ -298,13 +328,17 @@ def __annotate_by_function(
         if data[0]["data_type"] == "crosslink"
         else "crosslink-spectrum-matches"
     )
+    reannotated = list()
     for _i, item in tqdm(
         enumerate(data), total=len(data), desc=f"Annotating {data_type}..."
     ):
         alpha_decoy, beta_decoy = by_function(item)
-        item["alpha_decoy"] = alpha_decoy
-        item["beta_decoy"] = beta_decoy
-    return data
+        reannotated.append(
+            item.copy_with_update(
+                update={"alpha_decoy": alpha_decoy, "beta_decoy": beta_decoy}
+            )
+        )
+    return reannotated
 
 
 def reannotate_decoy_labels(
