@@ -11,6 +11,8 @@ from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
 from ._util import modifications_to_str
+from ._util import assert_csms
+from ._util import assert_xls
 
 from typing import Optional
 from typing import List
@@ -45,7 +47,7 @@ def __crosslinks_to_dataframe(data: List[Crosslink]) -> pd.DataFrame:
 
     Parameters
     ----------
-    data : list
+    data : list of Crosslink
         A list of crosslinks as created by ``data.create_crosslink()``.
 
     Returns
@@ -125,7 +127,7 @@ def __csms_to_dataframe(data: List[CrosslinkSpectrumMatch]) -> pd.DataFrame:
 
     Parameters
     ----------
-    data : list
+    data : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches as created by ``data.create_csm()``.
 
     Returns
@@ -238,7 +240,7 @@ def to_dataframe(data: List[CrosslinkSpectrumMatch] | List[Crosslink]) -> pd.Dat
 
     Parameters
     ----------
-    data : list
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslinks or crosslink-spectrum-matches as created by ``data.create_crosslink()`` or ``data.create_csm()``.
 
     Returns
@@ -267,10 +269,10 @@ def to_dataframe(data: List[CrosslinkSpectrumMatch] | List[Crosslink]) -> pd.Dat
     check_input(data, "data", list)
     ## function calls
     if len(data) > 0:
-        if data[0]["data_type"] == "crosslink":
-            return __crosslinks_to_dataframe(data)  # ty: ignore[invalid-argument-type]
-        elif data[0]["data_type"] == "crosslink-spectrum-match":
-            return __csms_to_dataframe(data)  # ty: ignore[invalid-argument-type]
+        if isinstance(data[0], Crosslink):
+            return __crosslinks_to_dataframe(assert_xls(data))
+        elif isinstance(data[0], CrosslinkSpectrumMatch):
+            return __csms_to_dataframe(assert_csms(data))
         else:
             raise TypeError("The given data object is not supported!")
     raise ValueError("Parameter data has to be at least of length one!")
