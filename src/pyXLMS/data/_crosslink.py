@@ -242,6 +242,7 @@ class Crosslink(BaseModel):
             raise KeyError(f"'{key}' is not a valid field!")
 
     def copy_with_update(self, update: Dict[str, Any] = {}) -> Crosslink:
+        _ok = check_input(update, "update", dict)
         return Crosslink(
             alpha_peptide=self.alpha_peptide
             if "alpha_peptide" not in update
