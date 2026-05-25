@@ -15,8 +15,11 @@ from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._parser_result import ParserResult
 from ..data._util import check_input
+from ..data._util import check_input_multi
 from ..data._parser_result import create_parser_result
-from ._util import assert_data_type_same
+from ._util import assert_csms
+from ._util import assert_xls
+from ._util import assert_csms_or_xls
 from ._reannotate_positions import __generate_all_sequences
 
 from typing import Optional
@@ -25,7 +28,6 @@ from typing import Callable
 from typing import Dict
 from typing import List
 from typing import Tuple
-from typing import Any
 
 
 def __annotate_by_mapping(
@@ -36,7 +38,7 @@ def __annotate_by_mapping(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks to annotate.
     by_mapping : dict of bool or None, bool or None
         A dictionary that maps possible ``alpha_decoy`` and ``beta_decoy`` values to their new values.
@@ -44,7 +46,7 @@ def __annotate_by_mapping(
 
     Returns
     -------
-    list of dict of str, any
+    list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of reannotated crosslink-spectrum-matches or crosslinks is returned.
 
     Notes
@@ -52,9 +54,7 @@ def __annotate_by_mapping(
     This function should not be called directly, it is called from ``reannotate_decoy_labels()``.
     """
     data_type = (
-        "crosslinks"
-        if data[0]["data_type"] == "crosslink"
-        else "crosslink-spectrum-matches"
+        "crosslinks" if isinstance(data[0], Crosslink) else "crosslink-spectrum-matches"
     )
     reannotated = list()
     for _i, item in tqdm(
@@ -81,14 +81,14 @@ def __annotate_by_protein_prefix(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks to annotate.
     by_decoy_protein_prefix : str
         Prefix that specifies that a protein is a decoy.
 
     Returns
     -------
-    list of dict of str, any
+    list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of reannotated crosslink-spectrum-matches or crosslinks is returned.
 
     Warns
@@ -101,9 +101,7 @@ def __annotate_by_protein_prefix(
     This function should not be called directly, it is called from ``reannotate_decoy_labels()``.
     """
     data_type = (
-        "crosslinks"
-        if data[0]["data_type"] == "crosslink"
-        else "crosslink-spectrum-matches"
+        "crosslinks" if isinstance(data[0], Crosslink) else "crosslink-spectrum-matches"
     )
     reannotated = list()
     for i, item in tqdm(
@@ -153,14 +151,14 @@ def __annotate_by_protein_substring(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks to annotate.
     by_decoy_protein_substring : str
         Substring that specifies that a protein is a decoy.
 
     Returns
     -------
-    list of dict of str, any
+    list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of reannotated crosslink-spectrum-matches or crosslinks is returned.
 
     Warns
@@ -173,9 +171,7 @@ def __annotate_by_protein_substring(
     This function should not be called directly, it is called from ``reannotate_decoy_labels()``.
     """
     data_type = (
-        "crosslinks"
-        if data[0]["data_type"] == "crosslink"
-        else "crosslink-spectrum-matches"
+        "crosslinks" if isinstance(data[0], Crosslink) else "crosslink-spectrum-matches"
     )
     reannotated = list()
     for i, item in tqdm(
@@ -253,7 +249,7 @@ def __annotate_by_fasta(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks to annotate.
     fasta : str, or file stream
         The name/path of the FASTA file containing protein sequences or a file-like object/stream.
@@ -262,7 +258,7 @@ def __annotate_by_fasta(
 
     Returns
     -------
-    list of dict of str, any
+    list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of reannotated crosslink-spectrum-matches or crosslinks is returned.
 
     Notes
@@ -281,9 +277,7 @@ def __annotate_by_fasta(
             protein_db.append(item[1])
     # reannote
     data_type = (
-        "crosslinks"
-        if data[0]["data_type"] == "crosslink"
-        else "crosslink-spectrum-matches"
+        "crosslinks" if isinstance(data[0], Crosslink) else "crosslink-spectrum-matches"
     )
     reannotated = list()
     for item in tqdm(data, total=len(data), desc=f"Annotating {data_type}..."):
@@ -301,13 +295,13 @@ def __annotate_by_fasta(
 
 def __annotate_by_function(
     data: List[CrosslinkSpectrumMatch] | List[Crosslink],
-    by_function: Callable[[Dict[str, Any]], Tuple[bool, bool]],
+    by_function: Callable[[CrosslinkSpectrumMatch | Crosslink], Tuple[bool, bool]],
 ) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     r"""Reannotates decoy labels based on a given function.
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks to annotate.
     by_function : callable
         A function that takes one crosslink-spectrum-match or crosslink as input and returns a tuple
@@ -316,7 +310,7 @@ def __annotate_by_function(
 
     Returns
     -------
-    list of dict of str, any
+    list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of reannotated crosslink-spectrum-matches or crosslinks is returned.
 
     Notes
@@ -324,9 +318,7 @@ def __annotate_by_function(
     This function should not be called directly, it is called from ``reannotate_decoy_labels()``.
     """
     data_type = (
-        "crosslinks"
-        if data[0]["data_type"] == "crosslink"
-        else "crosslink-spectrum-matches"
+        "crosslinks" if isinstance(data[0], Crosslink) else "crosslink-spectrum-matches"
     )
     reannotated = list()
     for _i, item in tqdm(
@@ -348,7 +340,10 @@ def reannotate_decoy_labels(
     by_decoy_protein_substring: Optional[str] = None,
     by_target_fasta: Optional[str | BinaryIO] = None,
     by_decoy_fasta: Optional[str | BinaryIO] = None,
-    by_function: Optional[Callable[[Dict[str, Any]], Tuple[bool, bool]]] | None = None,
+    by_function: Optional[
+        Callable[[CrosslinkSpectrumMatch | Crosslink], Tuple[bool, bool]]
+    ]
+    | None = None,
 ) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
     r"""Reannotates decoy labels based on different parameters.
 
@@ -358,7 +353,7 @@ def reannotate_decoy_labels(
 
     Parameters
     ----------
-    data : list of dict of str, any, or dict of str, any
+    data : list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         A list of crosslink-spectrum-matches or crosslinks to annotate, or a parser_result.
     by_mapping : dict of bool or None, bool or None, or None, default = None
         A dictionary that maps possible ``alpha_decoy`` and ``beta_decoy`` values to their new values.
@@ -378,7 +373,7 @@ def reannotate_decoy_labels(
 
     Returns
     -------
-    list of dict of str, any, or dict of str, any
+    list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         If a list of crosslink-spectrum-matches or crosslinks was provided, a list of reannotated
         crosslink-spectrum-matches or crosslinks is returned. If a parser_result was provided,
         an reannotated parser_result will be returned. Returns a copy of the original data to not
@@ -404,6 +399,7 @@ def reannotate_decoy_labels(
     >>> xls[0]["beta_decoy"]
     False
     """
+    _ok = check_input_multi(data, "data", [list, ParserResult])
     _ok = (
         check_input(by_mapping, "by_mapping", dict) if by_mapping is not None else True
     )
@@ -440,57 +436,39 @@ def reannotate_decoy_labels(
             "Please only specify one option for reannotation, e.g. 'by_mapping' or 'by_target_fasta' but not both!"
         )
     if isinstance(data, list):
-        _ok = check_input(data, "data", list)
         if len(data) == 0:
             return data
-        if "data_type" not in data[0]:
-            raise TypeError(
-                "Can't reannotate decoy labels for input data. Input data has to be a list of crosslink-spectrum-matches or crosslinks "
-                "or a 'parser_result'!"
-            )
-        _ok = assert_data_type_same(data)
-        # annotate decoy labels
-        if (
-            data[0]["data_type"] == "crosslink"
-            or data[0]["data_type"] == "crosslink-spectrum-match"
-        ):
-            data_copy = copy.deepcopy(data)
-            if by_mapping is not None:
-                print(f"Reannotating decoy labels by mapping: {by_mapping}!")
-                return __annotate_by_mapping(data_copy, by_mapping)
-            if by_decoy_protein_prefix is not None:
-                print(
-                    f"Reannotating decoy labels by decoy protein prefix: {by_decoy_protein_prefix}!"
-                )
-                return __annotate_by_protein_prefix(data_copy, by_decoy_protein_prefix)
-            if by_decoy_protein_substring is not None:
-                print(
-                    f"Reannotating decoy labels by decoy protein substring: {by_decoy_protein_substring}!"
-                )
-                return __annotate_by_protein_substring(
-                    data_copy, by_decoy_protein_substring
-                )
-            if by_target_fasta is not None:
-                print("Reannotating decoy labels by provided target fasta file!")
-                return __annotate_by_fasta(data_copy, by_target_fasta, is_target=True)
-            if by_decoy_fasta is not None:
-                print("Reannotating decoy labels by provided decoy fasta file!")
-                return __annotate_by_fasta(data_copy, by_decoy_fasta, is_target=False)
-            if by_function is not None:
-                print("Reannotating decoy labels by provided function!")
-                return __annotate_by_function(data_copy, by_function)
+        data = assert_csms_or_xls(data)
+        data_copy = copy.deepcopy(data)
+        if by_mapping is not None:
+            print(f"Reannotating decoy labels by mapping: {by_mapping}!")
+            return __annotate_by_mapping(data_copy, by_mapping)
+        if by_decoy_protein_prefix is not None:
             print(
-                "No decoy label reannotation parameter provided - no decoy label reannotation has been performed!"
+                f"Reannotating decoy labels by decoy protein prefix: {by_decoy_protein_prefix}!"
             )
-            return data
-        else:
-            raise TypeError(
-                f"Can't reannotate decoy labels for data type {data[0]['data_type']}. Valid data types are:\n"
-                "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
+            return __annotate_by_protein_prefix(data_copy, by_decoy_protein_prefix)
+        if by_decoy_protein_substring is not None:
+            print(
+                f"Reannotating decoy labels by decoy protein substring: {by_decoy_protein_substring}!"
             )
+            return __annotate_by_protein_substring(
+                data_copy, by_decoy_protein_substring
+            )
+        if by_target_fasta is not None:
+            print("Reannotating decoy labels by provided target fasta file!")
+            return __annotate_by_fasta(data_copy, by_target_fasta, is_target=True)
+        if by_decoy_fasta is not None:
+            print("Reannotating decoy labels by provided decoy fasta file!")
+            return __annotate_by_fasta(data_copy, by_decoy_fasta, is_target=False)
+        if by_function is not None:
+            print("Reannotating decoy labels by provided function!")
+            return __annotate_by_function(data_copy, by_function)
+        print(
+            "No decoy label reannotation parameter provided - no decoy label reannotation has been performed!"
+        )
         return data
-    _ok = check_input(data, "data", ParserResult)
-    new_csms = (
+    new_csms = assert_csms(
         reannotate_decoy_labels(
             data["crosslink-spectrum-matches"],
             by_mapping=by_mapping,
@@ -503,7 +481,7 @@ def reannotate_decoy_labels(
         if data["crosslink-spectrum-matches"] is not None
         else None
     )
-    new_xls = (
+    new_xls = assert_xls(
         reannotate_decoy_labels(
             data["crosslinks"],
             by_mapping=by_mapping,
@@ -518,6 +496,6 @@ def reannotate_decoy_labels(
     )
     return create_parser_result(
         search_engine=data["search_engine"],
-        csms=new_csms,  # ty: ignore[invalid-argument-type]
-        crosslinks=new_xls,  # ty: ignore[invalid-argument-type]
+        csms=new_csms,
+        crosslinks=new_xls,
     )
