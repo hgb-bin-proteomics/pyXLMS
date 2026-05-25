@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import copy
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import ConfigDict
@@ -18,6 +19,7 @@ from ._util import check_input
 from typing import Annotated
 from typing import Optional
 from typing import List
+from typing import Dict
 from typing import Any
 
 
@@ -62,6 +64,31 @@ class ParserResult(BaseModel):
             return getattr(self, key)
         except AttributeError:
             raise KeyError(f"'{key}' is not a valid field!")
+
+    def copy_with_update(self, update: Dict[str, Any] = {}) -> ParserResult:
+        _ok = check_input(update, "update", dict)
+        if (
+            "crosslink_spectrum_matches" in update
+            and "crosslink-spectrum-matches" in update
+        ):
+            raise ValueError(
+                "Dict 'update' must only contain key 'crosslink_spectrum_matches' "
+                "or key 'crosslink-spectrum-matches' but not both!"
+            )
+        new_csms = copy.deepcopy(self.crosslink_spectrum_matches)
+        if "crosslink_spectrum_matches" in update:
+            new_csms = update["crosslink_spectrum_matches"]
+        if "crosslink-spectrum-matches" in update:
+            new_csms = update["crosslink-spectrum-matches"]
+        return ParserResult(
+            search_engine=self.search_engine
+            if "search_engine" not in update
+            else update["search_engine"],
+            crosslink_spectrum_matches=new_csms,
+            crosslinks=copy.deepcopy(self.crosslinks)
+            if "crosslinks" not in update
+            else update["crosslinks"],
+        )
 
     def csms(self) -> List[CrosslinkSpectrumMatch] | None:
         return self.crosslink_spectrum_matches
