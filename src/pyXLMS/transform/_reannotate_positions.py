@@ -16,10 +16,13 @@ from ..data._crosslink import Crosslink
 from ..data._parser_result import ParserResult
 from ..constants import AMINO_ACIDS_REPLACEMENTS
 from ..data._util import check_input
+from ..data._util import check_input_multi
 from ..data._csm import create_csm
 from ..data._crosslink import create_crosslink
 from ..data._parser_result import create_parser_result
-from ._util import assert_data_type_same
+from ._util import assert_csms
+from ._util import assert_xls
+from ._util import assert_csms_or_xls
 
 from typing import Optional
 from typing import BinaryIO
@@ -161,7 +164,7 @@ def reannotate_positions(
 
     Parameters
     ----------
-    data : list of dict of str, any, or dict of str, any
+    data : list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         A list of crosslink-spectrum-matches or crosslinks to annotate, or a parser_result.
     fasta : str, or file stream
         The name/path of the fasta file containing protein sequences or a file-like object/stream.
@@ -171,7 +174,7 @@ def reannotate_positions(
 
     Returns
     -------
-    list of dict of str, any, or dict of str, any
+    list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         If a list of crosslink-spectrum-matches or crosslinks was provided, a list of annotated
         crosslink-spectrum-matches or crosslinks is returned. If a parser_result was provided,
         an annotated parser_result will be returned.
@@ -196,20 +199,15 @@ def reannotate_positions(
     >>> xls[0]["beta_proteins_crosslink_positions"]
     [48]
     """
+    _ok = check_input_multi(data, "data", [list, ParserResult])
     if title_to_accession is not None:
         _ok = check_input(title_to_accession, "title_to_accession", Callable)
     else:
         title_to_accession = fasta_title_to_accession
     if isinstance(data, list):
-        _ok = check_input(data, "data", list)
         if len(data) == 0:
             return data
-        if "data_type" not in data[0]:
-            raise TypeError(
-                "Can't annotate positions for input data. Input data has to be a list of crosslink-spectrum-matches or crosslinks "
-                "or a 'parser_result'!"
-            )
-        _ok = assert_data_type_same(data)
+        data = assert_csms_or_xls(data)
         protein_db = dict()
         reannoted = list()
         # read fasta file
@@ -235,7 +233,7 @@ def reannotate_positions(
                     )
                 )
         # annotate crosslinks
-        if data[0]["data_type"] == "crosslink":
+        if isinstance(data[0], Crosslink):
             for xl in tqdm(data, total=len(data), desc="Annotating crosslinks..."):
                 proteins_a, pep_position0_proteins_a = __get_proteins_and_positions(
                     xl["alpha_peptide"], protein_db
@@ -266,7 +264,7 @@ def reannotate_positions(
                     )
                 )
         # annotate csms
-        elif data[0]["data_type"] == "crosslink-spectrum-match":
+        elif isinstance(data[0], CrosslinkSpectrumMatch):
             for csm in tqdm(
                 data, total=len(data), desc="Annotation crosslink-spectrum-matches..."
             ):
@@ -315,25 +313,24 @@ def reannotate_positions(
                 )
         else:
             raise TypeError(
-                f"Can't annotate positions for data type {data[0]['data_type']}. Valid data types are:\n"
+                f"Can't annotate positions for data type {type(data[0])}. Valid data types are:\n"
                 "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
             )
         return reannoted
-    _ok = check_input(data, "data", ParserResult)
-    new_csms = (
+    new_csms = assert_csms(
         reannotate_positions(
             data["crosslink-spectrum-matches"], fasta, title_to_accession
         )
         if data["crosslink-spectrum-matches"] is not None
         else None
     )
-    new_xls = (
+    new_xls = assert_xls(
         reannotate_positions(data["crosslinks"], fasta, title_to_accession)
         if data["crosslinks"] is not None
         else None
     )
     return create_parser_result(
         search_engine=data["search_engine"],
-        csms=new_csms,  # ty: ignore[invalid-argument-type]
-        crosslinks=new_xls,  # ty: ignore[invalid-argument-type]
+        csms=new_csms,
+        crosslinks=new_xls,
     )
