@@ -35,6 +35,8 @@ __all__ = [
     "get_string_network",
     "annotate_string_scores",
     "display",
+    "to_json",
+    "from_json",
 ]
 
 from ._util import modifications_to_str
@@ -67,3 +69,5 @@ from ._annotate_string_scores import get_string_ids
 from ._annotate_string_scores import get_string_network
 from ._annotate_string_scores import annotate_string_scores
 from ._util import display
+from ._json import to_json
+from ._json import from_json
