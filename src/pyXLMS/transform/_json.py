@@ -31,6 +31,39 @@ def to_json(
     ensure_ascii: bool = False,
     indent: int = 4,
 ) -> str:
+    r"""
+    Examples
+    --------
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import to_json, from_json
+    >>> pr = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
+    >>> pr.display()
+    Data Type:                            parser_result
+    Completeness:                         full
+    Identifying Search Engine:            MS Annika
+    Number of Crosslink-Spectrum-Matches: 826
+    Number of Crosslinks:                 300
+    >>> json_data_pr = to_json(pr)
+    >>> json_data_csms = to_json(pr.csms())
+    >>> json_data_xls = to_json(pr.xls(), output_file="xls.json")
+    >>> pr = from_json(json_data_pr)
+    >>> type(pr)
+    <class 'pyXLMS.data._parser_result.ParserResult'>
+    >>> csms = from_json(json_data_csms)
+    >>> len(csms)
+    826
+    >>> type(csms[0])
+    <class 'pyXLMS.data._csm.CrosslinkSpectrumMatch'>
+    >>> xls = from_json("xls.json")
+    >>> len(xls)
+    300
+    >>> type(xls[0])
+    <class 'pyXLMS.data._crosslink.Crosslink'>
+    """
     _ok = check_input_multi(data, "data", [list, ParserResult])
     _ok = check_input(ensure_ascii, "ensure_ascii", bool)
     json_data: List[Dict[str, Any]] | Dict[str, Any] | None = list()
@@ -52,6 +85,39 @@ def to_json(
 def from_json(
     json_input: str | BinaryIO,
 ) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
+    r"""
+    Examples
+    --------
+    >>> from pyXLMS.parser import read
+    >>> from pyXLMS.transform import to_json, from_json
+    >>> pr = read(
+    ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
+    ...     engine="MS Annika",
+    ...     crosslinker="DSS",
+    ... )
+    >>> pr.display()
+    Data Type:                            parser_result
+    Completeness:                         full
+    Identifying Search Engine:            MS Annika
+    Number of Crosslink-Spectrum-Matches: 826
+    Number of Crosslinks:                 300
+    >>> json_data_pr = to_json(pr)
+    >>> json_data_csms = to_json(pr.csms())
+    >>> json_data_xls = to_json(pr.xls(), output_file="xls.json")
+    >>> pr = from_json(json_data_pr)
+    >>> type(pr)
+    <class 'pyXLMS.data._parser_result.ParserResult'>
+    >>> csms = from_json(json_data_csms)
+    >>> len(csms)
+    826
+    >>> type(csms[0])
+    <class 'pyXLMS.data._csm.CrosslinkSpectrumMatch'>
+    >>> xls = from_json("xls.json")
+    >>> len(xls)
+    300
+    >>> type(xls[0])
+    <class 'pyXLMS.data._crosslink.Crosslink'>
+    """
     json_data: List[Dict[str, Any]] | Dict[str, Any] | None = None
     if isinstance(json_input, str):
         if os.path.isfile(json_input):
