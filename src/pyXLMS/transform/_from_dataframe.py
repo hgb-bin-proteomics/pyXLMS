@@ -76,7 +76,7 @@ def from_dataframe(
 
     Returns
     -------
-    list of dict of str, any
+    list of CrosslinkSpectrumMatch, or list of Crosslink
         If a crosslink-spectrum-matches DataFrame was given, a list of crosslink-spectrum-matches is returned.
         If a crosslinks DataFrame was given, a list of crosslinks is returned.
 
