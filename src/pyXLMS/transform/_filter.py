@@ -10,7 +10,9 @@ from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
 from ..data._util import check_input_multi
-from ._util import get_available_keys
+from ._util import check_available_keys
+from ._util import assert_csms
+from ._util import assert_csms_or_xls
 
 from typing import Dict
 from typing import List
@@ -30,8 +32,8 @@ def filter_target_decoy(
 
     Parameters
     ----------
-    data : list of dict of str, any
-        A list of pyXLMS crosslinks or crosslink-spectrum-matches.
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
+        A list of pyXLMS crosslink-spectrum-matches or crosslinks.
 
     Returns
     -------
@@ -85,14 +87,8 @@ def filter_target_decoy(
     tt = list()
     td = list()
     dd = list()
+    data = assert_csms_or_xls(data)
     for item in data:
-        if item["data_type"] not in [
-            "crosslink",
-            "crosslink-spectrum-match",
-        ]:
-            raise TypeError(
-                "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
-            )
         if item["alpha_decoy"] is not None and item["beta_decoy"] is not None:
             if item["alpha_decoy"] and item["beta_decoy"]:
                 dd.append(item)
@@ -118,8 +114,8 @@ def filter_proteins(
 
     Parameters
     ----------
-    data : list of dict of str, any
-        A list of pyXLMS crosslinks or crosslink-spectrum-matches.
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
+        A list of pyXLMS crosslink-spectrum-matches or crosslinks.
     proteins : set of str, or list of str
         A set of protein accessions of interest.
 
@@ -176,17 +172,11 @@ def filter_proteins(
     """
     _ok = check_input(data, "data", list)
     _ok = check_input_multi(proteins, "proteins", [set, list], str)
+    data = assert_csms_or_xls(data)
     proteins = set(proteins)
     intra = list()
     inter = list()
     for item in data:
-        if item["data_type"] not in [
-            "crosslink",
-            "crosslink-spectrum-match",
-        ]:
-            raise TypeError(
-                "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
-            )
         if item["alpha_proteins"] is not None and item["beta_proteins"] is not None:
             a = set(item["alpha_proteins"])
             b = set(item["beta_proteins"])
@@ -213,12 +203,12 @@ def filter_protein_distribution(
 
     Parameters
     ----------
-    data : list of dict of str, any
-        A list of pyXLMS crosslinks or crosslink-spectrum-matches.
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
+        A list of pyXLMS crosslink-spectrum-matches or crosslinks.
 
     Returns
     -------
-    dict of str, list of dict of str, any
+    dict
         Returns a dictionary that maps proteins accessions (keys) to a list of crosslinks or
         crosslink-spectrum-matches (values) that are associated with that protein.
 
@@ -249,15 +239,9 @@ def filter_protein_distribution(
     728
     """
     _ok = check_input(data, "data", list)
+    data = assert_csms_or_xls(data)
     proteins = dict()
     for item in data:
-        if item["data_type"] not in [
-            "crosslink",
-            "crosslink-spectrum-match",
-        ]:
-            raise TypeError(
-                "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
-            )
         if item["alpha_proteins"] is not None and item["beta_proteins"] is not None:
             current_proteins = set(item["alpha_proteins"]).union(
                 set(item["beta_proteins"])
@@ -280,12 +264,12 @@ def filter_crosslink_type(
 
     Parameters
     ----------
-    data : list of dict of str, any
-        A list of pyXLMS crosslinks or crosslink-spectrum-matches.
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
+        A list of pyXLMS crosslink-spectrum-matches or crosslinks.
 
     Returns
     -------
-    dict of str, list of dict
+    dict
         Returns a dictionary with key ``Intra`` which contains all crosslinks or crosslink-spectrum-
         matches with crosslink type = "intra", and key ``Inter`` which contains all crosslinks or
         crosslink-spectrum-matches with crosslink type = "inter".
@@ -326,16 +310,10 @@ def filter_crosslink_type(
     21
     """
     _ok = check_input(data, "data", list)
+    data = assert_csms_or_xls(data)
     intra = list()
     inter = list()
     for item in data:
-        if item["data_type"] not in [
-            "crosslink",
-            "crosslink-spectrum-match",
-        ]:
-            raise TypeError(
-                "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
-            )
         if item["crosslink_type"] == "intra":
             intra.append(item)
         else:
@@ -355,14 +333,14 @@ def filter_peptide_pair_distribution(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch
         A list of pyXLMS crosslink-spectrum-matches.
     prefix_decoys : bool, default = True
         Whether decoy peptides should be prefixed with a "DECOY\_" string.
 
     Returns
     -------
-    dict of str, list of dict
+    dict of str, list of CrosslinkSpectrumMatch
         Returns a dictionary that maps peptide pairs denoted as their amino acid sequences plus their
         crosslink positions delimited by a hyphen to their associated crosslink-spectrum-matches.
 
@@ -391,12 +369,9 @@ def filter_peptide_pair_distribution(
     21
     """
     _ok = check_input(data, "data", list)
+    data = assert_csms(data)
     peptide_pairs = dict()
     for item in data:
-        if item["data_type"] != "crosslink-spectrum-match":
-            raise TypeError(
-                "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
-            )
         peptide_pair = (
             f"{'DECOY_' if prefix_decoys and item['alpha_decoy'] else ''}{item['alpha_peptide']}:{item['alpha_peptide_crosslink_position']}-"
             f"{'DECOY_' if prefix_decoys and item['beta_decoy'] else ''}{item['beta_peptide']}:{item['beta_peptide_crosslink_position']}"
@@ -423,14 +398,14 @@ def filter_residue_pair_distribution(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch
         A list of pyXLMS crosslink-spectrum-matches.
     prefix_decoys : bool, default = True
         Whether decoy residues/proteins should be prefixed with a "DECOY\_" string.
 
     Returns
     -------
-    dict of str, list of dict
+    dict of str, list of CrosslinkSpectrumMatch
         Returns a dictionary that maps protein residue pairs denoted as their protein accessions plus their protein
         crosslink positions delimited by a hyphen to their associated crosslink-spectrum-matches. If a peptide matches
         to more than one protein, the residues are delimited by commas.
@@ -462,22 +437,18 @@ def filter_residue_pair_distribution(
     22
     """
     _ok = check_input(data, "data", list)
-    available_keys = get_available_keys(data)
-    if (
-        not available_keys["alpha_proteins"]
-        or not available_keys["beta_proteins"]
-        or not available_keys["alpha_proteins_crosslink_positions"]
-        or not available_keys["beta_proteins_crosslink_positions"]
-    ):
-        raise RuntimeError(
-            "Can't filter by residue pair because not all necessary information is available!"
-        )
+    data = assert_csms(data)
+    _ok = check_available_keys(
+        [
+            "alpha_proteins",
+            "beta_proteins",
+            "alpha_proteins_crosslink_positions",
+            "beta_proteins_crosslink_positions",
+        ],
+        data,
+    )
     residue_pairs = dict()
     for item in data:
-        if item["data_type"] != "crosslink-spectrum-match":
-            raise TypeError(
-                "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
-            )
         alpha_residue = "DECOY_" if prefix_decoys and item["alpha_decoy"] else ""
         alpha_residue += ",".join(
             sorted(
