@@ -29,9 +29,43 @@ def to_json(
     data: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult,
     output_file: Optional[str | BinaryIO] = None,
     ensure_ascii: bool = False,
-    indent: int = 4,
+    indent: Optional[int | str] = 4,
+    **kwargs,
 ) -> str:
-    r"""
+    r"""Serialize pyXLMS objects to JSON.
+
+    Serializes a list of crosslink-spectrum-matches, a list of crosslinks, or a parser_result
+    to JSON.
+
+    Parameters
+    ----------
+    data : list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
+        The list of crosslink-spectrum-matches, list of crosslinks, or parser_result to be
+        serialized to JSON.
+    output_file : str, file stream, or None, default = None
+        If given the JSON string will be written to the specified file. Defaults to ``None``
+        which does not writte anything to file.
+    ensure_ascii : bool, default = False
+        If ``True``, the output is guaranteed to have all incoming non-ASCII and non-printable characters
+        escaped. If ``False`` (the default), all characters will be outputted as-is, except for the characters
+        that must be escaped: quotation mark, reverse solidus, and the control characters ``U+0000`` through ``U+001F``.
+    indent : int, str, or None, default = 4
+        If a positive integer or string, JSON array elements and object members will be pretty-printed with that indent level.
+        A positive integer indents that many spaces per level; a string (such as ``"\t"``) is used to indent each level. If zero,
+        negative, or ``""`` (the empty string), only newlines are inserted. If ``None``, no newlines are inserted.
+    **kwargs
+        Any additional parameters will be passed to ``json.dump()`` and ``json.dumps()``.
+
+    Returns
+    -------
+    str
+        The JSON string representation of the input data.
+
+    Notes
+    -----
+    To serialize individual CrosslinkSpectrumMatch or Crosslink objects please use
+    `model_dump_json <https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel.model_dump_json>`_.
+
     Examples
     --------
     >>> from pyXLMS.parser import read
@@ -76,16 +110,54 @@ def to_json(
     if output_file is not None:
         if isinstance(output_file, str):
             with open(output_file, "w", encoding="utf-8") as f:
-                json.dump(json_data, f, ensure_ascii=ensure_ascii, indent=indent)
+                json.dump(
+                    json_data, f, ensure_ascii=ensure_ascii, indent=indent, **kwargs
+                )
         else:
-            json.dump(json_data, output_file, ensure_ascii=ensure_ascii, indent=indent)  # ty: ignore[invalid-argument-type]
-    return json.dumps(json_data, ensure_ascii=ensure_ascii, indent=indent)
+            json.dump(
+                json_data,
+                output_file,  # ty: ignore[invalid-argument-type]
+                ensure_ascii=ensure_ascii,
+                indent=indent,
+                **kwargs,
+            )
+    return json.dumps(json_data, ensure_ascii=ensure_ascii, indent=indent, **kwargs)
 
 
 def from_json(
     json_input: str | BinaryIO,
+    **kwargs,
 ) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
-    r"""
+    r"""Deserialize JSON to pyXLMS objects.
+
+    Deserializes JSON to a list of crosslink-spectrum-matches, a list of crosslinks,
+    or a parser_result.
+
+    Parameters
+    ----------
+    json_input : str, or file stream
+        The JSON data to be deserialized to pyXLMS objects. Can be a JSON string, a file
+        path, or an open file stream. If a string is provided the function checks if a file
+        with that name exists and reads from the file if it exists and otherwise treats the
+        string as a JSON object.
+    **kwargs
+        Any additional parameters will be passed to ``json.load()`` and ``json.loads()``.
+
+    Returns
+    -------
+    list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
+        The parsed pyXLMS object.
+
+    Raises
+    ------
+    ValueError
+        If the JSON data could not be parsed into (a) valid pyXLMS object(s).
+
+    Notes
+    -----
+    To deserialize individual CrosslinkSpectrumMatch or Crosslink objects please use
+    `model_validate_json <https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel.model_validate_json>`_.
+
     Examples
     --------
     >>> from pyXLMS.parser import read
@@ -122,14 +194,14 @@ def from_json(
     if isinstance(json_input, str):
         if os.path.isfile(json_input):
             with open(json_input, "r", encoding="utf-8") as f:
-                json_data = json.load(f)
+                json_data = json.load(f, **kwargs)
         else:
-            json_data = json.loads(json_input)
+            json_data = json.loads(json_input, **kwargs)
     else:
         json_input.seek(0)
-        json_data = json.load(json_input)
+        json_data = json.load(json_input, **kwargs)
     if json_data is None:
-        raise ValueError()
+        raise ValueError("Could not parse JSON data into a valid pyXLMS object!")
     if isinstance(json_data, list):
         maybe_csms_or_xls = list()
         for item in json_data:
@@ -141,7 +213,9 @@ def from_json(
             except ValidationError as _e:
                 maybe_csm_or_xl = Crosslink.model_validate(item, strict=False)
             if maybe_csm_or_xl is None:
-                raise ValueError()
+                raise ValueError(
+                    "Could not parse JSON data into a valid pyXLMS object!"
+                )
             maybe_csms_or_xls.append(maybe_csm_or_xl)
         return assert_csms_or_xls(maybe_csms_or_xls)
     return ParserResult.model_validate(json_data, strict=False)
