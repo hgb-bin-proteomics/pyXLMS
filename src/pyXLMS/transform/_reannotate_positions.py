@@ -317,15 +317,17 @@ def reannotate_positions(
                 "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
             )
         return reannoted
-    new_csms = assert_csms(
-        reannotate_positions(
-            data["crosslink-spectrum-matches"], fasta, title_to_accession
+    new_csms = (
+        assert_csms(
+            reannotate_positions(
+                data["crosslink-spectrum-matches"], fasta, title_to_accession
+            )
         )
         if data["crosslink-spectrum-matches"] is not None
         else None
     )
-    new_xls = assert_xls(
-        reannotate_positions(data["crosslinks"], fasta, title_to_accession)
+    new_xls = (
+        assert_xls(reannotate_positions(data["crosslinks"], fasta, title_to_accession))
         if data["crosslinks"] is not None
         else None
     )
