@@ -15,6 +15,9 @@ from ._aggregate import __score_better
 from ._aggregate import __get_xl_key
 from ._aggregate import unique
 from ._util import get_available_keys
+from ._util import assert_csms
+from ._util import assert_xls
+from ._util import assert_csms_or_xls
 
 from typing import Dict
 from typing import List
@@ -32,7 +35,7 @@ def __get_csm_key(csm: CrosslinkSpectrumMatch) -> str:
 
     Parameters
     ----------
-    csm : dict of str, any
+    csm : CrosslinkSpectrumMatch
         A pyXLMS crosslink-spectrum-match object.
 
     Returns
@@ -56,7 +59,7 @@ def intersection(
     by: Literal["peptide", "protein"] = "peptide",
     score: Literal["higher_better", "lower_better"] = "higher_better",
     verbose: Literal[0, 1, 2] = 1,
-) -> List[Dict[str, Any]]:
+) -> List[Crosslink] | List[CrosslinkSpectrumMatch]:
     r"""Get the intersection of two lists of crosslinks.
 
     Returns the intersection of two lists of crosslinks (or crosslink-spectrum-matches). Crosslink intersection is calculated
@@ -68,9 +71,9 @@ def intersection(
 
     Parameters
     ----------
-    data_a : list of dict of str, any
+    data_a : list of Crosslink, or list of CrosslinkSpectrumMatch
         List of crosslinks (or crosslink-spectrum-matches).
-    data_b : list of dict of str, any
+    data_b : list of Crosslink, or list of CrosslinkSpectrumMatch
         List of crosslinks (or crosslink-spectrum-matches) to intersect with. Note that the data types for ``data_a`` and
         ``data_b`` have to be the same.
     use : str, one of "better_score", "data_a", or "data_b", default = "better_score"
@@ -93,7 +96,7 @@ def intersection(
 
     Returns
     -------
-    list of dict of str, any
+    list of Crosslink, or list of CrosslinkSpectrumMatch
         The list of crosslinks or crosslink-spectrum-matches in the intersection.
 
     Raises
@@ -213,16 +216,9 @@ def intersection(
         raise TypeError("Verbose level has to be one of 0, 1, or 2!")
     if len(data_a) == 0 or len(data_b) == 0:
         return []
-    if data_a[0]["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ] or data_b[0]["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ]:
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
-        )
+    data_a = assert_csms_or_xls(data_a)
+    data_b = assert_csms_or_xls(data_b)
+    # this is some legacy input check, which is probably still the best way
     if data_a[0]["data_type"] != data_b[0]["data_type"]:
         raise TypeError(
             "Parameters 'data_a' and 'data_b' have to be of the same data type!"
@@ -242,13 +238,15 @@ def intersection(
             "Something went wrong while getting unique data.\n"
             f"Expected data type: list. Got: {type(unique_a)} and {type(unique_b)}."
         )
-    if unique_a[0]["data_type"] == "crosslink":
+    if isinstance(unique_a[0], Crosslink):
+        unique_a = assert_xls(unique_a)
+        unique_b = assert_xls(unique_b)
         crosslinks_a = dict()
         for xl in unique_a:
-            crosslinks_a[__get_xl_key(xl, by=by)] = xl  # ty: ignore[invalid-argument-type]
+            crosslinks_a[__get_xl_key(xl, by=by)] = xl
         crosslinks_b = dict()
         for xl in unique_b:
-            crosslinks_b[__get_xl_key(xl, by=by)] = xl  # ty: ignore[invalid-argument-type]
+            crosslinks_b[__get_xl_key(xl, by=by)] = xl
         keys_intersection = set(crosslinks_a.keys()).intersection(
             set(crosslinks_b.keys())
         )
@@ -278,12 +276,14 @@ def intersection(
         raise RuntimeError(
             "Can't create intersection of crosslink-spectrum-matches for verbose level 2!"
         )
+    unique_a = assert_csms(unique_a)
+    unique_b = assert_csms(unique_b)
     csms_a = dict()
     for csm in unique_a:
-        csms_a[__get_csm_key(csm)] = csm  # ty: ignore[invalid-argument-type]
+        csms_a[__get_csm_key(csm)] = csm
     csms_b = dict()
     for csm in unique_b:
-        csms_b[__get_csm_key(csm)] = csm  # ty: ignore[invalid-argument-type]
+        csms_b[__get_csm_key(csm)] = csm
     keys_intersection = set(csms_a.keys()).intersection(set(csms_b.keys()))
     csms_intersection = list()
     for key in sorted(list(keys_intersection)):
