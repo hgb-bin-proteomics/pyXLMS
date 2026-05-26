@@ -44,7 +44,7 @@ def to_json(
         serialized to JSON.
     output_file : str, file stream, or None, default = None
         If given the JSON string will be written to the specified file. Defaults to ``None``
-        which does not writte anything to file.
+        which does not write anything to file.
     ensure_ascii : bool, default = False
         If ``True``, the output is guaranteed to have all incoming non-ASCII and non-printable characters
         escaped. If ``False`` (the default), all characters will be outputted as-is, except for the characters
