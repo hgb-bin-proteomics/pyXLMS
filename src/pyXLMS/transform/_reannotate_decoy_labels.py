@@ -468,28 +468,32 @@ def reannotate_decoy_labels(
             "No decoy label reannotation parameter provided - no decoy label reannotation has been performed!"
         )
         return data
-    new_csms = assert_csms(
-        reannotate_decoy_labels(
-            data["crosslink-spectrum-matches"],
-            by_mapping=by_mapping,
-            by_decoy_protein_prefix=by_decoy_protein_prefix,
-            by_decoy_protein_substring=by_decoy_protein_substring,
-            by_target_fasta=by_target_fasta,
-            by_decoy_fasta=by_decoy_fasta,
-            by_function=by_function,
+    new_csms = (
+        assert_csms(
+            reannotate_decoy_labels(
+                data["crosslink-spectrum-matches"],
+                by_mapping=by_mapping,
+                by_decoy_protein_prefix=by_decoy_protein_prefix,
+                by_decoy_protein_substring=by_decoy_protein_substring,
+                by_target_fasta=by_target_fasta,
+                by_decoy_fasta=by_decoy_fasta,
+                by_function=by_function,
+            )
         )
         if data["crosslink-spectrum-matches"] is not None
         else None
     )
-    new_xls = assert_xls(
-        reannotate_decoy_labels(
-            data["crosslinks"],
-            by_mapping=by_mapping,
-            by_decoy_protein_prefix=by_decoy_protein_prefix,
-            by_decoy_protein_substring=by_decoy_protein_substring,
-            by_target_fasta=by_target_fasta,
-            by_decoy_fasta=by_decoy_fasta,
-            by_function=by_function,
+    new_xls = (
+        assert_xls(
+            reannotate_decoy_labels(
+                data["crosslinks"],
+                by_mapping=by_mapping,
+                by_decoy_protein_prefix=by_decoy_protein_prefix,
+                by_decoy_protein_substring=by_decoy_protein_substring,
+                by_target_fasta=by_target_fasta,
+                by_decoy_fasta=by_decoy_fasta,
+                by_function=by_function,
+            )
         )
         if data["crosslinks"] is not None
         else None
