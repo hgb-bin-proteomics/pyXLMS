@@ -510,31 +510,35 @@ def validate(
             )
         return __validate_strict(csms_or_xls, fdr, score)
     new_csms = (
-        validate(
-            data["crosslink-spectrum-matches"],
-            fdr,
-            formula,
-            score,
-            separate_intra_inter,
-            ignore_missing_labels,
+        assert_csms(
+            validate(
+                data["crosslink-spectrum-matches"],
+                fdr,
+                formula,
+                score,
+                separate_intra_inter,
+                ignore_missing_labels,
+            )
         )
         if data["crosslink-spectrum-matches"] is not None
         else None
     )
     new_xls = (
-        validate(
-            data["crosslinks"],
-            fdr,
-            formula,
-            score,
-            separate_intra_inter,
-            ignore_missing_labels,
+        assert_xls(
+            validate(
+                data["crosslinks"],
+                fdr,
+                formula,
+                score,
+                separate_intra_inter,
+                ignore_missing_labels,
+            )
         )
         if data["crosslinks"] is not None
         else None
     )
     return create_parser_result(
         search_engine=data["search_engine"],
-        csms=assert_csms(new_csms),
-        crosslinks=assert_xls(new_xls),
+        csms=new_csms,
+        crosslinks=new_xls,
     )
