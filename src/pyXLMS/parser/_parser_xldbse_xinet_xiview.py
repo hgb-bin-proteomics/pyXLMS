@@ -59,7 +59,7 @@ def read_xinet(
 
     Returns
     -------
-    dict
+    ParserResult
         The ``parser_result`` object containing all parsed information.
 
     Raises
@@ -369,7 +369,7 @@ def read_xiview(
 
     Returns
     -------
-    dict
+    ParserResult
         The ``parser_result`` object containing all parsed information.
 
     Raises
