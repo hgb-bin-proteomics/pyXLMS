@@ -16,7 +16,7 @@ from ..data._util import check_input
 from ._to_proxl_util import __local_schema
 from ._util import __get_filename
 from ._to_alphalink2 import __protein_supported_by_crosslink
-from ..transform._util import get_available_keys
+from ..transform._util import check_available_keys
 from ..transform._util import modifications_to_str as mts
 from ..constants import MODIFICATIONS
 
@@ -111,7 +111,7 @@ def __get_reported_peptide_string(csm: CrosslinkSpectrumMatch) -> str:
 
     Parameters
     ----------
-    csm : dict of str, any
+    csm : CrosslinkSpectrumMatch
         A crosslink-spectrum-match.
 
     Returns
@@ -136,12 +136,12 @@ def __get_reported_peptides(
 
     Parameters
     ----------
-    csms : list of dict of str, any
+    csms : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches.
 
     Returns
     -------
-    dict of str, list of dict of str, any
+    dict of str, list of CrosslinkSpectrumMatch
         A dictionary that maps unique 'reported_peptide_string' keys to lists of associated
         crosslink-spectrum-matches as values.
 
@@ -166,7 +166,7 @@ def __build_psm(
 
     Parameters
     ----------
-    csms : dict of str, any
+    csms : CrosslinkSpectrumMatch
         A crosslink-spectrum-match.
     crosslinker_mass : float
         Monoisotopic delta mass of the crosslink modification.
@@ -202,7 +202,7 @@ def __build_modifications(csm: CrosslinkSpectrumMatch) -> Tuple[List[str], List[
 
     Parameters
     ----------
-    csm : dict of str, any
+    csm : CrosslinkSpectrumMatch
         A crosslink-spectrum-match.
 
     Returns
@@ -257,7 +257,7 @@ def __build_reported_peptides(
 
     Parameters
     ----------
-    reported_peptides : dict of str, list of dict of str, any
+    reported_peptides : dict of str, list of CrosslinkSpectrumMatch
         A dictionary that maps unique 'reported_peptide_string' keys to lists of associated
         crosslink-spectrum-matches as values.
     crosslinker_mass : float
@@ -317,7 +317,7 @@ def __build_matched_proteins(
 
     Parameters
     ----------
-    csms : list of dict of str, any
+    csms : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches.
     fasta_filename : str
         The name/path of the fasta file for reading protein sequences.
@@ -405,7 +405,7 @@ def to_proxl(
 
     Parameters
     ----------
-    csms : list of dict of str, any
+    csms : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches.
     fasta_filename : str
         The name/path of the fasta file for reading protein sequences.
@@ -477,7 +477,7 @@ def to_proxl(
     ...     filename="DSS_Cas9_ProXL.xml",
     ... )
     """
-    _ok = check_input(csms, "csms", list)
+    _ok = check_input(csms, "csms", list, CrosslinkSpectrumMatch)
     _ok = check_input(fasta_filename, "fasta_filename", str)
     _ok = check_input(search_engine, "search_engine", str)
     _ok = check_input(search_engine_version, "search_engine_version", str)
@@ -519,15 +519,7 @@ def to_proxl(
             crosslinker_mass = modifications[crosslinker]
     if len(csms) == 0:
         raise ValueError("Provided crosslink-spectrum-matches contain no elements!")
-    if csms[0]["data_type"] != "crosslink-spectrum-match":
-        raise TypeError(
-            "Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!"
-        )
-    available_keys = get_available_keys(csms)
-    if not available_keys["score"] or not available_keys["charge"]:
-        raise RuntimeError(
-            "Can't export to ProXL because not all necessary information is available!"
-        )
+    _ok = check_available_keys(["score", "charge"], csms)
     fasta_name = (
         os.path.basename(fasta_filename)
         if fasta_filename_override is None
