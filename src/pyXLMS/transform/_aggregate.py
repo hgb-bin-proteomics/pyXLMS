@@ -14,10 +14,12 @@ from ..data._util import check_input_multi
 from ..data._csm import create_crosslink_from_csm
 from ..data._parser_result import create_parser_result
 from ._util import get_available_keys
+from ._util import check_available_keys
+from ._util import assert_csms
+from ._util import assert_xls
+from ._util import assert_csms_or_xls
 
-from typing import Dict
 from typing import List
-from typing import Any
 
 # legacy
 try:
@@ -57,7 +59,7 @@ def __get_csm_key(csm: CrosslinkSpectrumMatch) -> str:
 
     Parameters
     ----------
-    csm : dict of str, any
+    csm : CrosslinkSpectrumMatch
         A pyXLMS crosslink-spectrum-match object.
 
     Returns
@@ -68,13 +70,16 @@ def __get_csm_key(csm: CrosslinkSpectrumMatch) -> str:
     return f"{csm['spectrum_file']}_{csm['scan_nr']}"
 
 
-def __get_xl_key(xl: Crosslink, by: Literal["peptide", "protein"]) -> str:
+def __get_xl_key(
+    xl: Crosslink | CrosslinkSpectrumMatch, by: Literal["peptide", "protein"]
+) -> str:
     r"""Get the unique key for a crosslink.
 
     Parameters
     ----------
-    xl : dict of str, any
+    xl : Crosslink, or CrosslinkSpectrumMatch
         A pyXLMS crosslink object.
+        Technically, a crosslink-spectrum-match is also allowed for type support in some functions.
     by : str, one of "peptide" or "protein"
         If peptide or protein crosslink position should be used for determining if a crosslink is unique.
 
@@ -92,6 +97,15 @@ def __get_xl_key(xl: Crosslink, by: Literal["peptide", "protein"]) -> str:
             f"{xl['alpha_peptide']}_{xl['alpha_peptide_crosslink_position']}_{xl['alpha_decoy']}-"
             f"{xl['beta_peptide']}_{xl['beta_peptide_crosslink_position']}_{xl['beta_decoy']}"
         )
+    _ok = check_available_keys(
+        [
+            "alpha_proteins",
+            "alpha_proteins_crosslink_positions",
+            "beta_proteins",
+            "beta_proteins_crosslink_positions",
+        ],
+        assert_csms_or_xls([xl]),
+    )
     prot_pos_a = (
         "-".join(
             sorted(
@@ -121,7 +135,7 @@ def __unique_csms(
     csms: List[CrosslinkSpectrumMatch],
     has_scores: bool,
     score: Literal["higher_better", "lower_better"],
-) -> List[Dict[str, Any]]:
+) -> List[CrosslinkSpectrumMatch]:
     r"""Filter for unique crosslink-spectrum-matches from a list on non-unique crosslink-spectrum-matches.
 
     Filters for unique crosslink-spectrum-matches from a list on non-unique crosslink-spectrum-matches. A crosslink-
@@ -132,7 +146,7 @@ def __unique_csms(
 
     Parameters
     ----------
-    csms : list of dict of str, any
+    csms : list of CrosslinkSpectrumMatch
         A list of pyXLMS crosslink-spectrum-match objects.
     has_scores : bool
         If the crosslink-spectrum-match objects contain scores.
@@ -141,7 +155,7 @@ def __unique_csms(
 
     Returns
     -------
-    list of dict of str, any
+    list of CrosslinkSpectrumMatch
         List of unique crosslink-spectrum-matches.
 
     Notes
@@ -168,7 +182,7 @@ def __unique_xls(
     by: Literal["peptide", "protein"],
     has_scores: bool,
     score: Literal["higher_better", "lower_better"],
-) -> List[Dict[str, Any]]:
+) -> List[Crosslink]:
     r"""Filter for unique crosslinks from a list on non-unique crosslinks.
 
     Filters for unique crosslinks from a list on non-unique crosslinks. A crosslink is considered unique if there is no
@@ -179,7 +193,7 @@ def __unique_xls(
 
     Parameters
     ----------
-    xls : list of dict of str, any
+    xls : list of Crosslink
         A list of pyXLMS crosslink objects.
     by : str, one of "peptide" or "protein"
         If peptide or protein crosslink position should be used for determining if a crosslink is unique.
@@ -190,7 +204,7 @@ def __unique_xls(
 
     Returns
     -------
-    list of dict of str, any
+    list of Crosslink
         List of unique crosslinks.
 
     Notes
@@ -235,7 +249,7 @@ def unique(
 
     Parameters
     ----------
-    data : dict of str, any, or list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         A list of crosslink-spectrum-matches or crosslinks to filter, or a parser_result.
     by : str, one of "peptide" or "protein", default = "peptide"
         If peptide or protein crosslink position should be used for determining if a crosslink is unique.
@@ -248,7 +262,7 @@ def unique(
 
     Returns
     -------
-    list of dict of str, any, or dict of str, any
+    list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         If a list of crosslink-spectrum-matches or crosslinks was provided, a list of unique
         crosslink-spectrum-matches or crosslinks is returned. If a parser_result was provided,
         a parser_result with unique crosslink-spectrum-matches and/or unique crosslinks will
@@ -315,51 +329,41 @@ def unique(
             "-matches are found, the one with the higher score is kept if 'higher_better' is selected, and vice versa."
         )
     if isinstance(data, list):
-        _ok = check_input(data, "data", list)
         if len(data) == 0:
             return data
-        if data[0]["data_type"] not in [
-            "crosslink",
-            "crosslink-spectrum-match",
-        ]:
-            raise TypeError(
-                "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match, "
-                "or a parser_result!"
-            )
+        data = assert_csms_or_xls(data)
         available_keys = get_available_keys(data)
-        unique_items = list()
-        if data[0]["data_type"] == "crosslink" and by == "protein":
-            if (
-                available_keys["alpha_proteins"]
-                and available_keys["alpha_proteins_crosslink_positions"]
-                and available_keys["beta_proteins"]
-                and available_keys["beta_proteins_crosslink_positions"]
-            ):
-                unique_items += __unique_xls(data, by, available_keys["score"], score)  # ty: ignore[invalid-argument-type]
-            else:
-                raise ValueError(
-                    "Grouping by protein crosslink position is only available if all crosslinks have defined protein crosslink positions!\n"
-                    "This error might be fixable with 'transform.reannotate_positions()'!"
-                )
-        elif data[0]["data_type"] == "crosslink":
-            unique_items += __unique_xls(data, by, available_keys["score"], score)  # ty: ignore[invalid-argument-type]
-        else:
-            unique_items += __unique_csms(data, available_keys["score"], score)  # ty: ignore[invalid-argument-type]
-        return unique_items
+        # crosslink and by protein
+        if isinstance(data[0], Crosslink) and by == "protein":
+            _ok = check_available_keys(
+                [
+                    "alpha_proteins",
+                    "alpha_proteins_crosslink_positions",
+                    "beta_proteins",
+                    "beta_proteins_crosslink_positions",
+                ],
+                data,
+            )
+            return __unique_xls(assert_xls(data), by, available_keys["score"], score)
+        # crosslink but not by protein
+        if isinstance(data[0], Crosslink):
+            return __unique_xls(assert_xls(data), by, available_keys["score"], score)
+        # csm
+        return __unique_csms(assert_csms(data), available_keys["score"], score)
     new_csms = (
-        unique(data["crosslink-spectrum-matches"], by, score)
+        assert_csms(unique(data["crosslink-spectrum-matches"], by, score))
         if data["crosslink-spectrum-matches"] is not None
         else None
     )
     new_xls = (
-        unique(data["crosslinks"], by, score)
+        assert_xls(unique(data["crosslinks"], by, score))
         if data["crosslinks"] is not None
         else None
     )
     return create_parser_result(
         search_engine=data["search_engine"],
-        csms=new_csms,  # ty: ignore[invalid-argument-type]
-        crosslinks=new_xls,  # ty: ignore[invalid-argument-type]
+        csms=new_csms,
+        crosslinks=new_xls,
     )
 
 
@@ -379,7 +383,7 @@ def aggregate(
 
     Parameters
     ----------
-    csms : list of dict of str, any
+    csms : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches.
     by : str, one of "peptide" or "protein", default = "peptide"
         If peptide or protein crosslink position should be used for determining if a crosslink is unique.
@@ -392,7 +396,7 @@ def aggregate(
 
     Returns
     -------
-    list of dict of str, any
+    list of Crosslink
         A list of aggregated, unique crosslinks.
 
     Warnings
@@ -446,31 +450,16 @@ def aggregate(
             "-matches are found, the one with the higher score is kept if 'higher_better' is selected, and vice versa."
         )
     if len(csms) == 0:
-        return csms  # ty: ignore[invalid-return-type]
-    if csms[0]["data_type"] != "crosslink-spectrum-match":
-        raise TypeError(
-            "Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!"
-        )
-    available_keys = get_available_keys(csms)
+        return []
     if by == "protein":
-        if (
-            available_keys["alpha_proteins"]
-            and available_keys["alpha_proteins_crosslink_positions"]
-            and available_keys["beta_proteins"]
-            and available_keys["beta_proteins_crosslink_positions"]
-        ):
-            # all fine
-            pass
-        else:
-            raise ValueError(
-                "Grouping by protein crosslink position is only available if all crosslink-spectrum-matches have defined protein "
-                "crosslink positions!\nThis error might be fixable with 'transform.reannotate_positions()'!"
-            )
-    xls = [create_crosslink_from_csm(csm) for csm in csms]
-    aggregated = unique(xls, by, score)
-    if not isinstance(aggregated, list):
-        raise RuntimeError(
-            "Something went wrong while aggregating crosslinks.\n"
-            f"Expected data type: list. Got: {type(aggregated)}."
+        _ok = check_available_keys(
+            [
+                "alpha_proteins",
+                "alpha_proteins_crosslink_positions",
+                "beta_proteins",
+                "beta_proteins_crosslink_positions",
+            ],
+            csms,
         )
-    return aggregated  # ty: ignore[invalid-return-type]
+    xls = [create_crosslink_from_csm(csm) for csm in csms]
+    return assert_xls(unique(xls, by, score))
