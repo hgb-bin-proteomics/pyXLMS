@@ -220,7 +220,7 @@ def __read_scout_csms_unfiltered(
 
     Returns
     -------
-    list of dict
+    list of CrosslinkSpectrumMatch
         The read crosslink-spectrum-matches.
 
     Notes
@@ -333,7 +333,7 @@ def __read_scout_csms_filtered(
 
     Returns
     -------
-    list of dict
+    list of CrosslinkSpectrumMatch
         The read crosslink-spectrum-matches.
 
     Raises
@@ -533,7 +533,7 @@ def __read_scout_crosslinks(data: pd.DataFrame) -> List[Crosslink]:
 
     Returns
     -------
-    list of dict
+    list of Crosslink
         The read crosslinks.
 
     Notes
@@ -619,7 +619,7 @@ def read_scout(
 
     Returns
     -------
-    dict
+    ParserResult
         The ``parser_result`` object containing all parsed information.
 
     Raises
