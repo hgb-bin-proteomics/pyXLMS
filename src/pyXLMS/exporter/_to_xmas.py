@@ -10,7 +10,6 @@ import pandas as pd
 
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
-from ..transform._util import assert_xls
 from ._util import __get_filename
 from ._to_msannika import get_msannika_crosslink_sequence
 
@@ -119,9 +118,8 @@ def to_xmas(
     0  [K]PEPTIDE  P[K]EPTIDE
     1  PE[K]PTIDE  PEP[K]TIDE
     """
-    _ok = check_input(crosslinks, "crosslinks", list)
+    _ok = check_input(crosslinks, "crosslinks", list, Crosslink)
     _ok = check_input(filename, "filename", str) if filename is not None else True
     if len(crosslinks) == 0:
         raise ValueError("Provided crosslinks contain no elements!")
-    crosslinks = assert_xls(crosslinks)
     return __xls_to_xmas(crosslinks, filename)
