@@ -176,7 +176,7 @@ def read_custom(
 
     Returns
     -------
-    dict
+    ParserResult
         The ``parser_result`` object containing all parsed information.
 
     Raises
