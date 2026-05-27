@@ -151,6 +151,8 @@ def assert_csms_or_xls(
         of Crosslink.
     """
     if isinstance(maybe_csms_or_xls, list):
+        if len(maybe_csms_or_xls) == 0:
+            return []
         if all(isinstance(item, CrosslinkSpectrumMatch) for item in maybe_csms_or_xls):
             return assert_csms(maybe_csms_or_xls)
         if all(isinstance(item, Crosslink) for item in maybe_csms_or_xls):
