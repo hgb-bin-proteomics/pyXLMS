@@ -10,7 +10,7 @@ import pandas as pd
 
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
-from ..transform._util import assert_data_type_same
+from ..transform._util import assert_xls
 from ._util import __get_filename
 from ._to_msannika import get_msannika_crosslink_sequence
 
@@ -26,7 +26,7 @@ def __xls_to_xmas(
 
     Parameters
     ----------
-    xls : list of dict of str, any
+    xls : list of Crosslink
         A list of crosslinks.
     filename : str, or None
         If not None, the data will be written to a file with the specified filename.
@@ -78,7 +78,7 @@ def to_xmas(
 
     Parameters
     ----------
-    crosslinks : list of dict of str, any
+    crosslinks : list of Crosslink
         A list of crosslinks.
     filename : str, or None
         If not None, the exported data will be written to a file with the specified filename.
@@ -123,10 +123,5 @@ def to_xmas(
     _ok = check_input(filename, "filename", str) if filename is not None else True
     if len(crosslinks) == 0:
         raise ValueError("Provided crosslinks contain no elements!")
-    if crosslinks[0]["data_type"] != "crosslink":
-        raise TypeError(
-            "Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!"
-        )
-    if not assert_data_type_same(crosslinks):
-        raise TypeError("Not all elements in data have the same data type!")
+    crosslinks = assert_xls(crosslinks)
     return __xls_to_xmas(crosslinks, filename)
