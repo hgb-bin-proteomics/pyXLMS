@@ -14,7 +14,7 @@ from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
 from ..data._util import check_input_multi
-from ..transform._util import assert_data_type_same
+from ..transform._util import assert_csms_or_xls
 from ..transform._filter import filter_target_decoy
 from ..transform._filter import filter_crosslink_type
 from ..transform._annotate_string_scores import annotate_string_scores
@@ -53,7 +53,7 @@ def plot_string_score_distribution(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks.
     organism : str, or int, or None, default = None
         Organism name (e.g. Homo sapiens) or taxon identifier (e.g. 9606).
@@ -162,14 +162,7 @@ def plot_string_score_distribution(
         raise ValueError(
             "Can't plot STRING score distribution if no crosslink-spectrum-matches or crosslinks are given!"
         )
-    if data[0]["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ]:
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
-        )
-    _ok = assert_data_type_same(data)
+    data = assert_csms_or_xls(data)
     inter = filter_crosslink_type(data)["Inter"]
     if len(inter) == 0:
         raise ValueError(
