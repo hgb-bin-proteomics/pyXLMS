@@ -81,7 +81,7 @@ def pipeline(
 
     Returns
     -------
-    dict of str, any
+    ParserResult
         The transformed parser_result after all pipeline steps are completed.
 
     Raises
@@ -230,9 +230,9 @@ def pipeline(
         print(":: transform.targets_only() ::")
         print(":: transform.targets_only() :: params :: no params")
     # steps: finalize
-    if not isinstance(pr, dict):
+    if not isinstance(pr, ParserResult):
         raise RuntimeError(
             "Something went wrong while running the pipeline.\n"
-            f"Expected data type: dict. Got: {type(pr)}."
+            f"Expected data type: ParserResult. Got: {type(pr)}."
         )
     return pr
