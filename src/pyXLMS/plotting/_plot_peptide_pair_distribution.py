@@ -34,7 +34,7 @@ def plot_peptide_pair_distribution(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches.
     top_n : int, default = 25
         Number of peptide pairs to plot. Peptide pairs are sorted by number of
@@ -71,7 +71,7 @@ def plot_peptide_pair_distribution(
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> fig, ax = plotting.plot_peptide_pair_distribution(csms)
     """
-    _ok = check_input(data, "data", list)
+    _ok = check_input(data, "data", list, CrosslinkSpectrumMatch)
     _ok = check_input(top_n, "top_n", int)
     _ok = check_input(color, "color", str)
     _ok = check_input(title, "title", str)
@@ -84,10 +84,6 @@ def plot_peptide_pair_distribution(
     if len(data) == 0:
         raise ValueError(
             "Can't plot peptide pair distribution if no crosslink-spectrum-matches are given!"
-        )
-    if data[0]["data_type"] != "crosslink-spectrum-match":
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
         )
     pps = filter_peptide_pair_distribution(data)
     pp_names = list()
