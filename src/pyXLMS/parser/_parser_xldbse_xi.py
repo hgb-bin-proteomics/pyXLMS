@@ -678,7 +678,7 @@ def __read_xisearch(
 
     Returns
     -------
-    list of dict
+    list of CrosslinkSpectrumMatch
         The read crosslink-spectrum-matches.
 
     Notes
@@ -918,7 +918,7 @@ def __read_xifdr_csms(
 
     Returns
     -------
-    list of dict
+    list of CrosslinkSpectrumMatch
         The read crosslink-spectrum-matches.
 
     Notes
@@ -1000,7 +1000,7 @@ def __read_xifdr_crosslinks(data: pd.DataFrame, decoy_prefix: str) -> List[Cross
 
     Returns
     -------
-    list of dict
+    list of Crosslink
         The read crosslinks.
 
     Notes
@@ -1098,7 +1098,7 @@ def read_xi(
 
     Returns
     -------
-    dict
+    ParserResult
         The ``parser_result`` object containing all parsed information.
 
     Raises
