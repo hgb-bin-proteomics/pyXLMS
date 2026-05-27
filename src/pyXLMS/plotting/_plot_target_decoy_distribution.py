@@ -12,7 +12,8 @@ from matplotlib.figure import Figure
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
-from ..transform._util import get_available_keys
+from ..transform._util import check_available_keys
+from ..transform._util import assert_csms_or_xls
 from ..transform._filter import filter_target_decoy
 
 from typing import Optional
@@ -35,7 +36,7 @@ def plot_target_decoy_distribution(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks.
     colors : list of str, default = ["#00a087", "#3c5488", "#e64b35"]
         Colors of the bars.
@@ -84,18 +85,8 @@ def plot_target_decoy_distribution(
         raise ValueError(
             "Can't plot target-decoy distribution if no crosslink-spectrum-matches or crosslinks are given!"
         )
-    if data[0]["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ]:
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
-        )
-    available_keys = get_available_keys(data)
-    if not available_keys["alpha_decoy"] or not available_keys["beta_decoy"]:
-        raise ValueError(
-            "Can't plot target-decoy distribution if target/decoy labels are missing!"
-        )
+    data = assert_csms_or_xls(data)
+    _ok = check_available_keys(["alpha_decoy", "beta_decoy"], data)
     ylabel = (
         "crosslink-spectrum-matches"
         if data[0]["data_type"] == "crosslink-spectrum-match"
