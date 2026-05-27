@@ -13,7 +13,8 @@ from matplotlib.figure import Figure
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
-from ..transform._util import get_available_keys
+from ..transform._util import check_available_keys
+from ..transform._util import assert_csms_or_xls
 from ..transform._filter import filter_protein_distribution
 from ..transform._filter import filter_crosslink_type
 
@@ -37,7 +38,7 @@ def plot_protein_distribution(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks.
     top_n : int, default = 25
         Number of proteins to plot. Proteins are sorted by number of crosslinks
@@ -94,18 +95,8 @@ def plot_protein_distribution(
         raise ValueError(
             "Can't plot protein distribution if no crosslink-spectrum-matches or crosslinks are given!"
         )
-    if data[0]["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ]:
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
-        )
-    available_keys = get_available_keys(data)
-    if not available_keys["alpha_proteins"] or not available_keys["beta_proteins"]:
-        raise ValueError(
-            "Can't plot protein distribution if attributes 'alpha_proteins' or 'beta_proteins' are missing!"
-        )
+    data = assert_csms_or_xls(data)
+    _ok = check_available_keys(["alpha_proteins", "beta_proteins"], data)
     ylabel = (
         "crosslink-spectrum-matches"
         if data[0]["data_type"] == "crosslink-spectrum-match"
