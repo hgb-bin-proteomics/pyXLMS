@@ -11,7 +11,7 @@ import pandas as pd
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._util import check_input
 from ..transform._filter import filter_target_decoy
-from ..transform._util import get_available_keys
+from ..transform._util import check_available_keys
 from ._util import __get_filename
 
 from typing import Optional
@@ -26,7 +26,7 @@ def __csms_to_xifdr(
 
     Parameters
     ----------
-    csms : list of dict of str, any
+    csms : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches.
     filename : str, or None
         If not None, the data will be written to a file with the specified filename.
@@ -111,7 +111,7 @@ def to_xifdr(
 
     Parameters
     ----------
-    csms : list of dict of str, any
+    csms : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches.
     filename : str, or None
         If not None, the exported data will be written to a file with the specified filename.
@@ -167,27 +167,25 @@ def to_xifdr(
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> df = to_xifdr(csms, filename=None)
     """
-    _ok = check_input(csms, "csms", list)
+    _ok = check_input(csms, "csms", list, CrosslinkSpectrumMatch)
     _ok = check_input(filename, "filename", str) if filename is not None else True
     if len(csms) == 0:
         raise ValueError("Provided crosslink-spectrum-matches contain no elements!")
-    if csms[0]["data_type"] != "crosslink-spectrum-match":
-        raise TypeError(
-            "Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!"
-        )
-    available_keys = get_available_keys(csms)
-    if (
-        not available_keys["alpha_proteins"]
-        or not available_keys["beta_proteins"]
-        or not available_keys["alpha_proteins_crosslink_positions"]
-        or not available_keys["beta_proteins_crosslink_positions"]
-        or not available_keys["alpha_decoy"]
-        or not available_keys["beta_decoy"]
-        or not available_keys["charge"]
-        or not available_keys["score"]
-        or len(filter_target_decoy(csms)["Target-Decoy"]) == 0
-    ):
+    _ok = check_available_keys(
+        [
+            "alpha_proteins",
+            "beta_proteins",
+            "alpha_proteins_crosslink_positions",
+            "beta_proteins_crosslink_positions",
+            "alpha_decoy",
+            "beta_decoy",
+            "charge",
+            "score",
+        ],
+        csms,
+    )
+    if len(filter_target_decoy(csms)["Target-Decoy"]) == 0:
         raise RuntimeError(
-            "Can't export to xiFDR because not all necessary information is available!"
+            "Can't export to xiFDR because number of target-decoy matches is zero!"
         )
     return __csms_to_xifdr(csms, filename)
