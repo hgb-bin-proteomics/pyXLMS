@@ -10,7 +10,9 @@ from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
 from ..data._csm import CrosslinkSpectrumMatch
+from ..data._crosslink import Crosslink
 from ..data._util import check_input
+from ..transform._util import assert_csms_or_xls
 from ..transform._filter import filter_crosslink_type
 
 from typing import Optional
@@ -26,7 +28,7 @@ except ImportError:
 
 
 def plot_crosslink_type_distribution(
-    data: List[CrosslinkSpectrumMatch] | List[CrosslinkSpectrumMatch],
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink],
     plot_type: Literal["bar", "pie"] = "bar",
     colors: List[str] = ["#6d4bff", "#ac99ff"],
     title: str = "Crosslink Type Distribution",
@@ -40,7 +42,7 @@ def plot_crosslink_type_distribution(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks.
     plot_type : str, one of "bar" or "pie", default = "bar"
         Plot type, whether to plot as a bar or pie chart.
@@ -98,13 +100,7 @@ def plot_crosslink_type_distribution(
         raise ValueError(
             "Can't plot crosslink type distribution if no crosslink-spectrum-matches or crosslinks are given!"
         )
-    if data[0]["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ]:
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
-        )
+    data = assert_csms_or_xls(data)
     axis_label = (
         "crosslink-spectrum-matches"
         if data[0]["data_type"] == "crosslink-spectrum-match"
