@@ -175,7 +175,9 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="A dictionary with additional information associated with the crosslink-spectrum-match.",
         ),
     ] = None
-    model_config = ConfigDict(validate_assignment=True, strict=True)
+    model_config = ConfigDict(
+        validate_assignment=True, strict=True, str_strip_whitespace=True
+    )
     r"""
     Configuration for the model.
     """

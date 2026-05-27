@@ -38,7 +38,9 @@ class ParserResult(BaseModel):
         Optional[List[Crosslink]],
         Field(frozen=True, description="List of parsed crosslinks."),
     ]
-    model_config = ConfigDict(validate_assignment=True, strict=True)
+    model_config = ConfigDict(
+        validate_assignment=True, strict=True, str_strip_whitespace=True
+    )
     r"""
     Configuration for the model.
     """
