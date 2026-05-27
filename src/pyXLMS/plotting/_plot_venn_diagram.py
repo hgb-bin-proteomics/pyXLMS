@@ -16,6 +16,7 @@ from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
 from ..transform._util import get_available_keys
+from ..transform._util import assert_csms_or_xls
 from ..transform._aggregate import __get_xl_key as __get_key
 
 from typing import Optional
@@ -293,11 +294,11 @@ def plot_venn_diagram(
 
     Parameters
     ----------
-    data_1 : list of dict of str, any
+    data_1 : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks.
-    data_2 : list of dict of str, any
+    data_2 : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks.
-    data_3 : list of dict of str, any, or None, default = None
+    data_3 : list of CrosslinkSpectrumMatch, list of Crosslink, or None, default = None
         Optionally, a third list of crosslink-spectrum-matches or crosslinks.
     by : str, one of "peptide" or "protein"
         If peptide or protein crosslink position should be used for determining if a crosslink-spectrum-match
@@ -417,32 +418,20 @@ def plot_venn_diagram(
         raise ValueError(
             "Can't plot 3-set venn diagram if no crosslink-spectrum-matches or crosslinks are given in data_3!"
         )
-    if data_1[0]["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ]:
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data_1 has to be a list of crosslink or crosslink-spectrum-match!"
-        )
-    if data_2[0]["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ]:
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data_2 has to be a list of crosslink or crosslink-spectrum-match!"
-        )
+    data_1 = assert_csms_or_xls(data_1)
+    data_2 = assert_csms_or_xls(data_2)
+    if not isinstance(data_2[0], type(data_1[0])):
+        TypeError("Parameters 'data_1' and 'data_2' have to be the same data type!")
     if data_3 is not None:
-        if data_3[0]["data_type"] not in [
-            "crosslink",
-            "crosslink-spectrum-match",
-        ]:
-            raise TypeError(
-                "Unsupported data type for input data! Parameter data_3 has to be a list of crosslink or crosslink-spectrum-match, or None!"
+        data_3 = assert_csms_or_xls(data_3)
+        if not isinstance(data_3[0], type(data_1[0])):
+            TypeError(
+                "Parameters 'data_1', 'data_2', and 'data_3' have to be the same data type!"
             )
 
-    set_1 = set()
-    set_2 = set()
-    set_3 = set()
+    set_1: Set[str] = set()
+    set_2: Set[str] = set()
+    set_3: Set[str] = set()
     if by == "protein":
         available_keys_1 = get_available_keys(data_1)
         available_keys_2 = get_available_keys(data_2)
@@ -469,13 +458,13 @@ def plot_venn_diagram(
                 or not beta_proteins_crosslink_positions
             ):
                 raise ValueError(
-                    "Grouping by protein crosslink position is only available if all data have defined protein crosslink positions!\n"
+                    "Grouping by protein crosslink position is only available if all data have defined proteins and protein crosslink positions!\n"
                     "This error might be fixable with 'transform.reannotate_positions()'!"
                 )
             for item in data_1:
-                set_1.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
+                set_1.add(__get_key(item, by))
             for item in data_2:
-                set_2.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
+                set_2.add(__get_key(item, by))
         else:
             available_keys_3 = get_available_keys(data_3)
             alpha_proteins = (
@@ -509,24 +498,24 @@ def plot_venn_diagram(
                     "This error might be fixable with 'transform.reannotate_positions()'!"
                 )
             for item in data_1:
-                set_1.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
+                set_1.add(__get_key(item, by))
             for item in data_2:
-                set_2.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
+                set_2.add(__get_key(item, by))
             for item in data_3:
-                set_3.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
+                set_3.add(__get_key(item, by))
     else:
         if data_3 is None:
             for item in data_1:
-                set_1.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
+                set_1.add(__get_key(item, by))
             for item in data_2:
-                set_2.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
+                set_2.add(__get_key(item, by))
         else:
             for item in data_1:
-                set_1.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
+                set_1.add(__get_key(item, by))
             for item in data_2:
-                set_2.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
+                set_2.add(__get_key(item, by))
             for item in data_3:
-                set_3.add(__get_key(item, by))  # ty: ignore[invalid-argument-type]
+                set_3.add(__get_key(item, by))
 
     return venn(
         set_1,
