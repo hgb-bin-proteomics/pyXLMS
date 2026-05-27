@@ -11,7 +11,9 @@ import pandas as pd
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
-from ..transform._util import assert_data_type_same
+from ..transform._util import assert_csms
+from ..transform._util import assert_xls
+from ..transform._util import assert_csms_or_xls
 from ._util import __get_filename
 
 from typing import Optional
@@ -137,7 +139,7 @@ def __csms_to_msannika(
 
     Parameters
     ----------
-    csms : list of dict of str, any
+    csms : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches.
     filename : str, or None
         If not None, the data will be written to a file with the specified filename.
@@ -255,7 +257,7 @@ def __xls_to_msannika(
 
     Parameters
     ----------
-    xls : list of dict of str, any
+    xls : list of Crosslink
         A list of crosslinks.
     filename : str, or None
         If not None, the data will be written to a file with the specified filename.
@@ -353,7 +355,7 @@ def to_msannika(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslinks or crosslink-spectrum-matches.
     filename : str, or None, default = None
         If not None, the exported data will be written to a file with the specified filename.
@@ -431,15 +433,7 @@ def to_msannika(
         raise ValueError(
             "Provided data does not contain any crosslinks or crosslink-spectrum-matches!"
         )
-    if data[0]["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ]:
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
-        )
-    if not assert_data_type_same(data):
-        raise TypeError("Not all elements in data have the same data type!")
-    if data[0]["data_type"] == "crosslink":
-        return __xls_to_msannika(data, filename, format)  # ty: ignore[invalid-argument-type]
-    return __csms_to_msannika(data, filename, format)  # ty: ignore[invalid-argument-type]
+    data = assert_csms_or_xls(data)
+    if isinstance(data[0], Crosslink):
+        return __xls_to_msannika(assert_xls(data), filename, format)
+    return __csms_to_msannika(assert_csms(data), filename, format)
