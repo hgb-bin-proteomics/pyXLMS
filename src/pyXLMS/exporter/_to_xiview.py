@@ -11,7 +11,10 @@ import pandas as pd
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
-from ..transform._util import get_available_keys
+from ..transform._util import check_available_keys
+from ..transform._util import assert_csms
+from ..transform._util import assert_xls
+from ..transform._util import assert_csms_or_xls
 from ._to_xinet import to_xinet
 from ._util import __get_filename
 
@@ -28,7 +31,7 @@ def __xls_to_xiview_minimal(
 
     Parameters
     ----------
-    xls : list of dict of str, any
+    xls : list of Crosslink
         A list of crosslinks.
     filename : str, or None
         If not None, the data will be written to a file with the specified filename.
@@ -111,7 +114,7 @@ def __csms_to_xiview_no_peaks(
 
     Parameters
     ----------
-    csms : list of dict of str, any
+    csms : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches.
     filename : str, or None
         If not None, the data will be written to a file with the specified filename.
@@ -366,7 +369,7 @@ def to_xiview(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks.
     filename : str, or None
         If not None, the exported data will be written to a file with the specified filename.
@@ -464,29 +467,22 @@ def to_xiview(
     252     Cas9    1176    SSFEKNPIDFLEAK         5     Cas9    1176  SSFEKNPIDFLEAK         5  437.10  253
     [253 rows x 10 columns]
     """
-    _ok = check_input(data, "data", list, dict)
+    _ok = check_input(data, "data", list)
     _ok = check_input(filename, "filename", str) if filename is not None else True
     if len(data) == 0:
         raise ValueError("Provided data contains no elements!")
-    if data[0]["data_type"] not in [
-        "crosslink-spectrum-match",
-        "crosslink",
-    ]:
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-matches or crosslinks!"
-        )
-    available_keys = get_available_keys(data)
-    if (
-        not available_keys["alpha_proteins"]
-        or not available_keys["beta_proteins"]
-        or not available_keys["alpha_proteins_crosslink_positions"]
-        or not available_keys["beta_proteins_crosslink_positions"]
-    ):
-        raise RuntimeError(
-            "Can't export to xiVIEW because not all necessary information is available!"
-        )
-    if data[0]["data_type"] == "crosslink-spectrum-match":
-        return __csms_to_xiview_no_peaks(data, filename)  # ty: ignore[invalid-argument-type]
+    data = assert_csms_or_xls(data)
+    _ok = check_available_keys(
+        [
+            "alpha_proteins",
+            "alpha_proteins_crosslink_positions",
+            "beta_proteins",
+            "beta_proteins_crosslink_positions",
+        ],
+        data,
+    )
+    if isinstance(data[0], CrosslinkSpectrumMatch):
+        return __csms_to_xiview_no_peaks(assert_csms(data), filename)
     if minimal:
-        return __xls_to_xiview_minimal(data, filename)  # ty: ignore[invalid-argument-type]
-    return to_xinet(data, filename)  # ty: ignore[invalid-argument-type]
+        return __xls_to_xiview_minimal(assert_xls(data), filename)
+    return to_xinet(assert_xls(data), filename)
