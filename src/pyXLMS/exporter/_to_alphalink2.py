@@ -19,7 +19,6 @@ from ..data._crosslink import Crosslink
 from ..data._util import check_input
 from ..data._util import check_input_multi
 from ..transform._reannotate_positions import __generate_all_sequences
-from ..transform._util import assert_data_type_same
 
 from typing import Optional
 from typing import BinaryIO
@@ -102,8 +101,9 @@ def __protein_supported_by_crosslink(
     ----------
     sequence : str
         The sequence of the protein.
-    crosslinks : list of dict of str, any
-        A list of crosslinks.
+    crosslinks : list of Crosslink, or list of CrosslinkSpectrumMatch
+        A list of crosslinks. Can technically also be a list of crosslink-spectrum-matches for
+        type support in other functions.
 
     Returns
     -------
@@ -140,7 +140,7 @@ def to_alphalink2(
 
     Parameters
     ----------
-    crosslinks : list of dict of str, any
+    crosslinks : list of Crosslink
         A list of crosslinks to export.
     fasta : str, or file stream
         The name/path of the fasta file containing protein sequences or a file-like object/stream.
@@ -227,7 +227,6 @@ def to_alphalink2(
         )
     if len(crosslinks) == 0:
         raise ValueError("Provided crosslinks contain no elements!")
-    _ok = assert_data_type_same(crosslinks)
     protein_db = dict()
     # read fasta file
     fasta_items = list()
