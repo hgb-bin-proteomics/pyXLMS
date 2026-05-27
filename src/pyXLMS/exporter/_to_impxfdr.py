@@ -12,7 +12,10 @@ from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._csm import create_crosslink_from_csm
 from ..data._util import check_input
-from ..transform._util import get_available_keys
+from ..transform._util import check_available_keys
+from ..transform._util import assert_csms
+from ..transform._util import assert_xls
+from ..transform._util import assert_csms_or_xls
 from ..transform._filter import filter_target_decoy
 from ._to_msannika import to_msannika
 
@@ -39,7 +42,7 @@ def to_impxfdr(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslinks or crosslink-spectrum-matches.
     filename : str, or None, default = None
         If not None, the exported data will be written to a file with the specified filename.
@@ -117,6 +120,7 @@ def to_impxfdr(
     _ok = check_input(data, "data", list)
     _ok = check_input(filename, "filename", str) if filename is not None else True
     _ok = check_input(targets_only, "targets_only", bool)
+    data = assert_csms_or_xls(data)
     if targets_only:
         data = filter_target_decoy(data)["Target-Target"]
     if len(data) == 0:
@@ -128,27 +132,19 @@ def to_impxfdr(
             raise ValueError(
                 "Provided data does not contain any crosslinks or crosslink-spectrum-matches!"
             )
-    if data[0]["data_type"] not in [
-        "crosslink",
-        "crosslink-spectrum-match",
-    ]:
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!"
-        )
-    available_keys = get_available_keys(data)
-    if (
-        not available_keys["alpha_proteins"]
-        or not available_keys["alpha_proteins_crosslink_positions"]
-        or not available_keys["beta_proteins"]
-        or not available_keys["beta_proteins_crosslink_positions"]
-    ):
-        raise RuntimeError(
-            "Can't export to IMP-X-FDR because not all necessary information is available!"
-        )
-    if data[0]["data_type"] == "crosslink":
-        return to_msannika(data, filename, format="xlsx")
+    _ok = check_available_keys(
+        [
+            "alpha_proteins",
+            "alpha_proteins_crosslink_positions",
+            "beta_proteins",
+            "beta_proteins_crosslink_positions",
+        ],
+        data,
+    )
+    if isinstance(data[0], Crosslink):
+        return to_msannika(assert_xls(data), filename, format="xlsx")
     return to_msannika(
-        [create_crosslink_from_csm(csm) for csm in data],  # ty: ignore[invalid-argument-type]
+        [create_crosslink_from_csm(csm) for csm in assert_csms(data)],
         filename,
         format="xlsx",
     )
