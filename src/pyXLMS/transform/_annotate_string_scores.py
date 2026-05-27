@@ -510,7 +510,7 @@ def annotate_string_scores(
                                     if network[key]["score"] is not None:
                                         string_scores.append(network[key]["score"])  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
                 if item["additional_information"] is None:
-                    item["additional_information"] = dict()
+                    item.additional_information = dict()
                 item["additional_information"][
                     "pyXLMS_annotated_STRING_interactions"
                 ] = string_items
