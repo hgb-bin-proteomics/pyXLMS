@@ -10,7 +10,7 @@ import pandas as pd
 
 from ..data._crosslink import Crosslink
 from ..data._util import check_input
-from ..transform._util import get_available_keys
+from ..transform._util import check_available_keys
 from ._util import __get_filename
 
 from typing import Optional
@@ -25,7 +25,7 @@ def __xls_to_xinet(
 
     Parameters
     ----------
-    xls : list of dict of str, any
+    xls : list of Crosslink
         A list of crosslinks.
     filename : str, or None
         If not None, the data will be written to a file with the specified filename.
@@ -126,7 +126,7 @@ def to_xinet(
 
     Parameters
     ----------
-    crosslinks : list of dict of str, any
+    crosslinks : list of Crosslink
         A list of crosslinks.
     filename : str, or None
         If not None, the exported data will be written to a file with the specified filename.
@@ -192,22 +192,17 @@ def to_xinet(
     >>> cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
     >>> df = to_xinet(cas9, filename=None)
     """
-    _ok = check_input(crosslinks, "crosslinks", list)
+    _ok = check_input(crosslinks, "crosslinks", list, Crosslink)
     _ok = check_input(filename, "filename", str) if filename is not None else True
     if len(crosslinks) == 0:
         raise ValueError("Provided crosslinks contain no elements!")
-    if crosslinks[0]["data_type"] != "crosslink":
-        raise TypeError(
-            "Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!"
-        )
-    available_keys = get_available_keys(crosslinks)
-    if (
-        not available_keys["alpha_proteins"]
-        or not available_keys["beta_proteins"]
-        or not available_keys["alpha_proteins_crosslink_positions"]
-        or not available_keys["beta_proteins_crosslink_positions"]
-    ):
-        raise RuntimeError(
-            "Can't export to xiNET because not all necessary information is available!"
-        )
+    _ok = check_available_keys(
+        [
+            "alpha_proteins",
+            "alpha_proteins_crosslink_positions",
+            "beta_proteins",
+            "beta_proteins_crosslink_positions",
+        ],
+        crosslinks,
+    )
     return __xls_to_xinet(crosslinks, filename)
