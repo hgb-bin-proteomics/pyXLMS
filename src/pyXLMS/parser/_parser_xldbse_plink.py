@@ -504,7 +504,7 @@ def read_plink(
 
     Returns
     -------
-    dict
+    ParserResult
         The ``parser_result`` object containing all parsed information.
 
     Raises
