@@ -16,6 +16,9 @@ from ..data._util import check_input
 from ..data._util import check_input_multi
 from ..data._parser_result import create_parser_result
 from ._util import get_available_keys
+from ._util import assert_csms
+from ._util import assert_xls
+from ._util import assert_csms_or_xls
 from ._filter import filter_target_decoy
 from ._filter import filter_crosslink_type
 
@@ -41,14 +44,14 @@ def __annotate_fdr_strict(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks to annotate.
     score: str, one of "higher_better" or "lower_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
     -------
-    list of dict of str, any
+    list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of FDR annotated crosslink-spectrum-matches or crosslinks.
 
     Warns
@@ -101,7 +104,7 @@ def __annotate_fdr_strict(
         else:
             fdr = (td + dd) / tt
         if current_item["additional_information"] is None:
-            current_item["additional_information"] = {"pyXLMS_annotated_FDR": fdr}
+            current_item.additional_information = {"pyXLMS_annotated_FDR": fdr}
         else:
             current_item["additional_information"]["pyXLMS_annotated_FDR"] = fdr
     return data
@@ -120,14 +123,14 @@ def __annotate_fdr_relaxed(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of crosslink-spectrum-matches or crosslinks to annotate.
     score: str, one of "higher_better" or "lower_better"
         If a higher score is considered better, or a lower score is considered better.
 
     Returns
     -------
-    list of dict of str, any
+    list of CrosslinkSpectrumMatch, or list of Crosslink
         A list of FDR annotated crosslink-spectrum-matches or crosslinks.
 
     Warns
@@ -190,7 +193,7 @@ def __annotate_fdr_relaxed(
         else:
             fdr = (td + dd) / tt
         if current_item["additional_information"] is None:
-            current_item["additional_information"] = {"pyXLMS_annotated_FDR": fdr}
+            current_item.additional_information = {"pyXLMS_annotated_FDR": fdr}
         else:
             current_item["additional_information"]["pyXLMS_annotated_FDR"] = fdr
     return data
@@ -212,7 +215,7 @@ def annotate_fdr(
 
     Parameters
     ----------
-    data : list of dict of str, any, or dict of str, any
+    data : list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         A list of crosslink-spectrum-matches or crosslinks to annotate, or a parser_result.
     formula : str, one of "D/T", "(TD+DD)/TT", or "(TD-DD)/TT", default = "D/T"
         Which formula to use to estimate FDR. 'D' denotes any decoy matches including decoy-decoy, decoy-target and target-decoy matches.
@@ -228,7 +231,7 @@ def annotate_fdr(
 
     Returns
     -------
-    list of dict of str, any, or dict of str, any
+    list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         If a list of crosslink-spectrum-matches or crosslinks was provided, a list of annotated
         crosslink-spectrum-matches or crosslinks is returned. If a parser_result was provided,
         an parser_result with annotated crosslink-spectrum-matches and/or annotated crosslinks will
@@ -317,24 +320,19 @@ def annotate_fdr(
             "Parameter 'score' has to be one of 'higher_better' or 'lower_better'!"
         )
     if isinstance(data, list):
-        _ok = check_input(data, "data", list)
         if len(data) == 0:
             return data
-        if data[0]["data_type"] not in [
-            "crosslink",
-            "crosslink-spectrum-match",
-        ]:
-            raise TypeError(
-                "Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match, "
-                "or a parser_result!"
-            )
+        data = assert_csms_or_xls(data)
         if ignore_missing_labels:
             data = [  # ty: ignore[invalid-assignment]
                 item
                 for item in data
                 if item["alpha_decoy"] is not None and item["beta_decoy"] is not None
             ]
-        available_keys = get_available_keys(data)  # ty: ignore[invalid-argument-type]
+        data = assert_csms_or_xls(data)
+        # this is legacy and could use check_available_keys instead but the error message is more
+        # descriptive here
+        available_keys = get_available_keys(data)
         if (
             not available_keys["score"]
             or not available_keys["alpha_decoy"]
@@ -345,46 +343,52 @@ def annotate_fdr(
                 "that don't have a valid target/decoy label and filter them out!"
             )
         if formula == "(TD-DD)/TT":
-            if len(filter_target_decoy(data)["Target-Decoy"]) == 0:  # ty: ignore[invalid-argument-type]
+            if len(filter_target_decoy(data)["Target-Decoy"]) == 0:
                 raise ValueError(
                     "Can't annotate FDR with formula '(TD-DD)/TT' when there are no TD matches! Please select the default formula instead!"
                 )
             if separate_intra_inter:
-                separate = filter_crosslink_type(data)  # ty: ignore[invalid-argument-type]
-                return __annotate_fdr_relaxed(  # ty: ignore[invalid-return-type]
-                    separate["Intra"], score
-                ) + __annotate_fdr_relaxed(separate["Inter"], score)
-            return __annotate_fdr_relaxed(data, score)  # ty: ignore[invalid-argument-type]
+                separate = filter_crosslink_type(data)
+                return assert_csms_or_xls(
+                    __annotate_fdr_relaxed(separate["Intra"], score)
+                    + __annotate_fdr_relaxed(separate["Inter"], score)
+                )
+            return __annotate_fdr_relaxed(data, score)
         if separate_intra_inter:
-            separate = filter_crosslink_type(data)  # ty: ignore[invalid-argument-type]
-            return __annotate_fdr_strict(  # ty: ignore[invalid-return-type]
-                separate["Intra"], score
-            ) + __annotate_fdr_strict(separate["Inter"], score)
-        return __annotate_fdr_strict(data, score)  # ty: ignore[invalid-argument-type]
+            separate = filter_crosslink_type(data)
+            return assert_csms_or_xls(
+                __annotate_fdr_strict(separate["Intra"], score)
+                + __annotate_fdr_strict(separate["Inter"], score)
+            )
+        return __annotate_fdr_strict(data, score)
     new_csms = (
-        annotate_fdr(
-            data["crosslink-spectrum-matches"],
-            formula,
-            score,
-            separate_intra_inter,
-            ignore_missing_labels,
+        assert_csms(
+            annotate_fdr(
+                data["crosslink-spectrum-matches"],
+                formula,
+                score,
+                separate_intra_inter,
+                ignore_missing_labels,
+            )
         )
         if data["crosslink-spectrum-matches"] is not None
         else None
     )
     new_xls = (
-        annotate_fdr(
-            data["crosslinks"],
-            formula,
-            score,
-            separate_intra_inter,
-            ignore_missing_labels,
+        assert_xls(
+            annotate_fdr(
+                data["crosslinks"],
+                formula,
+                score,
+                separate_intra_inter,
+                ignore_missing_labels,
+            )
         )
         if data["crosslinks"] is not None
         else None
     )
     return create_parser_result(
         search_engine=data["search_engine"],
-        csms=new_csms,  # ty: ignore[invalid-argument-type]
-        crosslinks=new_xls,  # ty: ignore[invalid-argument-type]
+        csms=new_csms,
+        crosslinks=new_xls,
     )
