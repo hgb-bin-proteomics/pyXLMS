@@ -1043,6 +1043,7 @@ def create_crosslink_from_csm(csm: CrosslinkSpectrumMatch) -> Crosslink:
     >>> csm = create_csm_min("PEPTIDEA", 1, "PEPTIDEB", 5, "RUN_1", 1)
     >>> crosslink = create_crosslink_from_csm(csm)
     """
+    _ok = check_input(csm, "csm", CrosslinkSpectrumMatch)
     return create_crosslink(
         peptide_a=csm.alpha_peptide,
         xl_position_peptide_a=csm.alpha_peptide_crosslink_position,
