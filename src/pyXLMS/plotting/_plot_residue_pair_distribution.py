@@ -36,7 +36,7 @@ def plot_residue_pair_distribution(
 
     Parameters
     ----------
-    data : list of dict of str, any
+    data : list of CrosslinkSpectrumMatch
         A list of crosslink-spectrum-matches.
     top_n : int, default = 25
         Number of residue pairs to plot. Residue pairs are sorted by number of
@@ -73,7 +73,7 @@ def plot_residue_pair_distribution(
     >>> csms = pr["crosslink-spectrum-matches"]
     >>> fig, ax = plotting.plot_residue_pair_distribution(csms)
     """
-    _ok = check_input(data, "data", list)
+    _ok = check_input(data, "data", list, CrosslinkSpectrumMatch)
     _ok = check_input(top_n, "top_n", int)
     _ok = check_input(color, "color", str)
     _ok = check_input(title, "title", str)
@@ -86,10 +86,6 @@ def plot_residue_pair_distribution(
     if len(data) == 0:
         raise ValueError(
             "Can't plot residue pair distribution if no crosslink-spectrum-matches are given!"
-        )
-    if data[0]["data_type"] != "crosslink-spectrum-match":
-        raise TypeError(
-            "Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!"
         )
     rps = filter_residue_pair_distribution(data)
     rp_names = list()
