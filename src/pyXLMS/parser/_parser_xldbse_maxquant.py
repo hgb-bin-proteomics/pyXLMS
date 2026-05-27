@@ -174,7 +174,7 @@ def read_maxquant(
 
     Returns
     -------
-    dict
+    ParserResult
         The ``parser_result`` object containing all parsed information.
 
     Raises
@@ -375,7 +375,7 @@ def read_maxlynx(
 
     Returns
     -------
-    dict
+    ParserResult
         The ``parser_result`` object containing all parsed information.
 
     Raises
