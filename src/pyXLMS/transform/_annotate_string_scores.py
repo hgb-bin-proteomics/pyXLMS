@@ -19,8 +19,10 @@ from ..data._util import check_input_multi
 from ..data._parser_result import create_parser_result
 from ._filter import filter_crosslink_type
 from ._filter import filter_protein_distribution
-from ._util import assert_data_type_same
 from ._util import get_available_keys
+from ._util import assert_csms
+from ._util import assert_xls
+from ._util import assert_csms_or_xls
 
 from typing import List
 from typing import Dict
@@ -348,7 +350,7 @@ def annotate_string_scores(
 
     Parameters
     ----------
-    data : list of dict of str, any, or dict of str, any
+    data : list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         A list of crosslink-spectrum-matches or crosslinks to annotate, or a parser_result.
     organism : str, or int
         Organism name (e.g. Homo sapiens) or taxon identifier (e.g. 9606).
@@ -361,7 +363,7 @@ def annotate_string_scores(
 
     Returns
     -------
-    list of dict of str, any, or dict of str, any
+    list of CrosslinkSpectrumMatch, list of Crosslink, or ParserResult
         If a list of crosslink-spectrum-matches or crosslinks was provided, a list of annotated
         crosslink-spectrum-matches or crosslinks is returned. If a parser_result was provided,
         an annotated parser_result will be returned. Please note that only inter-links are
@@ -414,6 +416,7 @@ def annotate_string_scores(
     >>> example["additional_information"]["pyXLMS_annotated_STRING_score"]
     0.999
     """
+    _ok = check_input_multi(data, "data", [list, ParserResult])
     _ok = check_input_multi(organism, "organism", [str, int])
     if isinstance(organism, str):
         if organism not in STRING_ORGANISMS:
@@ -425,15 +428,9 @@ def annotate_string_scores(
     if verbose not in [0, 1, 2]:
         raise TypeError("Verbose level has to be one of 0, 1, or 2!")
     if isinstance(data, list):
-        _ok = check_input(data, "data", list)
         if len(data) == 0:
             return data
-        if "data_type" not in data[0]:
-            raise TypeError(
-                "Can't annotate STRING scores for input data. Input data has to be a list of crosslink-spectrum-matches or crosslinks "
-                "or a 'parser_result'!"
-            )
-        _ok = assert_data_type_same(data)
+        data = assert_csms_or_xls(data)
         available_keys = get_available_keys(data)
         if not available_keys["alpha_proteins"] or not available_keys["beta_proteins"]:
             if verbose == 1:
@@ -447,6 +444,7 @@ def annotate_string_scores(
                     "Some of your crosslink-spectrum-matches/crosslinks do not have associated proteins!"
                 )
         # annotate STRING scores
+        # this if clause is technically not needed anymore but kept for legacy
         if (
             data[0]["data_type"] == "crosslink"
             or data[0]["data_type"] == "crosslink-spectrum-match"
@@ -511,10 +509,7 @@ def annotate_string_scores(
                                     string_items.append(network[key])
                                     if network[key]["score"] is not None:
                                         string_scores.append(network[key]["score"])  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
-                if (
-                    "additional_information" not in item
-                    or item["additional_information"] is None
-                ):
+                if item["additional_information"] is None:
                     item["additional_information"] = dict()
                 item["additional_information"][
                     "pyXLMS_annotated_STRING_interactions"
@@ -525,29 +520,32 @@ def annotate_string_scores(
             return data
         else:
             raise TypeError(
-                f"Can't annotate STRING scores for data type {data[0]['data_type']}. Valid data types are:\n"
-                "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
+                f"Can't annotate STRING scores for data type {type(data[0])}. Valid data types are:\n"
+                "CrosslinkSpectrumMatch, Crosslink, and ParserResult."
             )
         return data
-    _ok = check_input(data, "data", ParserResult)
     new_csms = (
-        annotate_string_scores(
-            data["crosslink-spectrum-matches"], organism=organism, verbose=verbose
+        assert_csms(
+            annotate_string_scores(
+                data["crosslink-spectrum-matches"], organism=organism, verbose=verbose
+            )
         )
         if data["crosslink-spectrum-matches"] is not None
         else None
     )
     new_xls = (
-        annotate_string_scores(
-            data["crosslinks"],
-            organism=organism,
-            verbose=verbose,
+        assert_xls(
+            annotate_string_scores(
+                data["crosslinks"],
+                organism=organism,
+                verbose=verbose,
+            )
         )
         if data["crosslinks"] is not None
         else None
     )
     return create_parser_result(
         search_engine=data["search_engine"],
-        csms=new_csms,  # ty: ignore[invalid-argument-type]
-        crosslinks=new_xls,  # ty: ignore[invalid-argument-type]
+        csms=new_csms,
+        crosslinks=new_xls,
     )
