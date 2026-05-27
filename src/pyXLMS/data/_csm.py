@@ -415,6 +415,9 @@ class CrosslinkSpectrumMatch(BaseModel):
         except AttributeError:
             raise KeyError(f"'{key}' is not a valid field!")
 
+    def __contains__(self, key: str) -> bool:
+        return hasattr(self, key)
+
     def copy_with_update(self, update: Dict[str, Any] = {}) -> CrosslinkSpectrumMatch:
         _ok = check_input(update, "update", dict)
         return CrosslinkSpectrumMatch(
