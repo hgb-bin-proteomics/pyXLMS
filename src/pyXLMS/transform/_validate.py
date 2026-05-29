@@ -488,7 +488,7 @@ def validate(
                 for item in csms_or_xls
                 if item["alpha_decoy"] is not None and item["beta_decoy"] is not None
             ]
-        csms_or_xls = assert_csms_or_xls(data)
+        csms_or_xls = assert_csms_or_xls(csms_or_xls)
         _ok = check_available_keys(["score", "alpha_decoy", "beta_decoy"], csms_or_xls)
         if formula == "(TD-DD)/TT":
             if len(filter_target_decoy(csms_or_xls)["Target-Decoy"]) == 0:
