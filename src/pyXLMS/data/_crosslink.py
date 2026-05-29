@@ -24,8 +24,84 @@ from typing import List
 from typing import Dict
 from typing import Any
 
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
 
 class Crosslink(BaseModel):
+    r"""Core data structure representing a single crosslink.
+
+    Crosslinks represent two crosslinked peptides. Crosslinks can be unique peptide
+    pairs or unique residue pairs, depending on their grouping.
+
+    Attributes Summary
+    ------------------
+    Here is a short summary about the crosslink attributes, for more details
+    on the specific Pydantic validation requirements please refer to the corresponding attributes
+    themselves.
+
+    Required
+    ^^^^^^^^
+    The following attributes are required:
+
+    alpha_peptide : str
+        The unmodified amino acid sequence of the first peptide. Amino acids should be
+        in upper case. Modifications should not be included in the sequence.
+    alpha_peptide_crosslink_position : int
+        The position of the crosslinker in the sequence of the first peptide (1-based).
+    beta_peptide : str
+        The unmodified amino acid sequence of the second peptide. Amino acids should be
+        in upper case. Modifications should not be included in the sequence.
+    beta_peptide_crosslink_position : int
+        The position of the crosslinker in the sequence of the second peptide (1-based).
+
+    Optional
+    ^^^^^^^^
+    The following attributes are optional:
+
+    alpha_proteins : list of str, or None, default = None
+        The accessions of proteins that the first peptide is associated with.
+    alpha_proteins_crosslink_positions : list of int, or None, default = None
+        Positions of the crosslink in the proteins of the first peptide (1-based). If given the list
+        should be of the same length as ``alpha_proteins`` and crosslink position at list index ``i``
+        should correspond to the protein at list index ``i`` in ``alpha_proteins``.
+    alpha_decoy : bool, or None, default = None
+        Whether the first peptide is from the decoy database (``True``) or not (``False``).
+    beta_proteins : list of str, or None, default = None
+        The accessions of proteins that the second peptide is associated with.
+    beta_proteins_crosslink_positions : list of int, or None, default = None
+        Positions of the crosslink in the proteins of the second peptide (1-based). If given the list
+        should be of the same length as ``beta_proteins`` and crosslink position at list index ``i``
+        should correspond to the protein at list index ``i`` in ``beta_proteins``.
+    beta_decoy : bool, or None, default = None
+        Whether the second peptide is from the decoy database (``True``) or not (``False``).
+    score : float, or None, default = None
+        Score of the crosslink.
+    additional_information : dict of str, any, or None, default = None
+        A dictionary with additional information associated with the crosslink.
+
+    Notes
+    -----
+    Alpha and beta assignment is internally decided by whichever peptide's sequence
+    is alphabetically first. If the ``beta_peptide``'s sequence comes alphabetically
+    first it will be assigned to ``alpha_peptide`` and the original ``alpha_peptide``
+    will be assigned to ``beta_peptide`` (and the same happens for all other corresponding
+    alpha and beta values).
+
+    Examples
+    --------
+    >>> from pyXLMS.data import Crosslink
+    >>> xl = Crosslink(
+    ...     alpha_peptide="PEKP",
+    ...     alpha_peptide_crosslink_position=3,
+    ...     beta_peptide="TKIDE",
+    ...     beta_peptide_crosslink_position=2,
+    ... )
+    """
+
     alpha_peptide: Annotated[
         str,
         Field(
@@ -34,7 +110,8 @@ class Crosslink(BaseModel):
         ),
     ]
     r"""
-    The unmodified amino acid sequence of the first peptide.
+    The unmodified amino acid sequence of the first peptide. Amino acids should be
+    in upper case. Modifications should not be included in the sequence.
     """
     alpha_peptide_crosslink_position: Annotated[
         int,
@@ -43,6 +120,9 @@ class Crosslink(BaseModel):
             description="The position of the crosslinker in the sequence of the first peptide (1-based).",
         ),
     ]
+    r"""
+    The position of the crosslinker in the sequence of the first peptide (1-based).
+    """
     beta_peptide: Annotated[
         str,
         Field(
@@ -50,6 +130,10 @@ class Crosslink(BaseModel):
             description="The unmodified amino acid sequence of the second peptide.",
         ),
     ]
+    r"""
+    The unmodified amino acid sequence of the second peptide. Amino acids should be
+    in upper case. Modifications should not be included in the sequence.
+    """
     beta_peptide_crosslink_position: Annotated[
         int,
         Field(
@@ -57,6 +141,9 @@ class Crosslink(BaseModel):
             description="The position of the crosslinker in the sequence of the second peptide (1-based).",
         ),
     ]
+    r"""
+    The position of the crosslinker in the sequence of the second peptide (1-based).
+    """
     alpha_proteins: Annotated[
         Optional[List[str]],
         Field(
@@ -64,6 +151,9 @@ class Crosslink(BaseModel):
             description="The accessions of proteins that the first peptide is associated with.",
         ),
     ] = None
+    r"""
+    The accessions of proteins that the first peptide is associated with.
+    """
     alpha_proteins_crosslink_positions: Annotated[
         Optional[List[int]],
         Field(
@@ -71,6 +161,11 @@ class Crosslink(BaseModel):
             description="Positions of the crosslink in the proteins of the first peptide (1-based).",
         ),
     ] = None
+    r"""
+    Positions of the crosslink in the proteins of the first peptide (1-based). If given the list
+    should be of the same length as ``alpha_proteins`` and crosslink position at list index ``i``
+    should correspond to the protein at list index ``i`` in ``alpha_proteins``.
+    """
     alpha_decoy: Annotated[
         Optional[bool],
         Field(
@@ -78,6 +173,9 @@ class Crosslink(BaseModel):
             description="Whether the alpha peptide is from the decoy database or not.",
         ),
     ] = None
+    r"""
+    Whether the first peptide is from the decoy database (``True``) or not (``False``).
+    """
     beta_proteins: Annotated[
         Optional[List[str]],
         Field(
@@ -85,6 +183,9 @@ class Crosslink(BaseModel):
             description="The accessions of proteins that the second peptide is associated with.",
         ),
     ] = None
+    r"""
+    The accessions of proteins that the second peptide is associated with.
+    """
     beta_proteins_crosslink_positions: Annotated[
         Optional[List[int]],
         Field(
@@ -92,6 +193,11 @@ class Crosslink(BaseModel):
             description="Positions of the crosslink in the proteins of the second peptide (1-based).",
         ),
     ] = None
+    r"""
+    Positions of the crosslink in the proteins of the second peptide (1-based). If given the list
+    should be of the same length as ``beta_proteins`` and crosslink position at list index ``i``
+    should correspond to the protein at list index ``i`` in ``beta_proteins``.
+    """
     beta_decoy: Annotated[
         Optional[bool],
         Field(
@@ -99,9 +205,15 @@ class Crosslink(BaseModel):
             description="Whether the beta peptide is from the decoy database or not.",
         ),
     ] = None
+    r"""
+    Whether the second peptide is from the decoy database (``True``) or not (``False``).
+    """
     score: Annotated[
         Optional[float], Field(frozen=True, description="Score of the crosslink.")
     ] = None
+    r"""
+    Score of the crosslink.
+    """
     additional_information: Annotated[
         Optional[Dict[str, Any]],
         Field(
@@ -109,21 +221,31 @@ class Crosslink(BaseModel):
             description="A dictionary with additional information associated with the crosslink.",
         ),
     ] = None
+    r"""
+    A dictionary with additional information associated with the crosslink.
+    """
     model_config = ConfigDict(
         validate_assignment=True, strict=True, str_strip_whitespace=True
     )
     r"""
-    Configuration for the model.
+    Pydantic configuration for the underlying validation model.
     """
 
     @computed_field(description="Data type of the object.")
     @property
-    def data_type(self) -> str:
+    def data_type(self) -> Literal["crosslink"]:
+        r"""
+        Data type of the object.
+        """
         return "crosslink"
 
     @computed_field(description="Completeness of the crosslink.")
     @property
-    def completeness(self) -> str:
+    def completeness(self) -> Literal["full", "partial"]:
+        r"""
+        Completeness of the crosslink, e.g. ``"full"`` if all attributes
+        are not ``None`` and else ``"partial"``.
+        """
         full = all(
             [
                 self.alpha_proteins is not None,
@@ -139,7 +261,11 @@ class Crosslink(BaseModel):
 
     @computed_field(description="Link type of the crosslink.")
     @property
-    def crosslink_type(self) -> str:
+    def crosslink_type(self) -> Literal["intra", "inter"]:
+        r"""
+        Link type of the crosslink, e.g. ``"intra"`` if the proteins in
+        ``alpha_proteins`` and ``beta_proteins`` overlap, otherwise ``"inter"``.
+        """
         a_prot = set(
             [str(protein).strip() for protein in self.alpha_proteins]
             if self.alpha_proteins is not None
@@ -154,6 +280,21 @@ class Crosslink(BaseModel):
 
     @override
     def model_post_init(self, context: Any = None) -> None:
+        r"""
+        Performs extra validation and post init functions.
+
+        Notes
+        -----
+        Alpha and beta assignment is internally decided by whichever peptide's sequence
+        is alphabetically first. If the ``beta_peptide``'s sequence comes alphabetically
+        first it will be assigned to ``alpha_peptide`` and the original ``alpha_peptide``
+        will be assigned to ``beta_peptide`` (and the same happens for all other corresponding
+        alpha and beta values).
+
+        Warnings
+        --------
+        This method should not be called manually!
+        """
         # extra validation
         if (
             self.alpha_proteins is not None
@@ -238,15 +379,50 @@ class Crosslink(BaseModel):
         return
 
     def __getitem__(self, key: str) -> Any:
+        r"""
+        Support for dict-like access.
+        """
         try:
             return getattr(self, key)
         except AttributeError:
             raise KeyError(f"'{key}' is not a valid field!")
 
     def __contains__(self, key: str) -> bool:
+        r"""
+        Support for ``in`` operator.
+        """
         return hasattr(self, key)
 
     def copy_with_update(self, update: Dict[str, Any] = {}) -> Crosslink:
+        r"""Creates a deep copy of the crosslink with optional attribute updates.
+
+        Parameters
+        ----------
+        update : dict of str, any, default = empty dict
+            Dictionary mapping attribute names (str) to their updated values.
+            The default (empty dict) will create a deep copy with the original
+            attribute values.
+
+        Returns
+        -------
+        Crosslink
+            New crosslink with optionally updated attributes.
+
+        Examples
+        --------
+        >>> from pyXLMS.data import Crosslink
+        >>> xl = Crosslink(
+        ...     alpha_peptide="PEKP",
+        ...     alpha_peptide_crosslink_position=3,
+        ...     alpha_proteins=["PROT"],
+        ...     beta_peptide="PEKP",
+        ...     beta_peptide_crosslink_position=3,
+        ...     beta_proteins=["PROT"],
+        ... )
+        >>> xl_copy = xl.copy_with_update(
+        ...     update={"additional_information": {"homomeric": True}}
+        ... )
+        """
         _ok = check_input(update, "update", dict)
         return Crosslink(
             alpha_peptide=self.alpha_peptide
