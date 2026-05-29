@@ -41,8 +41,16 @@ class CrosslinkSpectrumMatch(BaseModel):
     mass spectrum. They contain spectrum level information additionally to crosslink
     information.
 
-    Attributes
-    ----------
+    Attributes Summary
+    ------------------
+    Here is a short summary about the croslink-spectrum-match attributes, for more details
+    on the specific Pydantic validation requirements please refer to the corresponding attributes
+    themselves.
+
+    Required
+    ^^^^^^^^
+    The following attributes are required:
+
     alpha_peptide : str
         The unmodified amino acid sequence of the first peptide. Amino acids should be
         in upper case. Modifications should not be included in the sequence.
@@ -58,6 +66,11 @@ class CrosslinkSpectrumMatch(BaseModel):
     scan_nr : int
         The corresponding scan number of the crosslink-spectrum-match. If the scan number
         is not available the spectrum index should be provided.
+
+    Optional
+    ^^^^^^^^
+    The following attributes are optional:
+
     alpha_modifications : dict of int, tuple of str, float, or None, default = None
         The modifications of the first peptide given as a dictionary that maps peptide position
         (1-based) to modification given as a tuple of modification name and modification delta mass.
