@@ -54,13 +54,11 @@ def test3():
         crosslinker="DSS",
     )
 
-    pr["crosslink-spectrum-matches"][0]["data_type"] = "peptide-spectrum-match"
-
     with pytest.raises(
         TypeError,
-        match=r"Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!",
+        match=r"Provided input is not a valid list of type CrosslinkSpectrumMatch or Crosslink!",
     ):
-        _plot = plot_target_decoy_distribution(pr["crosslink-spectrum-matches"])
+        _plot = plot_target_decoy_distribution([pr])
 
 
 def test4():
@@ -73,14 +71,14 @@ def test4():
         crosslinker="DSS",
     )
 
-    pr["crosslink-spectrum-matches"][0]["completeness"] = "partial"
-    pr["crosslink-spectrum-matches"][0]["alpha_decoy"] = None
+    csms = pr.csms()
+    csms[0] = csms[0].copy_with_update({"alpha_decoy": None})
 
     with pytest.raises(
         ValueError,
-        match=r"Can't plot target\-decoy distribution if target/decoy labels are missing!",
+        match="Attribute .* is missing in at least one element but is required!",
     ):
-        _plot = plot_target_decoy_distribution(pr["crosslink-spectrum-matches"])
+        _plot = plot_target_decoy_distribution(csms)
 
 
 def test5():
@@ -93,11 +91,11 @@ def test5():
         crosslinker="DSS",
     )
 
-    pr["crosslink-spectrum-matches"][0]["completeness"] = "partial"
-    pr["crosslink-spectrum-matches"][0]["beta_decoy"] = None
+    csms = pr.csms()
+    csms[0] = csms[0].copy_with_update({"beta_decoy": None})
 
     with pytest.raises(
         ValueError,
-        match=r"Can't plot target\-decoy distribution if target/decoy labels are missing!",
+        match="Attribute .* is missing in at least one element but is required!",
     ):
-        _plot = plot_target_decoy_distribution(pr["crosslink-spectrum-matches"])
+        _plot = plot_target_decoy_distribution(csms)
