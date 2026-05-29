@@ -116,10 +116,10 @@ def test5():
     )
     crosslinks = targets_only(pr)["crosslinks"]
     cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
+    no_score = list()
     for xl in cas9:
-        xl["score"] = None
-        xl["alpha_decoy"] = None
-    df = to_xiview(cas9, filename=None)
+        no_score.append(xl.copy_with_update({"score": None, "alpha_decoy": None}))
+    df = to_xiview(no_score, filename=None)
     assert df.shape[1] == 4
     cols = df.columns.values.tolist()
     for col in XIVIEW_COLS:
@@ -163,9 +163,10 @@ def test7():
     )
     crosslinks = targets_only(pr)["crosslinks"]
     cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
+    no_score = list()
     for xl in cas9:
-        xl["score"] = None
-    df = to_xiview(cas9, filename=None, minimal=False)
+        no_score.append(xl.copy_with_update({"score": None}))
+    df = to_xiview(no_score, filename=None, minimal=False)
     assert df.shape[1] == 9
     cols = df.columns.values.tolist()
     for col in XINET_COLS:
@@ -192,8 +193,8 @@ def test9():
     crosslinks = [xl1, xl2]
 
     with pytest.raises(
-        RuntimeError,
-        match="Can't export to xiVIEW because not all necessary information is available!",
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
         _df = to_xiview(crosslinks, filename=None)
 
@@ -212,9 +213,10 @@ def test10():
     )
     csms = targets_only(pr)["crosslink-spectrum-matches"]
     cas9 = filter_proteins(csms, proteins=["Cas9"])["Both"]
+    no_score = list()
     for csm in cas9:
-        csm["score"] = None
-    df = to_xiview(cas9, filename="xiview_csms.csv")
+        no_score.append(csm.copy_with_update({"score": None}))
+    df = to_xiview(no_score, filename="xiview_csms.csv")
     assert os.path.isfile("xiview_csms.csv")
     assert df.shape[0] == len(cas9)
     assert df.shape[1] == 13
