@@ -17,7 +17,6 @@ from ._util import check_input
 from ._util import check_indexing
 from ._util import __get_modified_peptide as get_modified_peptide
 
-from typing import override
 from typing import Annotated
 from typing import Optional
 from typing import List
@@ -30,6 +29,10 @@ try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal
+try:
+    from typing import override  # ty: ignore[unresolved-import]
+except ImportError:
+    from typing_extensions import override
 
 
 class Crosslink(BaseModel):
