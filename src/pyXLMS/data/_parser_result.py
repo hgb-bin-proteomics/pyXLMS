@@ -196,24 +196,50 @@ class ParserResult(BaseModel):
             else update["crosslinks"],
         )
 
-    def csms(self) -> List[CrosslinkSpectrumMatch] | None:
+    def csms(self, create_copy: bool = True) -> List[CrosslinkSpectrumMatch] | None:
         r"""Shorthand function to retrieve crosslink-spectrum-matches.
+
+        Parameters
+        ----------
+        create_copy : bool, default = True
+            Whether a deep copy of the crosslink-spectrum-matches should be returned
+            (default) or ``self.crosslink_spectrum_matches`` directly.
 
         Returns
         -------
         list of CrosslinkSpectrumMatch, or None
-            Returns ``self.crosslink_spectrum_matches``
+            Returns (a deep copy of) ``self.crosslink_spectrum_matches``.
+
+        Notes
+        -----
+        Please be aware that by default this explicitly creates a deep copy of the
+        underlying data!
         """
+        if create_copy:
+            return copy.deepcopy(self.crosslink_spectrum_matches)
         return self.crosslink_spectrum_matches
 
-    def xls(self) -> List[Crosslink] | None:
+    def xls(self, create_copy: bool = True) -> List[Crosslink] | None:
         r"""Shorthand function to retrieve crosslinks.
+
+        Parameters
+        ----------
+        create_copy : bool, default = True
+            Whether a deep copy of the crosslinks should be returned (default) or
+            ``self.crosslinks`` directly.
 
         Returns
         -------
         list of Crosslink, or None
-            Returns ``self.crosslinks``
+            Returns (a deep copy of) ``self.crosslinks``.
+
+        Notes
+        -----
+        Please be aware that by default this explicitly creates a deep copy of the
+        underlying data!
         """
+        if create_copy:
+            return copy.deepcopy(self.crosslinks)
         return self.crosslinks
 
     def display(
