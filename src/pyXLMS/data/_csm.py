@@ -903,19 +903,16 @@ class CrosslinkSpectrumMatch(BaseModel):
         Examples
         --------
         >>> from pyXLMS.data import create_csm_min
-        >>> from pyXLMS.transform import to_proforma
         >>> csm = create_csm_min("PEPKTIDE", 4, "KPEPTIDE", 1, "RUN_1", 1)
         >>> csm.to_proforma()
         'KPEPTIDE//PEPKTIDE'
 
         >>> from pyXLMS.data import create_csm_min
-        >>> from pyXLMS.transform import to_proforma
         >>> csm = create_csm_min("PEPKTIDE", 4, "KPEPTIDE", 1, "RUN_1", 1)
         >>> csm.to_proforma(crosslinker="Xlink:DSSO")
         'K[Xlink:DSSO]PEPTIDE//PEPK[Xlink:DSSO]TIDE'
 
         >>> from pyXLMS.data import create_csm_min
-        >>> from pyXLMS.transform import to_proforma
         >>> csm = create_csm_min(
         ...     "PEPKTIDE",
         ...     4,
@@ -929,7 +926,6 @@ class CrosslinkSpectrumMatch(BaseModel):
         'K[Xlink:DSSO]PM[+15.994915]EPTIDE//PEPK[Xlink:DSSO]TIDE'
 
         >>> from pyXLMS.data import create_csm_min
-        >>> from pyXLMS.transform import to_proforma
         >>> csm = create_csm_min(
         ...     "PEPKTIDE",
         ...     4,
@@ -944,7 +940,6 @@ class CrosslinkSpectrumMatch(BaseModel):
         'K[Xlink:DSSO]PM[+15.994915]EPTIDE//PEPK[Xlink:DSSO]TIDE/3'
 
         >>> from pyXLMS.data import create_csm_min
-        >>> from pyXLMS.transform import to_proforma
         >>> csm = create_csm_min(
         ...     "PEPKTIDE",
         ...     4,
@@ -960,7 +955,6 @@ class CrosslinkSpectrumMatch(BaseModel):
         'K[+158.00376]PM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE/3'
 
         >>> from pyXLMS.data import create_csm_min
-        >>> from pyXLMS.transform import to_proforma
         >>> csm = create_csm_min(
         ...     "PEPKTIDE",
         ...     4,

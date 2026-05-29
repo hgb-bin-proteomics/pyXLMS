@@ -559,13 +559,11 @@ class Crosslink(BaseModel):
         Examples
         --------
         >>> from pyXLMS.data import create_crosslink_min
-        >>> from pyXLMS.transform import to_proforma
         >>> xl = create_crosslink_min("PEPKTIDE", 4, "KPEPTIDE", 1)
         >>> xl.to_proforma()
         'KPEPTIDE//PEPKTIDE'
 
         >>> from pyXLMS.data import create_crosslink_min
-        >>> from pyXLMS.transform import to_proforma
         >>> xl = create_crosslink_min("PEPKTIDE", 4, "KPEPTIDE", 1)
         >>> xl.to_proforma(crosslinker="Xlink:DSSO")
         'K[Xlink:DSSO]PEPTIDE//PEPK[Xlink:DSSO]TIDE'

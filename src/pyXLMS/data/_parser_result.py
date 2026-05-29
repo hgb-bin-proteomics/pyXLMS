@@ -238,7 +238,6 @@ class ParserResult(BaseModel):
         Examples
         --------
         >>> from pyXLMS import parser
-        >>> from pyXLMS import transform
         >>> pr = parser.read(
         ...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1.pdResult",
         ...     engine="MS Annika",
