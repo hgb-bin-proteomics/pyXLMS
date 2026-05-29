@@ -89,9 +89,10 @@ def test4():
     )
     crosslinks = targets_only(pr)["crosslinks"]
     cas9 = filter_proteins(crosslinks, proteins=["Cas9"])["Both"]
+    no_score = list()
     for xl in cas9:
-        xl["score"] = None
-    df = to_xinet(cas9, filename=None)
+        no_score.append(xl.copy_with_update({"score": None}))
+    df = to_xinet(no_score, filename=None)
     cols = df.columns.values.tolist()
     for col in XINET_COLS:
         assert col in cols
@@ -117,7 +118,7 @@ def test6():
     crosslinks = [xl1, xl2]
 
     with pytest.raises(
-        RuntimeError,
-        match="Can't export to xiNET because not all necessary information is available!",
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
         _df = to_xinet(crosslinks, filename=None)

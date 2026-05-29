@@ -74,7 +74,7 @@ def test5():
         engine="MS Annika",
         crosslinker="DSS",
     )
-    result["crosslink-spectrum-matches"] = []
+    result = result.copy_with_update({"crosslink-spectrum-matches": []})
     with pytest.raises(
         RuntimeError,
         match=r"No target crosslink-spectrum-matches found! Are you sure they are labelled\?",
@@ -91,7 +91,7 @@ def test6():
         engine="MS Annika",
         crosslinker="DSS",
     )
-    result["crosslinks"] = []
+    result = result.copy_with_update({"crosslinks": []})
     with pytest.raises(
         RuntimeError,
         match=r"No target crosslinks found! Are you sure they are labelled\?",

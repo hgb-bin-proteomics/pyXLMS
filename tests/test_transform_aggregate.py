@@ -184,11 +184,10 @@ def test11():
         crosslinker="DSS",
     )
     assert len(pr["crosslinks"]) == 10
-    err_str = (
-        r"Grouping by protein crosslink position is only available if all crosslinks have defined protein crosslink positions!\n"
-        r"This error might be fixable with 'transform\.reannotate_positions\(\)'\!"
-    )
-    with pytest.raises(ValueError, match=err_str):
+    with pytest.raises(
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
+    ):
         _u = unique(pr["crosslinks"], by="protein")
 
 
@@ -221,11 +220,10 @@ def test13():
         crosslinker="DSS",
     )
     assert len(pr["crosslink-spectrum-matches"]) == 10
-    err_str = (
-        r"Grouping by protein crosslink position is only available if all crosslink-spectrum-matches have defined protein crosslink positions!\n"
-        r"This error might be fixable with 'transform\.reannotate_positions\(\)'\!"
-    )
-    with pytest.raises(ValueError, match=err_str):
+    with pytest.raises(
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
+    ):
         _aggregate_protein = aggregate(pr["crosslink-spectrum-matches"], by="protein")
 
 

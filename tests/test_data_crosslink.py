@@ -6,6 +6,7 @@
 # micha.birklbauer@gmail.com
 
 import pytest
+from pydantic import ValidationError
 
 
 def test1():
@@ -331,7 +332,7 @@ def test22():
 def test23():
     from pyXLMS import data
 
-    with pytest.raises(TypeError, match=f"xl_position_peptide_a must be {int}!"):
+    with pytest.raises(ValidationError):
         _crosslink = data.create_crosslink(
             "PEPTIDE",
             "3",
@@ -350,9 +351,7 @@ def test23():
 def test24():
     from pyXLMS import data
 
-    with pytest.raises(
-        TypeError, match=f"List values of xl_position_proteins_a must be {int}!"
-    ):
+    with pytest.raises(ValidationError):
         _crosslink = data.create_crosslink(
             "PEPTIDE",
             3,
@@ -371,10 +370,7 @@ def test24():
 def test25():
     from pyXLMS import data
 
-    with pytest.raises(
-        ValueError,
-        match="Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!",
-    ):
+    with pytest.raises(ValidationError):
         _crosslink = data.create_crosslink(
             "PEPTIDE",
             3,
@@ -393,10 +389,7 @@ def test25():
 def test26():
     from pyXLMS import data
 
-    with pytest.raises(
-        ValueError,
-        match="Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!",
-    ):
+    with pytest.raises(ValidationError):
         _crosslink = data.create_crosslink(
             "PEPTIDE",
             3,

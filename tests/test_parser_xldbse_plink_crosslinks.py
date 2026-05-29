@@ -65,7 +65,7 @@ def test4():
 
 
 def test5():
-    from pyXLMS.parser.parser_xldbse_plink import (
+    from pyXLMS.parser._parser_xldbse_plink import (
         __read_plink_cross_linked_peptides_file,
     )
 
@@ -76,7 +76,7 @@ def test5():
 
 
 def test6():
-    from pyXLMS.parser.parser_xldbse_plink import (
+    from pyXLMS.parser._parser_xldbse_plink import (
         __read_plink_cross_linked_peptides_file,
     )
 
@@ -91,7 +91,7 @@ def test6():
 
 
 def test7():
-    from pyXLMS.parser.parser_xldbse_plink import (
+    from pyXLMS.parser._parser_xldbse_plink import (
         __read_plink_cross_linked_peptides_file,
     )
 

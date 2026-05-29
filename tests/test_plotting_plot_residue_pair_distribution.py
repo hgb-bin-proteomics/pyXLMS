@@ -82,10 +82,8 @@ def test5():
         crosslinker="DSS",
     )
 
-    pr["crosslink-spectrum-matches"][0]["data_type"] = "peptide-spectrum-match"
-
     with pytest.raises(
         TypeError,
-        match=r"Unsupported data type for input data! Parameter data has to be a list of crosslink-spectrum-match!",
+        match=r"List values of data must be <class 'pyXLMS.data._csm.CrosslinkSpectrumMatch'>!",
     ):
-        _plot = plot_residue_pair_distribution(pr["crosslink-spectrum-matches"])
+        _plot = plot_residue_pair_distribution([pr])
