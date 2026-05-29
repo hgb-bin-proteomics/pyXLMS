@@ -123,15 +123,15 @@ def format_sequence(
 
     Examples
     --------
-    >>> from pyXLMS.parser_util import format_sequence
+    >>> from pyXLMS.parser import format_sequence
     >>> format_sequence("PEP[K]TIDE")
     'PEPKTIDE'
 
-    >>> from pyXLMS.parser_util import format_sequence
+    >>> from pyXLMS.parser import format_sequence
     >>> format_sequence("PEPKdssoTIDE")
     'PEPKTIDE'
 
-    >>> from pyXLMS.parser_util import format_sequence
+    >>> from pyXLMS.parser import format_sequence
     >>> format_sequence("peptide", remove_lower=False)
     'PEPTIDE'
     """
@@ -187,11 +187,11 @@ def get_bool_from_value(value: Any) -> bool:
 
     Examples
     --------
-    >>> from pyXLMS.parser_util import get_bool_from_value
+    >>> from pyXLMS.parser import get_bool_from_value
     >>> get_bool_from_value(0)
     False
 
-    >>> from pyXLMS.parser_util import get_bool_from_value
+    >>> from pyXLMS.parser import get_bool_from_value
     >>> get_bool_from_value("T")
     True
     """
