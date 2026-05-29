@@ -24,35 +24,91 @@ from typing import Any
 
 
 class ParserResult(BaseModel):
+    r"""Core data structure for parser results.
+
+    Data structure returned by any (parser) function that reads crosslink-spectrum-matches
+    and/or crosslinks.
+
+    Attributes Summary
+    ------------------
+    Here is a short summary about the parser result attributes, for more details
+    on the specific Pydantic validation requirements please refer to the corresponding attributes
+    themselves.
+
+    Required
+    ^^^^^^^^
+    The following attributes are required:
+
+    search_engine : str
+        The name of the identifying crosslink search engine.
+
+    Optional
+    ^^^^^^^^
+    The following attributes are optional:
+
+    crosslink_spectrum_matches : list of CrosslinkSpectrumMatch, or None, default = None
+        List of parsed crosslink-spectrum-matches.
+    crosslinks : list of Crosslink, or None, default = None
+        List of parsed crosslinks.
+
+    Examples
+    --------
+    >>> from pyXLMS.data import Crosslink
+    >>> from pyXLMS.data import ParserResult
+    >>> xl = Crosslink(
+    ...     alpha_peptide="PEKP",
+    ...     alpha_peptide_crosslink_position=3,
+    ...     beta_peptide="TKIDE",
+    ...     beta_peptide_crosslink_position=2,
+    ... )
+    >>> pr = ParserResult(search_engine="My Search Engine", crosslinks=[xl])
+    """
     search_engine: Annotated[
         str,
         Field(
-            frozen=True, description="Name of the identifying crosslink search engine."
+            frozen=True, description="The name of the identifying crosslink search engine."
         ),
     ]
+    r"""
+    The name of the identifying crosslink search engine.
+    """
     crosslink_spectrum_matches: Annotated[
         Optional[List[CrosslinkSpectrumMatch]],
         Field(frozen=True, description="List of parsed crosslink-spectrum-matches."),
-    ]
+    ] = None
+    r"""
+    List of parsed crosslink-spectrum-matches.
+    """
     crosslinks: Annotated[
         Optional[List[Crosslink]],
         Field(frozen=True, description="List of parsed crosslinks."),
-    ]
+    ] = None
+    r"""
+    List of parsed crosslinks.
+    """
     model_config = ConfigDict(
         validate_assignment=True, strict=True, str_strip_whitespace=True
     )
     r"""
-    Configuration for the model.
+    Pydantic configuration for the underlying validation model.
     """
 
     @computed_field(description="Data type of the object.")
     @property
-    def data_type(self) -> str:
+    def data_type(self) -> Literal["parser_result"]:
+        r"""
+        Data type of the object.
+        """
         return "parser_result"
 
     @computed_field(description="Completeness of the parser result.")
     @property
-    def completeness(self) -> str:
+    def completeness(self) -> Literal["full", "partial", "empty"]:
+        r"""
+        Completeness of the parser result, e.g. ``"full"`` if all attributes
+        are not ``None``, ``"empty"`` if crosslink-spectrum-matches and crosslinks
+        are ``None``, and otherwise ``"partial"``.
+        """
         if self.crosslink_spectrum_matches is not None and self.crosslinks is not None:
             return "full"
         if self.crosslink_spectrum_matches is None and self.crosslinks is None:
@@ -60,6 +116,10 @@ class ParserResult(BaseModel):
         return "partial"
 
     def __getitem__(self, key: str) -> Any:
+        r"""
+        Support for dict-like access.
+        """
+        # this is for legacy support
         if key == "crosslink-spectrum-matches":
             return self.crosslink_spectrum_matches
         try:
@@ -68,11 +128,42 @@ class ParserResult(BaseModel):
             raise KeyError(f"'{key}' is not a valid field!")
 
     def __contains__(self, key: str) -> bool:
+        r"""
+        Support for ``in`` operator.
+        """
+        # this is for legacy support
         if key == "crosslink-spectrum-matches":
             return True
         return hasattr(self, key)
 
     def copy_with_update(self, update: Dict[str, Any] = {}) -> ParserResult:
+        r"""Creates a deep copy of the parser result with optional attribute updates.
+
+        Parameters
+        ----------
+        update : dict of str, any, default = empty dict
+            Dictionary mapping attribute names (str) to their updated values.
+            The default (empty dict) will create a deep copy with the original
+            attribute values.
+
+        Returns
+        -------
+        ParserResult
+            New parser result with optionally updated attributes.
+
+        Examples
+        --------
+        >>> from pyXLMS.data import Crosslink
+        >>> from pyXLMS.data import ParserResult
+        >>> pr = ParserResult(search_engine="My Search Engine")
+        >>> xl = Crosslink(
+        ...     alpha_peptide="PEKP",
+        ...     alpha_peptide_crosslink_position=3,
+        ...     beta_peptide="TKIDE",
+        ...     beta_peptide_crosslink_position=2,
+        ... )
+        >>> pr_copy = pr.copy_with_update(update={"crosslinks": [xl]})
+        """
         _ok = check_input(update, "update", dict)
         if (
             "crosslink_spectrum_matches" in update
@@ -98,9 +189,23 @@ class ParserResult(BaseModel):
         )
 
     def csms(self) -> List[CrosslinkSpectrumMatch] | None:
+        r"""Shorthand function to retrieve crosslink-spectrum-matches.
+        
+        Returns
+        -------
+        list of CrosslinkSpectrumMatch, or None
+            Returns ``self.crosslink_spectrum_matches``
+        """
         return self.crosslink_spectrum_matches
 
     def xls(self) -> List[Crosslink] | None:
+        r"""Shorthand function to retrieve crosslinks.
+        
+        Returns
+        -------
+        list of Crosslink, or None
+            Returns ``self.crosslinks``
+        """
         return self.crosslinks
 
     def display(
@@ -108,7 +213,7 @@ class ParserResult(BaseModel):
         show_additional_information: bool = False,
         return_str: bool = False,
     ) -> None | str:
-        r"""Pretty prints the parser_result.
+        r"""Pretty prints the parser result.
 
         Parameters
         ----------
@@ -120,8 +225,7 @@ class ParserResult(BaseModel):
         Returns
         -------
         None, or str
-            The display string of the crosslink-spectrum-match, crosslink, or parser_result
-            if ``return_str = True`` otherwise None.
+            The display string of the parser result if ``return_str = True`` otherwise None.
 
         Examples
         --------
@@ -160,8 +264,8 @@ class ParserResult(BaseModel):
 
 def create_parser_result(
     search_engine: str,
-    csms: Optional[List[CrosslinkSpectrumMatch]],
-    crosslinks: Optional[List[Crosslink]],
+    csms: Optional[List[CrosslinkSpectrumMatch]] = None,
+    crosslinks: Optional[List[Crosslink]] = None,
 ) -> ParserResult:
     r"""Creates a parser result data structure.
 
@@ -171,9 +275,9 @@ def create_parser_result(
     ----------
     search_engine : str
         Name of the identifying crosslink search engine.
-    csms : list of dict, or None
+    csms : list of dict, or None, default = None
         List of crosslink-spectrum-matches as created by ``data.create_csm()``.
-    crosslinks : list of dict, or None
+    crosslinks : list of dict, or None, default = None
         List of crosslinks as created by ``data.create_crosslink()``.
 
     Returns
