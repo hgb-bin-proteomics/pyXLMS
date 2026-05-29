@@ -4,6 +4,18 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+r"""
+Constants used across pyXLMS.
+
+Examples
+--------
+>>> from pyXLMS.constants import MODIFICATIONS
+>>> MODIFICATIONS["Carbamidomethyl"]
+57.021464
+>>> MODIFICATIONS["BS3"]
+138.06808
+"""
+
 __all__ = [
     "AMINO_ACIDS",
     "AMINO_ACIDS_REPLACEMENTS",
