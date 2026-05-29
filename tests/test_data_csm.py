@@ -6,6 +6,7 @@
 # micha.birklbauer@gmail.com
 
 import pytest
+from pydantic import ValidationError
 
 
 def test1():
@@ -352,7 +353,7 @@ def test5():
 def test6():
     from pyXLMS import data
 
-    with pytest.raises(TypeError, match=f"modifications_a must be {dict}!"):
+    with pytest.raises(ValidationError):
         _csm = data.create_csm(
             "PEPTIDE",
             (" Oxidation ", 15.994915),
@@ -382,9 +383,7 @@ def test6():
 def test7():
     from pyXLMS import data
 
-    with pytest.raises(
-        TypeError, match=f"Dict values of modifications_b must be {tuple}!"
-    ):
+    with pytest.raises(ValidationError):
         _csm = data.create_csm(
             "PEPTIDE",
             {1: (" Oxidation ", 15.994915)},
@@ -414,7 +413,7 @@ def test7():
 def test8():
     from pyXLMS import data
 
-    with pytest.raises(TypeError, match=f"xl_position_peptide_b must be {int}!"):
+    with pytest.raises(ValidationError):
         _csm = data.create_csm(
             "PEPTIDE",
             {1: (" Oxidation ", 15.994915)},
@@ -444,9 +443,7 @@ def test8():
 def test9():
     from pyXLMS import data
 
-    with pytest.raises(
-        TypeError, match=f"List values of xl_position_proteins_b must be {int}!"
-    ):
+    with pytest.raises(ValidationError):
         _csm = data.create_csm(
             "PEPTIDE",
             {1: (" Oxidation ", 15.994915)},
@@ -476,10 +473,7 @@ def test9():
 def test10():
     from pyXLMS import data
 
-    with pytest.raises(
-        ValueError,
-        match="Crosslink position has to be given for every protein! Length of proteins_a and xl_position_proteins_a has to match!",
-    ):
+    with pytest.raises(ValidationError):
         _csm = data.create_csm(
             "PEPTIDE",
             {1: (" Oxidation ", 15.994915)},
@@ -509,10 +503,7 @@ def test10():
 def test11():
     from pyXLMS import data
 
-    with pytest.raises(
-        ValueError,
-        match="Crosslink position has to be given for every protein! Length of proteins_b and xl_position_proteins_b has to match!",
-    ):
+    with pytest.raises(ValidationError):
         _csm = data.create_csm(
             "PEPTIDE",
             {1: (" Oxidation ", 15.994915)},
@@ -542,10 +533,7 @@ def test11():
 def test12():
     from pyXLMS import data
 
-    with pytest.raises(
-        ValueError,
-        match="Peptide position has to be given for every protein! Length of proteins_a and pep_position_proteins_a has to match!",
-    ):
+    with pytest.raises(ValidationError):
         _csm = data.create_csm(
             "PEPTIDE",
             {1: (" Oxidation ", 15.994915)},
@@ -575,10 +563,7 @@ def test12():
 def test13():
     from pyXLMS import data
 
-    with pytest.raises(
-        ValueError,
-        match="Peptide position has to be given for every protein! Length of proteins_b and pep_position_proteins_b has to match!",
-    ):
+    with pytest.raises(ValidationError):
         _csm = data.create_csm(
             "PEPTIDE",
             {1: (" Oxidation ", 15.994915)},
@@ -608,10 +593,7 @@ def test13():
 def test14():
     from pyXLMS import data
 
-    with pytest.raises(
-        ValueError,
-        match="0-based value found! All positions must use 1-based indexing!",
-    ):
+    with pytest.raises(ValidationError):
         _csm = data.create_csm(
             "PEPTIDE",
             {1: (" Oxidation ", 15.994915)},
