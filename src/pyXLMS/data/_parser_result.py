@@ -69,10 +69,12 @@ class ParserResult(BaseModel):
     ... )
     >>> pr = ParserResult(search_engine="My Search Engine", crosslinks=[xl])
     """
+
     search_engine: Annotated[
         str,
         Field(
-            frozen=True, description="The name of the identifying crosslink search engine."
+            frozen=True,
+            description="The name of the identifying crosslink search engine.",
         ),
     ]
     r"""
@@ -196,7 +198,7 @@ class ParserResult(BaseModel):
 
     def csms(self) -> List[CrosslinkSpectrumMatch] | None:
         r"""Shorthand function to retrieve crosslink-spectrum-matches.
-        
+
         Returns
         -------
         list of CrosslinkSpectrumMatch, or None
@@ -206,7 +208,7 @@ class ParserResult(BaseModel):
 
     def xls(self) -> List[Crosslink] | None:
         r"""Shorthand function to retrieve crosslinks.
-        
+
         Returns
         -------
         list of Crosslink, or None
