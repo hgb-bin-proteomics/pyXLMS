@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyXLMS"
-version = "1.8.11"
+version = "2.0.0"
 authors = [
   { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
 ]
@@ -25,6 +25,7 @@ classifiers = [
   "Development Status :: 5 - Production/Stable"
 ]
 dependencies = [
+  "pydantic",
   "numpy",
   "pandas",
   "openpyxl",

@@ -12,10 +12,10 @@ sys.path.insert(0, os.path.abspath("../src/"))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "pyXLMS"
-copyright = "2025, Bioinformatics Research Group, FH Oberösterreich Campus Hagenberg"
+copyright = "2026, Bioinformatics Research Group, FH Oberösterreich Campus Hagenberg"
 author = "Micha Johannes Birklbauer"
-version = "1.8"
-release = "1.8.11"
+version = "2.0"
+release = "2.0.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -33,7 +33,7 @@ templates_path = ["_templates"]
 exclude_patterns = ["build"]
 root_doc = "index"
 autosummary_generate = True
-autodoc_default_options = {"members": True, "inherited-members": True}
+autodoc_default_options = {"members": True, "inherited-members": False}
 python_maximum_signature_line_length = 88
 
 # -- Options for HTML output -------------------------------------------------
