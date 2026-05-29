@@ -75,7 +75,7 @@ def test5():
     crosslinks = [xl1, xl2]
 
     with pytest.raises(
-        RuntimeError,
-        match="Can't export to XLinkDB because not all necessary information is available!",
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
         _df = to_xlinkdb(crosslinks, filename=None)
