@@ -27,8 +27,97 @@ from typing import Dict
 from typing import Tuple
 from typing import Any
 
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
 
 class CrosslinkSpectrumMatch(BaseModel):
+    r"""Core data structure representing a single crosslink-spectrum-match.
+
+    Crosslink-spectrum-matches associate two crosslinked peptides with a specific
+    mass spectrum. They contain spectrum level information additionally to crosslink
+    information.
+
+    Attributes
+    ----------
+    alpha_peptide : str
+        The unmodified amino acid sequence of the first peptide. Amino acids should be
+        in upper case. Modifications should not be included in the sequence.
+    alpha_peptide_crosslink_position : int
+        The position of the crosslinker in the sequence of the first peptide (1-based).
+    beta_peptide : str
+        The unmodified amino acid sequence of the second peptide. Amino acids should be
+        in upper case. Modifications should not be included in the sequence.
+    beta_peptide_crosslink_position : int
+        The position of the crosslinker in the sequence of the second peptide (1-based).
+    spectrum_file : str
+        Name of the spectrum file the crosslink-spectrum-match was identified in.
+    scan_nr : int
+        The corresponding scan number of the crosslink-spectrum-match. If the scan number
+        is not available the spectrum index should be provided.
+    alpha_modifications : dict of int, tuple of str, float, or None, default = None
+        The modifications of the first peptide given as a dictionary that maps peptide position
+        (1-based) to modification given as a tuple of modification name and modification delta mass.
+        ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications
+        should be denoted with position ``len(peptide) + 1``. If the peptide is not modified an empty
+        dictionary should be given.
+    alpha_proteins : list of str, or None, default = None
+        The accessions of proteins that the first peptide is associated with.
+    alpha_proteins_crosslink_positions : list of int, or None, default = None
+        Positions of the crosslink in the proteins of the first peptide (1-based). If given the list
+        should be of the same length as ``alpha_proteins`` and crosslink position at list index ``i``
+        should correspond to the protein at list index ``i`` in ``alpha_proteins``.
+    alpha_proteins_peptide_positions : list of int, or None, default = None
+        Positions of the first peptide in the corresponding proteins (1-based). If given the list
+        should be of the same length as ``alpha_proteins`` and peptide position at list index ``i``
+        should correspond to the protein at list index ``i`` in ``alpha_proteins``.
+    alpha_score : float, or None, default = None
+        Identification score of the first peptide.
+    alpha_decoy : bool, or None, default = None
+        Whether the first peptide is from the decoy database (``True``) or not (``False``).
+    beta_modifications : dict of int, tuple of str, float, or None, default = None
+        The modifications of the second peptide given as a dictionary that maps peptide position
+        (1-based) to modification given as a tuple of modification name and modification delta mass.
+        ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications
+        should be denoted with position ``len(peptide) + 1``. If the peptide is not modified an empty
+        dictionary should be given.
+    beta_proteins : list of str, or None, default = None
+        The accessions of proteins that the second peptide is associated with.
+    beta_proteins_crosslink_positions : list of int, or None, default = None
+        Positions of the crosslink in the proteins of the second peptide (1-based). If given the list
+        should be of the same length as ``beta_proteins`` and crosslink position at list index ``i``
+        should correspond to the protein at list index ``i`` in ``beta_proteins``.
+    beta_proteins_peptide_positions : list of int, or None, default = None
+        Positions of the second peptide in the corresponding proteins (1-based). If given the list
+        should be of the same length as ``beta_proteins`` and peptide position at list index ``i``
+        should correspond to the protein at list index ``i`` in ``beta_proteins``.
+    beta_score : float, or None, default = None
+        Identification score of the second peptide.
+    beta_decoy : bool, or None, default = None
+        Whether the second peptide is from the decoy database (``True``) or not (``False``).
+    score : float, or None, default = None
+        Score of the crosslink-spectrum-match.
+    charge : int, or None, default = None
+        The precursor charge of the corresponding mass spectrum of the crosslink-spectrum-match.
+    retention_time : float, or None, default = None
+        The retention time of the corresponding mass spectrum of the crosslink-spectrum-match in seconds.
+    ion_mobility : float, or None, default = None
+        The ion mobility or compensation voltage of the corresponding mass spectrum of the crosslink-spectrum-match.
+    additional_information : dict of str, any, or None, default = None
+        A dictionary with additional information associated with the crosslink-spectrum-match.
+
+    Notes
+    -----
+    Alpha and beta assignment is internally decided by whichever peptide's sequence
+    is alphabetically first. If the ``beta_peptide``'s sequence comes alphabetically
+    first it will be assigned to ``alpha_peptide`` and the original ``alpha_peptide``
+    will be assigned to ``beta_peptide`` (and the same happens for all other corresponding
+    alpha and beta values).
+    """
+
     alpha_peptide: Annotated[
         str,
         Field(
@@ -36,6 +125,10 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="The unmodified amino acid sequence of the first peptide.",
         ),
     ]
+    r"""
+    The unmodified amino acid sequence of the first peptide. Amino acids should be
+    in upper case. Modifications should not be included in the sequence.
+    """
     alpha_peptide_crosslink_position: Annotated[
         int,
         Field(
@@ -43,6 +136,9 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="The position of the crosslinker in the sequence of the first peptide (1-based).",
         ),
     ]
+    r"""
+    The position of the crosslinker in the sequence of the first peptide (1-based).
+    """
     beta_peptide: Annotated[
         str,
         Field(
@@ -50,6 +146,10 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="The unmodified amino acid sequence of the second peptide.",
         ),
     ]
+    r"""
+    The unmodified amino acid sequence of the second peptide. Amino acids should be
+    in upper case. Modifications should not be included in the sequence.
+    """
     beta_peptide_crosslink_position: Annotated[
         int,
         Field(
@@ -57,6 +157,9 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="The position of the crosslinker in the sequence of the second peptide (1-based).",
         ),
     ]
+    r"""
+    The position of the crosslinker in the sequence of the second peptide (1-based).
+    """
     spectrum_file: Annotated[
         str,
         Field(
@@ -64,6 +167,9 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="Name of the spectrum file the crosslink-spectrum-match was identified in.",
         ),
     ]
+    r"""
+    Name of the spectrum file the crosslink-spectrum-match was identified in.
+    """
     scan_nr: Annotated[
         int,
         Field(
@@ -71,10 +177,21 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="The corresponding scan number of the crosslink-spectrum-match.",
         ),
     ]
+    r"""
+    The corresponding scan number of the crosslink-spectrum-match. If the scan number
+    is not available the spectrum index should be provided.
+    """
     alpha_modifications: Annotated[
         Optional[Dict[int, Tuple[str, float]]],
         Field(frozen=True, description="The modifications of the first peptide."),
     ] = None
+    r"""
+    The modifications of the first peptide given as a dictionary that maps peptide position
+    (1-based) to modification given as a tuple of modification name and modification delta mass.
+    ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications
+    should be denoted with position ``len(peptide) + 1``. If the peptide is not modified an empty
+    dictionary should be given.
+    """
     alpha_proteins: Annotated[
         Optional[List[str]],
         Field(
@@ -82,6 +199,9 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="The accessions of proteins that the first peptide is associated with.",
         ),
     ] = None
+    r"""
+    The accessions of proteins that the first peptide is associated with.
+    """
     alpha_proteins_crosslink_positions: Annotated[
         Optional[List[int]],
         Field(
@@ -89,6 +209,11 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="Positions of the crosslink in the proteins of the first peptide (1-based).",
         ),
     ] = None
+    r"""
+    Positions of the crosslink in the proteins of the first peptide (1-based). If given the list
+    should be of the same length as ``alpha_proteins`` and crosslink position at list index ``i``
+    should correspond to the protein at list index ``i`` in ``alpha_proteins``.
+    """
     alpha_proteins_peptide_positions: Annotated[
         Optional[List[int]],
         Field(
@@ -96,21 +221,39 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="Positions of the first peptide in the corresponding proteins (1-based).",
         ),
     ] = None
+    r"""
+    Positions of the first peptide in the corresponding proteins (1-based). If given the list
+    should be of the same length as ``alpha_proteins`` and peptide position at list index ``i``
+    should correspond to the protein at list index ``i`` in ``alpha_proteins``.
+    """
     alpha_score: Annotated[
         Optional[float],
         Field(frozen=True, description="Identification score of the first peptide."),
     ] = None
+    r"""
+    Identification score of the first peptide.
+    """
     alpha_decoy: Annotated[
         Optional[bool],
         Field(
             frozen=True,
-            description="Whether the alpha peptide is from the decoy database or not.",
+            description="Whether the first peptide is from the decoy database or not.",
         ),
     ] = None
+    r"""
+    Whether the first peptide is from the decoy database (``True``) or not (``False``).
+    """
     beta_modifications: Annotated[
         Optional[Dict[int, Tuple[str, float]]],
         Field(frozen=True, description="The modifications of the second peptide."),
     ] = None
+    r"""
+    The modifications of the second peptide given as a dictionary that maps peptide position
+    (1-based) to modification given as a tuple of modification name and modification delta mass.
+    ``N-terminal`` modifications should be denoted with position ``0``. ``C-terminal`` modifications
+    should be denoted with position ``len(peptide) + 1``. If the peptide is not modified an empty
+    dictionary should be given.
+    """
     beta_proteins: Annotated[
         Optional[List[str]],
         Field(
@@ -118,6 +261,9 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="The accessions of proteins that the second peptide is associated with.",
         ),
     ] = None
+    r"""
+    The accessions of proteins that the second peptide is associated with.
+    """
     beta_proteins_crosslink_positions: Annotated[
         Optional[List[int]],
         Field(
@@ -125,6 +271,11 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="Positions of the crosslink in the proteins of the second peptide (1-based).",
         ),
     ] = None
+    r"""
+    Positions of the crosslink in the proteins of the second peptide (1-based). If given the list
+    should be of the same length as ``beta_proteins`` and crosslink position at list index ``i``
+    should correspond to the protein at list index ``i`` in ``beta_proteins``.
+    """
     beta_proteins_peptide_positions: Annotated[
         Optional[List[int]],
         Field(
@@ -132,10 +283,18 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="Positions of the second peptide in the corresponding proteins (1-based).",
         ),
     ] = None
+    r"""
+    Positions of the second peptide in the corresponding proteins (1-based). If given the list
+    should be of the same length as ``beta_proteins`` and peptide position at list index ``i``
+    should correspond to the protein at list index ``i`` in ``beta_proteins``.
+    """
     beta_score: Annotated[
         Optional[float],
         Field(frozen=True, description="Identification score of the second peptide."),
     ] = None
+    r"""
+    Identification score of the second peptide.
+    """
     beta_decoy: Annotated[
         Optional[bool],
         Field(
@@ -143,10 +302,16 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="Whether the beta peptide is from the decoy database or not.",
         ),
     ] = None
+    r"""
+    Whether the second peptide is from the decoy database (``True``) or not (``False``).
+    """
     score: Annotated[
         Optional[float],
         Field(frozen=True, description="Score of the crosslink-spectrum-match."),
     ] = None
+    r"""
+    Score of the crosslink-spectrum-match.
+    """
     charge: Annotated[
         Optional[int],
         Field(
@@ -154,6 +319,9 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="The precursor charge of the corresponding mass spectrum of the crosslink-spectrum-match.",
         ),
     ] = None
+    r"""
+    The precursor charge of the corresponding mass spectrum of the crosslink-spectrum-match.
+    """
     retention_time: Annotated[
         Optional[float],
         Field(
@@ -161,6 +329,9 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="The retention time of the corresponding mass spectrum of the crosslink-spectrum-match in seconds.",
         ),
     ] = None
+    r"""
+    The retention time of the corresponding mass spectrum of the crosslink-spectrum-match in seconds.
+    """
     ion_mobility: Annotated[
         Optional[float],
         Field(
@@ -168,6 +339,9 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="The ion mobility or compensation voltage of the corresponding mass spectrum of the crosslink-spectrum-match.",
         ),
     ] = None
+    r"""
+    The ion mobility or compensation voltage of the corresponding mass spectrum of the crosslink-spectrum-match.
+    """
     additional_information: Annotated[
         Optional[Dict[str, Any]],
         Field(
@@ -175,21 +349,31 @@ class CrosslinkSpectrumMatch(BaseModel):
             description="A dictionary with additional information associated with the crosslink-spectrum-match.",
         ),
     ] = None
+    r"""
+    A dictionary with additional information associated with the crosslink-spectrum-match.
+    """
     model_config = ConfigDict(
         validate_assignment=True, strict=True, str_strip_whitespace=True
     )
     r"""
-    Configuration for the model.
+    Pydantic configuration for the underlying validation model.
     """
 
     @computed_field(description="Data type of the object.")
     @property
-    def data_type(self) -> str:
+    def data_type(self) -> Literal["crosslink-spectrum-match"]:
+        r"""
+        Data type of the object.
+        """
         return "crosslink-spectrum-match"
 
     @computed_field(description="Completeness of the crosslink-spectrum-match.")
     @property
-    def completeness(self) -> str:
+    def completeness(self) -> Literal["full", "partial"]:
+        r"""
+        Completeness of the crosslink-spectrum-match, e.g. ``"full"`` if all attributes
+        are not ``None`` and else ``"partial"``.
+        """
         full = all(
             [
                 self.alpha_modifications is not None,
@@ -214,7 +398,11 @@ class CrosslinkSpectrumMatch(BaseModel):
 
     @computed_field(description="Link type of the crosslink-spectrum-match.")
     @property
-    def crosslink_type(self) -> str:
+    def crosslink_type(self) -> Literal["intra", "inter"]:
+        r"""
+        Link type of the crosslink-spectrum-match, e.g. ``"intra"`` if the proteins in
+        ``alpha_proteins`` and ``beta_proteins`` overlap, otherwise ``"inter"``.
+        """
         a_prot = set(
             [str(protein).strip() for protein in self.alpha_proteins]
             if self.alpha_proteins is not None
@@ -229,6 +417,21 @@ class CrosslinkSpectrumMatch(BaseModel):
 
     @override
     def model_post_init(self, context: Any = None) -> None:
+        r"""
+        Performs extra validation and post init functions.
+
+        Notes
+        -----
+        Alpha and beta assignment is internally decided by whichever peptide's sequence
+        is alphabetically first. If the ``beta_peptide``'s sequence comes alphabetically
+        first it will be assigned to ``alpha_peptide`` and the original ``alpha_peptide``
+        will be assigned to ``beta_peptide`` (and the same happens for all other corresponding
+        alpha and beta values).
+
+        Warnings
+        --------
+        This method should not be called manually!
+        """
         # extra validation
         if (
             self.alpha_proteins is not None
@@ -412,15 +615,46 @@ class CrosslinkSpectrumMatch(BaseModel):
         return
 
     def __getitem__(self, key: str) -> Any:
+        r"""
+        Support for dict-like access.
+        """
         try:
             return getattr(self, key)
         except AttributeError:
             raise KeyError(f"'{key}' is not a valid field!")
 
     def __contains__(self, key: str) -> bool:
+        r"""
+        Support for ``in`` operator.
+        """
         return hasattr(self, key)
 
     def copy_with_update(self, update: Dict[str, Any] = {}) -> CrosslinkSpectrumMatch:
+        r"""Creates a deep copy of the crosslink-spectrum-match with optional attribute updates.
+
+        Parameters
+        ----------
+        update : dict of str, any, default = empty dict
+            Dictionary mapping attribute names (str) to their updated values.
+
+        Returns
+        -------
+        CrosslinkSpectrumMatch
+            New crosslink-spectrum-match with optionally updated attributes.
+
+        Examples
+        --------
+        >>> from pyXLMS.data import CrosslinkSpectrumMatch as CSM
+        >>> csm = CSM(
+        ...     alpha_peptide="PEKP",
+        ...     alpha_peptide_crosslink_position=3,
+        ...     beta_peptide="TKIDE",
+        ...     beta_peptide_crosslink_position=2,
+        ...     spectrum_file="dsso.mzML",
+        ...     scan_nr=1,
+        ... )
+        >>> csm_copy = csm.copy_with_update(update={"scan_nr": 2})
+        """
         _ok = check_input(update, "update", dict)
         return CrosslinkSpectrumMatch(
             alpha_peptide=self.alpha_peptide
@@ -497,6 +731,13 @@ class CrosslinkSpectrumMatch(BaseModel):
         )
 
     def to_crosslink(self) -> Crosslink:
+        r"""Creates a crosslink from the crosslink-spectrum-match.
+
+        Returns
+        -------
+        Crosslink
+            The corresponding crosslink created from the crosslink-spectrum-match.
+        """
         return create_crosslink(
             peptide_a=self.alpha_peptide,
             xl_position_peptide_a=self.alpha_peptide_crosslink_position,
