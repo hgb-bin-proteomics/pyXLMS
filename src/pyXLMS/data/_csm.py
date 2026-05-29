@@ -43,7 +43,7 @@ class CrosslinkSpectrumMatch(BaseModel):
 
     Attributes Summary
     ------------------
-    Here is a short summary about the croslink-spectrum-match attributes, for more details
+    Here is a short summary about the crosslink-spectrum-match attributes, for more details
     on the specific Pydantic validation requirements please refer to the corresponding attributes
     themselves.
 
