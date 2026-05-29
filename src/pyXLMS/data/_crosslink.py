@@ -15,7 +15,7 @@ from pydantic import computed_field
 
 from ._util import check_input
 from ._util import check_indexing
-from ._util import __get_modified_peptide
+from ._util import __get_modified_peptide as get_modified_peptide
 
 from typing import override
 from typing import Annotated
@@ -568,13 +568,13 @@ class Crosslink(BaseModel):
         >>> xl.to_proforma(crosslinker="Xlink:DSSO")
         'K[Xlink:DSSO]PEPTIDE//PEPK[Xlink:DSSO]TIDE'
         """
-        peptide_a = __get_modified_peptide(
+        peptide_a = get_modified_peptide(
             self.alpha_peptide,
             None,
             self.alpha_peptide_crosslink_position,
             crosslinker,
         )
-        peptide_b = __get_modified_peptide(
+        peptide_b = get_modified_peptide(
             self.beta_peptide, None, self.beta_peptide_crosslink_position, crosslinker
         )
         return f"{peptide_a}//{peptide_b}"

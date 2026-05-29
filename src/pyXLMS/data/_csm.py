@@ -17,7 +17,7 @@ from ._crosslink import Crosslink
 from ._crosslink import create_crosslink
 from ._util import check_input
 from ._util import check_indexing
-from ._util import __get_modified_peptide
+from ._util import __get_modified_peptide as get_modified_peptide
 
 from typing import override
 from typing import Annotated
@@ -969,13 +969,13 @@ class CrosslinkSpectrumMatch(BaseModel):
         >>> csm.to_proforma(crosslinker="Xlink:DSSO")
         'K[+158.00376]PM[+15.994915]EPTIDE//PEPK[+158.00376]TIDE/3'
         """
-        peptide_a = __get_modified_peptide(
+        peptide_a = get_modified_peptide(
             self.alpha_peptide,
             self.alpha_modifications,
             self.alpha_peptide_crosslink_position,
             crosslinker,
         )
-        peptide_b = __get_modified_peptide(
+        peptide_b = get_modified_peptide(
             self.beta_peptide,
             self.beta_modifications,
             self.beta_peptide_crosslink_position,
