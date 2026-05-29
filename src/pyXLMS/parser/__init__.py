@@ -4,6 +4,22 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+r"""
+Parse different crosslink search engine and result formats.
+
+Examples
+--------
+>>> from pyXLMS.parser import read
+>>> csms_from_xiSearch = read(
+...     "data/xi/r1_Xi1.7.6.7.csv", engine="xiSearch/xiFDR", crosslinker="DSS"
+... )
+
+>>> from pyXLMS.parser import read
+>>> csms_from_MaxQuant = read(
+...     "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
+... )
+"""
+
 from __future__ import annotations
 
 __all__ = [
