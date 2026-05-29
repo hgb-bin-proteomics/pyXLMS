@@ -4,6 +4,10 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+r"""
+A python package to process protein cross-linking data.
+"""
+
 __all__ = [
     "constants",
     "data",

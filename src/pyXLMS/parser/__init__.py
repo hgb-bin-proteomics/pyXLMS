@@ -4,6 +4,22 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+r"""
+Parse different crosslink search engine and result formats.
+
+Examples
+--------
+>>> from pyXLMS.parser import read
+>>> csms_from_xiSearch = read(
+...     "data/xi/r1_Xi1.7.6.7.csv", engine="xiSearch/xiFDR", crosslinker="DSS"
+... )
+
+>>> from pyXLMS.parser import read
+>>> csms_from_MaxQuant = read(
+...     "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
+... )
+"""
+
 from __future__ import annotations
 
 __all__ = [
@@ -31,38 +47,44 @@ __all__ = [
     "read",
     "read_xinet",
     "read_xiview",
+    "format_sequence",
+    "get_bool_from_value",
 ]
 
 # READERS
-from .parser_xldbse_xi import read_xi
-from .parser_xldbse_mzid import read_mzid
-from .parser_xldbse_plink import read_plink
-from .parser_xldbse_scout import read_scout
-from .parser_xldbse_xlinkx import read_xlinkx
-from .parser_xldbse_custom import read_custom
-from .parser_xldbse_merox import read_merox
-from .parser_xldbse_msannika import read_msannika
-from .parser_xldbse_maxquant import read_maxquant
-from .parser_xldbse_maxquant import read_maxlynx
-from .parser_xldbse_xinet_xiview import read_xinet
-from .parser_xldbse_xinet_xiview import read_xiview
+from ._parser_xldbse_xi import read_xi
+from ._parser_xldbse_mzid import read_mzid
+from ._parser_xldbse_plink import read_plink
+from ._parser_xldbse_scout import read_scout
+from ._parser_xldbse_xlinkx import read_xlinkx
+from ._parser_xldbse_custom import read_custom
+from ._parser_xldbse_merox import read_merox
+from ._parser_xldbse_msannika import read_msannika
+from ._parser_xldbse_maxquant import read_maxquant
+from ._parser_xldbse_xinet_xiview import read_xinet
+from ._parser_xldbse_maxquant import read_maxlynx
+from ._parser_xldbse_xinet_xiview import read_xiview
 
 # UTILITY
-from .parser_xldbse_xi import detect_xi_filetype
-from .parser_xldbse_xi import parse_peptide
-from .parser_xldbse_xi import parse_modifications_from_xi_sequence
-from .parser_xldbse_mzid import parse_scan_nr_from_mzid
-from .parser_xldbse_plink import parse_scan_nr_from_plink
-from .parser_xldbse_plink import parse_spectrum_file_from_plink
-from .parser_xldbse_plink import detect_plink_filetype
-from .parser_xldbse_scout import detect_scout_filetype
-from .parser_xldbse_scout import parse_modifications_from_scout_sequence
-from .parser_xldbse_custom import pyxlms_modification_str_parser
-from .parser_xldbse_maxquant import parse_modifications_from_maxquant_sequence
+from ._parser_xldbse_xi import detect_xi_filetype
+from ._parser_xldbse_xi import parse_peptide
+from ._parser_xldbse_xi import parse_modifications_from_xi_sequence
+from ._parser_xldbse_mzid import parse_scan_nr_from_mzid
+from ._parser_xldbse_plink import parse_scan_nr_from_plink
+from ._parser_xldbse_plink import parse_spectrum_file_from_plink
+from ._parser_xldbse_plink import detect_plink_filetype
+from ._parser_xldbse_scout import detect_scout_filetype
+from ._parser_xldbse_scout import parse_modifications_from_scout_sequence
+from ._parser_xldbse_custom import pyxlms_modification_str_parser
+from ._parser_xldbse_maxquant import parse_modifications_from_maxquant_sequence
+
+# UTIL
+from ._util import format_sequence
+from ._util import get_bool_from_value
+
+from ..data._parser_result import ParserResult
 
 from typing import BinaryIO
-from typing import Dict
-from typing import Any
 from typing import List
 
 # legacy
@@ -92,7 +114,7 @@ def read(
     ignore_errors: bool = False,
     verbose: Literal[0, 1, 2] = 1,
     **kwargs,
-) -> Dict[str, Any]:
+) -> ParserResult:
     r"""Read a crosslink result file.
 
     Reads a crosslink or crosslink-spectrum-match result file from any of the supported crosslink search engines or formats.
@@ -125,7 +147,7 @@ def read(
 
     Returns
     -------
-    dict
+    ParserResult
         The ``parser_result`` object containing all parsed information.
 
     Raises
@@ -230,4 +252,4 @@ def read(
     )
     raise ValueError(err_str)
 
-    return {"err": err_str}
+    return ParserResult(search_engine="error")
