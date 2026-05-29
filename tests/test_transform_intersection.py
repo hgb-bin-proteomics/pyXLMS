@@ -180,8 +180,7 @@ def test8():
         "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
     )
     maxquant = aggregate(maxquant["crosslink-spectrum-matches"])
-    maxquant[-5]["completeness"] = "partial"
-    maxquant[-5]["score"] = None
+    maxquant[-5] = maxquant[-5].copy_with_update({"score": None})
     err_str = (
         r"Can't intersect based on score because not all data have associated scores!"
     )
