@@ -125,22 +125,47 @@ def test6():
     xls = pr["crosslinks"]
 
     pr_none = copy.deepcopy(pr)
+    csms = list()
+    xls = list()
     for csm in pr_none["crosslink-spectrum-matches"]:
         if csm["alpha_decoy"]:
-            csm["alpha_proteins"] = [
-                f"REV__{protein}" for protein in csm["alpha_proteins"]
-            ]
+            csm = csm.copy_with_update(
+                {
+                    "alpha_proteins": [
+                        f"REV__{protein}" for protein in csm["alpha_proteins"]
+                    ]
+                }
+            )
         if csm["beta_decoy"]:
-            csm["beta_proteins"] = [
-                f"REV__{protein}" for protein in csm["beta_proteins"]
-            ]
+            csm = csm.copy_with_update(
+                {
+                    "beta_proteins": [
+                        f"REV__{protein}" for protein in csm["beta_proteins"]
+                    ]
+                }
+            )
+        csms.append(csm)
     for xl in pr_none["crosslinks"]:
         if xl["alpha_decoy"]:
-            xl["alpha_proteins"] = [
-                f"REV__{protein}" for protein in xl["alpha_proteins"]
-            ]
+            xl = xl.copy_with_update(
+                {
+                    "alpha_proteins": [
+                        f"REV__{protein}" for protein in xl["alpha_proteins"]
+                    ]
+                }
+            )
         if xl["beta_decoy"]:
-            xl["beta_proteins"] = [f"REV__{protein}" for protein in xl["beta_proteins"]]
+            xl = xl.copy_with_update(
+                {
+                    "beta_proteins": [
+                        f"REV__{protein}" for protein in xl["beta_proteins"]
+                    ]
+                }
+            )
+        xls.append(xl)
+    pr_none = pr_none.copy_with_update(
+        {"crosslink-spectrum-matches": csms, "crosslinks": xls}
+    )
     pr_none = reannotate_decoy_labels(
         pr_none, by_mapping={True: None, False: None, None: None}
     )
@@ -167,24 +192,49 @@ def test7():
     xls = pr["crosslinks"]
 
     pr_none = copy.deepcopy(pr)
+    csms = list()
+    xls = list()
+    # previously this test (non pydantic) used whitespace in front of the REV__
+    # this doesn't work with pydantic anymore because whitespace is automatically stripped
     for csm in pr_none["crosslink-spectrum-matches"]:
         if csm["alpha_decoy"]:
-            csm["alpha_proteins"] = [
-                f" REV__{protein}" for protein in csm["alpha_proteins"]
-            ]
+            csm = csm.copy_with_update(
+                {
+                    "alpha_proteins": [
+                        f"S REV__{protein}" for protein in csm["alpha_proteins"]
+                    ]
+                }
+            )
         if csm["beta_decoy"]:
-            csm["beta_proteins"] = [
-                f" REV__{protein}" for protein in csm["beta_proteins"]
-            ]
+            csm = csm.copy_with_update(
+                {
+                    "beta_proteins": [
+                        f"S REV__{protein}" for protein in csm["beta_proteins"]
+                    ]
+                }
+            )
+        csms.append(csm)
     for xl in pr_none["crosslinks"]:
         if xl["alpha_decoy"]:
-            xl["alpha_proteins"] = [
-                f" REV__{protein}" for protein in xl["alpha_proteins"]
-            ]
+            xl = xl.copy_with_update(
+                {
+                    "alpha_proteins": [
+                        f"S REV__{protein}" for protein in xl["alpha_proteins"]
+                    ]
+                }
+            )
         if xl["beta_decoy"]:
-            xl["beta_proteins"] = [
-                f" REV__{protein}" for protein in xl["beta_proteins"]
-            ]
+            xl = xl.copy_with_update(
+                {
+                    "beta_proteins": [
+                        f"S REV__{protein}" for protein in xl["beta_proteins"]
+                    ]
+                }
+            )
+        xls.append(xl)
+    pr_none = pr_none.copy_with_update(
+        {"crosslink-spectrum-matches": csms, "crosslinks": xls}
+    )
     pr_none = reannotate_decoy_labels(
         pr_none, by_mapping={True: None, False: None, None: None}
     )
@@ -211,22 +261,47 @@ def test8():
     xls = pr["crosslinks"]
 
     pr_none = copy.deepcopy(pr)
+    csms = list()
+    xls = list()
     for csm in pr_none["crosslink-spectrum-matches"]:
         if csm["alpha_decoy"]:
-            csm["alpha_proteins"] = [
-                f"REV__{protein}" for protein in csm["alpha_proteins"]
-            ]
+            csm = csm.copy_with_update(
+                {
+                    "alpha_proteins": [
+                        f"REV__{protein}" for protein in csm["alpha_proteins"]
+                    ]
+                }
+            )
         if csm["beta_decoy"]:
-            csm["beta_proteins"] = [
-                f"REV__{protein}" for protein in csm["beta_proteins"]
-            ]
+            csm = csm.copy_with_update(
+                {
+                    "beta_proteins": [
+                        f"REV__{protein}" for protein in csm["beta_proteins"]
+                    ]
+                }
+            )
+        csms.append(csm)
     for xl in pr_none["crosslinks"]:
         if xl["alpha_decoy"]:
-            xl["alpha_proteins"] = [
-                f"REV__{protein}" for protein in xl["alpha_proteins"]
-            ]
+            xl = xl.copy_with_update(
+                {
+                    "alpha_proteins": [
+                        f"REV__{protein}" for protein in xl["alpha_proteins"]
+                    ]
+                }
+            )
         if xl["beta_decoy"]:
-            xl["beta_proteins"] = [f"REV__{protein}" for protein in xl["beta_proteins"]]
+            xl = xl.copy_with_update(
+                {
+                    "beta_proteins": [
+                        f"REV__{protein}" for protein in xl["beta_proteins"]
+                    ]
+                }
+            )
+        xls.append(xl)
+    pr_none = pr_none.copy_with_update(
+        {"crosslink-spectrum-matches": csms, "crosslinks": xls}
+    )
     pr_none = reannotate_decoy_labels(
         pr_none, by_mapping={True: None, False: None, None: None}
     )
@@ -253,24 +328,47 @@ def test9():
     xls = pr["crosslinks"]
 
     pr_none = copy.deepcopy(pr)
+    csms = list()
+    xls = list()
     for csm in pr_none["crosslink-spectrum-matches"]:
         if csm["alpha_decoy"]:
-            csm["alpha_proteins"] = [
-                f" REV__{protein}" for protein in csm["alpha_proteins"]
-            ]
+            csm = csm.copy_with_update(
+                {
+                    "alpha_proteins": [
+                        f"REV__{protein}" for protein in csm["alpha_proteins"]
+                    ]
+                }
+            )
         if csm["beta_decoy"]:
-            csm["beta_proteins"] = [
-                f" REV__{protein}" for protein in csm["beta_proteins"]
-            ]
+            csm = csm.copy_with_update(
+                {
+                    "beta_proteins": [
+                        f"REV__{protein}" for protein in csm["beta_proteins"]
+                    ]
+                }
+            )
+        csms.append(csm)
     for xl in pr_none["crosslinks"]:
         if xl["alpha_decoy"]:
-            xl["alpha_proteins"] = [
-                f" REV__{protein}" for protein in xl["alpha_proteins"]
-            ]
+            xl = xl.copy_with_update(
+                {
+                    "alpha_proteins": [
+                        f"REV__{protein}" for protein in xl["alpha_proteins"]
+                    ]
+                }
+            )
         if xl["beta_decoy"]:
-            xl["beta_proteins"] = [
-                f" REV__{protein}" for protein in xl["beta_proteins"]
-            ]
+            xl = xl.copy_with_update(
+                {
+                    "beta_proteins": [
+                        f"REV__{protein}" for protein in xl["beta_proteins"]
+                    ]
+                }
+            )
+        xls.append(xl)
+    pr_none = pr_none.copy_with_update(
+        {"crosslink-spectrum-matches": csms, "crosslinks": xls}
+    )
     pr_none = reannotate_decoy_labels(
         pr_none, by_mapping={True: None, False: None, None: None}
     )
@@ -411,22 +509,47 @@ def test14():
     xls = pr["crosslinks"]
 
     pr_none = copy.deepcopy(pr)
+    csms = list()
+    xls = list()
     for csm in pr_none["crosslink-spectrum-matches"]:
         if csm["alpha_decoy"]:
-            csm["alpha_proteins"] = [
-                f"REV__{protein}" for protein in csm["alpha_proteins"]
-            ]
+            csm = csm.copy_with_update(
+                {
+                    "alpha_proteins": [
+                        f"REV__{protein}" for protein in csm["alpha_proteins"]
+                    ]
+                }
+            )
         if csm["beta_decoy"]:
-            csm["beta_proteins"] = [
-                f"REV__{protein}" for protein in csm["beta_proteins"]
-            ]
+            csm = csm.copy_with_update(
+                {
+                    "beta_proteins": [
+                        f"REV__{protein}" for protein in csm["beta_proteins"]
+                    ]
+                }
+            )
+        csms.append(csm)
     for xl in pr_none["crosslinks"]:
         if xl["alpha_decoy"]:
-            xl["alpha_proteins"] = [
-                f"REV__{protein}" for protein in xl["alpha_proteins"]
-            ]
+            xl = xl.copy_with_update(
+                {
+                    "alpha_proteins": [
+                        f"REV__{protein}" for protein in xl["alpha_proteins"]
+                    ]
+                }
+            )
         if xl["beta_decoy"]:
-            xl["beta_proteins"] = [f"REV__{protein}" for protein in xl["beta_proteins"]]
+            xl = xl.copy_with_update(
+                {
+                    "beta_proteins": [
+                        f"REV__{protein}" for protein in xl["beta_proteins"]
+                    ]
+                }
+            )
+        xls.append(xl)
+    pr_none = pr_none.copy_with_update(
+        {"crosslink-spectrum-matches": csms, "crosslinks": xls}
+    )
     pr_none = reannotate_decoy_labels(
         pr_none, by_mapping={True: None, False: None, None: None}
     )
