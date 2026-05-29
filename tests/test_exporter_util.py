@@ -7,7 +7,7 @@
 
 
 def test1():
-    from pyXLMS.exporter.util import __get_filename
+    from pyXLMS.exporter._util import __get_filename
 
     assert __get_filename("filename", "xlsx") == "filename.xlsx"
     assert __get_filename("filename.xlsx", "xlsx") == "filename.xlsx"
