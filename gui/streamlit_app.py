@@ -35,12 +35,13 @@ import pandas as pd
 from tempfile import NamedTemporaryFile
 from tempfile import TemporaryDirectory
 
+from pyXLMS.data import CrosslinkSpectrumMatch, Crosslink, ParserResult
 from pyXLMS import parser
 from pyXLMS import transform
 from pyXLMS import constants
 from pyXLMS import plotting
 from pyXLMS import exporter
-from pyXLMS.transform.annotate_string_scores import STRING_ORGANISMS
+from pyXLMS.transform._annotate_string_scores import STRING_ORGANISMS
 from pyXLMS import __version__ as __pyxlms_version__
 
 import streamlit as st
@@ -99,7 +100,7 @@ def read_files(
     crosslinker: str,
     parse_modifications: bool,
     crosslinker_mass: Optional[float],
-) -> Dict[str, Any]:
+) -> ParserResult:
     #
     with TemporaryDirectory() as d:  # pyright: ignore[reportCallIssue]
         filenames = list()
@@ -141,8 +142,9 @@ def read_files(
 
 @st.cache_data
 def reannotating_positions(
-    pr: List[Dict[str, Any]] | Dict[str, Any], uploaded_fasta: io.BytesIO
-) -> List[Dict[str, Any]] | Dict[str, Any]:
+    pr: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult,
+    uploaded_fasta: io.BytesIO,
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
     #
     with NamedTemporaryFile(
         suffix=os.path.splitext(uploaded_fasta.name)[1], delete_on_close=False
@@ -154,7 +156,7 @@ def reannotating_positions(
 
 @st.cache_data
 def export_pyxlinkviewer_using_pdbfile(
-    crosslinks: List[Dict[str, Any]], uploaded_pdb_file: io.BytesIO
+    crosslinks: List[Crosslink], uploaded_pdb_file: io.BytesIO
 ) -> Dict[str, Any]:
     #
     with NamedTemporaryFile(
@@ -183,7 +185,7 @@ def pyxlinkviewer_get_annotation(
 
 @st.cache_data
 def export_xlmstools_using_pdbfile(
-    crosslinks: List[Dict[str, Any]], uploaded_pdb_file: io.BytesIO
+    crosslinks: List[Crosslink], uploaded_pdb_file: io.BytesIO
 ) -> Dict[str, Any]:
     #
     with NamedTemporaryFile(
@@ -196,15 +198,15 @@ def export_xlmstools_using_pdbfile(
 
 @st.cache_data
 def filter_proteins(
-    data: List[Dict[str, Any]], proteins: Set[str] | List[str]
-) -> List[Dict[str, Any]]:
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink], proteins: Set[str] | List[str]
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     filtered = transform.filter_proteins(data, proteins)
-    return filtered["Both"] + filtered["One"]
+    return transform.assert_csms_or_xls(filtered["Both"] + filtered["One"])
 
 
 @st.cache_data
 def export_alphalink2(
-    crosslinks: List[Dict[str, Any]], fasta: io.BytesIO, annotated_fdr: float
+    crosslinks: List[Crosslink], fasta: io.BytesIO, annotated_fdr: float
 ) -> Dict[str, Any]:
     #
     with NamedTemporaryFile(
@@ -219,7 +221,7 @@ def export_alphalink2(
 
 @st.cache_data
 def export_proxl(
-    csms: List[Dict[str, Any]],
+    csms: List[CrosslinkSpectrumMatch],
     fasta_file: io.BytesIO,
     search_engine: str,
     search_engine_version: str,
