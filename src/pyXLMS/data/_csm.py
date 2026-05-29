@@ -116,6 +116,18 @@ class CrosslinkSpectrumMatch(BaseModel):
     first it will be assigned to ``alpha_peptide`` and the original ``alpha_peptide``
     will be assigned to ``beta_peptide`` (and the same happens for all other corresponding
     alpha and beta values).
+
+    Examples
+    --------
+    >>> from pyXLMS.data import CrosslinkSpectrumMatch as CSM
+    >>> csm = CSM(
+    ...     alpha_peptide="PEKP",
+    ...     alpha_peptide_crosslink_position=3,
+    ...     beta_peptide="TKIDE",
+    ...     beta_peptide_crosslink_position=2,
+    ...     spectrum_file="dsso.mzML",
+    ...     scan_nr=1,
+    ... )
     """
 
     alpha_peptide: Annotated[
@@ -636,6 +648,8 @@ class CrosslinkSpectrumMatch(BaseModel):
         ----------
         update : dict of str, any, default = empty dict
             Dictionary mapping attribute names (str) to their updated values.
+            The default (empty dict) will create a deep copy with the original
+            attribute values.
 
         Returns
         -------
