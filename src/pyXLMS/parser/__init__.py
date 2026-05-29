@@ -47,6 +47,8 @@ __all__ = [
     "read",
     "read_xinet",
     "read_xiview",
+    "format_sequence",
+    "get_bool_from_value",
 ]
 
 # READERS
@@ -75,6 +77,10 @@ from ._parser_xldbse_scout import detect_scout_filetype
 from ._parser_xldbse_scout import parse_modifications_from_scout_sequence
 from ._parser_xldbse_custom import pyxlms_modification_str_parser
 from ._parser_xldbse_maxquant import parse_modifications_from_maxquant_sequence
+
+# UTIL
+from ._util import format_sequence
+from ._util import get_bool_from_value
 
 from ..data._parser_result import ParserResult
 
