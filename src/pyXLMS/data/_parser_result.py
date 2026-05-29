@@ -22,6 +22,12 @@ from typing import List
 from typing import Dict
 from typing import Any
 
+# legacy
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
 
 class ParserResult(BaseModel):
     r"""Core data structure for parser results.
