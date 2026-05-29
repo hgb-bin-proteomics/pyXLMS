@@ -4,6 +4,20 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+r"""
+Plot different visualizations of crosslink-spectrum-match and crosslink data.
+
+Examples
+--------
+>>> from pyXLMS import parser
+>>> from pyXLMS import plotting
+>>> pr = parser.read_msannika(
+...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx"
+... )
+>>> csms = pr["crosslink-spectrum-matches"]
+>>> fig, ax = plotting.plot_crosslink_type_distribution(csms)
+"""
+
 __all__ = [
     "venn",
     "plot_venn_diagram",
