@@ -801,8 +801,8 @@ class CrosslinkSpectrumMatch(BaseModel):
         Returns
         -------
         None, or str
-            The display string of the crosslink-spectrum-match, crosslink, or parser_result
-            if ``return_str = True`` otherwise None.
+            The display string of the crosslink-spectrum-match if ``return_str = True``
+            otherwise None.
 
         Examples
         --------
