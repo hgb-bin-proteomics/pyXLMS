@@ -155,13 +155,9 @@ def test7():
         crosslinker="DSS",
     )
 
-    err_str = (
-        r"Can't validate data if 'score' or target\/decoy labels are missing! Selecting 'ignore_missing_labels \= True' will ignore crosslinks and crosslink-spectrum-matches "
-        r"that don't have a valid target\/decoy label and filter them out!"
-    )
     with pytest.raises(
         ValueError,
-        match=err_str,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
         _validated = validate(pr)
 
@@ -257,10 +253,11 @@ def test12():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for csm in pr["crosslink-spectrum-matches"]:
-        csm["score"] = -csm["score"]
+        csms.append(csm.copy_with_update({"score": -csm["score"]}))
     validated = validate(
-        pr["crosslink-spectrum-matches"],
+        csms,
         fdr=0.01,
         formula="(TD+DD)/TT",
         score="lower_better",
@@ -282,10 +279,11 @@ def test13():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for csm in pr["crosslink-spectrum-matches"]:
-        csm["score"] = -csm["score"]
+        csms.append(csm.copy_with_update({"score": -csm["score"]}))
     validated = validate(
-        pr["crosslink-spectrum-matches"],
+        csms,
         fdr=0.01,
         formula="(TD-DD)/TT",
         score="lower_better",
@@ -306,10 +304,11 @@ def test14():
         unsafe=True,
         verbose=0,
     )
+    csms = list()
     for csm in pr["crosslink-spectrum-matches"]:
-        csm["score"] = -csm["score"]
+        csms.append(csm.copy_with_update({"score": -csm["score"]}))
     validated = validate(
-        pr["crosslink-spectrum-matches"],
+        csms,
         fdr=0.01,
         formula="(TD+DD)/TT",
         score="lower_better",
@@ -333,10 +332,11 @@ def test15():
         unsafe=True,
         verbose=0,
     )
+    csms = list()
     for csm in pr["crosslink-spectrum-matches"]:
-        csm["score"] = -csm["score"]
+        csms.append(csm.copy_with_update({"score": -csm["score"]}))
     validated = validate(
-        pr["crosslink-spectrum-matches"],
+        csms,
         fdr=0.01,
         formula="(TD-DD)/TT",
         score="lower_better",
@@ -361,14 +361,20 @@ def test16():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for i, csm in enumerate(pr["crosslink-spectrum-matches"]):
-        csm["score"] = -csm["score"]
         if i < 5:
-            csm["alpha_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "alpha_decoy": None})
+            )
         elif i < 10:
-            csm["beta_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "beta_decoy": None})
+            )
+        else:
+            csms.append(csm.copy_with_update({"score": -csm["score"]}))
     validated = validate(
-        pr["crosslink-spectrum-matches"],
+        csms,
         fdr=0.01,
         formula="(TD+DD)/TT",
         score="lower_better",
@@ -391,14 +397,20 @@ def test17():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for i, csm in enumerate(pr["crosslink-spectrum-matches"]):
-        csm["score"] = -csm["score"]
         if i < 5:
-            csm["alpha_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "alpha_decoy": None})
+            )
         elif i < 10:
-            csm["beta_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "beta_decoy": None})
+            )
+        else:
+            csms.append(csm.copy_with_update({"score": -csm["score"]}))
     validated = validate(
-        pr["crosslink-spectrum-matches"],
+        csms,
         fdr=0.01,
         formula="(TD-DD)/TT",
         score="lower_better",
@@ -421,24 +433,24 @@ def test18():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for i, csm in enumerate(pr["crosslink-spectrum-matches"]):
-        csm["score"] = -csm["score"]
         if i < 5:
-            csm["completeness"] = "partial"
-            csm["alpha_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "alpha_decoy": None})
+            )
         elif i < 10:
-            csm["completeness"] = "partial"
-            csm["beta_decoy"] = None
-    err_str = (
-        r"Can't validate data if 'score' or target\/decoy labels are missing! Selecting 'ignore_missing_labels \= True' will ignore crosslinks and crosslink-spectrum-matches "
-        r"that don't have a valid target\/decoy label and filter them out!"
-    )
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "beta_decoy": None})
+            )
+        else:
+            csms.append(csm.copy_with_update({"score": -csm["score"]}))
     with pytest.raises(
         ValueError,
-        match=err_str,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
         _validated = validate(
-            pr["crosslink-spectrum-matches"],
+            csms,
             fdr=0.01,
             formula="(TD+DD)/TT",
             score="lower_better",
@@ -460,24 +472,24 @@ def test19():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for i, csm in enumerate(pr["crosslink-spectrum-matches"]):
-        csm["score"] = -csm["score"]
         if i < 5:
-            csm["completeness"] = "partial"
-            csm["alpha_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "alpha_decoy": None})
+            )
         elif i < 10:
-            csm["completeness"] = "partial"
-            csm["beta_decoy"] = None
-    err_str = (
-        r"Can't validate data if 'score' or target\/decoy labels are missing! Selecting 'ignore_missing_labels \= True' will ignore crosslinks and crosslink-spectrum-matches "
-        r"that don't have a valid target\/decoy label and filter them out!"
-    )
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "beta_decoy": None})
+            )
+        else:
+            csms.append(csm.copy_with_update({"score": -csm["score"]}))
     with pytest.raises(
         ValueError,
-        match=err_str,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
         _validated = validate(
-            pr["crosslink-spectrum-matches"],
+            csms,
             fdr=0.01,
             formula="(TD-DD)/TT",
             score="lower_better",
