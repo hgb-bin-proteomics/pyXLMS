@@ -302,7 +302,7 @@ def test11():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
-    pr["crosslinks"] = None
+    pr = pr.copy_with_update({"crosslinks": None})
     pr = annotate_fdr(pr, formula="(TD-DD)/TT")
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert pr["crosslinks"] is None
@@ -330,10 +330,11 @@ def test12():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for csm in pr["crosslink-spectrum-matches"]:
-        csm["score"] = -csm["score"]
+        csms.append(csm.copy_with_update({"score": -csm["score"]}))
     csms = annotate_fdr(
-        pr["crosslink-spectrum-matches"],
+        csms,
         formula="(TD+DD)/TT",
         score="lower_better",
     )
@@ -362,10 +363,11 @@ def test13():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for csm in pr["crosslink-spectrum-matches"]:
-        csm["score"] = -csm["score"]
+        csms.append(csm.copy_with_update({"score": -csm["score"]}))
     csms = annotate_fdr(
-        pr["crosslink-spectrum-matches"],
+        csms,
         formula="(TD-DD)/TT",
         score="lower_better",
     )
@@ -393,10 +395,11 @@ def test14():
         unsafe=True,
         verbose=0,
     )
+    csms = list()
     for csm in pr["crosslink-spectrum-matches"]:
-        csm["score"] = -csm["score"]
+        csms.append(csm.copy_with_update({"score": -csm["score"]}))
     csms = annotate_fdr(
-        pr["crosslink-spectrum-matches"],
+        csms,
         formula="(TD+DD)/TT",
         score="lower_better",
         separate_intra_inter=True,
@@ -431,10 +434,11 @@ def test15():
         unsafe=True,
         verbose=0,
     )
+    csms = list()
     for csm in pr["crosslink-spectrum-matches"]:
-        csm["score"] = -csm["score"]
+        csms.append(csm.copy_with_update({"score": -csm["score"]}))
     csms = annotate_fdr(
-        pr["crosslink-spectrum-matches"],
+        csms,
         formula="(TD-DD)/TT",
         score="lower_better",
         separate_intra_inter=True,
@@ -470,14 +474,20 @@ def test16():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for i, csm in enumerate(pr["crosslink-spectrum-matches"]):
-        csm["score"] = -csm["score"]
         if i < 5:
-            csm["alpha_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "alpha_decoy": None})
+            )
         elif i < 10:
-            csm["beta_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "beta_decoy": None})
+            )
+        else:
+            csms.append(csm.copy_with_update({"score": -csm["score"]}))
     csms = annotate_fdr(
-        pr["crosslink-spectrum-matches"],
+        csms,
         formula="(TD+DD)/TT",
         score="lower_better",
         ignore_missing_labels=True,
@@ -506,14 +516,20 @@ def test17():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for i, csm in enumerate(pr["crosslink-spectrum-matches"]):
-        csm["score"] = -csm["score"]
         if i < 5:
-            csm["alpha_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "alpha_decoy": None})
+            )
         elif i < 10:
-            csm["beta_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "beta_decoy": None})
+            )
+        else:
+            csms.append(csm.copy_with_update({"score": -csm["score"]}))
     csms = annotate_fdr(
-        pr["crosslink-spectrum-matches"],
+        csms,
         formula="(TD-DD)/TT",
         score="lower_better",
         ignore_missing_labels=True,
@@ -542,14 +558,18 @@ def test18():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for i, csm in enumerate(pr["crosslink-spectrum-matches"]):
-        csm["score"] = -csm["score"]
         if i < 5:
-            csm["completeness"] = "partial"
-            csm["alpha_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "alpha_decoy": None})
+            )
         elif i < 10:
-            csm["completeness"] = "partial"
-            csm["beta_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "beta_decoy": None})
+            )
+        else:
+            csms.append(csm.copy_with_update({"score": -csm["score"]}))
     err_str = (
         r"Can't annotate data if 'score' or target\/decoy labels are missing! Selecting 'ignore_missing_labels \= True' will ignore crosslinks and crosslink-spectrum-matches "
         r"that don't have a valid target\/decoy label and filter them out!"
@@ -559,7 +579,7 @@ def test18():
         match=err_str,
     ):
         _annotated = annotate_fdr(
-            pr["crosslink-spectrum-matches"],
+            csms,
             formula="(TD+DD)/TT",
             score="lower_better",
             ignore_missing_labels=False,
@@ -580,14 +600,18 @@ def test19():
     )
     assert len(pr["crosslink-spectrum-matches"]) == 826
     assert len(pr["crosslinks"]) == 300
+    csms = list()
     for i, csm in enumerate(pr["crosslink-spectrum-matches"]):
-        csm["score"] = -csm["score"]
         if i < 5:
-            csm["completeness"] = "partial"
-            csm["alpha_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "alpha_decoy": None})
+            )
         elif i < 10:
-            csm["completeness"] = "partial"
-            csm["beta_decoy"] = None
+            csms.append(
+                csm.copy_with_update({"score": -csm["score"], "beta_decoy": None})
+            )
+        else:
+            csms.append(csm.copy_with_update({"score": -csm["score"]}))
     err_str = (
         r"Can't annotate data if 'score' or target\/decoy labels are missing! Selecting 'ignore_missing_labels \= True' will ignore crosslinks and crosslink-spectrum-matches "
         r"that don't have a valid target\/decoy label and filter them out!"
@@ -597,7 +621,7 @@ def test19():
         match=err_str,
     ):
         _annotated = annotate_fdr(
-            pr["crosslink-spectrum-matches"],
+            csms,
             formula="(TD-DD)/TT",
             score="lower_better",
             ignore_missing_labels=False,
