@@ -32,7 +32,7 @@ def helper_get_crosslink_position(pep_seq: str) -> int:
 
 def helper_get_crosslinks(f: str) -> pd.DataFrame:
     from pyXLMS.data import create_crosslink_min
-    from pyXLMS.parser.util import format_sequence
+    from pyXLMS.parser import format_sequence
 
     df = pd.read_excel(f)
     xls = list()
@@ -215,7 +215,7 @@ def test13():
     csms = [csm1]
     with pytest.raises(
         TypeError,
-        match="Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!",
+        match=r"List values of crosslinks must be <class 'pyXLMS.data._crosslink.Crosslink'>!",
     ):
         _pyxlinkviewer_result = to_pyxlinkviewer(csms, pdb_file="6YHU")
 
@@ -229,6 +229,7 @@ def test14():
     xl1 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
     mixed = [xl1, csm1]
     with pytest.raises(
-        TypeError, match="Not all elements in data have the same data type!"
+        TypeError,
+        match=r"List values of crosslinks must be <class 'pyXLMS.data._crosslink.Crosslink'>!",
     ):
         _pyxlinkviewer_result = to_pyxlinkviewer(mixed, pdb_file="6YHU")
