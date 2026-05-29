@@ -19,7 +19,7 @@ def test1():
 
 
 def test2():
-    from pyXLMS.transform.annotate_string_scores import STRING_ORGANISMS
+    from pyXLMS.transform._annotate_string_scores import STRING_ORGANISMS
 
     assert STRING_ORGANISMS["Homo sapiens"] == 9606
     assert STRING_ORGANISMS["Mus musculus"] == 10090
@@ -206,7 +206,7 @@ def test12():
     pr = parser.read_custom("data/ms_annika/Nucleus_Rep1_Crosslinks.parquet")
     xls = pr["crosslinks"]
     for xl in xls:
-        xl["additional_information"] = None
+        xl.additional_information = None
     xls = annotate_string_scores(xls, organism="Homo sapiens")
     inter = filter_crosslink_type(xls)["Inter"]
     for item in inter:
@@ -231,7 +231,7 @@ def test14():
 
     pr = parser.read_custom("data/ms_annika/Nucleus_Rep1_Crosslinks.parquet")
     xls = pr["crosslinks"]
-    xls[0]["alpha_proteins"] = None
+    xls[0] = xls[0].copy_with_update({"alpha_proteins": None})
     with pytest.warns(
         RuntimeWarning,
         match=r"Some of your crosslink-spectrum-matches/crosslinks do not have associated proteins. Their STRING scores will be nan!",
@@ -245,7 +245,7 @@ def test15():
 
     pr = parser.read_custom("data/ms_annika/Nucleus_Rep1_Crosslinks.parquet")
     xls = pr["crosslinks"]
-    xls[0]["alpha_proteins"] = None
+    xls[0] = xls[0].copy_with_update({"alpha_proteins": None})
     with pytest.raises(
         RuntimeError,
         match=r"Some of your crosslink-spectrum-matches/crosslinks do not have associated proteins!",
