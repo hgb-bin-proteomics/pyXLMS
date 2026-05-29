@@ -5,7 +5,7 @@
 # micha.birklbauer@gmail.com
 
 r"""
-Core data structures and validation functions.
+Core data structures and data type validation functions.
 
 Examples
 --------
