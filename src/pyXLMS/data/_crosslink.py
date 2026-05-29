@@ -38,6 +38,8 @@ class Crosslink(BaseModel):
     Crosslinks represent two crosslinked peptides. Crosslinks can be unique peptide
     pairs or unique residue pairs, depending on their grouping.
 
+    Bases Pydantic `BaseModel <https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel>`_.
+
     Attributes Summary
     ------------------
     Here is a short summary about the crosslink attributes, for more details

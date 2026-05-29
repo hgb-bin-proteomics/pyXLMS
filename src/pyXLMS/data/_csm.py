@@ -41,6 +41,8 @@ class CrosslinkSpectrumMatch(BaseModel):
     mass spectrum. They contain spectrum level information additionally to crosslink
     information.
 
+    Bases Pydantic `BaseModel <https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel>`_.
+
     Attributes Summary
     ------------------
     Here is a short summary about the crosslink-spectrum-match attributes, for more details

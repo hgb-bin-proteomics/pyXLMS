@@ -36,6 +36,8 @@ class ParserResult(BaseModel):
     Data structure returned by any (parser) function that reads crosslink-spectrum-matches
     and/or crosslinks.
 
+    Bases Pydantic `BaseModel <https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel>`_.
+
     Attributes Summary
     ------------------
     Here is a short summary about the parser result attributes, for more details
