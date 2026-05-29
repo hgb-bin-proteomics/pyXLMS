@@ -4,6 +4,31 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+r"""
+Data summarization, transformation, and quality control functions.
+
+Examples
+--------
+>>> from pyXLMS.parser import read
+>>> from pyXLMS.transform import summary
+>>> pr = read(
+...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_Crosslinks.xlsx",
+...     engine="MS Annika",
+...     crosslinker="DSS",
+... )
+>>> stats = summary(pr)
+Number of crosslinks: 300.0
+Number of unique crosslinks by peptide: 300.0
+Number of unique crosslinks by protein: 298.0
+Number of intra crosslinks: 279.0
+Number of inter crosslinks: 21.0
+Number of target-target crosslinks: 265.0
+Number of target-decoy crosslinks: 0.0
+Number of decoy-decoy crosslinks: 35.0
+Minimum crosslink score: 1.11
+Maximum crosslink score: 452.99
+"""
+
 __all__ = [
     "modifications_to_str",
     "assert_csms",
