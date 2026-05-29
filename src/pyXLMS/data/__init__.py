@@ -4,6 +4,40 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+r"""
+Core data structures and validation functions.
+
+Examples
+--------
+>>> from pyXLMS.data import CrosslinkSpectrumMatch as CSM
+>>> csm = CSM(
+...     alpha_peptide="PEKP",
+...     alpha_peptide_crosslink_position=3,
+...     beta_peptide="TKIDE",
+...     beta_peptide_crosslink_position=2,
+...     spectrum_file="dsso.mzML",
+...     scan_nr=1,
+... )
+
+>>> from pyXLMS.data import Crosslink
+>>> xl = Crosslink(
+...     alpha_peptide="PEKP",
+...     alpha_peptide_crosslink_position=3,
+...     beta_peptide="TKIDE",
+...     beta_peptide_crosslink_position=2,
+... )
+
+>>> from pyXLMS.data import Crosslink
+>>> from pyXLMS.data import ParserResult
+>>> xl = Crosslink(
+...     alpha_peptide="PEKP",
+...     alpha_peptide_crosslink_position=3,
+...     beta_peptide="TKIDE",
+...     beta_peptide_crosslink_position=2,
+... )
+>>> pr = ParserResult(search_engine="My Search Engine", crosslinks=[xl])
+"""
+
 __all__ = [
     "check_input",
     "check_input_multi",
