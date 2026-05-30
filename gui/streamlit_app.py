@@ -1213,20 +1213,28 @@ def filter_tab():
                                     st.session_state["pr"]["crosslink-spectrum-matches"]
                                     is not None
                                 ):
-                                    st.session_state["pr"][
-                                        "crosslink-spectrum-matches"
-                                    ] = filter_proteins(
-                                        st.session_state["pr"][
-                                            "crosslink-spectrum-matches"
-                                        ],
-                                        protein_filter,
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update(
+                                        {
+                                            "crosslink-spectrum-matches": filter_proteins(
+                                                st.session_state["pr"][
+                                                    "crosslink-spectrum-matches"
+                                                ],
+                                                protein_filter,
+                                            )
+                                        }
                                     )
                                 if st.session_state["pr"]["crosslinks"] is not None:
-                                    st.session_state["pr"]["crosslinks"] = (
-                                        filter_proteins(
-                                            st.session_state["pr"]["crosslinks"],
-                                            protein_filter,
-                                        )
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update(
+                                        {
+                                            "crosslinks": filter_proteins(
+                                                st.session_state["pr"]["crosslinks"],
+                                                protein_filter,
+                                            )
+                                        }
                                     )
                             if (
                                 "aggregated" in st.session_state
@@ -1254,9 +1262,11 @@ def filter_tab():
                                         keep += intra_inter["Intra"]
                                     if "Inter" in crosslink_type_filter:
                                         keep += intra_inter["Inter"]
-                                    st.session_state["pr"][
-                                        "crosslink-spectrum-matches"
-                                    ] = keep
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update(
+                                        {"crosslink-spectrum-matches": keep}
+                                    )
                                 if st.session_state["pr"]["crosslinks"] is not None:
                                     intra_inter = transform.filter_crosslink_type(
                                         st.session_state["pr"]["crosslinks"]
@@ -1266,7 +1276,9 @@ def filter_tab():
                                         keep += intra_inter["Intra"]
                                     if "Inter" in crosslink_type_filter:
                                         keep += intra_inter["Inter"]
-                                    st.session_state["pr"]["crosslinks"] = keep
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update({"crosslinks": keep})
                             if (
                                 "aggregated" in st.session_state
                                 and st.session_state["aggregated"] is not None
@@ -1301,9 +1313,11 @@ def filter_tab():
                                         keep += tt_td_dd["Target-Decoy"]
                                     if "Decoy-Decoy" in target_decoy_filter:
                                         keep += tt_td_dd["Decoy-Decoy"]
-                                    st.session_state["pr"][
-                                        "crosslink-spectrum-matches"
-                                    ] = keep
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update(
+                                        {"crosslink-spectrum-matches": keep}
+                                    )
                                 if st.session_state["pr"]["crosslinks"] is not None:
                                     tt_td_dd = transform.filter_target_decoy(
                                         st.session_state["pr"]["crosslinks"]
@@ -1315,7 +1329,9 @@ def filter_tab():
                                         keep += tt_td_dd["Target-Decoy"]
                                     if "Decoy-Decoy" in target_decoy_filter:
                                         keep += tt_td_dd["Decoy-Decoy"]
-                                    st.session_state["pr"]["crosslinks"] = keep
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update({"crosslinks": keep})
                             if (
                                 "aggregated" in st.session_state
                                 and st.session_state["aggregated"] is not None
