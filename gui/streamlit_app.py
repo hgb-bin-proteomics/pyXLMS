@@ -71,7 +71,14 @@ def to_text(data: str) -> bytes:
 
 
 @st.cache_data
-def to_json(data: Dict[str, Any]) -> bytes:
+def to_json(data: Any) -> bytes:
+    if isinstance(data, list):
+        if all(isinstance(item, CrosslinkSpectrumMatch) for item in data):
+            return transform.to_json(data).encode("utf-8")
+        if all(isinstance(item, Crosslink) for item in data):
+            return transform.to_json(data).encode("utf-8")
+    if isinstance(data, ParserResult):
+        return transform.to_json(data).encode("utf-8")
     return json.dumps(data).encode("utf-8")
 
 
