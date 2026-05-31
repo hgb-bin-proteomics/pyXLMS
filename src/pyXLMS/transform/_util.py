@@ -82,20 +82,13 @@ def assert_csms(maybe_csms: Any) -> List[CrosslinkSpectrumMatch]:
     TypeError
         If the provided data was not a list of CrosslinkSpectrumMatch.
     """
-    csms: List[CrosslinkSpectrumMatch] = list()
     if isinstance(maybe_csms, list):
-        for item in maybe_csms:
-            if isinstance(item, CrosslinkSpectrumMatch):
-                csms.append(item)
-            else:
-                raise TypeError(
-                    "Provided input is not a valid list of type CrosslinkSpectrumMatch!"
-                )
-        return csms
+        if all(isinstance(item, CrosslinkSpectrumMatch) for item in maybe_csms):
+            return maybe_csms
     raise TypeError(
         "Provided input is not a valid list of type CrosslinkSpectrumMatch!"
     )
-    return csms
+    return []
 
 
 def assert_xls(maybe_xls: Any) -> List[Crosslink]:
@@ -116,16 +109,11 @@ def assert_xls(maybe_xls: Any) -> List[Crosslink]:
     TypeError
         If the provided data was not a list of Crosslink.
     """
-    xls: List[Crosslink] = list()
     if isinstance(maybe_xls, list):
-        for item in maybe_xls:
-            if isinstance(item, Crosslink):
-                xls.append(item)
-            else:
-                raise TypeError("Provided input is not a valid list of type Crosslink!")
-        return xls
+        if all(isinstance(item, Crosslink) for item in maybe_xls):
+            return maybe_xls
     raise TypeError("Provided input is not a valid list of type Crosslink!")
-    return xls
+    return []
 
 
 def assert_csms_or_xls(
@@ -151,12 +139,10 @@ def assert_csms_or_xls(
         of Crosslink.
     """
     if isinstance(maybe_csms_or_xls, list):
-        if len(maybe_csms_or_xls) == 0:
-            return []
         if all(isinstance(item, CrosslinkSpectrumMatch) for item in maybe_csms_or_xls):
-            return assert_csms(maybe_csms_or_xls)
+            return maybe_csms_or_xls
         if all(isinstance(item, Crosslink) for item in maybe_csms_or_xls):
-            return assert_xls(maybe_csms_or_xls)
+            return maybe_csms_or_xls
     raise TypeError(
         "Provided input is not a valid list of type CrosslinkSpectrumMatch or Crosslink!"
     )
