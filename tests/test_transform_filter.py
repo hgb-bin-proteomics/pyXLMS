@@ -303,14 +303,14 @@ def test16():
         engine="MS Annika",
         crosslinker="DSS",
     )
-    result["crosslink-spectrum-matches"][0]["completeness"] = "partial"
-    result["crosslink-spectrum-matches"][0]["alpha_proteins"] = None
+    csms = result.csms()
+    csms[0] = csms[0].copy_with_update({"alpha_proteins": None})
 
     with pytest.raises(
-        RuntimeError,
-        match=r"Can't filter by residue pair because not all necessary information is available!",
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
-        _ = filter_residue_pair_distribution(result["crosslink-spectrum-matches"])
+        _ = filter_residue_pair_distribution(csms)
 
 
 def test17():
@@ -322,14 +322,14 @@ def test17():
         engine="MS Annika",
         crosslinker="DSS",
     )
-    result["crosslink-spectrum-matches"][0]["completeness"] = "partial"
-    result["crosslink-spectrum-matches"][0]["beta_proteins"] = None
+    csms = result.csms()
+    csms[0] = csms[0].copy_with_update({"beta_proteins": None})
 
     with pytest.raises(
-        RuntimeError,
-        match=r"Can't filter by residue pair because not all necessary information is available!",
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
-        _ = filter_residue_pair_distribution(result["crosslink-spectrum-matches"])
+        _ = filter_residue_pair_distribution(csms)
 
 
 def test18():
@@ -341,14 +341,14 @@ def test18():
         engine="MS Annika",
         crosslinker="DSS",
     )
-    result["crosslink-spectrum-matches"][0]["completeness"] = "partial"
-    result["crosslink-spectrum-matches"][0]["alpha_proteins_crosslink_positions"] = None
+    csms = result.csms()
+    csms[0] = csms[0].copy_with_update({"alpha_proteins_crosslink_positions": None})
 
     with pytest.raises(
-        RuntimeError,
-        match=r"Can't filter by residue pair because not all necessary information is available!",
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
-        _ = filter_residue_pair_distribution(result["crosslink-spectrum-matches"])
+        _ = filter_residue_pair_distribution(csms)
 
 
 def test19():
@@ -360,14 +360,14 @@ def test19():
         engine="MS Annika",
         crosslinker="DSS",
     )
-    result["crosslink-spectrum-matches"][0]["completeness"] = "partial"
-    result["crosslink-spectrum-matches"][0]["beta_proteins_crosslink_positions"] = None
+    csms = result.csms()
+    csms[0] = csms[0].copy_with_update({"alpha_proteins_crosslink_positions": None})
 
     with pytest.raises(
-        RuntimeError,
-        match=r"Can't filter by residue pair because not all necessary information is available!",
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
-        _ = filter_residue_pair_distribution(result["crosslink-spectrum-matches"])
+        _ = filter_residue_pair_distribution(csms)
 
 
 def test20():
@@ -380,10 +380,11 @@ def test20():
         engine="MS Annika",
         crosslinker="DSS",
     )
-    result["crosslink-spectrum-matches"][0]["beta_proteins_crosslink_positions"] = None
+    csms = result.csms()
+    csms[0] = csms[0].copy_with_update({"alpha_proteins_crosslink_positions": None})
 
     with pytest.raises(
-        RuntimeError,
-        match=r"Can't filter by residue pair because not all necessary information is available!",
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
-        _ = filter_residue_pair_distribution(result["crosslink-spectrum-matches"])
+        _ = filter_residue_pair_distribution(csms)

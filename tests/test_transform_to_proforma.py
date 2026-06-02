@@ -15,7 +15,7 @@ def test1():
 
     with pytest.raises(
         TypeError,
-        match=r"Unsupported data type for input data! Parameter data has to be a \(list of\) crosslink or crosslink-spectrum-match!",
+        match=r"data must be one of <class 'list'>,<class 'pyXLMS.data._csm.CrosslinkSpectrumMatch'>,<class 'pyXLMS.data._crosslink.Crosslink'>!",
     ):
         _r = to_proforma(psm)
 

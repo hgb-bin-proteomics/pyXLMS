@@ -92,7 +92,7 @@ def test6():
     crosslinks = [xl1, xl2]
 
     with pytest.raises(
-        RuntimeError,
-        match="Can't export to IMP-X-FDR because not all necessary information is available!",
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
         _df = to_impxfdr(crosslinks, filename=None, targets_only=False)

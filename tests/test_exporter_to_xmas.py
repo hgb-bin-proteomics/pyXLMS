@@ -27,7 +27,8 @@ def test2():
     xl1 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
     mixed = [xl1, csm1]
     with pytest.raises(
-        TypeError, match="Not all elements in data have the same data type!"
+        TypeError,
+        match=r"List values of crosslinks must be <class 'pyXLMS.data._crosslink.Crosslink'>!",
     ):
         _df = to_xmas(mixed, filename=None)
 
@@ -83,6 +84,6 @@ def test6():
     csms = pr["crosslink-spectrum-matches"]
     with pytest.raises(
         TypeError,
-        match="Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!",
+        match=r"List values of crosslinks must be <class 'pyXLMS.data._crosslink.Crosslink'>!",
     ):
         _df = to_xmas(csms, filename=None)

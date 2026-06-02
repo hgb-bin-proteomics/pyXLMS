@@ -5,6 +5,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+import pytest
+
 
 def test1():
     from pyXLMS import transform
@@ -415,3 +417,20 @@ def test14():
     assert transform.display(csms[0]) is None
     xls = pr["crosslinks"]
     assert transform.display(xls[0]) is None
+
+
+def test15():
+    from pyXLMS.transform import check_available_keys
+    from pyXLMS import data
+
+    data_list = [
+        data.create_crosslink_min("PEPK", 4, "PKEP", 2),
+        data.create_crosslink_min("KPEP", 1, "PEKP", 3),
+    ]
+    assert check_available_keys(["alpha_peptide"], data_list)
+
+    with pytest.raises(
+        ValueError,
+        match=r"Attribute 'score' is missing in at least one element but is required!",
+    ):
+        _ = check_available_keys(["score"], data_list)

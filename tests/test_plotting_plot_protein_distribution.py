@@ -84,13 +84,11 @@ def test5():
         crosslinker="DSS",
     )
 
-    pr["crosslink-spectrum-matches"][0]["data_type"] = "peptide-spectrum-match"
-
     with pytest.raises(
         TypeError,
-        match=r"Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!",
+        match=r"Provided input is not a valid list of type CrosslinkSpectrumMatch or Crosslink!",
     ):
-        _plot = plot_protein_distribution(pr["crosslink-spectrum-matches"])
+        _plot = plot_protein_distribution([pr])
 
 
 def test6():
@@ -103,14 +101,14 @@ def test6():
         crosslinker="DSS",
     )
 
-    pr["crosslink-spectrum-matches"][0]["completeness"] = "partial"
-    pr["crosslink-spectrum-matches"][0]["alpha_proteins"] = None
+    csms = pr.csms()
+    csms[0] = csms[0].copy_with_update({"alpha_proteins": None})
 
     with pytest.raises(
         ValueError,
-        match=r"Can't plot protein distribution if attributes \'alpha_proteins\' or \'beta_proteins\' are missing!",
+        match="Attribute .* is missing in at least one element but is required!",
     ):
-        _plot = plot_protein_distribution(pr["crosslink-spectrum-matches"])
+        _plot = plot_protein_distribution(csms)
 
 
 def test7():
@@ -123,11 +121,11 @@ def test7():
         crosslinker="DSS",
     )
 
-    pr["crosslink-spectrum-matches"][0]["completeness"] = "partial"
-    pr["crosslink-spectrum-matches"][0]["beta_proteins"] = None
+    csms = pr.csms()
+    csms[0] = csms[0].copy_with_update({"beta_proteins": None})
 
     with pytest.raises(
         ValueError,
-        match=r"Can't plot protein distribution if attributes \'alpha_proteins\' or \'beta_proteins\' are missing!",
+        match="Attribute .* is missing in at least one element but is required!",
     ):
-        _plot = plot_protein_distribution(pr["crosslink-spectrum-matches"])
+        _plot = plot_protein_distribution(csms)
