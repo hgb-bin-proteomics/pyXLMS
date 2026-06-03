@@ -9,32 +9,32 @@ import pytest
 
 
 def test1():
-    from pyXLMS.transform.to_dataframe import __cc
+    from pyXLMS.transform._to_dataframe import __cc
 
     assert __cc([1, 2, 3]) == "1;2;3"
 
 
-def test6():
-    from pyXLMS.transform.to_dataframe import __cc
+def test2():
+    from pyXLMS.transform._to_dataframe import __cc
 
     assert __cc([1, 2, 3], ",") == "1,2,3"
 
 
-def test7():
-    from pyXLMS.transform.to_dataframe import __cc
+def test3():
+    from pyXLMS.transform._to_dataframe import __cc
 
     assert __cc([]) == ""
 
 
-def test8():
-    from pyXLMS.transform.to_dataframe import __cc
+def test4():
+    from pyXLMS.transform._to_dataframe import __cc
 
     assert __cc(None) is None
 
 
-def test9():
+def test5():
     from pyXLMS import data
-    from pyXLMS.transform.to_dataframe import __crosslinks_to_dataframe
+    from pyXLMS.transform._to_dataframe import __crosslinks_to_dataframe
 
     c1 = data.create_crosslink(
         "PEPTIDE",
@@ -99,7 +99,7 @@ def test9():
     assert df.loc[1, "Crosslink Score"] == pytest.approx(123.7)
 
 
-def test10():
+def test6():
     from pyXLMS import data, transform
 
     c1 = data.create_crosslink(
@@ -165,7 +165,7 @@ def test10():
     assert df.loc[1, "Crosslink Score"] == pytest.approx(123.7)
 
 
-def test11():
+def test7():
     from pyXLMS import data, transform
     import pandas as pd
 
@@ -228,9 +228,9 @@ def test11():
     assert pd.isna(df.loc[1, "Crosslink Score"])
 
 
-def test12():
+def test8():
     from pyXLMS import data
-    from pyXLMS.transform.to_dataframe import __csms_to_dataframe
+    from pyXLMS.transform._to_dataframe import __csms_to_dataframe
 
     c1 = data.create_csm(
         "PEPTIDE",
@@ -345,7 +345,7 @@ def test12():
     assert df.loc[1, "Ion Mobility"] == pytest.approx(-70)
 
 
-def test13():
+def test9():
     from pyXLMS import data, transform
 
     c1 = data.create_csm(
@@ -461,7 +461,7 @@ def test13():
     assert df.loc[1, "Ion Mobility"] == pytest.approx(-70.0)
 
 
-def test14():
+def test10():
     from pyXLMS import data, transform
     import pandas as pd
 
@@ -568,7 +568,7 @@ def test14():
     assert pd.isna(df.loc[1, "Ion Mobility"])
 
 
-def test15():
+def test11():
     from pyXLMS import transform
 
     data = [{"data_type": "peptide-spectrum-match"}]
@@ -576,7 +576,7 @@ def test15():
         _df = transform.to_dataframe(data)
 
 
-def test16():
+def test12():
     from pyXLMS import transform
 
     data = [{"data-type": "peptide-spectrum-match"}]
@@ -584,7 +584,7 @@ def test16():
         _df = transform.to_dataframe(data)
 
 
-def test17():
+def test13():
     from pyXLMS import transform
 
     data = []

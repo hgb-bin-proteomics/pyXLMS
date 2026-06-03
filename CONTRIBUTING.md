@@ -23,12 +23,16 @@ there are a few guidelines for code contributions:
 
 - pyXLMS is built using a functional approach rather than an object-oriented one
   for two reasons:
-  - Performance is usually better
-  - All data remains easy to serialize
+  - Performance is usually better.
+  - All data remains easy to serialize.
 - Preferably your code follows this functional-oriented style.
+- Please read through the [user guide](https://hgb-bin-proteomics.github.io/pyXLMS-docs/),
+  specifically the section: `Documentation` ➡️ `Working with pyXLMS` ➡️ `Important Concepts`.
 - Code needs to be type-hinted and type-checked.
   - We use [ty](https://docs.astral.sh/ty/) for type-checking.
   - Type-checking is done with `ty check`.
+    - If you modify package code you should run: `ty check --config-file ty.toml`.
+    - If you modify GUI code you should run: `cd gui && ty check --config-file ty-gui.toml`.
   - `ignore` flags may be used when there is a clear issue with the type checker.
 - Code needs to pass linting and adhere to the formatting style.
   - We use [ruff](https://docs.astral.sh/ruff/) for linting and formatting.

@@ -81,7 +81,7 @@ def test4():
 
     with pytest.raises(
         TypeError,
-        match="Unsupported data type for input csms! Parameter csms has to be a list of crosslink-spectrum-matches!",
+        match=r"List values of csms must be <class 'pyXLMS.data._csm.CrosslinkSpectrumMatch'>!",
     ):
         _df = to_xifdr(crosslinks, filename=None)
 
@@ -95,8 +95,8 @@ def test5():
     csms = [csm1, csm2]
 
     with pytest.raises(
-        RuntimeError,
-        match="Can't export to xiFDR because not all necessary information is available!",
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
         _df = to_xifdr(csms, filename=None)
 
@@ -109,7 +109,7 @@ def test6():
     csms = pr["crosslink-spectrum-matches"]
 
     with pytest.raises(
-        RuntimeError,
-        match="Can't export to xiFDR because not all necessary information is available!",
+        ValueError,
+        match="Attribute .* is missing in at least one element but is required!",
     ):
         _df = to_xifdr(csms, filename=None)

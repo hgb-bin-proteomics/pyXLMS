@@ -143,12 +143,12 @@ def test7():
     csms = [csm1]
     with pytest.raises(
         TypeError,
-        match="Unsupported data type for input crosslinks! Parameter crosslinks has to be a list of crosslinks!",
+        match=r"List values of crosslinks must be <class 'pyXLMS.data._crosslink.Crosslink'>!",
     ):
         _xlmstools_result = to_xlmstools(csms, pdb_file="6YHU")
 
 
-def test14():
+def test8():
     from pyXLMS.exporter import to_xlmstools
     from pyXLMS.data import create_csm_min
     from pyXLMS.data import create_crosslink_min
@@ -157,6 +157,7 @@ def test14():
     xl1 = create_crosslink_min("PEKPTIDE", 3, "PEPKTIDE", 4)
     mixed = [xl1, csm1]
     with pytest.raises(
-        TypeError, match="Not all elements in data have the same data type!"
+        TypeError,
+        match=r"List values of crosslinks must be <class 'pyXLMS.data._crosslink.Crosslink'>!",
     ):
         _xlmstools_result = to_xlmstools(mixed, pdb_file="6YHU")

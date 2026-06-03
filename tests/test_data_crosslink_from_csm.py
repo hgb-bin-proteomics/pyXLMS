@@ -13,7 +13,8 @@ def test1():
 
     err = {"peptide": "PEPTIDE"}
     with pytest.raises(
-        TypeError, match="Parameter csm is not a valid crosslink-spectrum-match!"
+        TypeError,
+        match=r"csm must be <class 'pyXLMS.data._csm.CrosslinkSpectrumMatch'>!",
     ):
         _r = data.create_crosslink_from_csm(err)
 
@@ -23,7 +24,8 @@ def test2():
 
     err = {"data_type": "peptide-spectrum-match", "peptide": "PEPTIDE", "scan": 1}
     with pytest.raises(
-        TypeError, match="Parameter csm is not a valid crosslink-spectrum-match!"
+        TypeError,
+        match=r"csm must be <class 'pyXLMS.data._csm.CrosslinkSpectrumMatch'>!",
     ):
         _r = data.create_crosslink_from_csm(err)
 

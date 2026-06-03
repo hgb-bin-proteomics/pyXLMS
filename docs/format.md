@@ -35,7 +35,8 @@ Data required for parsing crosslink-spectrum-matches:
 
 Additional resources:
 - [API Documentation of the parser](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.parser.html#pyXLMS.parser.read)
-- [API Documentation of the crosslink-spectrum-match creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.data.create_csm)
+- [API Documentation of the crosslink-spectrum-match creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.data.html#pyXLMS.data.create_csm)
+- [API Documentation of the CrosslinkSpectrumMatch class](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.data.html#pyXLMS.data.CrosslinkSpectrumMatch)
 
 ## Modification Encoding
 
@@ -75,4 +76,5 @@ Data required for parsing crosslinks:
 
 Additional resources:
 - [API Documentation of the parser](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.parser.html#pyXLMS.parser.read)
-- [API Documentation of the crosslink creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.data.create_crosslink)
+- [API Documentation of the crosslink creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.data.html#pyXLMS.data.create_crosslink)
+- [API Documentation of the Crosslink class](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.data.html#pyXLMS.data.Crosslink)

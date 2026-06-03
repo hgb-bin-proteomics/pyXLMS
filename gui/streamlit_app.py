@@ -35,12 +35,13 @@ import pandas as pd
 from tempfile import NamedTemporaryFile
 from tempfile import TemporaryDirectory
 
+from pyXLMS.data import CrosslinkSpectrumMatch, Crosslink, ParserResult
 from pyXLMS import parser
 from pyXLMS import transform
 from pyXLMS import constants
 from pyXLMS import plotting
 from pyXLMS import exporter
-from pyXLMS.transform.annotate_string_scores import STRING_ORGANISMS
+from pyXLMS.transform._annotate_string_scores import STRING_ORGANISMS
 from pyXLMS import __version__ as __pyxlms_version__
 
 import streamlit as st
@@ -70,7 +71,14 @@ def to_text(data: str) -> bytes:
 
 
 @st.cache_data
-def to_json(data: Dict[str, Any]) -> bytes:
+def to_json(data: Any) -> bytes:
+    if isinstance(data, list):
+        if all(isinstance(item, CrosslinkSpectrumMatch) for item in data):
+            return transform.to_json(data).encode("utf-8")
+        if all(isinstance(item, Crosslink) for item in data):
+            return transform.to_json(data).encode("utf-8")
+    if isinstance(data, ParserResult):
+        return transform.to_json(data).encode("utf-8")
     return json.dumps(data).encode("utf-8")
 
 
@@ -99,7 +107,7 @@ def read_files(
     crosslinker: str,
     parse_modifications: bool,
     crosslinker_mass: Optional[float],
-) -> Dict[str, Any]:
+) -> ParserResult:
     #
     with TemporaryDirectory() as d:  # pyright: ignore[reportCallIssue]
         filenames = list()
@@ -141,8 +149,9 @@ def read_files(
 
 @st.cache_data
 def reannotating_positions(
-    pr: List[Dict[str, Any]] | Dict[str, Any], uploaded_fasta: io.BytesIO
-) -> List[Dict[str, Any]] | Dict[str, Any]:
+    pr: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult,
+    uploaded_fasta: io.BytesIO,
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
     #
     with NamedTemporaryFile(
         suffix=os.path.splitext(uploaded_fasta.name)[1], delete_on_close=False
@@ -154,7 +163,7 @@ def reannotating_positions(
 
 @st.cache_data
 def export_pyxlinkviewer_using_pdbfile(
-    crosslinks: List[Dict[str, Any]], uploaded_pdb_file: io.BytesIO
+    crosslinks: List[Crosslink], uploaded_pdb_file: io.BytesIO
 ) -> Dict[str, Any]:
     #
     with NamedTemporaryFile(
@@ -183,7 +192,7 @@ def pyxlinkviewer_get_annotation(
 
 @st.cache_data
 def export_xlmstools_using_pdbfile(
-    crosslinks: List[Dict[str, Any]], uploaded_pdb_file: io.BytesIO
+    crosslinks: List[Crosslink], uploaded_pdb_file: io.BytesIO
 ) -> Dict[str, Any]:
     #
     with NamedTemporaryFile(
@@ -196,15 +205,15 @@ def export_xlmstools_using_pdbfile(
 
 @st.cache_data
 def filter_proteins(
-    data: List[Dict[str, Any]], proteins: Set[str] | List[str]
-) -> List[Dict[str, Any]]:
+    data: List[CrosslinkSpectrumMatch] | List[Crosslink], proteins: Set[str] | List[str]
+) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
     filtered = transform.filter_proteins(data, proteins)
-    return filtered["Both"] + filtered["One"]
+    return transform.assert_csms_or_xls(filtered["Both"] + filtered["One"])
 
 
 @st.cache_data
 def export_alphalink2(
-    crosslinks: List[Dict[str, Any]], fasta: io.BytesIO, annotated_fdr: float
+    crosslinks: List[Crosslink], fasta: io.BytesIO, annotated_fdr: float
 ) -> Dict[str, Any]:
     #
     with NamedTemporaryFile(
@@ -219,7 +228,7 @@ def export_alphalink2(
 
 @st.cache_data
 def export_proxl(
-    csms: List[Dict[str, Any]],
+    csms: List[CrosslinkSpectrumMatch],
     fasta_file: io.BytesIO,
     search_engine: str,
     search_engine_version: str,
@@ -1204,20 +1213,28 @@ def filter_tab():
                                     st.session_state["pr"]["crosslink-spectrum-matches"]
                                     is not None
                                 ):
-                                    st.session_state["pr"][
-                                        "crosslink-spectrum-matches"
-                                    ] = filter_proteins(
-                                        st.session_state["pr"][
-                                            "crosslink-spectrum-matches"
-                                        ],
-                                        protein_filter,
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update(
+                                        {
+                                            "crosslink-spectrum-matches": filter_proteins(
+                                                st.session_state["pr"][
+                                                    "crosslink-spectrum-matches"
+                                                ],
+                                                protein_filter,
+                                            )
+                                        }
                                     )
                                 if st.session_state["pr"]["crosslinks"] is not None:
-                                    st.session_state["pr"]["crosslinks"] = (
-                                        filter_proteins(
-                                            st.session_state["pr"]["crosslinks"],
-                                            protein_filter,
-                                        )
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update(
+                                        {
+                                            "crosslinks": filter_proteins(
+                                                st.session_state["pr"]["crosslinks"],
+                                                protein_filter,
+                                            )
+                                        }
                                     )
                             if (
                                 "aggregated" in st.session_state
@@ -1245,9 +1262,11 @@ def filter_tab():
                                         keep += intra_inter["Intra"]
                                     if "Inter" in crosslink_type_filter:
                                         keep += intra_inter["Inter"]
-                                    st.session_state["pr"][
-                                        "crosslink-spectrum-matches"
-                                    ] = keep
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update(
+                                        {"crosslink-spectrum-matches": keep}
+                                    )
                                 if st.session_state["pr"]["crosslinks"] is not None:
                                     intra_inter = transform.filter_crosslink_type(
                                         st.session_state["pr"]["crosslinks"]
@@ -1257,7 +1276,9 @@ def filter_tab():
                                         keep += intra_inter["Intra"]
                                     if "Inter" in crosslink_type_filter:
                                         keep += intra_inter["Inter"]
-                                    st.session_state["pr"]["crosslinks"] = keep
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update({"crosslinks": keep})
                             if (
                                 "aggregated" in st.session_state
                                 and st.session_state["aggregated"] is not None
@@ -1292,9 +1313,11 @@ def filter_tab():
                                         keep += tt_td_dd["Target-Decoy"]
                                     if "Decoy-Decoy" in target_decoy_filter:
                                         keep += tt_td_dd["Decoy-Decoy"]
-                                    st.session_state["pr"][
-                                        "crosslink-spectrum-matches"
-                                    ] = keep
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update(
+                                        {"crosslink-spectrum-matches": keep}
+                                    )
                                 if st.session_state["pr"]["crosslinks"] is not None:
                                     tt_td_dd = transform.filter_target_decoy(
                                         st.session_state["pr"]["crosslinks"]
@@ -1306,7 +1329,9 @@ def filter_tab():
                                         keep += tt_td_dd["Target-Decoy"]
                                     if "Decoy-Decoy" in target_decoy_filter:
                                         keep += tt_td_dd["Decoy-Decoy"]
-                                    st.session_state["pr"]["crosslinks"] = keep
+                                    st.session_state["pr"] = st.session_state[
+                                        "pr"
+                                    ].copy_with_update({"crosslinks": keep})
                             if (
                                 "aggregated" in st.session_state
                                 and st.session_state["aggregated"] is not None

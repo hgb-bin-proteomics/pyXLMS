@@ -158,18 +158,16 @@ def test7():
         engine="MS Annika",
         crosslinker="DSS",
     )
-    a = a["crosslink-spectrum-matches"]
     b = parser.read(
         "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
     )
-    b = b["crosslink-spectrum-matches"]
-    a[0]["data_type"] = "peptide-spectrum-match"
+    b = b.csms()
 
     with pytest.raises(
         TypeError,
-        match=r"Unsupported data type for input data! Parameter data_1 has to be a list of crosslink or crosslink-spectrum-match!",
+        match=r"Provided input is not a valid list of type CrosslinkSpectrumMatch or Crosslink!",
     ):
-        _plot = plot_venn_diagram(a, b)
+        _plot = plot_venn_diagram([a], b)
 
 
 def test8():
@@ -181,18 +179,16 @@ def test8():
         engine="MS Annika",
         crosslinker="DSS",
     )
-    a = a["crosslink-spectrum-matches"]
     b = parser.read(
         "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
     )
-    b = b["crosslink-spectrum-matches"]
-    a[0]["data_type"] = "peptide-spectrum-match"
+    b = b.csms()
 
     with pytest.raises(
         TypeError,
-        match=r"Unsupported data type for input data! Parameter data_2 has to be a list of crosslink or crosslink-spectrum-match!",
+        match=r"Provided input is not a valid list of type CrosslinkSpectrumMatch or Crosslink!",
     ):
-        _plot = plot_venn_diagram(b, a)
+        _plot = plot_venn_diagram(b, [a])
 
 
 def test9():
@@ -204,24 +200,22 @@ def test9():
         engine="MS Annika",
         crosslinker="DSS",
     )
-    a = a["crosslink-spectrum-matches"]
     b = parser.read(
         "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
     )
-    b = b["crosslink-spectrum-matches"]
+    b = b.csms()
     c = parser.read(
         "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv",
         engine="pLink",
         crosslinker="DSS",
     )
-    c = c["crosslink-spectrum-matches"]
-    a[0]["data_type"] = "peptide-spectrum-match"
+    c = c.csms()
 
     with pytest.raises(
         TypeError,
-        match=r"Unsupported data type for input data! Parameter data_3 has to be a list of crosslink or crosslink-spectrum-match, or None!",
+        match=r"Provided input is not a valid list of type CrosslinkSpectrumMatch or Crosslink!",
     ):
-        _plot = plot_venn_diagram(c, b, a)
+        _plot = plot_venn_diagram(c, b, [a])
 
 
 def test10():
@@ -233,19 +227,18 @@ def test10():
         engine="MS Annika",
         crosslinker="DSS",
     )
-    a = a["crosslink-spectrum-matches"]
+    a = a.csms()
     b = parser.read(
         "data/maxquant/run1/crosslinkMsms.txt", engine="MaxQuant", crosslinker="DSS"
     )
-    b = b["crosslink-spectrum-matches"]
+    b = b.csms()
     c = parser.read(
         "data/plink2/Cas9_plus10_2024.06.20.filtered_cross-linked_spectra.csv",
         engine="pLink",
         crosslinker="DSS",
     )
-    c = c["crosslink-spectrum-matches"]
-    a[0]["completeness"] = "partial"
-    a[0]["alpha_proteins"] = None
+    c = c.csms()
+    a[0] = a[0].copy_with_update({"alpha_proteins": None})
 
     err_str = r"Grouping by protein crosslink position is only available if all data have defined protein crosslink positions!\n"
     err_str += (

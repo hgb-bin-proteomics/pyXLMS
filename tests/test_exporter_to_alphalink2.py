@@ -294,7 +294,7 @@ def test8():
 
 
 def test9():
-    from pyXLMS.exporter.to_alphalink2 import __get_proteins_and_positions
+    from pyXLMS.exporter._to_alphalink2 import __get_proteins_and_positions
 
     proteins_and_positions = __get_proteins_and_positions(
         "GSQKDR", {"A": {"header": "Cas9", "sequence": CAS9}}
@@ -304,7 +304,7 @@ def test9():
 
 
 def test10():
-    from pyXLMS.exporter.to_alphalink2 import __get_proteins_and_positions
+    from pyXLMS.exporter._to_alphalink2 import __get_proteins_and_positions
 
     with pytest.raises(RuntimeError, match="No match found for peptide GSQKDR!"):
         _proteins_and_positions = __get_proteins_and_positions(

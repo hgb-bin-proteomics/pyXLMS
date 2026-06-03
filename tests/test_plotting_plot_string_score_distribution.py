@@ -154,10 +154,8 @@ def test10():
         crosslinker="DSS",
     )
 
-    pr["crosslink-spectrum-matches"][0]["data_type"] = "peptide-spectrum-match"
-
     with pytest.raises(
         TypeError,
-        match=r"Unsupported data type for input data! Parameter data has to be a list of crosslink or crosslink-spectrum-match!",
+        match=r"Provided input is not a valid list of type CrosslinkSpectrumMatch or Crosslink!",
     ):
-        _plot = plot_string_score_distribution(pr["crosslink-spectrum-matches"])
+        _plot = plot_string_score_distribution([pr])

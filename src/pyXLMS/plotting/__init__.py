@@ -4,6 +4,20 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+r"""
+Plot different visualizations of crosslink-spectrum-match and crosslink data.
+
+Examples
+--------
+>>> from pyXLMS import parser
+>>> from pyXLMS import plotting
+>>> pr = parser.read_msannika(
+...     "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.xlsx"
+... )
+>>> csms = pr["crosslink-spectrum-matches"]
+>>> fig, ax = plotting.plot_crosslink_type_distribution(csms)
+"""
+
 __all__ = [
     "venn",
     "plot_venn_diagram",
@@ -16,12 +30,12 @@ __all__ = [
     "plot_string_score_distribution",
 ]
 
-from .plot_venn_diagram import venn
-from .plot_venn_diagram import plot_venn_diagram
-from .plot_score_distribution import plot_score_distribution
-from .plot_target_decoy_distribution import plot_target_decoy_distribution
-from .plot_protein_distribution import plot_protein_distribution
-from .plot_peptide_pair_distribution import plot_peptide_pair_distribution
-from .plot_crosslink_type_distribution import plot_crosslink_type_distribution
-from .plot_residue_pair_distribution import plot_residue_pair_distribution
-from .plot_string_score_distribution import plot_string_score_distribution
+from ._plot_venn_diagram import venn
+from ._plot_venn_diagram import plot_venn_diagram
+from ._plot_score_distribution import plot_score_distribution
+from ._plot_target_decoy_distribution import plot_target_decoy_distribution
+from ._plot_protein_distribution import plot_protein_distribution
+from ._plot_peptide_pair_distribution import plot_peptide_pair_distribution
+from ._plot_crosslink_type_distribution import plot_crosslink_type_distribution
+from ._plot_residue_pair_distribution import plot_residue_pair_distribution
+from ._plot_string_score_distribution import plot_string_score_distribution
