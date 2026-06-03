@@ -4,7 +4,7 @@
 # requires-python = ">=3.12"
 # dependencies = [
 #   "streamlit>=1.50.0",
-#   "pyxlms>=1.8.11",
+#   "pyxlms>=2.0.0",
 #   "xlsxwriter",
 # ]
 # ///
@@ -60,7 +60,7 @@ except ImportError:
     from typing_extensions import Literal
 
 
-__version__ = "1.4.1"
+__version__ = "1.4.2"
 
 HELP_URL = "https://pyxlms.dev/docs/webapp"
 
