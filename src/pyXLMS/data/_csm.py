@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import copy
 import numpy as np
 from pydantic import BaseModel
@@ -27,13 +28,13 @@ from typing import Tuple
 from typing import Any
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
-try:
-    from typing import override  # ty: ignore[unresolved-import]
-except ImportError:
+if sys.version_info > (3, 12):
+    from typing import override
+else:
     from typing_extensions import override
 
 

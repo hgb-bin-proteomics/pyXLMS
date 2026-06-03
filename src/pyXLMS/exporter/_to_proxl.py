@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import os
 from lxml import etree  # pyright: ignore[reportAttributeAccessIssue] # ty: ignore[unresolved-import]
 import urllib.request as ur
@@ -27,9 +28,9 @@ from typing import Dict
 from typing import Tuple
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 SCHEMA_URL = "https://github.com/yeastrc/proxl-import-api/raw/refs/heads/master/xsd/proxl-xml.xsd"

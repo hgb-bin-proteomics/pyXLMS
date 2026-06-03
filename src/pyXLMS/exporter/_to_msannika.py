@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import pandas as pd
 
 from ..data._csm import CrosslinkSpectrumMatch
@@ -20,9 +21,9 @@ from typing import Optional
 from typing import List
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 

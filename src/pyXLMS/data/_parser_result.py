@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import copy
 from pydantic import BaseModel
 from pydantic import Field
@@ -24,9 +25,9 @@ from typing import Tuple
 from typing import Any
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 

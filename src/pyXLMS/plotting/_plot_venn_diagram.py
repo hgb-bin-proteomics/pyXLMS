@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import warnings
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
@@ -26,9 +27,9 @@ from typing import Set
 from typing import Any
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 

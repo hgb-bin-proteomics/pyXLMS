@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import time
 import requests
 import warnings
@@ -29,9 +30,9 @@ from typing import Dict
 from typing import Any
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 STRING_STABLE_URL = "https://version-12-0.string-db.org/api"

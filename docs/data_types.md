@@ -7,6 +7,13 @@ information, and `parser result dictionaries` storing crosslinks and/or
 crosslink-spectrum-matches that have been parsed from a file. Each of these
 dictionaries is explained below.
 
+> [!IMPORTANT]
+> Starting with pyXLMS v2.0.0 all data structures in pyXLMS are now based on the
+> [Pydantic](https://pydantic.dev/docs/validation/latest/get-started/)
+> [BaseModel](https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel)
+> which provides extra type safety and validation. The change should be fully
+> backwards compatible and dict-like access is still provided!
+
 ## Crosslink-Spectrum-Matches
 
 Any method that returns or expects a crosslink-spectrum-match refers to a
@@ -43,7 +50,8 @@ may be `None`:
 | "additional_information"             | `Dict[str, Any]`                      | ❌ | A dictionary with additional information associated with the crosslink-spectrum-match. |
 
 Additional resources:
-- [API Documentation of the crosslink-spectrum-match creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.data.create_csm)
+- [API Documentation of the crosslink-spectrum-match creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.data.html#pyXLMS.data.create_csm)
+- [API Documentation of the CrosslinkSpectrumMatch class](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.data.html#pyXLMS.data.CrosslinkSpectrumMatch)
 
 ## Crosslinks
 
@@ -70,7 +78,8 @@ may be `None`:
 | "additional_information"             | `Dict[str, Any]`                      | ❌ | A dictionary with additional information associated with the crosslink. |
 
 Additional resources:
-- [API Documentation of the crosslink creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.data.create_crosslink)
+- [API Documentation of the crosslink creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.data.html#pyXLMS.data.create_crosslink)
+- [API Documentation of the Crosslink class](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.data.html#pyXLMS.data.Crosslink)
 
 ## Parser Results
 
@@ -87,4 +96,5 @@ may be `None`:
 | "crosslinks"                         | `List[Dict[str, Any]]`                | ❌ | List of parsed crosslinks. |
 
 Additional resources:
-- [API Documentation of the parser result creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.data.create_parser_result)
+- [API Documentation of the parser result creator](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.data.html#pyXLMS.data.create_parser_result)
+- [API Documentation of the ParserResult class](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.data.html#pyXLMS.data.ParserResult)

@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import sqlite3
 import warnings
 import pandas as pd
@@ -29,9 +30,9 @@ from typing import Tuple
 from typing import List
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 

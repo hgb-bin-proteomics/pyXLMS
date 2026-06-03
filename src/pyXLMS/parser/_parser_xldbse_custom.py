@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import pandas as pd
 from tqdm import tqdm
 from os.path import splitext
@@ -29,9 +30,9 @@ from typing import List
 from typing import Callable
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 

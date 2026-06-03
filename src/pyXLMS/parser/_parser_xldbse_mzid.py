@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import warnings
 from tqdm import tqdm
 from pyteomics import mzid
@@ -27,9 +28,9 @@ from typing import List
 from typing import Callable
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 

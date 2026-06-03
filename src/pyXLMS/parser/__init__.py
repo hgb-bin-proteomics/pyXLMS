@@ -82,15 +82,17 @@ from ._parser_xldbse_maxquant import parse_modifications_from_maxquant_sequence
 from ._util import format_sequence
 from ._util import get_bool_from_value
 
+import sys
+
 from ..data._parser_result import ParserResult
 
 from typing import BinaryIO
 from typing import List
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 

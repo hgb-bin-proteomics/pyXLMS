@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import warnings
 import numpy as np
 from tqdm import tqdm
@@ -26,9 +27,9 @@ from ._filter import filter_crosslink_type
 from typing import List
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 
