@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import warnings
 import pandas as pd
 from tqdm import tqdm
@@ -24,9 +25,9 @@ from typing import BinaryIO
 from typing import List
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 

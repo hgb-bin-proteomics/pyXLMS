@@ -58,6 +58,8 @@ Maximum CSM score: 452.99
 
 from __future__ import annotations
 
+import sys
+
 from ..data._parser_result import ParserResult
 from ..parser import read
 from ..transform._summary import summary as transform_summary
@@ -72,9 +74,9 @@ from typing import Any
 from typing import List
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 __all__ = ["pipeline"]

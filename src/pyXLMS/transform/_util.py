@@ -6,6 +6,8 @@
 
 from __future__ import annotations
 
+import sys
+
 from ..data._csm import CrosslinkSpectrumMatch
 from ..data._crosslink import Crosslink
 from ..data._parser_result import ParserResult
@@ -19,9 +21,9 @@ from typing import Tuple
 from typing import List
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 

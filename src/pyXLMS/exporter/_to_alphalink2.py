@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import re
 import gzip
 import pickle
@@ -28,9 +29,9 @@ from typing import List
 from typing import Any
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 CHAINS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")

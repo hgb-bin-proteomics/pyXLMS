@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 import io
 import warnings
 import pandas as pd
@@ -30,9 +31,9 @@ from typing import List
 from typing import Callable
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 
