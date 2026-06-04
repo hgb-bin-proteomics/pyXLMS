@@ -752,7 +752,14 @@ def input_tab():
                     # reset proteins
                     st.session_state["possible_proteins"] = None
                     _ = st.error(
-                        "Something went wrong! This is most likely due to missing information in the results!",
+                        (
+                            "Something went wrong! Did you select the correct search engine and crosslinker? "
+                            f"Currently selected search engine: '{search_engine}'; "
+                            f"Currently selected crosslinker: '{crosslinker}'; "
+                            "If both are correct it is most likely that your result is missing information for one "
+                            "of the selected operations! Check the error message via 'Show exception' for more information "
+                            "and contact us if you need help!"
+                        ),
                         icon="⚠️",
                     )
                     with st.expander("Show exception"):
@@ -876,7 +883,14 @@ def input_tab():
                     # reset proteins
                     st.session_state["possible_proteins"] = None
                     _ = st.error(
-                        "Something went wrong! This is most likely due to missing information in the results!",
+                        (
+                            "Something went wrong! Did you select the correct search engine and crosslinker? "
+                            f"Currently selected search engine: '{search_engine}'; "
+                            f"Currently selected crosslinker: '{crosslinker}'; "
+                            "If both are correct it is most likely that your result is missing information for one "
+                            "of the selected operations! Check the error message via 'Show exception' for more information "
+                            "and contact us if you need help!"
+                        ),
                         icon="⚠️",
                     )
                     with st.expander("Show exception"):
