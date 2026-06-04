@@ -4,7 +4,7 @@
 # requires-python = ">=3.12"
 # dependencies = [
 #   "streamlit>=1.50.0",
-#   "pyxlms>=1.8.11",
+#   "pyxlms>=2.0.0",
 #   "xlsxwriter",
 # ]
 # ///
@@ -60,7 +60,7 @@ except ImportError:
     from typing_extensions import Literal
 
 
-__version__ = "1.4.1"
+__version__ = "1.4.2"
 
 HELP_URL = "https://pyxlms.dev/docs/webapp"
 
@@ -485,10 +485,10 @@ def input_tab():
         )
         parse_modifications_info = st.info(
             "Lists of currently supported modifications for "
-            + "[MeroX](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.constants.MEROX_MODIFICATION_MAPPING), "
-            + "[Scout](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.constants.SCOUT_MODIFICATION_MAPPING), "
-            + "[xiSearch/xiFDR](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.constants.XI_MODIFICATION_MAPPING), "
-            + "and [all other search engines](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.html#pyXLMS.constants.MODIFICATIONS)."
+            + "[MeroX](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.constants.html#pyXLMS.constants.MEROX_MODIFICATION_MAPPING), "
+            + "[Scout](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.constants.html#pyXLMS.constants.SCOUT_MODIFICATION_MAPPING), "
+            + "[xiSearch/xiFDR](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.constants.html#pyXLMS.constants.XI_MODIFICATION_MAPPING), "
+            + "and [all other search engines](https://hgb-bin-proteomics.github.io/pyXLMS/pyXLMS.constants.html#pyXLMS.constants.MODIFICATIONS)."
         )
 
     crosslinker_name = None
@@ -752,7 +752,14 @@ def input_tab():
                     # reset proteins
                     st.session_state["possible_proteins"] = None
                     _ = st.error(
-                        "Something went wrong! This is most likely due to missing information in the results!",
+                        (
+                            "Something went wrong! Did you select the correct search engine and crosslinker? "
+                            f"Currently selected search engine: '{search_engine}'; "
+                            f"Currently selected crosslinker: '{crosslinker}'; "
+                            "If both are correct it is most likely that your result is missing information for one "
+                            "of the selected operations! Check the error message via 'Show exception' for more information "
+                            "and contact us if you need help!"
+                        ),
                         icon="⚠️",
                     )
                     with st.expander("Show exception"):
@@ -876,7 +883,14 @@ def input_tab():
                     # reset proteins
                     st.session_state["possible_proteins"] = None
                     _ = st.error(
-                        "Something went wrong! This is most likely due to missing information in the results!",
+                        (
+                            "Something went wrong! Did you select the correct search engine and crosslinker? "
+                            f"Currently selected search engine: '{search_engine}'; "
+                            f"Currently selected crosslinker: '{crosslinker}'; "
+                            "If both are correct it is most likely that your result is missing information for one "
+                            "of the selected operations! Check the error message via 'Show exception' for more information "
+                            "and contact us if you need help!"
+                        ),
                         icon="⚠️",
                     )
                     with st.expander("Show exception"):
