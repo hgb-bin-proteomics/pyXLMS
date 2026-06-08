@@ -4,6 +4,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+# ruff: noqa: N999
+
 r"""
 Predefined data transformation pipelines for crosslink-spectrum-matches and crosslinks.
 

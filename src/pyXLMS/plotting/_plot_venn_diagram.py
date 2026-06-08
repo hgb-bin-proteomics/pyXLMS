@@ -115,7 +115,8 @@ def venn(
             warnings.warn(
                 RuntimeWarning(
                     "More than two labels supplied for two sets. Using first two..."
-                )
+                ),
+                stacklevel=2,
             )
             labels = labels[:2]
 
@@ -128,7 +129,8 @@ def venn(
             warnings.warn(
                 RuntimeWarning(
                     "More than two colors supplied for two sets. Using first two..."
-                )
+                ),
+                stacklevel=2,
             )
             colors = colors[:2]
 
@@ -190,7 +192,8 @@ def venn(
             warnings.warn(
                 RuntimeWarning(
                     "More than three labels supplied for three sets. Using first three..."
-                )
+                ),
+                stacklevel=2,
             )
             labels = labels[:3]
 
@@ -203,7 +206,8 @@ def venn(
             warnings.warn(
                 RuntimeWarning(
                     "More than three colors supplied for three sets. Using first three..."
-                )
+                ),
+                stacklevel=2,
             )
             colors = colors[:3]
 

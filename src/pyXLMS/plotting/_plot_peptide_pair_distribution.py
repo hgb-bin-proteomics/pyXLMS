@@ -92,14 +92,14 @@ def plot_peptide_pair_distribution(
         pp_names.append(pp)
         pp_total.append(len(pps[pp]))
 
-    sorted = pd.DataFrame(
+    sorted_df = pd.DataFrame(
         {
             "peptide_pair": pp_names,
             "total": pp_total,
         }
     ).sort_values(by="total", axis=0, ascending=False)
-    pp_names = sorted["peptide_pair"].values.tolist()[:top_n]
-    pp_total = sorted["total"].values.tolist()[:top_n]
+    pp_names = sorted_df["peptide_pair"].tolist()[:top_n]
+    pp_total = sorted_df["total"].tolist()[:top_n]
 
     fig, ax = plt.subplots(figsize=figsize)
 
