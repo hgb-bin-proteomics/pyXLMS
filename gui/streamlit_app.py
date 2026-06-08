@@ -67,11 +67,17 @@ HELP_URL = "https://pyxlms.dev/docs/webapp"
 
 @st.cache_data
 def to_text(data: str) -> bytes:
+    r"""
+    Text to bytes.
+    """
     return data.encode("utf-8")
 
 
 @st.cache_data
 def to_json(data: Any) -> bytes:
+    r"""
+    Data to JSON bytes.
+    """
     if isinstance(data, list):
         if all(isinstance(item, CrosslinkSpectrumMatch) for item in data):
             return transform.to_json(data).encode("utf-8")
@@ -86,6 +92,9 @@ def to_json(data: Any) -> bytes:
 def dataframe_to_csv_stream(
     dataframe: pd.DataFrame, sep: str, index: bool, header: bool = True
 ) -> bytes:
+    r"""
+    DataFrame to CSV bytes.
+    """
     return dataframe.to_csv(sep=sep, index=index, header=header).encode("utf-8")
 
 
@@ -93,6 +102,9 @@ def dataframe_to_csv_stream(
 def dataframe_to_xlsx_stream(
     dataframe: pd.DataFrame, sheet_name: str, index: bool
 ) -> io.BytesIO:
+    r"""
+    DataFrame to Microsoft Excel file buffer.
+    """
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:  # pyright: ignore[reportArgumentType]
         dataframe.to_excel(writer, index=index, sheet_name=sheet_name)
@@ -108,6 +120,9 @@ def read_files(
     parse_modifications: bool,
     crosslinker_mass: Optional[float],
 ) -> ParserResult:
+    r"""
+    Reads uploaded files into a ParserResult.
+    """
     #
     with TemporaryDirectory() as d:  # pyright: ignore[reportCallIssue]
         filenames = list()
@@ -126,7 +141,7 @@ def read_files(
                     parse_modifications=parse_modifications,
                     crosslinker_mass=crosslinker_mass,
                 )
-            except Exception as _e:
+            except Exception as _e:  # noqa: S110
                 pass
         if engine == "MS Annika":
             try:
@@ -137,7 +152,7 @@ def read_files(
                     parse_modifications=parse_modifications,
                     unsafe=True,
                 )
-            except Exception as _e:
+            except Exception as _e:  # noqa: S110
                 pass
         return parser.read(
             filenames,
@@ -152,6 +167,9 @@ def reannotating_positions(
     pr: List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult,
     uploaded_fasta: io.BytesIO,
 ) -> List[CrosslinkSpectrumMatch] | List[Crosslink] | ParserResult:
+    r"""
+    See ``pyXLMS.transform.reannotate_positions()``.
+    """
     #
     with NamedTemporaryFile(
         suffix=os.path.splitext(uploaded_fasta.name)[1], delete_on_close=False
@@ -165,6 +183,9 @@ def reannotating_positions(
 def export_pyxlinkviewer_using_pdbfile(
     crosslinks: List[Crosslink], uploaded_pdb_file: io.BytesIO
 ) -> Dict[str, Any]:
+    r"""
+    See ``pyXLMS.exporter.to_pyxlinkviewer()``.
+    """
     #
     with NamedTemporaryFile(
         suffix=os.path.splitext(uploaded_pdb_file.name)[1], delete_on_close=False
@@ -175,12 +196,18 @@ def export_pyxlinkviewer_using_pdbfile(
 
 
 def pyxlinkviewer_get_fasta(sequence: str) -> str:
+    r"""
+    See ``pyXLMS.exporter.to_pyxlinkviewer()``.
+    """
     return f">db|PARSEDPDB|sequence parsed from PDB file\n{sequence}"
 
 
 def pyxlinkviewer_get_annotation(
     sequence: str, chains: str, residue_numbers: List[Any]
 ) -> pd.DataFrame:
+    r"""
+    See ``pyXLMS.exporter.to_pyxlinkviewer()``.
+    """
     return pd.DataFrame(
         {
             "Amino Acid": [c for c in sequence],
@@ -194,6 +221,9 @@ def pyxlinkviewer_get_annotation(
 def export_xlmstools_using_pdbfile(
     crosslinks: List[Crosslink], uploaded_pdb_file: io.BytesIO
 ) -> Dict[str, Any]:
+    r"""
+    See ``pyXLMS.exporter.to_xlmstools()``.
+    """
     #
     with NamedTemporaryFile(
         suffix=os.path.splitext(uploaded_pdb_file.name)[1], delete_on_close=False
@@ -207,6 +237,9 @@ def export_xlmstools_using_pdbfile(
 def filter_proteins(
     data: List[CrosslinkSpectrumMatch] | List[Crosslink], proteins: Set[str] | List[str]
 ) -> List[CrosslinkSpectrumMatch] | List[Crosslink]:
+    r"""
+    See ``pyXLMS.transform.filter_proteins()``.
+    """
     filtered = transform.filter_proteins(data, proteins)
     return transform.assert_csms_or_xls(filtered["Both"] + filtered["One"])
 
@@ -215,6 +248,9 @@ def filter_proteins(
 def export_alphalink2(
     crosslinks: List[Crosslink], fasta: io.BytesIO, annotated_fdr: float
 ) -> Dict[str, Any]:
+    r"""
+    See ``pyXLMS.exporter.to_alphalink2()``.
+    """
     #
     with NamedTemporaryFile(
         suffix=os.path.splitext(fasta.name)[1], delete_on_close=False
@@ -236,6 +272,9 @@ def export_proxl(
     crosslinker: str,
     crosslinker_mass: Optional[float],
 ) -> str:
+    r"""
+    See ``pyXLMS.exporter.to_proxl()``.
+    """
     #
     with NamedTemporaryFile(
         suffix=os.path.splitext(fasta_file.name)[1], delete_on_close=False
@@ -256,6 +295,9 @@ def export_proxl(
 
 @st.cache_data
 def pickle_and_gzip(data: Any) -> io.BytesIO:
+    r"""
+    Pickle and gzip data to a file buffer.
+    """
     buffer = io.BytesIO()
     with gzip.open(buffer, "wb") as f:
         pickle.dump(data, f)
@@ -263,6 +305,9 @@ def pickle_and_gzip(data: Any) -> io.BytesIO:
 
 
 def layout_plots(plots: List[Any]) -> None:
+    r"""
+    Calculate the plot layout.
+    """
     for i in range(0, len(plots), 2):
         l_col, r_col = st.columns(2)
         if i < len(plots):
@@ -285,6 +330,9 @@ def layout_plots(plots: List[Any]) -> None:
 
 
 def reset_exports() -> None:
+    r"""
+    Reset ``st.session_state`` saved exports.
+    """
     # CSMs
     st.session_state["export_csms_impxfdr"] = None
     st.session_state["export_csms_msannika"] = None
@@ -315,6 +363,9 @@ def reset_exports() -> None:
 
 # input tab
 def input_tab():
+    r"""
+    --- INPUT TAB ---
+    """
     general_description = """
     _a python package to process protein cross-linking data_
 
@@ -1134,6 +1185,9 @@ def input_tab():
 
 # filter tab
 def filter_tab():
+    r"""
+    --- FILTER TAB ---
+    """
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
         no_data = st.info("You need to upload at least one result file first!")
     else:
@@ -1624,6 +1678,9 @@ def filter_tab():
 
 # visualize tab
 def visualize_tab():
+    r"""
+    --- VISUALIZE TAB ---
+    """
     visualization_header = st.subheader("Visualization Parameters", divider="grey")
     left_col, right_col = st.columns(2)
     with left_col:
@@ -1925,6 +1982,9 @@ def visualize_tab():
 
 # export tab
 def export_tab():
+    r"""
+    --- EXPORT TAB ---
+    """
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
         no_data = st.info("You need to upload at least one result file first!")
     if "pr" in st.session_state and st.session_state["pr"] is not None:
@@ -4293,6 +4353,9 @@ def export_tab():
 
 # about tab
 def about_tab():
+    r"""
+    --- ABOUT TAB ---
+    """
     general_description = """
         **pyXLMS** is a python package and web application with graphical user interface that aims to simplify and streamline the intermediate step of
         connecting crosslink search engine results with down-stream analysis tools, enabling researchers even without bioinformatics knowledge to
@@ -4380,6 +4443,9 @@ def about_tab():
 
 # main page content
 def main_page():
+    r"""
+    Streamlit app main page.
+    """
     title = st.title("pyXLMS")
 
     tab1, tab2, tab3, tab4, tab5 = st.tabs(
@@ -4404,6 +4470,9 @@ def main_page():
 
 # side bar and main page loader
 def main():
+    r"""
+    Streamlit app main function.
+    """
     about_str = """
     **pyXLMS** is a python package and web application with graphical user interface that aims to simplify and streamline the intermediate step of
     connecting crosslink search engine results with down-stream analysis tools, enabling researchers even without bioinformatics knowledge to
