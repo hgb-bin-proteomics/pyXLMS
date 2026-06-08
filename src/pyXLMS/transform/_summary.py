@@ -97,7 +97,7 @@ def __summary_xl(data: List[Crosslink]) -> Dict[str, float]:
     try:
         nr_unique_protein = float(len(unique(data, by="protein")))  # ty: ignore[invalid-argument-type]
     except Exception as _e:
-        pass
+        nr_unique_protein = float("nan")
     xl_types = filter_crosslink_type(data)
     # number of intra crosslinks
     nr_intra = float(len(xl_types["Intra"]))

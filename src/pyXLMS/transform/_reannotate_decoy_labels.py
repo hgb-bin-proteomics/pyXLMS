@@ -120,7 +120,8 @@ def __annotate_by_protein_prefix(
             warnings.warn(
                 RuntimeWarning(
                     f"Could not annotate alpha decoy label at index={i} because alpha proteins is 'None'!"
-                )
+                ),
+                stacklevel=2,
             )
         if item["beta_proteins"] is not None and len(item["beta_proteins"]) > 0:
             beta_decoy = all(
@@ -133,7 +134,8 @@ def __annotate_by_protein_prefix(
             warnings.warn(
                 RuntimeWarning(
                     f"Could not annotate beta decoy label at index={i} because beta proteins is 'None'!"
-                )
+                ),
+                stacklevel=2,
             )
         reannotated.append(
             item.copy_with_update(
@@ -190,7 +192,8 @@ def __annotate_by_protein_substring(
             warnings.warn(
                 RuntimeWarning(
                     f"Could not annotate alpha decoy label at index={i} because alpha proteins is 'None'!"
-                )
+                ),
+                stacklevel=2,
             )
         if item["beta_proteins"] is not None and len(item["beta_proteins"]) > 0:
             beta_decoy = all(
@@ -203,7 +206,8 @@ def __annotate_by_protein_substring(
             warnings.warn(
                 RuntimeWarning(
                     f"Could not annotate beta decoy label at index={i} because beta proteins is 'None'!"
-                )
+                ),
+                stacklevel=2,
             )
         reannotated.append(
             item.copy_with_update(

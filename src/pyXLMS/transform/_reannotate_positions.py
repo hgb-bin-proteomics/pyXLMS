@@ -63,7 +63,7 @@ def __generate_all_sequences(sequence: str) -> List[str]:
     all_sequences = [sequence]
     for one_letter_code, replacements in AMINO_ACIDS_REPLACEMENTS.items():
         occurences = sequence.count(one_letter_code)
-        for i in range(occurences):
+        for _i in range(occurences):
             all_sequences = [
                 seq.replace(one_letter_code, replacement, 1)
                 for seq in all_sequences
@@ -108,12 +108,12 @@ def __get_proteins_and_positions(
     """
     proteins = list()
     positions = list()
-    for id, base_seq in protein_db.items():
+    for prot_id, base_seq in protein_db.items():
         seqs = __generate_all_sequences(base_seq)
         for seq in seqs:
             if peptide in seq:
                 for match in re.finditer(peptide, seq):
-                    proteins.append(id)
+                    proteins.append(prot_id)
                     positions.append(match.start())
     if len(proteins) == 0:
         raise RuntimeError(f"No match found for peptide {peptide}!")
@@ -214,23 +214,25 @@ def reannotate_positions(
         i = 0
         if isinstance(fasta, str):
             with open(fasta, "r", encoding="utf-8") as f:
-                for i, item in enumerate(SimpleFastaParser(f)):
+                for i, item in enumerate(SimpleFastaParser(f)):  # noqa: B007
                     protein_db[title_to_accession(item[0])] = item[1]
             if len(protein_db) != i + 1:
                 warnings.warn(
                     RuntimeWarning(
                         f"Possible duplicates found in fasta file! Read {i + 1} sequences but only stored {len(protein_db)}."
-                    )
+                    ),
+                    stacklevel=2,
                 )
         else:
             fasta.seek(0)
-            for i, item in enumerate(SimpleFastaParser(fasta)):
+            for i, item in enumerate(SimpleFastaParser(fasta)):  # noqa: B007
                 protein_db[title_to_accession(item[0])] = item[1]
             if len(protein_db) != i + 1:
                 warnings.warn(
                     RuntimeWarning(
                         f"Possible duplicates found in fasta file! Read {i + 1} sequences but only stored {len(protein_db)}."
-                    )
+                    ),
+                    stacklevel=2,
                 )
         # annotate crosslinks
         if isinstance(data[0], Crosslink):
