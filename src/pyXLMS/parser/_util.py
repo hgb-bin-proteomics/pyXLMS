@@ -145,6 +145,7 @@ def format_sequence(
                     warnings.warn(
                         f"The sequence {sequence} contains non-valid characters.",
                         RuntimeWarning,
+                        stacklevel=2,
                     )
             fmt_seq += aa
         elif remove_lower:
@@ -157,6 +158,7 @@ def format_sequence(
                     warnings.warn(
                         f"The sequence {sequence} contains non-valid characters.",
                         RuntimeWarning,
+                        stacklevel=2,
                     )
             fmt_seq += aa.upper()
     return fmt_seq
