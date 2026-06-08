@@ -62,6 +62,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 "tests/*" = ["S", "B", "A", "Q", "N", "D1", "PD", "UP"]
 "examples/*" = ["S", "B", "A", "Q", "N", "D1", "PD", "UP"]
 "sphinx/*" = ["S", "B", "A", "Q", "N", "D1", "PD", "UP"]
+"gui/test.py" = ["S", "B", "A", "Q", "N", "D1", "PD", "UP"]
 
 [format]
 # Like Black, use double quotes for strings.
