@@ -4,6 +4,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+# ruff: noqa: N999
+
 r"""
 Export crosslink-spectrum-matches and crosslinks to different down-stream analysis
 tools and formats.

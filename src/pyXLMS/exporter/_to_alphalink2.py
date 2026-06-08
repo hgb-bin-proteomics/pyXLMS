@@ -243,11 +243,11 @@ def to_alphalink2(
         raise IndexError(
             "Found more than the supported 62 proteins/chains in the fasta file! Please trim fasta file to a maximum of 62 sequences!"
         )
-    id = 0
+    chain_id = 0
     for item in fasta_items:
         if __protein_supported_by_crosslink(item[1], crosslinks):
-            protein_db[CHAINS[id]] = {"header": item[0], "sequence": item[1]}
-            id += 1
+            protein_db[CHAINS[chain_id]] = {"header": item[0], "sequence": item[1]}
+            chain_id += 1
     # prepare fdr values
     fdr_values = (
         annotated_fdr
@@ -265,7 +265,7 @@ def to_alphalink2(
     }
     alphalink2_pickle = dict()
     # export crosslinks
-    for id, xl in tqdm(
+    for xl_id, xl in tqdm(
         enumerate(crosslinks),
         total=len(crosslinks),
         desc="Exporting crosslinks to AlphaLink2...",
@@ -281,46 +281,45 @@ def to_alphalink2(
             if verbose == 1:
                 warnings.warn(
                     RuntimeWarning(
-                        (
-                            f"Could not find matching proteins in FASTA file for crosslink id {id}:{xl['alpha_peptide']}-{xl['beta_peptide']}! "
-                            "This warning can be ignored if this is to be expected."
-                        )
-                    )
+                        f"Could not find matching proteins in FASTA file for crosslink id {xl_id}:{xl['alpha_peptide']}-{xl['beta_peptide']}! "
+                        "This warning can be ignored if this is to be expected."
+                    ),
+                    stacklevel=2,
                 )
             if verbose == 2:
                 raise RuntimeError(
-                    (
-                        f"Could not find matching proteins in FASTA file for crosslink id {id}:{xl['alpha_peptide']}-{xl['beta_peptide']}! "
-                        "If this is to be expected please set verbose level to either 1 or 0!"
-                    )
+                    f"Could not find matching proteins in FASTA file for crosslink id {xl_id}:{xl['alpha_peptide']}-{xl['beta_peptide']}! "
+                    "If this is to be expected please set verbose level to either 1 or 0!"
                 )
             continue
         for i in range(len(proteins_a)):
             for j in range(len(proteins_b)):
-                residueFrom = (
+                residue_from = (
                     pep_position0_proteins_a[i] + xl["alpha_peptide_crosslink_position"]
                 )
                 chain1 = proteins_a[i]
-                residueTo = (
+                residue_to = (
                     pep_position0_proteins_b[j] + xl["beta_peptide_crosslink_position"]
                 )
                 chain2 = proteins_b[j]
-                FDR = fdr_values[id]
+                fdr = fdr_values[xl_id]
                 if try_use_annotated_fdr:
                     if xl["additional_information"] is not None:
                         if "pyXLMS_annotated_FDR" in xl["additional_information"]:
                             if not pd.isna(
                                 xl["additional_information"]["pyXLMS_annotated_FDR"]
                             ):
-                                FDR = xl["additional_information"][
+                                fdr = xl["additional_information"][
                                     "pyXLMS_annotated_FDR"
                                 ]
-                alphalink2_df_dict["residueFrom"].append(residueFrom)
+                alphalink2_df_dict["residueFrom"].append(residue_from)
                 alphalink2_df_dict["chain1"].append(chain1)
-                alphalink2_df_dict["residueTo"].append(residueTo)
+                alphalink2_df_dict["residueTo"].append(residue_to)
                 alphalink2_df_dict["chain2"].append(chain2)
-                alphalink2_df_dict["FDR"].append(FDR)
-                alphalink2_txt += f"{residueFrom} {chain1} {residueTo} {chain2} {FDR}\n"
+                alphalink2_df_dict["FDR"].append(fdr)
+                alphalink2_txt += (
+                    f"{residue_from} {chain1} {residue_to} {chain2} {fdr}\n"
+                )
                 # generate pickle
                 # taken from https://github.com/Rappsilber-Laboratory/AlphaLink2/blob/main/generate_crosslink_pickle.py
                 if chain1 not in alphalink2_pickle:
@@ -328,7 +327,7 @@ def to_alphalink2(
                 if chain2 not in alphalink2_pickle[chain1]:
                     alphalink2_pickle[chain1][chain2] = list()
                 alphalink2_pickle[chain1][chain2].append(
-                    (int(residueFrom) - 1, int(residueTo) - 1, float(FDR))
+                    (int(residue_from) - 1, int(residue_to) - 1, float(fdr))
                 )
     # create fasta
     alphalink2_fasta = ""

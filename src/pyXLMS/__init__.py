@@ -4,6 +4,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+# ruff: noqa: N999
+
 r"""
 A python package to process protein cross-linking data.
 """

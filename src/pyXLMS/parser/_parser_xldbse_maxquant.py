@@ -236,10 +236,10 @@ def read_maxquant(
         inputs = files
 
     ## process data
-    for input in inputs:
+    for input in inputs:  # noqa: A001
         data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
         xl = data.dropna(axis=0, subset=["Proteins2"])
-        for i, row in tqdm(
+        for _i, row in tqdm(
             xl.iterrows(), total=xl.shape[0], desc="Reading MaxQuant CSMs..."
         ):
             # preprocess proteins

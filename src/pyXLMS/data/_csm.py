@@ -651,8 +651,8 @@ class CrosslinkSpectrumMatch(BaseModel):
         """
         try:
             return getattr(self, key)
-        except AttributeError:
-            raise KeyError(f"'{key}' is not a valid field!")
+        except AttributeError as e:
+            raise KeyError(f"'{key}' is not a valid field!") from e
 
     def __contains__(self, key: str) -> bool:
         r"""
