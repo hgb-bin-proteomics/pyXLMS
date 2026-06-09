@@ -60,7 +60,7 @@ except ImportError:
     from typing_extensions import Literal
 
 
-__version__ = "1.4.2"
+__version__ = "1.4.3"
 
 HELP_URL = "https://pyxlms.dev/docs/webapp"
 
