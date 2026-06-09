@@ -1716,6 +1716,24 @@ def visualize_tab():
             key="string_taxon_id",
             help="The STRING organism's taxon identifier to be used for annotation of STRING scores. You can get the taxon identifier [here](https://string-db.org/cgi/organisms).",
         )
+    # use saved string organism or taxon id, if one was previously selected
+    if string_organism is None:
+        if (
+            "saved_string_organism" in st.session_state
+            and st.session_state["saved_string_organism"] is not None
+        ):
+            string_organism = st.session_state["saved_string_organism"]
+    else:
+        st.session_state["saved_string_organism"] = string_organism
+    if string_taxon_id is None:
+        if (
+            "saved_string_taxon_id" in st.session_state
+            and st.session_state["saved_string_taxon_id"] is not None
+        ):
+            string_taxon_id = st.session_state["saved_string_taxon_id"]
+    else:
+        st.session_state["saved_string_taxon_id"] = string_taxon_id
+    #
     if "pr" not in st.session_state and "aggregated" not in st.session_state:
         no_data = st.info("You need to upload at least one result file first!")
     if "pr" in st.session_state and st.session_state["pr"] is not None:
@@ -1790,11 +1808,19 @@ def visualize_tab():
                 try:
                     _ = transform.annotate_string_scores(csms, organism=string_input_id)
                     fig, ax = plotting.plot_string_score_distribution(
-                        csms, plot_type="bar", bins=bins, figsize=(8.0, 4.5)
+                        csms,
+                        plot_type="bar",
+                        bins=bins,
+                        figsize=(8.0, 4.5),
+                        title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
                     )
                     plots.append(fig)
                     fig, ax = plotting.plot_string_score_distribution(
-                        csms, plot_type="hist", bins=bins, figsize=(8.0, 4.5)
+                        csms,
+                        plot_type="hist",
+                        bins=bins,
+                        figsize=(8.0, 4.5),
+                        title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
                     )
                     plots.append(fig)
                 except Exception as _e:
@@ -1869,11 +1895,19 @@ def visualize_tab():
                         crosslinks, organism=string_input_id
                     )
                     fig, ax = plotting.plot_string_score_distribution(
-                        crosslinks, plot_type="bar", bins=bins, figsize=(8.0, 4.5)
+                        crosslinks,
+                        plot_type="bar",
+                        bins=bins,
+                        figsize=(8.0, 4.5),
+                        title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
                     )
                     plots.append(fig)
                     fig, ax = plotting.plot_string_score_distribution(
-                        crosslinks, plot_type="hist", bins=bins, figsize=(8.0, 4.5)
+                        crosslinks,
+                        plot_type="hist",
+                        bins=bins,
+                        figsize=(8.0, 4.5),
+                        title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
                     )
                     plots.append(fig)
                 except Exception as _e:
@@ -1954,6 +1988,7 @@ def visualize_tab():
                     plot_type="bar",
                     bins=bins,
                     figsize=(8.0, 4.5),
+                    title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
                 )
                 plots.append(fig)
                 fig, ax = plotting.plot_string_score_distribution(
@@ -1961,6 +1996,7 @@ def visualize_tab():
                     plot_type="hist",
                     bins=bins,
                     figsize=(8.0, 4.5),
+                    title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
                 )
                 plots.append(fig)
             except Exception as _e:
