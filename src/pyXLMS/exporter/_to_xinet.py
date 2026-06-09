@@ -48,7 +48,7 @@ def __xls_to_xinet(
     pepseq2 = list()
     linkpos2 = list()
     score = list()
-    id = list()
+    xl_id = list()
     has_scores = True
     for i, xl in enumerate(xls):
         pos1 = xl["alpha_peptide_crosslink_position"]
@@ -76,7 +76,7 @@ def __xls_to_xinet(
             score.append(xl["score"])
         else:
             has_scores = False
-        id.append(i + 1)
+        xl_id.append(i + 1)
     xinet_df = pd.DataFrame()
     if has_scores:
         xinet_df = pd.DataFrame(
@@ -90,7 +90,7 @@ def __xls_to_xinet(
                 "PepSeq2": pepseq2,
                 "LinkPos2": linkpos2,
                 "Score": score,
-                "Id": id,
+                "Id": xl_id,
             }
         )
     else:
@@ -104,7 +104,7 @@ def __xls_to_xinet(
                 "PepPos2": peppos2,
                 "PepSeq2": pepseq2,
                 "LinkPos2": linkpos2,
-                "Id": id,
+                "Id": xl_id,
             }
         )
     if filename is not None:

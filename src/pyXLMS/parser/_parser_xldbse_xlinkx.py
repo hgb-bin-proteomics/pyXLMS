@@ -96,34 +96,28 @@ def __read_xlinkx_pdresult(filename: str, drop: bool = False) -> List[pd.DataFra
         "IsDecoy": "Is Decoy",
         "MaxXlinkXScore": "Max. XlinkX Score",
     }
-    csms.rename(columns=column_mapping_csms, inplace=True)
+    csms = csms.rename(columns=column_mapping_csms)
     if "Is Decoy" not in csms.columns:
         csms["Is Decoy"] = [False for i in range(csms.shape[0])]
-    dcsms.rename(columns=column_mapping_csms, inplace=True)
+    dcsms = dcsms.rename(columns=column_mapping_csms)
     if "Is Decoy" not in dcsms.columns:
         dcsms["Is Decoy"] = [True for i in range(dcsms.shape[0])]
-    xls.rename(columns=column_mapping_xls, inplace=True)
+    xls = xls.rename(columns=column_mapping_xls)
     if drop:
-        csms.drop(
+        csms = csms.drop(
             columns=list(
-                set(csms.columns.values.tolist())
-                - set(list(column_mapping_csms.values()))
+                set(csms.columns.tolist()) - set(list(column_mapping_csms.values()))
             ),
-            inplace=True,
         )
-        dcsms.drop(
+        dcsms = dcsms.drop(
             columns=list(
-                set(dcsms.columns.values.tolist())
-                - set(list(column_mapping_csms.values()))
+                set(dcsms.columns.tolist()) - set(list(column_mapping_csms.values()))
             ),
-            inplace=True,
         )
-        xls.drop(
+        xls = xls.drop(
             columns=list(
-                set(xls.columns.values.tolist())
-                - set(list(column_mapping_xls.values()))
+                set(xls.columns.tolist()) - set(list(column_mapping_xls.values()))
             ),
-            inplace=True,
         )
     target_xls = xls[xls["Is Decoy"] == 0]
     if not isinstance(target_xls, pd.DataFrame):
@@ -138,7 +132,7 @@ def read_xlinkx(
     decoy: Optional[bool] = None,
     parse_modifications: bool = True,
     modifications: Dict[str, float] = MODIFICATIONS,
-    format: Literal["auto", "csv", "txt", "tsv", "xlsx", "pdresult"] = "auto",
+    format: Literal["auto", "csv", "txt", "tsv", "xlsx", "pdresult"] = "auto",  # noqa: A002
     sep: str = "\t",
     decimal: str = ".",
     ignore_errors: bool = False,
@@ -300,12 +294,12 @@ def read_xlinkx(
                     return len(format_sequence(sequence))
                 try:
                     return __parse_int(mod_pos[1:])
-                except Exception as _e:
+                except Exception as _e:  # noqa: S110
                     pass
                 try:
                     # legacy fallback, this should already be caught by the code above
                     return __parse_int(mod.split("[")[1].split("]")[0][1:])
-                except Exception as _e:
+                except Exception as _e:  # noqa: S110
                     pass
         if verbose == 2 or not ignore_errors:
             raise RuntimeError(
@@ -315,7 +309,8 @@ def read_xlinkx(
             warnings.warn(
                 RuntimeWarning(
                     f"Could not parse crosslink position from sequence: {seq}, or modifications {modifications}!"
-                )
+                ),
+                stacklevel=2,
             )
         return 100000
 
@@ -344,7 +339,7 @@ def read_xlinkx(
     else:
         inputs = files
 
-    for input in inputs:
+    for input in inputs:  # noqa: A001
         ## reading data
         data_objects = None
         if format == "auto" and not isinstance(input, str):
@@ -407,11 +402,11 @@ def read_xlinkx(
                     "Something went wrong while reading the file! Please file a bug report!"
                 )
             ## detect input file type
-            col_names = data.columns.values.tolist()
+            col_names = data.columns.tolist()
             is_crosslink_dataframe = "Max. XlinkX Score" in col_names
             ## process data
             if is_crosslink_dataframe:
-                for i, row in tqdm(
+                for _i, row in tqdm(
                     data.iterrows(),
                     total=data.shape[0],
                     desc="Reading XlinkX crosslinks...",
@@ -459,7 +454,7 @@ def read_xlinkx(
                     )
                     crosslinks.append(crosslink)
             else:
-                for i, row in tqdm(
+                for _i, row in tqdm(
                     data.iterrows(),
                     total=data.shape[0],
                     desc="Reading XlinkX CSMs...",

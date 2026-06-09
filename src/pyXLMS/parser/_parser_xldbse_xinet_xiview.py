@@ -172,19 +172,19 @@ def read_xinet(
             )
         return ""
 
-    def __get_scan_number(row: pd.Series, id: int, verbose: int) -> int:
+    def __get_scan_number(row: pd.Series, fallback_id: int, verbose: int) -> int:
         if "ScanNumber" in row and not pd.isna(row["ScanNumber"]):  # pyright: ignore[reportGeneralTypeIssues]
             return __parse_int(row["ScanNumber"])
         if "Id" in row and not pd.isna(row["Id"]):  # pyright: ignore[reportGeneralTypeIssues]
             try:
                 return __parse_int(row["Id"])
-            except Exception as _e:
+            except Exception as _e:  # noqa: S110
                 pass
         if verbose == 2:
             raise KeyError(
                 "Could not get a suitable column or value for the scan number!"
             )
-        return id
+        return fallback_id
 
     ## data structures
     csms = list()
@@ -197,7 +197,7 @@ def read_xinet(
         inputs = files
 
     ## process data
-    for input in inputs:
+    for input in inputs:  # noqa: A001
         data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
         has_csms = "ScanNumber" in data and (
             "run" in data or "RawFileName" in data or "PeakListFileName" in data
@@ -205,7 +205,7 @@ def read_xinet(
         if "PepSeq1" not in data or "PepSeq2" not in data:
             raise KeyError("Could not get a suitable column for the peptide sequence!")
         data = data.dropna(axis=0, subset=["PepSeq1", "PepSeq2"])
-        id = 0
+        fallback_id = 0
         for i, row in tqdm(
             data.iterrows(),
             total=data.shape[0],
@@ -226,7 +226,8 @@ def read_xinet(
                             RuntimeWarning(
                                 f"Could not extract all proteins and protein crosslink positions for row with index {i}\n"
                                 f"Extracted proteins: {proteins_a}\nExtracted protein crosslink positions: {xl_position_proteins_a}!"
-                            )
+                            ),
+                            stacklevel=2,
                         )
                     if verbose == 2:
                         raise RuntimeError(
@@ -253,7 +254,8 @@ def read_xinet(
                             RuntimeWarning(
                                 f"Could not extract all proteins and protein crosslink positions for row with index {i}\n"
                                 f"Extracted proteins: {proteins_b}\nExtracted protein crosslink positions: {xl_position_proteins_b}!"
-                            )
+                            ),
+                            stacklevel=2,
                         )
                     if verbose == 2:
                         raise RuntimeError(
@@ -268,7 +270,7 @@ def read_xinet(
             score: float | None = (
                 __parse_float(row["Score"]) if "Score" in row else None
             )
-            id += 1
+            fallback_id += 1
             if not has_csms:
                 # create crosslink
                 crosslink = create_crosslink(
@@ -319,7 +321,7 @@ def read_xinet(
                     decoy_b=decoy_b,
                     score=score,
                     spectrum_file=__get_spectrum_file(row, verbose),
-                    scan_nr=__get_scan_number(row, id, verbose),
+                    scan_nr=__get_scan_number(row, fallback_id, verbose),
                     charge=__parse_int(row["Charge"]) if "Charge" in row else None,
                     rt=None,
                     im_cv=None,

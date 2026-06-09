@@ -119,7 +119,8 @@ def __parse_modifications_from_plink_modifications_str(
                     warnings.warn(
                         RuntimeWarning(
                             f"Modification at position {mod_pos} already exists!"
-                        )
+                        ),
+                        stacklevel=2,
                     )
                 t1 = modifications_b[mod_pos][0] + "," + mod_desc
                 t2 = modifications_b[mod_pos][1] + modifications[mod_desc]
@@ -136,7 +137,8 @@ def __parse_modifications_from_plink_modifications_str(
                     warnings.warn(
                         RuntimeWarning(
                             f"Modification at position {mod_pos} already exists!"
-                        )
+                        ),
+                        stacklevel=2,
                     )
                 t1 = modifications_a[mod_pos][0] + "," + mod_desc
                 t2 = modifications_a[mod_pos][1] + modifications[mod_desc]
@@ -276,7 +278,7 @@ def __read_plink_cross_linked_peptides_file(
         low_memory=False,
         **kwargs,
     )
-    colnames = df.columns.values.tolist()
+    colnames = df.columns.tolist()
     if not (
         "Peptide_Order" in colnames
         and "Peptide" in colnames
@@ -411,7 +413,7 @@ def detect_plink_filetype(
         df = pd.read_csv(file, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         if not isinstance(file, str):
             file.seek(0)
-        colnames = df.columns.values.tolist()
+        colnames = df.columns.tolist()
         if (
             "Peptide" in colnames
             and "Modifications" in colnames
@@ -437,7 +439,7 @@ def detect_plink_filetype(
     df = pd.read_csv(file, sep=sep, decimal=decimal, low_memory=False, **kwargs)
     if not isinstance(file, str):
         file.seek(0)
-    colnames = df.columns.values.tolist()
+    colnames = df.columns.tolist()
     if not (
         "Peptide" in colnames
         and "Modifications" in colnames
@@ -573,7 +575,7 @@ def read_plink(
         inputs = files
 
     ## process data
-    for input in inputs:
+    for input in inputs:  # noqa: A001
         if (
             detect_plink_filetype(input, sep=sep, decimal=decimal, **kwargs)  # ty: ignore[invalid-argument-type]
             == "crosslinks"
@@ -584,7 +586,7 @@ def read_plink(
                 decimal=decimal,
                 **kwargs,
             )
-            for i, row in tqdm(
+            for _i, row in tqdm(
                 data.iterrows(), total=data.shape[0], desc="Reading pLink crosslinks..."
             ):
                 parsed_positions = __parse_proteins_and_position_from_plink(
@@ -625,7 +627,7 @@ def read_plink(
             data = pd.read_csv(  # ty: ignore[no-matching-overload]
                 input, sep=sep, decimal=decimal, low_memory=False, **kwargs
             )
-            for i, row in tqdm(
+            for _i, row in tqdm(
                 data.iterrows(), total=data.shape[0], desc="Reading pLink CSMs..."
             ):
                 # pre information

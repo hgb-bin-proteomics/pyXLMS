@@ -32,7 +32,10 @@ try:
     BLOSUM62 = substitution_matrices.load("BLOSUM62")
 except Exception as _e:
     warnings.warn(
-        RuntimeWarning("Unable to load BLOSUM62 from biopython. Using local version...")
+        RuntimeWarning(
+            "Unable to load BLOSUM62 from biopython. Using local version..."
+        ),
+        stacklevel=2,
     )
     # fmt: off
     bl62_matrix = [[ 4., -1., -2., -2.,  0., -1., -1.,  0., -2., -1., -1., -1., -1., -2., -1.,  1.,  0., -3., -2.,  0., -2., -1.,  0., -4.],
@@ -105,7 +108,7 @@ def __get_pdb_data(
     residue_numbers = dict()
     residue_numbers_lst = list()
 
-    for i, row in pdb_df.df["ATOM"].iterrows():
+    for _i, row in pdb_df.df["ATOM"].iterrows():
         three_letter_aa = row["residue_name"]
         residue_number = row["residue_number"]
         chain = row["chain_id"]
@@ -126,7 +129,8 @@ def __get_pdb_data(
             warnings.warn(
                 RuntimeWarning(
                     f"Found amino acid: {three_letter_aa.strip()}, which is not a supported amino acid!"
-                )
+                ),
+                stacklevel=2,
             )
 
     for chain_id in sorted(residue_numbers.keys()):
@@ -206,8 +210,8 @@ def __get_xl_position_and_chain_in_protein(
                 b_end = top_alignment.coordinates[1][1]
             else:
                 raise RuntimeError("Could not extract positions of alignment!")
-            seqA = str(top_alignment.target[a_start:a_end])
-            seqB = str(top_alignment.query[b_start:b_end])
+            seqA = str(top_alignment.target[a_start:a_end])  # noqa: N806
+            seqB = str(top_alignment.query[b_start:b_end])  # noqa: N806
             sequence_identity = __calculate_sequence_identity(seqA, seqB)
             if sequence_identity > min_sequence_identity:
                 xl_pos_in_alignment = xl_pos_in_pep
@@ -316,7 +320,7 @@ def __to_pyxlinkviewer(
     output_string = ""
     mapping_string = ""
     nr_of_mapped_xl = 0
-    for i, crosslink in enumerate(crosslinks):
+    for _i, crosslink in enumerate(crosslinks):
         links_a = __get_xl_position_and_chain_in_protein(
             pdb_sequence=pdb_sequence,
             pdb_chains=pdb_chains,

@@ -84,7 +84,7 @@ def detect_xi_filetype(
     ## check input
     _ok = check_input(data, "data", pd.DataFrame)
 
-    col_names = data.columns.values.tolist()
+    col_names = data.columns.tolist()
     if "AllScore" in col_names:
         return "xisearch"
     if "LinkPos1" in col_names:
@@ -357,7 +357,7 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         if verbose == 1:
-                            warnings.warn(RuntimeWarning(err_str))
+                            warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                         elif verbose == 2:
                             raise RuntimeError(err_str)
                         try:
@@ -369,7 +369,7 @@ def __parse_xisearch_modifications(
                                 + modifications[mods[i]][1]
                             )
                             parsed_modifications[positions[i]] = (t1, t2)
-                        except KeyError:
+                        except KeyError as e:
                             if ignore_errors:
                                 t1 = (
                                     parsed_modifications[positions[i]][0]
@@ -383,14 +383,14 @@ def __parse_xisearch_modifications(
                             else:
                                 err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
                                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                                raise KeyError(err_str)
+                                raise KeyError(err_str) from e
                     else:
                         try:
                             parsed_modifications[positions[i]] = (
                                 modifications[mods[i]][0],
                                 modifications[mods[i]][1],
                             )
-                        except KeyError:
+                        except KeyError as e:
                             if ignore_errors:
                                 parsed_modifications[positions[i]] = (
                                     mods[i],
@@ -399,7 +399,7 @@ def __parse_xisearch_modifications(
                             else:
                                 err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
                                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                                raise KeyError(err_str)
+                                raise KeyError(err_str) from e
             else:
                 mod = preprocess_mod(str(row["Modifications1"]))
                 pos = __parse_int(row["ModificationPositions1"])
@@ -407,14 +407,14 @@ def __parse_xisearch_modifications(
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     if verbose == 1:
-                        warnings.warn(RuntimeWarning(err_str))
+                        warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                     elif verbose == 2:
                         raise RuntimeError(err_str)
                     try:
                         t1 = parsed_modifications[pos][0] + "," + modifications[mod][0]
                         t2 = parsed_modifications[pos][1] + modifications[mod][1]
                         parsed_modifications[pos] = (t1, t2)
-                    except KeyError:
+                    except KeyError as e:
                         if ignore_errors:
                             t1 = parsed_modifications[pos][0] + "," + mod
                             t2 = parsed_modifications[pos][1] + float("nan")
@@ -424,14 +424,14 @@ def __parse_xisearch_modifications(
                             err_str += (
                                 f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                             )
-                            raise KeyError(err_str)
+                            raise KeyError(err_str) from e
                 else:
                     try:
                         parsed_modifications[pos] = (
                             modifications[mod][0],
                             modifications[mod][1],
                         )
-                    except KeyError:
+                    except KeyError as e:
                         if ignore_errors:
                             parsed_modifications[pos] = (
                                 mod,
@@ -442,7 +442,7 @@ def __parse_xisearch_modifications(
                             err_str += (
                                 f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                             )
-                            raise KeyError(err_str)
+                            raise KeyError(err_str) from e
     else:
         parsed_modifications[__parse_int(row["Link2"])] = (
             crosslinker,
@@ -471,7 +471,7 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         if verbose == 1:
-                            warnings.warn(RuntimeWarning(err_str))
+                            warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                         elif verbose == 2:
                             raise RuntimeError(err_str)
                         try:
@@ -483,7 +483,7 @@ def __parse_xisearch_modifications(
                                 + modifications[mods[i]][1]
                             )
                             parsed_modifications[positions[i]] = (t1, t2)
-                        except KeyError:
+                        except KeyError as e:
                             if ignore_errors:
                                 t1 = parsed_modifications[positions[i]][0] + (
                                     "," + mods[i]
@@ -495,14 +495,14 @@ def __parse_xisearch_modifications(
                             else:
                                 err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
                                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                                raise KeyError(err_str)
+                                raise KeyError(err_str) from e
                     else:
                         try:
                             parsed_modifications[positions[i]] = (
                                 modifications[mods[i]][0],
                                 modifications[mods[i]][1],
                             )
-                        except KeyError:
+                        except KeyError as e:
                             if ignore_errors:
                                 parsed_modifications[positions[i]] = (
                                     mods[i],
@@ -511,7 +511,7 @@ def __parse_xisearch_modifications(
                             else:
                                 err_str = f"Key {mods[i]} not found in parameter 'modifications'. Are you missing a modification?\n"
                                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                                raise KeyError(err_str)
+                                raise KeyError(err_str) from e
             else:
                 mod = preprocess_mod(str(row["Modifications2"]))
                 pos = __parse_int(row["ModificationPositions2"])
@@ -519,14 +519,14 @@ def __parse_xisearch_modifications(
                     err_str = f"Modification at position {pos} already exists!\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                     if verbose == 1:
-                        warnings.warn(RuntimeWarning(err_str))
+                        warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                     elif verbose == 2:
                         raise RuntimeError(err_str)
                     try:
                         t1 = parsed_modifications[pos][0] + "," + modifications[mod][0]
                         t2 = parsed_modifications[pos][1] + modifications[mod][1]
                         parsed_modifications[pos] = (t1, t2)
-                    except KeyError:
+                    except KeyError as e:
                         if ignore_errors:
                             t1 = parsed_modifications[pos][0] + "," + mod
                             t2 = parsed_modifications[pos][1] + float("nan")
@@ -536,14 +536,14 @@ def __parse_xisearch_modifications(
                             err_str += (
                                 f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                             )
-                            raise KeyError(err_str)
+                            raise KeyError(err_str) from e
                 else:
                     try:
                         parsed_modifications[pos] = (
                             modifications[mod][0],
                             modifications[mod][1],
                         )
-                    except KeyError:
+                    except KeyError as e:
                         if ignore_errors:
                             parsed_modifications[pos] = (
                                 mod,
@@ -554,7 +554,7 @@ def __parse_xisearch_modifications(
                             err_str += (
                                 f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                             )
-                            raise KeyError(err_str)
+                            raise KeyError(err_str) from e
     # parse from sequence (because fixed modifcations are not reported in Modifications)
     if alpha:
         modified_sequence = parse_peptide(str(row["Peptide1"]).strip())
@@ -564,13 +564,13 @@ def __parse_xisearch_modifications(
                 err_str = f"Modification at position {pos} already exists!\n"
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                 if verbose == 1:
-                    warnings.warn(RuntimeWarning(err_str))
+                    warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                 elif verbose == 2:
                     raise RuntimeError(err_str)
                 mod_mapped = None
                 try:
                     mod_mapped = modifications[mod]
-                except KeyError:
+                except KeyError as e:
                     if ignore_errors:
                         mod_mapped = (mod, float("nan"))
                     else:
@@ -578,7 +578,7 @@ def __parse_xisearch_modifications(
                         err_str += (
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
-                        raise KeyError(err_str)
+                        raise KeyError(err_str) from e
                 if mod_mapped is not None and isinstance(mod_mapped, tuple):
                     if mod_mapped[0] not in parsed_modifications[pos][0]:
                         parsed_modifications[pos] = (
@@ -589,7 +589,7 @@ def __parse_xisearch_modifications(
                 mod_mapped = None
                 try:
                     mod_mapped = modifications[mod]
-                except KeyError:
+                except KeyError as e:
                     if ignore_errors:
                         mod_mapped = (mod, float("nan"))
                     else:
@@ -597,7 +597,7 @@ def __parse_xisearch_modifications(
                         err_str += (
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
-                        raise KeyError(err_str)
+                        raise KeyError(err_str) from e
                 if mod_mapped is not None and isinstance(mod_mapped, tuple):
                     parsed_modifications[pos] = mod_mapped
     else:
@@ -608,13 +608,13 @@ def __parse_xisearch_modifications(
                 err_str = f"Modification at position {pos} already exists!\n"
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                 if verbose == 1:
-                    warnings.warn(RuntimeWarning(err_str))
+                    warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                 elif verbose == 2:
                     raise RuntimeError(err_str)
                 mod_mapped = None
                 try:
                     mod_mapped = modifications[mod]
-                except KeyError:
+                except KeyError as e:
                     if ignore_errors:
                         mod_mapped = (mod, float("nan"))
                     else:
@@ -622,7 +622,7 @@ def __parse_xisearch_modifications(
                         err_str += (
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
-                        raise KeyError(err_str)
+                        raise KeyError(err_str) from e
                 if mod_mapped is not None and isinstance(mod_mapped, tuple):
                     if mod_mapped[0] not in parsed_modifications[pos][0]:
                         parsed_modifications[pos] = (
@@ -633,7 +633,7 @@ def __parse_xisearch_modifications(
                 mod_mapped = None
                 try:
                     mod_mapped = modifications[mod]
-                except KeyError:
+                except KeyError as e:
                     if ignore_errors:
                         mod_mapped = (mod, float("nan"))
                     else:
@@ -641,7 +641,7 @@ def __parse_xisearch_modifications(
                         err_str += (
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
-                        raise KeyError(err_str)
+                        raise KeyError(err_str) from e
                 if mod_mapped is not None and isinstance(mod_mapped, tuple):
                     parsed_modifications[pos] = mod_mapped
     return parsed_modifications
@@ -691,7 +691,7 @@ def __read_xisearch(
     # create csms list
     csms = list()
     # create csms
-    for i, row in tqdm(
+    for _i, row in tqdm(
         xl.iterrows(), total=xl.shape[0], desc="Reading xiSearch CSMs..."
     ):
         csm = create_csm(
@@ -812,14 +812,14 @@ def __parse_xifdr_modifications(
                 err_str = f"Modification at position {pos} already exists!\n"
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                 if verbose == 1:
-                    warnings.warn(RuntimeWarning(err_str))
+                    warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                 elif verbose == 2:
                     raise RuntimeError(err_str)
                 try:
                     t1 = parsed_modifications[pos][0] + "," + modifications[mod][0]
                     t2 = parsed_modifications[pos][1] + modifications[mod][1]
                     parsed_modifications[pos] = (t1, t2)
-                except KeyError:
+                except KeyError as e:
                     if ignore_errors:
                         t1 = parsed_modifications[pos][0] + "," + mod
                         t2 = parsed_modifications[pos][1] + float("nan")
@@ -829,19 +829,19 @@ def __parse_xifdr_modifications(
                         err_str += (
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
-                        raise KeyError(err_str)
+                        raise KeyError(err_str) from e
             try:
                 parsed_modifications[pos] = (
                     modifications[mod][0],
                     modifications[mod][1],
                 )
-            except KeyError:
+            except KeyError as e:
                 if ignore_errors:
                     parsed_modifications[pos] = (mod, float("nan"))
                 else:
                     err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                    raise KeyError(err_str)
+                    raise KeyError(err_str) from e
     else:
         parsed_modifications[__parse_int(row["LinkPos2"])] = (
             crosslinker,
@@ -854,14 +854,14 @@ def __parse_xifdr_modifications(
                 err_str = f"Modification at position {pos} already exists!\n"
                 err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                 if verbose == 1:
-                    warnings.warn(RuntimeWarning(err_str))
+                    warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                 elif verbose == 2:
                     raise RuntimeError(err_str)
                 try:
                     t1 = parsed_modifications[pos][0] + "," + modifications[mod][0]
                     t2 = parsed_modifications[pos][1] + modifications[mod][1]
                     parsed_modifications[pos] = (t1, t2)
-                except KeyError:
+                except KeyError as e:
                     if ignore_errors:
                         t1 = parsed_modifications[pos][0] + "," + mod
                         t2 = parsed_modifications[pos][1] + float("nan")
@@ -871,19 +871,19 @@ def __parse_xifdr_modifications(
                         err_str += (
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
-                        raise KeyError(err_str)
+                        raise KeyError(err_str) from e
             try:
                 parsed_modifications[pos] = (
                     modifications[mod][0],
                     modifications[mod][1],
                 )
-            except KeyError:
+            except KeyError as e:
                 if ignore_errors:
                     parsed_modifications[pos] = (mod, float("nan"))
                 else:
                     err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                    raise KeyError(err_str)
+                    raise KeyError(err_str) from e
     return parsed_modifications
 
 
@@ -929,7 +929,7 @@ def __read_xifdr_csms(
     # create csms list
     csms = list()
     # create csms
-    for i, row in tqdm(
+    for _i, row in tqdm(
         data.iterrows(), total=data.shape[0], desc="Reading xiFDR CSMs..."
     ):
         csm = create_csm(
@@ -1011,7 +1011,7 @@ def __read_xifdr_crosslinks(data: pd.DataFrame, decoy_prefix: str) -> List[Cross
     # create crosslink list
     crosslinks = list()
     # create crosslinks
-    for i, row in tqdm(
+    for _i, row in tqdm(
         data.iterrows(), total=data.shape[0], desc="Reading xiFDR crosslinks..."
     ):
         psmid = str(row["PSMIDs"]).split(";")[0]
@@ -1155,7 +1155,7 @@ def read_xi(
     else:
         inputs = files
 
-    for input in inputs:
+    for input in inputs:  # noqa: A001
         ## reading data
         data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
         ## detect input file type

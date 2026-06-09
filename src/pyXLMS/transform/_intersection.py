@@ -269,7 +269,8 @@ def intersection(
         warnings.warn(
             RuntimeWarning(
                 "Creating intersection of crosslink-spectrum-matches. Be sure that this makes sense for your data!"
-            )
+            ),
+            stacklevel=2,
         )
     elif verbose == 2:
         raise RuntimeError(

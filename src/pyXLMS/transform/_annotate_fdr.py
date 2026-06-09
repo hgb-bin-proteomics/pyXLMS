@@ -100,7 +100,8 @@ def __annotate_fdr_strict(
                 RuntimeWarning(
                     f"Could not calculate FDR {data[0]['data_type']} because the number of target-target matches "
                     + f"at score {current_item['score']} is 0!"
-                )
+                ),
+                stacklevel=2,
             )
         else:
             fdr = (td + dd) / tt
@@ -182,14 +183,16 @@ def __annotate_fdr_relaxed(
                 RuntimeWarning(
                     f"Could not calculate FDR {data[0]['data_type']} because the number of target-target matches "
                     + f"at score {current_item['score']} is 0!"
-                )
+                ),
+                stacklevel=2,
             )
         elif td - dd < 0:
             warnings.warn(
                 RuntimeWarning(
                     f"Could not calculate FDR {data[0]['data_type']} because number the of decoy-decoy matches "
                     + f"exceeds the number of target-decoy matches at score {current_item['score']}!"
-                )
+                ),
+                stacklevel=2,
             )
         else:
             fdr = (td + dd) / tt

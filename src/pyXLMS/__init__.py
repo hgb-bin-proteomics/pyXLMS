@@ -4,6 +4,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+# ruff: noqa: N999
+
 r"""
 A python package to process protein cross-linking data.
 """
@@ -17,7 +19,7 @@ __all__ = [
     "transform",
     "plotting",
 ]
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __author__ = "Micha Johannes Birklbauer"
 
 from . import constants

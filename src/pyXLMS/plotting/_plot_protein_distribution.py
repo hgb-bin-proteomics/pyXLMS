@@ -114,7 +114,7 @@ def plot_protein_distribution(
         protein_inter.append(len(intra_inter["Inter"]))
         protein_total.append(len(proteins[protein]))
 
-    sorted = pd.DataFrame(
+    sorted_df = pd.DataFrame(
         {
             "protein": protein_names,
             "intra": protein_intra,
@@ -122,9 +122,9 @@ def plot_protein_distribution(
             "total": protein_total,
         }
     ).sort_values(by="total", axis=0, ascending=False)
-    protein_names = sorted["protein"].values.tolist()[:top_n]
-    protein_intra = sorted["intra"].values.tolist()[:top_n]
-    protein_inter = sorted["inter"].values.tolist()[:top_n]
+    protein_names = sorted_df["protein"].tolist()[:top_n]
+    protein_intra = sorted_df["intra"].tolist()[:top_n]
+    protein_inter = sorted_df["inter"].tolist()[:top_n]
 
     fig, ax = plt.subplots(figsize=figsize)
     bottom = [0.0 for i in protein_names]

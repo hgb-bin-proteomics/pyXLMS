@@ -122,7 +122,7 @@ def read_custom(
     parse_modifications: bool = True,
     modification_parser: Optional[Callable[[str], Dict[int, Tuple[str, float]]]] = None,
     decoy_prefix: str = "REV_",
-    format: Literal["auto", "csv", "txt", "tsv", "parquet", "xlsx"] = "auto",
+    format: Literal["auto", "csv", "txt", "tsv", "parquet", "xlsx"] = "auto",  # noqa: A002
     sep: str = ",",
     decimal: str = ".",
     **kwargs,
@@ -235,9 +235,8 @@ def read_custom(
             return None
         try:
             return __parse_int(value)
-        except Exception as _e:
-            pass
-        raise TypeError(f"Could not parse int from value {value}!")
+        except Exception as e:
+            raise TypeError(f"Could not parse int from value {value}!") from e
         return None
 
     def get_float(value: Any) -> float | None:
@@ -245,9 +244,8 @@ def read_custom(
             return None
         try:
             return __parse_float(value)
-        except Exception as _e:
-            pass
-        raise TypeError(f"Could not parse float from value {value}!")
+        except Exception as e:
+            raise TypeError(f"Could not parse float from value {value}!") from e
         return None
 
     ## set default parser
@@ -264,7 +262,7 @@ def read_custom(
     else:
         inputs = files
 
-    for input in inputs:
+    for input in inputs:  # noqa: A001
         ## reading data
         data = None
         if format == "auto" and not isinstance(input, str):
@@ -314,12 +312,12 @@ def read_custom(
             )
         ## detect input file type
         if column_mapping is not None:
-            data.rename(columns=column_mapping, inplace=True)
-        col_names = data.columns.values.tolist()
+            data = data.rename(columns=column_mapping)
+        col_names = data.columns.tolist()
         is_crosslink_dataframe = "Scan Nr" not in col_names
         ## process data
         if is_crosslink_dataframe:
-            for i, row in tqdm(
+            for _i, row in tqdm(
                 data.iterrows(),
                 total=data.shape[0],
                 desc="Reading crosslinks...",
@@ -376,7 +374,7 @@ def read_custom(
                 )
                 crosslinks.append(crosslink)
         else:
-            for i, row in tqdm(
+            for _i, row in tqdm(
                 data.iterrows(),
                 total=data.shape[0],
                 desc="Reading CSMs...",
