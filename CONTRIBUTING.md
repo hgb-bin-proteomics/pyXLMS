@@ -65,9 +65,9 @@ pyXLMS is currently completely free of AI generated code or content and we aim t
 it this way! While we do not prohibit outside contributors from using generative AI for
 any kind of task, please ask yourself if it is absolutely necessary considering both
 environmental and ethical concerns. Please also note that when contributing AI generated
-code, issues, discussions, etc. you are still responsible for its content! AI generated
-contributions have to be labelled as such! We retain the right to reject any kind of
-contribution to ensure the quality of pyXLMS.
+code, issues, discussions, etc. you are still responsible for its content! For transparency
+we also require that AI generated contributions are labelled as such! We retain the right to
+reject any kind of contribution to ensure the quality of pyXLMS.
 
 _Does this affect me if I just use pyXLMS?_ No! You may use pyXLMS in any way you want,
 in fact pyXLMS integrates well with coding assistants and agents. This policy only affects
