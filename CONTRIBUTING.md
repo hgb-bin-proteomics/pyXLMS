@@ -41,6 +41,8 @@ there are a few guidelines for code contributions:
 - Every function and object needs to be sufficiently documented.
 - Every function and object needs to have sufficient tests.
 - Every public function and object needs to have examples.
+- Changes that break backward compatibility should be avoided! Please discuss with a
+  maintainer first when it is absolutely necessary!
 - **Pull requests should be based on and target the 'develop' branch. Merging directly**
   **into 'master' is not allowed.**
 - Please run [pytest](https://docs.pytest.org/en/stable/) before opening a pull request:
