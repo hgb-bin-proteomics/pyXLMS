@@ -54,6 +54,21 @@ there are a few guidelines for code contributions:
 Feel free to open a pull request even if your code does not conform with these
 guidelines, we will still have a look and then adapt ourselves. Thank you!
 
+## Responsible Use of LLMs/Gen-AI
+
+pyXLMS is currently completely free of AI generated code or content and we aim to keep
+it this way! While we do not prohibit outside contributors from using generative AI for
+any kind of task, please ask yourself if it is absolutely necessary considering both
+environmental and ethical concerns. Please also note that when contributing AI generated
+code, issues, discussions, etc. you are still responsible for its content! AI generated
+contributions have to be labelled as such! We retain the right to reject any kind of
+contribution to ensure the quality of pyXLMS.
+
+_Does this affect me if I just use pyXLMS?_ No! You may use pyXLMS in any way you want,
+in fact pyXLMS integrates well with coding assistants and agents. This policy only affects
+contributions to pyXLMS. You can also fork the code at any time and do whatever you want
+with it!
+
 *****
 
 **Thank you for using and contributing to pyXLMS!**
