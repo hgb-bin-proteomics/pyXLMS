@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import io
 import os
+import sys
 import gzip
 import json
 import pickle
@@ -54,9 +55,9 @@ from typing import Set
 from typing import Any
 
 # legacy
-try:
+if sys.version_info > (3, 8):
     from typing import Literal
-except ImportError:
+else:
     from typing_extensions import Literal
 
 
