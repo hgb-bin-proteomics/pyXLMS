@@ -141,7 +141,7 @@ def __csms_to_xiview_no_peaks(
     decoy1 = list()
     decoy2 = list()
     score = list()
-    id = list()
+    csm_id = list()
     has_decoys = True
     has_scores = True
 
@@ -193,7 +193,7 @@ def __csms_to_xiview_no_peaks(
                 score.append(csm["score"])
             else:
                 has_scores = False
-        id.append(i + 1)
+        csm_id.append(i + 1)
 
     xiview_df = pd.DataFrame(
         {
@@ -207,7 +207,7 @@ def __csms_to_xiview_no_peaks(
             "Protein2": protein2,
             "ScanId": scanid,
             "PeakListFileName": peaklistfilename,
-            "Id": id,
+            "Id": csm_id,
         }
     )
     if has_decoys:
@@ -221,7 +221,7 @@ def __csms_to_xiview_no_peaks(
     return xiview_df
 
 
-def __get_PeakListFileName(filename: str) -> str:
+def __get_PeakListFileName(filename: str) -> str:  # noqa: N802
     ## replaces file extension with "mzML"
     return ".".join(filename.split(".")[:-1]) + ".mzML"
 
@@ -229,7 +229,7 @@ def __get_PeakListFileName(filename: str) -> str:
 def __csms_to_xiview_with_peaks(
     csms: List[CrosslinkSpectrumMatch],
     crosslinker_mass: float,
-    get_PeakListFileName: Optional[Callable[[str], str]] = None,
+    get_PeakListFileName: Optional[Callable[[str], str]] = None,  # noqa: N803
     filename: Optional[str] = None,
     unsafe: bool = False,
 ) -> pd.DataFrame:
@@ -256,7 +256,7 @@ def __csms_to_xiview_with_peaks(
     if not unsafe:
         raise NotImplementedError()
     if get_PeakListFileName is None:
-        get_PeakListFileName = __get_PeakListFileName
+        get_PeakListFileName = __get_PeakListFileName  # noqa: N806
 
     pepseq1 = list()
     pepseq2 = list()

@@ -134,7 +134,7 @@ def __get_xl_isdecoy(
 def __csms_to_msannika(
     csms: List[CrosslinkSpectrumMatch],
     filename: Optional[str],
-    format: Literal["csv", "tsv", "xlsx"],
+    format: Literal["csv", "tsv", "xlsx"],  # noqa: A002
 ) -> pd.DataFrame:
     r"""Exports crosslink-spectrum-matches to MS Annika format.
 
@@ -252,7 +252,7 @@ def __csms_to_msannika(
 def __xls_to_msannika(
     xls: List[Crosslink],
     filename: Optional[str],
-    format: Literal["csv", "tsv", "xlsx"],
+    format: Literal["csv", "tsv", "xlsx"],  # noqa: A002
 ) -> pd.DataFrame:
     r"""Exports crosslinks to MS Annika format.
 
@@ -347,7 +347,7 @@ def __xls_to_msannika(
 def to_msannika(
     data: List[CrosslinkSpectrumMatch] | List[Crosslink],
     filename: Optional[str] = None,
-    format: Literal["csv", "tsv", "xlsx"] = "csv",
+    format: Literal["csv", "tsv", "xlsx"] = "csv",  # noqa: A002
 ) -> pd.DataFrame:
     r"""Exports a list of crosslinks or crosslink-spectrum-matches to MS Annika format.
 

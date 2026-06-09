@@ -120,22 +120,18 @@ def __read_msannika_pdresult(filename: str, drop: bool = False) -> List[pd.DataF
         "Decoy": "Decoy",
         "BestCSMScore": "Best CSM Score",
     }
-    csms.rename(columns=column_mapping_csms, inplace=True)
-    xls.rename(columns=column_mapping_xls, inplace=True)
+    csms = csms.rename(columns=column_mapping_csms)
+    xls = xls.rename(columns=column_mapping_xls)
     if drop:
-        csms.drop(
+        csms = csms.drop(
             columns=list(
-                set(csms.columns.values.tolist())
-                - set(list(column_mapping_csms.values()))
+                set(csms.columns.tolist()) - set(list(column_mapping_csms.values()))
             ),
-            inplace=True,
         )
-        xls.drop(
+        xls = xls.drop(
             columns=list(
-                set(xls.columns.values.tolist())
-                - set(list(column_mapping_xls.values()))
+                set(xls.columns.tolist()) - set(list(column_mapping_xls.values()))
             ),
-            inplace=True,
         )
     return [csms, xls]
 
@@ -144,7 +140,7 @@ def read_msannika(
     files: str | List[str] | BinaryIO,
     parse_modifications: bool = True,
     modifications: Dict[str, float] = MODIFICATIONS,
-    format: Literal["auto", "csv", "txt", "tsv", "xlsx", "pdresult"] = "auto",
+    format: Literal["auto", "csv", "txt", "tsv", "xlsx", "pdresult"] = "auto",  # noqa: A002
     sep: str = "\t",
     decimal: str = ".",
     unsafe: bool = False,
@@ -294,7 +290,7 @@ def read_msannika(
     else:
         inputs = files
 
-    for input in inputs:
+    for input in inputs:  # noqa: A001
         ## reading data
         data_objects = None
         if format == "auto" and not isinstance(input, str):
@@ -357,11 +353,11 @@ def read_msannika(
                     "Something went wrong while reading the file! Please file a bug report!"
                 )
             ## detect input file type
-            col_names = data.columns.values.tolist()
+            col_names = data.columns.tolist()
             is_crosslink_dataframe = "Best CSM Score" in col_names
             ## process data
             if is_crosslink_dataframe:
-                for i, row in tqdm(
+                for _i, row in tqdm(
                     data.iterrows(),
                     total=data.shape[0],
                     desc="Reading MS Annika crosslinks...",
@@ -379,7 +375,8 @@ def read_msannika(
                                     RuntimeWarning(
                                         f"Encountered invalid crosslink position for crosslink with sequence "
                                         f"{format_sequence(str(row['Sequence A']))}-{format_sequence(str(row['Sequence B']))}!"
-                                    )
+                                    ),
+                                    stacklevel=2,
                                 )
                         else:
                             raise RuntimeError(
@@ -398,7 +395,8 @@ def read_msannika(
                                     RuntimeWarning(
                                         f"Encountered invalid crosslink position for crosslink with sequence "
                                         f"{format_sequence(str(row['Sequence A']))}-{format_sequence(str(row['Sequence B']))}!"
-                                    )
+                                    ),
+                                    stacklevel=2,
                                 )
                         else:
                             raise RuntimeError(
@@ -430,7 +428,7 @@ def read_msannika(
                     )
                     crosslinks.append(crosslink)
             else:
-                for i, row in tqdm(
+                for _i, row in tqdm(
                     data.iterrows(),
                     total=data.shape[0],
                     desc="Reading MS Annika CSMs...",
@@ -448,7 +446,8 @@ def read_msannika(
                                 warnings.warn(
                                     RuntimeWarning(
                                         f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {__parse_int(row['First Scan'])}!"
-                                    )
+                                    ),
+                                    stacklevel=2,
                                 )
                         else:
                             raise RuntimeError(
@@ -465,7 +464,8 @@ def read_msannika(
                                 warnings.warn(
                                     RuntimeWarning(
                                         f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {__parse_int(row['First Scan'])}!"
-                                    )
+                                    ),
+                                    stacklevel=2,
                                 )
                         else:
                             raise RuntimeError(
@@ -483,7 +483,8 @@ def read_msannika(
                                 warnings.warn(
                                     RuntimeWarning(
                                         f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {__parse_int(row['First Scan'])}!"
-                                    )
+                                    ),
+                                    stacklevel=2,
                                 )
                         else:
                             raise RuntimeError(
@@ -500,7 +501,8 @@ def read_msannika(
                                 warnings.warn(
                                     RuntimeWarning(
                                         f"Encountered invalid crosslink position for crosslink-spectrum-match with scan number: {__parse_int(row['First Scan'])}!"
-                                    )
+                                    ),
+                                    stacklevel=2,
                                 )
                         else:
                             raise RuntimeError(

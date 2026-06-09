@@ -4,6 +4,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+# ruff: noqa: N999
+
 r"""
 Constants used across pyXLMS.
 

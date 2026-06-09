@@ -71,7 +71,8 @@ def parse_scan_nr_from_mzid(spectrum_id: str) -> int:
             RuntimeWarning(
                 "Could not parse scan number from spectrum - using index instead!\n"
                 f"Exception while parsing scan number: {e}"
-            )
+            ),
+            stacklevel=2,
         )
     return __parse_int(str(spectrum_id).split("index=")[1].split(",")[0])
 
@@ -224,7 +225,7 @@ def read_mzid(
                     if start > 0:
                         xl_position_proteins.append(start + pos - 1)
                         pep_position_proteins.append(start)
-                except Exception as _e:
+                except Exception as _e:  # noqa: S110
                     pass
             if "accession" in pep_evidence:
                 accession = str(pep_evidence["accession"]).strip()
@@ -235,7 +236,7 @@ def read_mzid(
                 try:
                     parsed_decoy = get_bool_from_value(pep_evidence["isDecoy"])
                 except Exception as _e:
-                    pass
+                    parsed_decoy = None
                 if parsed_decoy is not None:
                     if decoy is None:
                         decoy = parsed_decoy
@@ -263,7 +264,7 @@ def read_mzid(
         inputs = files
 
     ## process data
-    for input in inputs:
+    for input in inputs:  # noqa: A001
         # read all items with pyteomics
         with warnings.catch_warnings(record=True) as wl:
             warnings.simplefilter("always")
@@ -272,7 +273,7 @@ def read_mzid(
             pyteomics_mzid.close()
         if verbose > 0 and len(wl) > 0:
             for w in wl:
-                warnings.warn(w.message)
+                warnings.warn(w.message, stacklevel=2)
         if verbose == 2 and len(wl) > 0:
             raise RuntimeError("Reading mzIdentML file raised warnings!")
         # iterate over all items

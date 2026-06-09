@@ -4,6 +4,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+# ruff: noqa: N999
+
 r"""
 Plot different visualizations of crosslink-spectrum-match and crosslink data.
 

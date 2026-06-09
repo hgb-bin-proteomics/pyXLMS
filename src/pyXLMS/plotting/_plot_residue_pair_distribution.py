@@ -94,14 +94,14 @@ def plot_residue_pair_distribution(
         rp_names.append(rp)
         rp_total.append(len(rps[rp]))
 
-    sorted = pd.DataFrame(
+    sorted_df = pd.DataFrame(
         {
             "residue_pair": rp_names,
             "total": rp_total,
         }
     ).sort_values(by="total", axis=0, ascending=False)
-    rp_names = sorted["residue_pair"].values.tolist()[:top_n]
-    rp_total = sorted["total"].values.tolist()[:top_n]
+    rp_names = sorted_df["residue_pair"].tolist()[:top_n]
+    rp_total = sorted_df["total"].tolist()[:top_n]
 
     fig, ax = plt.subplots(figsize=figsize)
 

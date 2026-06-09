@@ -55,6 +55,8 @@ STRING_SCORES = {
     "high confidence": 0.7,
     "highest confidence": 0.9,
 }
+# wait a maximum of 5 minutes for response
+TIMEOUT = 5 * 60.0
 
 
 def __float_or_none(value: Any) -> float | None:
@@ -73,7 +75,7 @@ def __float_or_none(value: Any) -> float | None:
     try:
         return float(value)
     except Exception as _e:
-        pass
+        return None
     return None
 
 
@@ -146,12 +148,13 @@ def get_string_ids(
     request_url = f"{STRING_STABLE_URL}/json/get_string_ids"
     response: requests.models.Response | None = None
     try:
-        response = requests.post(request_url, data=params)
+        response = requests.post(request_url, data=params, timeout=TIMEOUT)
     except Exception as e:
         response = None
         if verbose == 1:
             warnings.warn(
-                RuntimeWarning(f"Request to STRING API failed with error {e}!")
+                RuntimeWarning(f"Request to STRING API failed with error {e}!"),
+                stacklevel=2,
             )
         if verbose == 2:
             raise
@@ -161,7 +164,7 @@ def get_string_ids(
     time.sleep(1)
     if not response.ok:
         if verbose == 1:
-            warnings.warn(RuntimeWarning(f"{response.text}"))
+            warnings.warn(RuntimeWarning(f"{response.text}"), stacklevel=2)
         if verbose == 2:
             raise RuntimeError(f"{response.text}")
         return output_proteins
@@ -265,12 +268,13 @@ def get_string_network(
     request_url = f"{STRING_STABLE_URL}/json/network"
     response: requests.models.Response | None = None
     try:
-        response = requests.post(request_url, data=params)
+        response = requests.post(request_url, data=params, timeout=TIMEOUT)
     except Exception as e:
         response = None
         if verbose == 1:
             warnings.warn(
-                RuntimeWarning(f"Request to STRING API failed with error {e}!")
+                RuntimeWarning(f"Request to STRING API failed with error {e}!"),
+                stacklevel=2,
             )
         if verbose == 2:
             raise
@@ -280,7 +284,7 @@ def get_string_network(
     time.sleep(1)
     if not response.ok:
         if verbose == 1:
-            warnings.warn(RuntimeWarning(f"{response.text}"))
+            warnings.warn(RuntimeWarning(f"{response.text}"), stacklevel=2)
         if verbose == 2:
             raise RuntimeError(f"{response.text}")
         return network
@@ -331,7 +335,8 @@ def get_string_network(
                 warnings.warn(
                     RuntimeWarning(
                         f"Found more than one interaction for {key}. Using highest scoring one!"
-                    )
+                    ),
+                    stacklevel=2,
                 )
             if verbose == 2:
                 raise KeyError(f"Found more than one interaction for {key}!")
@@ -438,7 +443,8 @@ def annotate_string_scores(
                 warnings.warn(
                     RuntimeWarning(
                         "Some of your crosslink-spectrum-matches/crosslinks do not have associated proteins. Their STRING scores will be nan!"
-                    )
+                    ),
+                    stacklevel=2,
                 )
             if verbose == 2:
                 raise RuntimeError(
@@ -458,7 +464,7 @@ def annotate_string_scores(
             proteins = list(filter_protein_distribution(inter).keys())
             proteins_to_string_ids = get_string_ids(proteins, organism, verbose)
             string_ids: List[str] = list()
-            for k, v in proteins_to_string_ids.items():
+            for _k, v in proteins_to_string_ids.items():
                 if v is not None:
                     string_ids.append(v)
             print(
@@ -470,7 +476,8 @@ def annotate_string_scores(
                     warnings.warn(
                         RuntimeWarning(
                             f"More than 2000 proteins/STRING IDs specified: {len(string_ids)}. Please reduce the number of proteins for a successful request!"
-                        )
+                        ),
+                        stacklevel=2,
                     )
                 if verbose == 2:
                     raise RuntimeError(

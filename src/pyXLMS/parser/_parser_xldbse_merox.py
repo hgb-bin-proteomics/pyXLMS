@@ -250,10 +250,8 @@ def __get_merox_position(position_str: str) -> int:
     position = None
     try:
         position = __parse_int(position_str[1:])
-    except Exception as _e:
-        pass
-    if position is None:
-        raise RuntimeError(f"Could not parse position from {position_str}!")
+    except Exception as e:
+        raise RuntimeError(f"Could not parse position from {position_str}!") from e
     return position
 
 
@@ -309,10 +307,8 @@ def __get_merox_scan_number(scan_nr_and_file: str) -> int:
     scan_nr = None
     try:
         scan_nr = __parse_int(scan_nr_and_file.split("~")[0])
-    except Exception as _e:
-        pass
-    if scan_nr is None:
-        raise RuntimeError(f"Could not scan number from {scan_nr_and_file}!")
+    except Exception as e:
+        raise RuntimeError(f"Could not scan number from {scan_nr_and_file}!") from e
     return scan_nr
 
 
@@ -344,10 +340,10 @@ def __get_merox_spectrum_file(scan_nr_and_file: str) -> str:
     spectrum_file = None
     try:
         spectrum_file = scan_nr_and_file.split("~")[1]
-    except Exception as _e:
-        pass
-    if spectrum_file is None:
-        raise RuntimeError(f"Could not spectrum file name from {scan_nr_and_file}!")
+    except Exception as e:
+        raise RuntimeError(
+            f"Could not spectrum file name from {scan_nr_and_file}!"
+        ) from e
     return spectrum_file
 
 
@@ -463,10 +459,10 @@ def read_merox(
     else:
         inputs = files
 
-    for input in inputs:
+    for input in inputs:  # noqa: A001
         ## reading data
         data = __read_merox_file(input, sep=sep, decimal=decimal, **kwargs)  # ty: ignore[invalid-argument-type]
-        for i, row in tqdm(
+        for _i, row in tqdm(
             data.iterrows(),
             total=data.shape[0],
             desc="Reading MeroX CSMs...",

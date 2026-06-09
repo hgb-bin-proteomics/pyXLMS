@@ -84,7 +84,7 @@ def detect_scout_filetype(
     ## check input
     _ok = check_input(data, "data", pd.DataFrame)
 
-    col_names = data.columns.values.tolist()
+    col_names = data.columns.tolist()
     if "ScanNumber" in col_names:
         return "scout_csms_unfiltered"
     if "Scan" in col_names:
@@ -179,7 +179,7 @@ def parse_modifications_from_scout_sequence(
                         f"Sequence: {sequence}, Crosslink position: {crosslink_position}"
                     )
                     if verbose == 1:
-                        warnings.warn(RuntimeWarning(err_str))
+                        warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                     elif verbose == 2:
                         raise RuntimeError(err_str)
                     t1 = parsed_modifications[pos][0] + "," + modifications[mod_key][0]
@@ -232,7 +232,7 @@ def __read_scout_csms_unfiltered(
     xl = data.dropna(axis=0, subset=["AlphaPeptide", "BetaPeptide"])
     if "Type" in xl.columns:
         xl = xl[xl["Type"] != "LoopLink"]
-    for i, row in tqdm(
+    for _i, row in tqdm(
         xl.iterrows(), total=xl.shape[0], desc="Reading Scout unfiltered CSMs..."
     ):
         csm = create_csm(
@@ -443,7 +443,7 @@ def __read_scout_csms_filtered(
                     f"Sequence: {sequence}, Crosslink position: {crosslink_position}, Modifications: {';'.join(mods)}"
                 )
                 if verbose == 1:
-                    warnings.warn(RuntimeWarning(err_str))
+                    warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                 elif verbose == 2:
                     raise RuntimeError(err_str)
                 t1 = parsed_modifications[pos][0] + "," + modifications[mod_key][0]
@@ -456,7 +456,7 @@ def __read_scout_csms_filtered(
     ## create csms
     csms = list()
     xl = data.dropna(axis=0, subset=["Alpha peptide", "Beta peptide"])
-    for i, row in tqdm(
+    for _i, row in tqdm(
         xl.iterrows(), total=xl.shape[0], desc="Reading Scout filtered CSMs..."
     ):
         csm = create_csm(
@@ -543,7 +543,7 @@ def __read_scout_crosslinks(data: pd.DataFrame) -> List[Crosslink]:
     """
     crosslinks = list()
     xl = data.dropna(axis=0, subset=["Alpha peptide", "Beta peptide"])
-    for i, row in tqdm(
+    for _i, row in tqdm(
         xl.iterrows(), total=xl.shape[0], desc="Reading Scout crosslinks..."
     ):
         crosslink = create_crosslink(
@@ -704,7 +704,7 @@ def read_scout(
     else:
         inputs = files
 
-    for input in inputs:
+    for input in inputs:  # noqa: A001
         ## reading data
         data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
         ## detect input file type

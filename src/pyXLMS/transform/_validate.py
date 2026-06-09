@@ -67,23 +67,23 @@ def __verify_fdr_strict(
     -----
     This function should not be called directly, it is called from ``__validate_strict()``.
     """
-    D = 0
-    T = 0
+    d = 0
+    t = 0
     for item in data:
         if score == "higher_better" and item["score"] >= cutoff:
             if not item["alpha_decoy"] and not item["beta_decoy"]:
-                T += 1
+                t += 1
             else:
-                D += 1
+                d += 1
         elif score == "lower_better" and item["score"] <= cutoff:
             if not item["alpha_decoy"] and not item["beta_decoy"]:
-                T += 1
+                t += 1
             else:
-                D += 1
+                d += 1
         else:
             # do nothing
             pass
-    return D / T < fdr
+    return d / t < fdr
 
 
 def __validate_strict(
@@ -148,7 +148,8 @@ def __validate_strict(
             warnings.warn(
                 RuntimeWarning(
                     "None of the data passes the desired FDR threshold! This is usually due to decoys with very good scores."
-                )
+                ),
+                stacklevel=2,
             )
             return []
         if td[i:].sum() / (nr_items - i - td[i:].sum()) < fdr:
@@ -209,33 +210,33 @@ def __verify_fdr_relaxed(
     -----
     This function should not be called directly, it is called from ``__validate_relaxed()``.
     """
-    D = 0
-    DT = 0
-    T = 0
+    d = 0
+    dt = 0
+    t = 0
     for item in data:
         if score == "higher_better" and item["score"] >= cutoff:
             if not item["alpha_decoy"] and not item["beta_decoy"]:
-                T += 1
+                t += 1
             elif item["alpha_decoy"] and item["beta_decoy"]:
-                D += 1
+                d += 1
             else:
-                DT += 1
+                dt += 1
         elif score == "lower_better" and item["score"] <= cutoff:
             if not item["alpha_decoy"] and not item["beta_decoy"]:
-                T += 1
+                t += 1
             elif item["alpha_decoy"] and item["beta_decoy"]:
-                D += 1
+                d += 1
             else:
-                DT += 1
+                dt += 1
         else:
             # do nothing
             pass
-    if (DT - D) < 0.0:
+    if (dt - d) < 0.0:
         raise RuntimeError(
             f"Number of DD matches is greater than the number of TD matches for score {cutoff}! "
             "Invalid FDR estimation! Please use formula 'D/T' instead!"
         )
-    return (DT - D) / T < fdr
+    return (dt - d) / t < fdr
 
 
 def __validate_relaxed(
@@ -319,7 +320,8 @@ def __validate_relaxed(
             warnings.warn(
                 RuntimeWarning(
                     "None of the data passes the desired FDR threshold! This is usually due to decoys with very good scores."
-                )
+                ),
+                stacklevel=2,
             )
             return []
         if tdd[i:].sum() / (nr_items - i - td[i:].sum()) < fdr:

@@ -133,7 +133,7 @@ def from_dataframe(
             return None
         try:
             return int(value)
-        except Exception as _e:
+        except Exception as _e:  # noqa: S110
             pass
         raise TypeError(f"Could not parse int from value {value}!")
         return None
@@ -143,7 +143,7 @@ def from_dataframe(
             return None
         try:
             return float(value)
-        except Exception as _e:
+        except Exception as _e:  # noqa: S110
             pass
         raise TypeError(f"Could not parse float from value {value}!")
         return None
@@ -159,12 +159,12 @@ def from_dataframe(
     ## detect input file type
     data = df.copy(deep=True)
     if column_mapping is not None:
-        data.rename(columns=column_mapping, inplace=True)
-    col_names = data.columns.values.tolist()
+        data = data.rename(columns=column_mapping)
+    col_names = data.columns.tolist()
     is_crosslink_dataframe = "Scan Nr" not in col_names
     ## process data
     if is_crosslink_dataframe:
-        for i, row in tqdm(
+        for _i, row in tqdm(
             data.iterrows(),
             total=data.shape[0],
             desc="Reading crosslinks...",
@@ -214,7 +214,7 @@ def from_dataframe(
             )
             crosslinks.append(crosslink)
         return crosslinks
-    for i, row in tqdm(
+    for _i, row in tqdm(
         data.iterrows(),
         total=data.shape[0],
         desc="Reading CSMs...",
