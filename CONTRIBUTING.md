@@ -47,6 +47,9 @@ there are a few guidelines for code contributions:
   ```bash
   pytest -c pytest.ini --runslow --runext tests/
   ```
+- Please bump the version info in `pyproject.toml`, `src/pyXLMS/__init__.py`, and
+  `sphinx/conf.py` according to [semantic versioning rules](https://semver.org/)
+  before opening a pull request.
 - Pull requests must pass all GitHub actions checks.
 - If a new parser is implemented, make sure to update `parser.read()` and
   `pipelines.pipeline()`.
