@@ -18,7 +18,6 @@ from ._util import check_input
 from ._util import check_indexing
 from ._util import __get_modified_peptide as get_modified_peptide
 
-from typing import Annotated
 from typing import Optional
 from typing import List
 from typing import Dict
@@ -30,6 +29,10 @@ if sys.version_info > (3, 8):
     from typing import Literal
 else:
     from typing_extensions import Literal
+if sys.version_info > (3, 9):
+    from typing import Annotated
+else:
+    from typing_extensions import Annotated
 if sys.version_info > (3, 12):
     from typing import override
 else:
