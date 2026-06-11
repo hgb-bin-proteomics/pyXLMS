@@ -362,6 +362,17 @@ def reset_exports() -> None:
     st.session_state["export_aggregated_crosslinks_xmas"] = None
 
 
+def reset_string_cache() -> None:
+    r"""
+    Reset ``st.session_state`` saved STRING organisms/taxon ids.
+    """
+    # STRING cache
+    st.session_state["string_org_csms"] = None
+    st.session_state["string_org_crosslinks"] = None
+    st.session_state["string_org_aggregated_crosslinks"] = None
+    return
+
+
 # input tab
 def input_tab():
     r"""
@@ -670,6 +681,8 @@ def input_tab():
         reset_exports()
         # reset proteins
         st.session_state["possible_proteins"] = None
+        # reset STRING cache
+        reset_string_cache()
         # check what is uploaded and set
         if uploaded_files is None or len(uploaded_files) == 0:
             _ = st.error("You need to upload at least one result file first!")
@@ -803,6 +816,8 @@ def input_tab():
                     reset_exports()
                     # reset proteins
                     st.session_state["possible_proteins"] = None
+                    # reset STRING cache
+                    reset_string_cache()
                     _ = st.error(
                         (
                             "Something went wrong! Did you select the correct search engine and crosslinker? "
@@ -934,6 +949,8 @@ def input_tab():
                     reset_exports()
                     # reset proteins
                     st.session_state["possible_proteins"] = None
+                    # reset STRING cache
+                    reset_string_cache()
                     _ = st.error(
                         (
                             "Something went wrong! Did you select the correct search engine and crosslinker? "
@@ -1807,13 +1824,32 @@ def visualize_tab():
                     else str(string_organism)
                 )
                 try:
-                    _ = transform.annotate_string_scores(csms, organism=string_input_id)
+                    if (
+                        "string_org_csms" not in st.session_state
+                        or st.session_state["string_org_csms"] is None
+                        or st.session_state["string_org_csms"] != string_input_id
+                    ):
+                        _ = transform.annotate_string_scores(
+                            csms, organism=string_input_id
+                        )
+                        st.session_state["string_org_csms"] = string_input_id
+                        successful_string_annotation_csms = st.toast(
+                            "Successfully annotated STRING scores for crosslink-spectrum-matches!",
+                            icon="✅",
+                            duration=5,
+                        )
+                    else:
+                        recycle_string_annotation_csms = st.toast(
+                            "Re-used annotated STRING scores for crosslink-spectrum-matches!",
+                            icon="♻️",
+                            duration=5,
+                        )
                     fig, ax = plotting.plot_string_score_distribution(
                         csms,
                         plot_type="bar",
                         bins=bins,
                         figsize=(8.0, 4.5),
-                        title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
+                        title=f"STRING Score Distribution for Inter-Links (Organism: {st.session_state['string_org_csms']})",
                     )
                     plots.append(fig)
                     fig, ax = plotting.plot_string_score_distribution(
@@ -1821,7 +1857,7 @@ def visualize_tab():
                         plot_type="hist",
                         bins=bins,
                         figsize=(8.0, 4.5),
-                        title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
+                        title=f"STRING Score Distribution for Inter-Links (Organism: {st.session_state['string_org_csms']})",
                     )
                     plots.append(fig)
                 except Exception as _e:
@@ -1892,15 +1928,32 @@ def visualize_tab():
                     else str(string_organism)
                 )
                 try:
-                    _ = transform.annotate_string_scores(
-                        crosslinks, organism=string_input_id
-                    )
+                    if (
+                        "string_org_crosslinks" not in st.session_state
+                        or st.session_state["string_org_crosslinks"] is None
+                        or st.session_state["string_org_crosslinks"] != string_input_id
+                    ):
+                        _ = transform.annotate_string_scores(
+                            crosslinks, organism=string_input_id
+                        )
+                        st.session_state["string_org_crosslinks"] = string_input_id
+                        successful_string_annotation_crosslinks = st.toast(
+                            "Successfully annotated STRING scores for crosslinks!",
+                            icon="✅",
+                            duration=5,
+                        )
+                    else:
+                        recycle_string_annotation_crosslinks = st.toast(
+                            "Re-used annotated STRING scores for crosslinks!",
+                            icon="♻️",
+                            duration=5,
+                        )
                     fig, ax = plotting.plot_string_score_distribution(
                         crosslinks,
                         plot_type="bar",
                         bins=bins,
                         figsize=(8.0, 4.5),
-                        title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
+                        title=f"STRING Score Distribution for Inter-Links (Organism: {st.session_state['string_org_crosslinks']})",
                     )
                     plots.append(fig)
                     fig, ax = plotting.plot_string_score_distribution(
@@ -1908,7 +1961,7 @@ def visualize_tab():
                         plot_type="hist",
                         bins=bins,
                         figsize=(8.0, 4.5),
-                        title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
+                        title=f"STRING Score Distribution for Inter-Links (Organism: {st.session_state['string_org_crosslinks']})",
                     )
                     plots.append(fig)
                 except Exception as _e:
@@ -1981,15 +2034,35 @@ def visualize_tab():
                 else str(string_organism)
             )
             try:
-                _ = transform.annotate_string_scores(
-                    aggregated_crosslinks, organism=string_input_id
-                )
+                if (
+                    "string_org_aggregated_crosslinks" not in st.session_state
+                    or st.session_state["string_org_aggregated_crosslinks"] is None
+                    or st.session_state["string_org_aggregated_crosslinks"]
+                    != string_input_id
+                ):
+                    _ = transform.annotate_string_scores(
+                        aggregated_crosslinks, organism=string_input_id
+                    )
+                    st.session_state["string_org_aggregated_crosslinks"] = (
+                        string_input_id
+                    )
+                    successful_string_annotation_aggregated_crosslinks = st.toast(
+                        "Successfully annotated STRING scores for aggregated crosslinks!",
+                        icon="✅",
+                        duration=5,
+                    )
+                else:
+                    recycle_string_annotation_aggregated_crosslinks = st.toast(
+                        "Re-used annotated STRING scores for aggregated crosslinks!",
+                        icon="♻️",
+                        duration=5,
+                    )
                 fig, ax = plotting.plot_string_score_distribution(
                     aggregated_crosslinks,
                     plot_type="bar",
                     bins=bins,
                     figsize=(8.0, 4.5),
-                    title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
+                    title=f"STRING Score Distribution for Inter-Links (Organism: {st.session_state['string_org_aggregated_crosslinks']})",
                 )
                 plots.append(fig)
                 fig, ax = plotting.plot_string_score_distribution(
@@ -1997,7 +2070,7 @@ def visualize_tab():
                     plot_type="hist",
                     bins=bins,
                     figsize=(8.0, 4.5),
-                    title=f"STRING Score Distribution for Inter-Links (Organism: {string_input_id})",
+                    title=f"STRING Score Distribution for Inter-Links (Organism: {st.session_state['string_org_aggregated_crosslinks']})",
                 )
                 plots.append(fig)
             except Exception as _e:
