@@ -5,6 +5,8 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
+from __future__ import annotations
+
 import pytest
 
 CSMS = "data/ms_annika/XLpeplib_Beveridge_QEx-HFX_DSS_R1_CSMs.txt"
@@ -501,8 +503,11 @@ def test13():
 
 def test14():
     import copy
+    from pyXLMS.data import CrosslinkSpectrumMatch, Crosslink
     from pyXLMS.parser import read
     from pyXLMS.transform import reannotate_decoy_labels
+
+    from typing import Tuple
 
     pr = read([CSMS, XLS], engine="MS Annika", crosslinker="DSS")
     csms = pr["crosslink-spectrum-matches"]
@@ -554,7 +559,7 @@ def test14():
         pr_none, by_mapping={True: None, False: None, None: None}
     )
 
-    def test_annotate(item: dict[str, any]) -> tuple[bool, bool]:
+    def test_annotate(item: CrosslinkSpectrumMatch | Crosslink) -> Tuple[bool, bool]:
         alpha = False
         beta = False
         if all([protein.startswith("REV__") for protein in item["alpha_proteins"]]):
