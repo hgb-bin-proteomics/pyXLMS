@@ -61,7 +61,7 @@ else:
     from typing_extensions import Literal
 
 
-__version__ = "1.4.3"
+__version__ = "1.4.4"
 
 HELP_URL = "https://pyxlms.dev/docs/webapp"
 
