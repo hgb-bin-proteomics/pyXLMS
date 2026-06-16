@@ -686,8 +686,8 @@ def create_crosslink(
 
     Returns
     -------
-    dict
-        The dictionary representing the crosslink with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
+    Crosslink
+        The data structure representing the crosslink with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
         ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
         ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink_type``, ``score``, and ``additional_information``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
@@ -785,8 +785,8 @@ def create_crosslink_min(
 
     Returns
     -------
-    dict
-        The dictionary representing the crosslink with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
+    Crosslink
+        The data structure representing the crosslink with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
         ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
         ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink_type``, ``score``, and ``additional_information``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.
