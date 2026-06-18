@@ -51,7 +51,11 @@ extend-select = ["S", "B", "A", "Q", "N", "D1", "PD", "UP", "EXE", "FIX", "FA102
 #   Unnecessary mode argument
 # - UP045: non-pep604-annotation-optional
 #   Use X | None for type annotations
-ignore = ["E501", "B006", "UP006", "UP015", "UP045"]
+# - EXE001: shebang-not-executable
+#   Shebang is present but file is not executable (Unix only)
+# - EXE002: shebang-missing-executable-file
+#   The file is executable but no shebang is present (Unix only)
+ignore = ["E501", "B006", "UP006", "UP015", "UP045", "EXE001", "EXE002"]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
