@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import warnings
 import pandas as pd
 
 from ..data._csm import CrosslinkSpectrumMatch
@@ -185,7 +186,17 @@ def to_xifdr(
         csms,
     )
     if len(filter_target_decoy(csms)["Target-Decoy"]) == 0:
-        raise RuntimeError(
-            "Can't export to xiFDR because number of target-decoy matches is zero!"
+        warnings.warn(
+            RuntimeWarning(
+                "Number of target-decoy matches is zero!",
+            ),
+            stacklevel=2,
+        )
+    if len(filter_target_decoy(csms)["Decoy-Decoy"]) == 0:
+        warnings.warn(
+            RuntimeWarning(
+                "Number of decoy-decoy matches is zero!",
+            ),
+            stacklevel=2,
         )
     return __csms_to_xifdr(csms, filename)
