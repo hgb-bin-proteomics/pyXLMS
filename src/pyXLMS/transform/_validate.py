@@ -167,7 +167,7 @@ def __validate_strict(
         else:
             # do nothing
             pass
-    return validated_items
+    return validated_items  # ty: ignore[invalid-return-type]
 
 
 def __verify_fdr_relaxed(
@@ -339,7 +339,7 @@ def __validate_relaxed(
         else:
             # do nothing
             pass
-    return validated_items
+    return validated_items  # ty: ignore[invalid-return-type]
 
 
 def validate(

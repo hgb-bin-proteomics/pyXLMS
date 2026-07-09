@@ -96,7 +96,7 @@ def filter_target_decoy(
                 tt.append(item)
             else:
                 td.append(item)
-    return {"Target-Target": tt, "Target-Decoy": td, "Decoy-Decoy": dd}
+    return {"Target-Target": tt, "Target-Decoy": td, "Decoy-Decoy": dd}  # ty: ignore[invalid-return-type]
 
 
 def filter_proteins(
@@ -189,7 +189,7 @@ def filter_proteins(
                 continue
             else:
                 inter.append(item)
-    return {"Proteins": list(proteins), "Both": intra, "One": inter}
+    return {"Proteins": list(proteins), "Both": intra, "One": inter}  # ty: ignore[invalid-return-type]
 
 
 def filter_protein_distribution(
@@ -251,7 +251,7 @@ def filter_protein_distribution(
                     proteins[protein].append(item)
                 else:
                     proteins[protein] = [item]
-    return proteins
+    return proteins  # ty: ignore[invalid-return-type]
 
 
 def filter_crosslink_type(
@@ -318,7 +318,7 @@ def filter_crosslink_type(
             intra.append(item)
         else:
             inter.append(item)
-    return {"Intra": intra, "Inter": inter}
+    return {"Intra": intra, "Inter": inter}  # ty: ignore[invalid-return-type]
 
 
 def filter_peptide_pair_distribution(
