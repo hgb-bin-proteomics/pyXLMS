@@ -19,7 +19,7 @@ __all__ = [
     "transform",
     "plotting",
 ]
-__version__ = "2.0.2"
+__version__ = "2.0.3"
 __author__ = "Micha Johannes Birklbauer"
 
 from . import constants
