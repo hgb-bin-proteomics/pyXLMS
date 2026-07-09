@@ -318,7 +318,7 @@ def reannotate_positions(
                 f"Can't annotate positions for data type {type(data[0])}. Valid data types are:\n"
                 "'crosslink-spectrum-match', 'crosslink', and 'parser_result'."
             )
-        return reannoted
+        return reannoted  # ty: ignore[invalid-return-type]
     new_csms = (
         assert_csms(
             reannotate_positions(
