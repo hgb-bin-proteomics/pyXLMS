@@ -133,6 +133,11 @@ def to_xifdr(
     RuntimeError
         If not all of the required information is present in the input data.
 
+    Warns
+    -----
+    RuntimeWarning
+        If the number of decoy-decoy or target-decoy matches is zero.
+
     Examples
     --------
     >>> from pyXLMS.exporter import to_xifdr
