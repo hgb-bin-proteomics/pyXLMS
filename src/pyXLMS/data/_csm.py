@@ -1128,8 +1128,8 @@ def create_csm(
 
     Returns
     -------
-    dict
-        The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_modifications``,
+    CrosslinkSpectrumMatch
+        The data structure representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_modifications``,
         ``alpha_peptide_crosslink_position``, ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_proteins_peptide_positions``,
         ``alpha_score``, ``alpha_decoy``, ``beta_peptide``, ``beta_modifications``, ``beta_peptide_crosslink_position``, ``beta_proteins``,
         ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink_type``, ``score``,
@@ -1270,8 +1270,8 @@ def create_csm_min(
 
     Returns
     -------
-    dict
-        The dictionary representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_modifications``,
+    CrosslinkSpectrumMatch
+        The data structure representing the crosslink-spectrum-match with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_modifications``,
         ``alpha_peptide_crosslink_position``, ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_proteins_peptide_positions``,
         ``alpha_score``, ``alpha_decoy``, ``beta_peptide``, ``beta_modifications``, ``beta_peptide_crosslink_position``, ``beta_proteins``,
         ``beta_proteins_crosslink_positions``, ``beta_proteins_peptide_positions``, ``beta_score``, ``beta_decoy``, ``crosslink_type``, ``score``,
@@ -1341,8 +1341,8 @@ def create_crosslink_from_csm(csm: CrosslinkSpectrumMatch) -> Crosslink:
 
     Returns
     -------
-    dict
-        The dictionary representing the crosslink with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
+    Crosslink
+        The data structure representing the crosslink with keys ``data_type``, ``completeness``, ``alpha_peptide``, ``alpha_peptide_crosslink_position``,
         ``alpha_proteins``, ``alpha_proteins_crosslink_positions``, ``alpha_decoy``, ``beta_peptide``, ``beta_peptide_crosslink_position``,
         ``beta_proteins``, ``beta_proteins_crosslink_positions``, ``beta_decoy``, ``crosslink_type``, ``score``, and ``additional_information``.
         Alpha and beta are assigned based on peptide sequence, the peptide that alphabetically comes first is assigned to alpha.

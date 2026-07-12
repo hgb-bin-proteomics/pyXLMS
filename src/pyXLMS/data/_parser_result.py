@@ -370,8 +370,8 @@ def create_parser_result(
 
     Returns
     -------
-    dict
-        The parser result data structure which is a dictionary with keys ``data_type``, ``completeness``, ``search_engine``, ``crosslink-spectrum-matches`` and
+    ParserResult
+        The parser result data structure with keys ``data_type``, ``completeness``, ``search_engine``, ``crosslink-spectrum-matches`` and
         ``crosslinks``.
 
     Examples
