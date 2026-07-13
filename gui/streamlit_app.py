@@ -148,7 +148,7 @@ def read_files(
             try:
                 return parser.read(
                     filenames,
-                    engine=engine,  # pyright: ignore[reportArgumentType] # ty: ignore[invalid-argument-type]
+                    engine=engine,  # pyright: ignore[reportArgumentType]
                     crosslinker=crosslinker,
                     parse_modifications=parse_modifications,
                     unsafe=True,
