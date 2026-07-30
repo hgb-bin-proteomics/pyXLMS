@@ -268,6 +268,21 @@ def __parse_float(value: Any) -> float:
     return float(value)
 
 
+def __get_xifdr_scan(row: pd.Series) -> Any:
+    r"""Return the scan identifier from an xiFDR CSM row.
+
+    The case of the scan column has varied across xiFDR versions (lowercase
+    ``scan`` in 2.1.5.2 and 2.2.1). Accept either spelling so the reader is not
+    tied to one version, and so a diagnostic message can never itself raise a
+    ``KeyError`` while reporting a different error.
+    """
+    if "scan" in row:
+        return row["scan"]
+    if "Scan" in row:
+        return row["Scan"]
+    raise KeyError("Neither 'scan' nor 'Scan' column found in xiFDR CSM row.")
+
+
 def __parse_xisearch_modifications(
     row: pd.Series,
     alpha: bool,
@@ -806,7 +821,7 @@ def __parse_xifdr_modifications(
         ).items():
             if pos in parsed_modifications:
                 err_str = f"Modification at position {pos} already exists!\n"
-                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                 if verbose == 1:
                     warnings.warn(RuntimeWarning(err_str))
                 elif verbose == 2:
@@ -823,7 +838,7 @@ def __parse_xifdr_modifications(
                     else:
                         err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
                         err_str += (
-                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                         )
                         raise KeyError(err_str)
             try:
@@ -836,7 +851,7 @@ def __parse_xifdr_modifications(
                     parsed_modifications[pos] = (mod, float("nan"))
                 else:
                     err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                     raise KeyError(err_str)
     else:
         parsed_modifications[__parse_int(row["LinkPos2"])] = (
@@ -848,7 +863,7 @@ def __parse_xifdr_modifications(
         ).items():
             if pos in parsed_modifications:
                 err_str = f"Modification at position {pos} already exists!\n"
-                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                 if verbose == 1:
                     warnings.warn(RuntimeWarning(err_str))
                 elif verbose == 2:
@@ -865,7 +880,7 @@ def __parse_xifdr_modifications(
                     else:
                         err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
                         err_str += (
-                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                         )
                         raise KeyError(err_str)
             try:
@@ -878,7 +893,7 @@ def __parse_xifdr_modifications(
                     parsed_modifications[pos] = (mod, float("nan"))
                 else:
                     err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                     raise KeyError(err_str)
     return parsed_modifications
 
@@ -975,7 +990,7 @@ def __read_xifdr_csms(
             spectrum_file=str(row["PeakListFileName"]).strip()
             if "PeakListFileName" in row
             else str(row["run"]).strip(),
-            scan_nr=__parse_int(row["scan"]),
+            scan_nr=__parse_int(__get_xifdr_scan(row)),
             charge=__parse_int(row["exp charge"]),
             rt=None,
             im_cv=None,
