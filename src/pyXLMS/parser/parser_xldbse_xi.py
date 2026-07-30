@@ -1013,6 +1013,16 @@ def __read_xifdr_crosslinks(
         data.iterrows(), total=data.shape[0], desc="Reading xiFDR crosslinks..."
     ):
         psmid = str(row["PSMIDs"]).split(";")[0]
+        if "P1_" not in psmid or "P2_" not in psmid:
+            raise RuntimeError(
+                "Could not parse peptide sequences from the xiFDR crosslinks "
+                "('_Links_') export: the 'PSMIDs' column is not in the expected "
+                "'P1_<peptide> P2_<peptide> <pos1> <pos2>' format required to "
+                f"recover peptides (got: {psmid!r}). Some xiFDR versions "
+                "(e.g. 2.1.5.2) emit numeric PSM identifiers here, which are not "
+                "supported for crosslink-level reading; read the corresponding "
+                "CSM export instead."
+            )
         s1 = psmid.split("P1_")[1].split(" ")[0]
         p1 = parse_peptide(s1)
         s2 = psmid.split("P2_")[1].split(" ")[0]
