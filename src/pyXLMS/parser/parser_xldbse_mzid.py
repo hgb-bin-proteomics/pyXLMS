@@ -285,6 +285,8 @@ def read_mzid(
             pos_a: int | None = None
             peptide_b: str | None = None
             pos_b: int | None = None
+            # whether the search engine passed the identification threshold
+            pass_threshold: bool | None = None
             # optional fields
             proteins_a: List[str] | None = None
             xl_position_proteins_a: List[int] | None = None
@@ -320,6 +322,10 @@ def read_mzid(
                         # if csm_id is not set yet, we parse item as alpha peptide
                         if csm_id is None:
                             csm_id = parsed_csm_id
+                            # passThreshold is a per-identification boolean that
+                            # xkit propagates as n_psms_passing / n_psms_total.
+                            if "passThreshold" in subitem:
+                                pass_threshold = subitem["passThreshold"]
                             if "PeptideSequence" in subitem:
                                 peptide_a = format_sequence(subitem["PeptideSequence"])
                             # we only parse crosslink position from modifications
@@ -398,6 +404,10 @@ def read_mzid(
                     rt=None,
                     im_cv=None,
                 )
+                # carry passThreshold through for downstream aggregation (only
+                # when the file actually reported it)
+                if pass_threshold is not None:
+                    csm["pass_threshold"] = pass_threshold
                 csms.append(csm)
     ## check results
     if len(csms) == 0:
