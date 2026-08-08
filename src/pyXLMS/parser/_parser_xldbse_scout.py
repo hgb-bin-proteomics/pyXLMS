@@ -570,7 +570,16 @@ def __read_scout_crosslinks(data: pd.DataFrame) -> List[Crosslink]:
             ],
             decoy_b=get_bool_from_value(row["IsDecoy"]),
             score=__parse_float(row["Score"]),
-            additional_information={"source": __serialize_pandas_series(row)},
+            additional_information={
+                "source": __serialize_pandas_series(row),
+                # Scout's per-crosslink CSM count is the dataset's only support
+                # metric; surface it instead of only burying it in the row blob.
+                **(
+                    {"csm_count": __parse_int(row["CSM count"])}
+                    if "CSM count" in row and pd.notna(row["CSM count"])
+                    else {}
+                ),
+            },
         )
         crosslinks.append(crosslink)
     return crosslinks
