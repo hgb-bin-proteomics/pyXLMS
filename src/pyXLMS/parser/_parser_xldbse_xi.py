@@ -272,6 +272,21 @@ def __parse_float(value: Any) -> float:
     return float(value)
 
 
+def __get_xifdr_scan(row: pd.Series) -> Any:
+    r"""Return the scan identifier from an xiFDR CSM row.
+
+    The case of the scan column has varied across xiFDR versions (lowercase
+    ``scan`` in 2.1.5.2 and 2.2.1). Accept either spelling so the reader is not
+    tied to one version, and so a diagnostic message can never itself raise a
+    ``KeyError`` while reporting a different error.
+    """
+    if "scan" in row:
+        return row["scan"]
+    if "Scan" in row:
+        return row["Scan"]
+    raise KeyError("Neither 'scan' nor 'Scan' column found in xiFDR CSM row.")
+
+
 def __parse_xisearch_modifications(
     row: pd.Series,
     alpha: bool,
@@ -810,7 +825,7 @@ def __parse_xifdr_modifications(
         ).items():
             if pos in parsed_modifications:
                 err_str = f"Modification at position {pos} already exists!\n"
-                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                 if verbose == 1:
                     warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                 elif verbose == 2:
@@ -827,7 +842,7 @@ def __parse_xifdr_modifications(
                     else:
                         err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
                         err_str += (
-                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                         )
                         raise KeyError(err_str) from e
             try:
@@ -840,7 +855,7 @@ def __parse_xifdr_modifications(
                     parsed_modifications[pos] = (mod, float("nan"))
                 else:
                     err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                     raise KeyError(err_str) from e
     else:
         parsed_modifications[__parse_int(row["LinkPos2"])] = (
@@ -852,7 +867,7 @@ def __parse_xifdr_modifications(
         ).items():
             if pos in parsed_modifications:
                 err_str = f"Modification at position {pos} already exists!\n"
-                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                 if verbose == 1:
                     warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                 elif verbose == 2:
@@ -869,7 +884,7 @@ def __parse_xifdr_modifications(
                     else:
                         err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
                         err_str += (
-                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                         )
                         raise KeyError(err_str) from e
             try:
@@ -882,7 +897,7 @@ def __parse_xifdr_modifications(
                     parsed_modifications[pos] = (mod, float("nan"))
                 else:
                     err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                     raise KeyError(err_str) from e
     return parsed_modifications
 
@@ -1015,6 +1030,16 @@ def __read_xifdr_crosslinks(data: pd.DataFrame, decoy_prefix: str) -> List[Cross
         data.iterrows(), total=data.shape[0], desc="Reading xiFDR crosslinks..."
     ):
         psmid = str(row["PSMIDs"]).split(";")[0]
+        if "P1_" not in psmid or "P2_" not in psmid:
+            raise RuntimeError(
+                "Could not parse peptide sequences from the xiFDR crosslinks "
+                "('_Links_') export: the 'PSMIDs' column is not in the expected "
+                "'P1_<peptide> P2_<peptide> <pos1> <pos2>' format required to "
+                f"recover peptides (got: {psmid!r}). Some xiFDR versions "
+                "(e.g. 2.1.5.2) emit numeric PSM identifiers here, which are not "
+                "supported for crosslink-level reading; read the corresponding "
+                "CSM export instead."
+            )
         s1 = psmid.split("P1_")[1].split(" ")[0]
         p1 = parse_peptide(s1)
         s2 = psmid.split("P2_")[1].split(" ")[0]
