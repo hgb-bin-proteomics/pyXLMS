@@ -328,7 +328,9 @@ def read_mzid(
                             # passThreshold is a per-identification boolean that
                             # downstream tools use as n_psms_passing / n_psms_total.
                             if "passThreshold" in subitem:
-                                pass_threshold = subitem["passThreshold"]
+                                pass_threshold = get_bool_from_value(
+                                    subitem["passThreshold"]
+                                )
                             if "PeptideSequence" in subitem:
                                 peptide_a = format_sequence(subitem["PeptideSequence"])
                             # we only parse crosslink position from modifications
