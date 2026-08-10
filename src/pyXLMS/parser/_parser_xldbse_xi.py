@@ -1057,7 +1057,7 @@ def __read_xifdr_crosslinks(data: pd.DataFrame, decoy_prefix: str) -> List[Cross
                 "Could not parse peptide sequences from the xiFDR crosslinks "
                 "('_Links_') export: the 'PSMIDs' column is not in the expected "
                 "'P1_<peptide> P2_<peptide> <pos1> <pos2>' format required to "
-                f"recover peptides (got: {psmid!r}). Some xiFDR versions "
+                f"recover peptides (got: {psmid}). Some xiFDR versions "
                 "(e.g. 2.1.5.2) emit numeric PSM identifiers here, which are not "
                 "supported for crosslink-level reading; read the corresponding "
                 "CSM export instead."
