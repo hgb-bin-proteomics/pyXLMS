@@ -376,7 +376,7 @@ def __validate_schema(
     """
     proxl_schema = __local_schema.encode("utf-8")
     if schema_validation == "online":
-        proxl_schema = ur.urlopen(SCHEMA_URL).read()  # noqa: S310
+        proxl_schema = ur.urlopen(SCHEMA_URL).read()
     parser = etree.XMLParser(encoding="utf-8")
     schema_doc = etree.fromstring(proxl_schema, parser=parser)
     schema = etree.XMLSchema(schema_doc)
