@@ -1010,7 +1010,7 @@ def __read_xifdr_csms(
             spectrum_file=str(row["PeakListFileName"]).strip()
             if "PeakListFileName" in row
             else str(row["run"]).strip(),
-            scan_nr=__parse_int(row["scan"]),
+            scan_nr=__get_xifdr_scan(row),
             charge=__parse_int(row["exp charge"]),
             rt=None,
             im_cv=None,
