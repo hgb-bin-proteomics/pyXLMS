@@ -359,6 +359,14 @@ def read_mzid(
                         # if csm_id is already set, we check if csm_ids of items are equal,
                         # if yes we parse the item as the beta peptide
                         elif csm_id == parsed_csm_id:
+                            # passThreshold is a per-identification boolean that
+                            # downstream tools use as n_psms_passing / n_psms_total.
+                            # only set if not set by peptide a
+                            if "passThreshold" in subitem:
+                                if pass_threshold is None:
+                                    pass_threshold = get_bool_from_value(
+                                        subitem["passThreshold"]
+                                    )
                             if "PeptideSequence" in subitem:
                                 peptide_b = format_sequence(subitem["PeptideSequence"])
                             if "Modification" in subitem:
