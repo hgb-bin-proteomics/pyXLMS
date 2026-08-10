@@ -5,8 +5,6 @@
 # https://github.com/michabirklbauer/
 # micha.birklbauer@gmail.com
 
-import io
-
 import pytest
 
 
@@ -15,13 +13,16 @@ def test1():
     # identifiers - as emitted by e.g. xiFDR 2.1.5.2 - carries no peptide sequences
     # to recover, so crosslink-level reading has to fail with a clear RuntimeError
     # that points to the CSM export instead of an opaque IndexError.
+    import io
     from pyXLMS.parser import read_xi
 
     links = (
         "PSMIDs,Protein1,Protein2,fromSite,ToSite,Decoy1,Decoy2,Score\n"
         "123456,Cas9,Cas9,10,20,false,false,15.5\n"
     )
-    with pytest.raises(RuntimeError, match="the 'PSMIDs' column is not in the expected"):
+    with pytest.raises(
+        RuntimeError, match="the 'PSMIDs' column is not in the expected"
+    ):
         _r = read_xi(io.StringIO(links), decoy_prefix="rev_", verbose=0)
 
 
@@ -29,6 +30,7 @@ def test2():
     # A xiFDR "Links" export in the expected "P1_<peptide> P2_<peptide> <pos1>
     # <pos2>" PSMIDs format still reads normally - the version guard must not reject
     # valid inputs.
+    import io
     from pyXLMS import parser as p
 
     links = (
@@ -75,3 +77,7 @@ def test3():
 
     with pytest.raises(KeyError, match="Neither 'scan' nor 'Scan'"):
         _r = get_scan(pd.Series({"ScanId": 9}))
+
+
+## TODO
+# test with an actual file with upper-case "Scan"
