@@ -594,3 +594,20 @@ def test14():
     assert pr["crosslink-spectrum-matches"] is not None
     assert len(pr["crosslink-spectrum-matches"]) == 500
     assert pr["crosslinks"] is None
+
+
+def test15():
+    # Every Scout crosslink carries its integer CSM count. pyXLMS >=2.0 records are
+    # frozen and forbid extra attributes, so this optional per-record metric is
+    # attached through the (mutable) additional_information field rather than as a
+    # new top-level key.
+    from pyXLMS.parser import read_scout
+
+    crosslinks = read_scout("data/scout/Cas9_Residue_Pairs.csv", crosslinker="DSSO")[
+        "crosslinks"
+    ]
+    assert len(crosslinks) > 0
+    for xl in crosslinks:
+        assert isinstance(xl.additional_information["csm_count"], int)
+        assert xl.additional_information["csm_count"] >= 1
+    assert crosslinks[0].additional_information["csm_count"] == 26
