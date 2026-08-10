@@ -272,19 +272,35 @@ def __parse_float(value: Any) -> float:
     return float(value)
 
 
-def __get_xifdr_scan(row: pd.Series) -> Any:
-    r"""Return the scan identifier from an xiFDR CSM row.
+def __get_xifdr_scan(row: pd.Series) -> int:
+    r"""Returns the scan identifier from a xiFDR (or xiSearch) CSM row.
 
     The case of the scan column has varied across xiFDR versions (lowercase
-    ``scan`` in 2.1.5.2 and 2.2.1). Accept either spelling so the reader is not
+    ``scan`` in ``2.1.5.2`` and ``2.2.1``). Accept either spelling so the reader is not
     tied to one version, and so a diagnostic message can never itself raise a
     ``KeyError`` while reporting a different error.
+
+    Parameters
+    ----------
+    row : pd.Series
+        A pandas DataFrame row.
+
+    Returns
+    -------
+    int
+        The scan identifier.
+
+    Raises
+    ------
+    KeyError
+        If no valid column for the scan identifier was found.
     """
     if "scan" in row:
-        return row["scan"]
+        return __parse_int(row["scan"])
     if "Scan" in row:
-        return row["Scan"]
+        return __parse_int(row["Scan"])
     raise KeyError("Neither 'scan' nor 'Scan' column found in xiFDR CSM row.")
+    return -1
 
 
 def __parse_xisearch_modifications(
