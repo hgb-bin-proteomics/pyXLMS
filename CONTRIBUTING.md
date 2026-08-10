@@ -52,17 +52,22 @@ there are a few guidelines for code contributions:
 - Please bump the version info in `pyproject.toml`, `src/pyXLMS/__init__.py`, and
   `sphinx/conf.py` according to [semantic versioning rules](https://semver.org/)
   before opening a pull request.
-- Pull requests must pass all GitHub actions checks.
+- Pull requests must pass all GitHub Actions checks.
 - If a new parser is implemented, make sure to update `parser.read()` and
   `pipelines.pipeline()`.
 
 Feel free to open a pull request even if your code does not conform with these
 guidelines, we will still have a look and then adapt ourselves. Thank you!
 
+> [!NOTE]
+> Please note that we might not merge your pull request directly but cherry-pick
+> some of your commits instead! You will of course still be attributed and listed
+> as a [contributor](https://github.com/hgb-bin-proteomics/pyXLMS/graphs/contributors?all=1)!
+> Thank you for your understanding!
+
 ## Responsible Use of LLMs/Gen-AI
 
-pyXLMS is currently completely free of AI generated code or content and we aim to keep
-it this way! While we do not prohibit outside contributors from using generative AI for
+While we do not prohibit outside contributors from using generative AI for
 any kind of task, please ask yourself if it is absolutely necessary considering both
 environmental and ethical concerns. Please also note that when contributing AI generated
 code, issues, discussions, etc. you are still responsible for its content! For transparency
