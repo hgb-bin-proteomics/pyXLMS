@@ -1035,6 +1035,12 @@ def __read_xifdr_crosslinks(data: pd.DataFrame, decoy_prefix: str) -> List[Cross
     list of Crosslink
         The read crosslinks.
 
+    Raises
+    ------
+    RuntimeError
+        If the PSMIDs do not contain the crosslink sequences which are needed
+        for creating crosslinks.
+
     Notes
     -----
     This function should not be called directly, it is called from ``read_xi()``.
