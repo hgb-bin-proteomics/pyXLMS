@@ -416,9 +416,9 @@ def read_mzid(
                     charge=None,
                     rt=None,
                     im_cv=None,
-                    # carry passThreshold through for downstream aggregation
-                    # (only when the file actually reported it)
                     additional_information=(
+                        # carry passThreshold through for downstream aggregation
+                        # (only when the file actually reported it)
                         {"pass_threshold": pass_threshold}
                         if pass_threshold is not None
                         else None
