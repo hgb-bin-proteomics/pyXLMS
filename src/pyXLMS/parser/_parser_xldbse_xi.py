@@ -841,7 +841,9 @@ def __parse_xifdr_modifications(
         ).items():
             if pos in parsed_modifications:
                 err_str = f"Modification at position {pos} already exists!\n"
-                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
+                err_str += (
+                    f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
+                )
                 if verbose == 1:
                     warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                 elif verbose == 2:
@@ -857,9 +859,7 @@ def __parse_xifdr_modifications(
                         parsed_modifications[pos] = (t1, t2)
                     else:
                         err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                        err_str += (
-                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
-                        )
+                        err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                         raise KeyError(err_str) from e
             try:
                 parsed_modifications[pos] = (
@@ -883,7 +883,9 @@ def __parse_xifdr_modifications(
         ).items():
             if pos in parsed_modifications:
                 err_str = f"Modification at position {pos} already exists!\n"
-                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
+                err_str += (
+                    f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
+                )
                 if verbose == 1:
                     warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                 elif verbose == 2:
@@ -899,9 +901,7 @@ def __parse_xifdr_modifications(
                         parsed_modifications[pos] = (t1, t2)
                     else:
                         err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                        err_str += (
-                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
-                        )
+                        err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                         raise KeyError(err_str) from e
             try:
                 parsed_modifications[pos] = (
