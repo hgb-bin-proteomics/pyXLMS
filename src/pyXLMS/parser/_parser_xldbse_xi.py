@@ -681,6 +681,7 @@ def __parse_xisearch_modifications(
 def __read_xisearch(
     data: pd.DataFrame,
     decoy_prefix: str,
+    parse_non_covalent: bool,
     parse_modifications: bool,
     modifications: Dict[str, Tuple[str, float]],
     ignore_errors: bool,
@@ -694,6 +695,8 @@ def __read_xisearch(
         Dataframe of a xiSearch result ``.csv`` file read with pandas.
     decoy_prefix : str
         The prefix that indicates that a protein is from the decoy database.
+    parse_non_covalent : bool
+        If non-covalent interactions should also be parsed.
     parse_modifications : bool
         Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
         Requires correct specification of the 'modifications' parameter.
@@ -719,6 +722,9 @@ def __read_xisearch(
     """
     # remove monolinks
     xl = data.dropna(axis=0, subset=["BasePeptide2"])
+    # optionally, remove non-covalent links
+    if not parse_non_covalent:
+        xl = xl[xl["Crosslinker"] != "NonCovalent"]
     # create csms list
     csms = list()
     # create csms
@@ -1103,6 +1109,7 @@ def __read_xifdr_crosslinks(data: pd.DataFrame, decoy_prefix: str) -> List[Cross
 def read_xi(
     files: str | List[str] | BinaryIO,
     decoy_prefix: Optional[str] = "auto",
+    parse_non_covalent: bool = False,
     parse_modifications: bool = True,
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
     sep: str = ",",
@@ -1123,6 +1130,9 @@ def read_xi(
     decoy_prefix : str, or None, default = "auto"
         The prefix that indicates that a protein is from the decoy database.
         If "auto" or None it will use the default for each xi file type.
+    parse_non_covalent : bool, default = False,
+        If non-covalent links should also be parsed. This usually fails because of missing
+        link positions.
     parse_modifications : bool, default = True
         Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
         Requires correct specification of the 'modifications' parameter.
@@ -1226,6 +1236,7 @@ def read_xi(
             csms += __read_xisearch(
                 data,
                 decoy_prefix,
+                parse_non_covalent,
                 parse_modifications,
                 modifications,
                 ignore_errors,
