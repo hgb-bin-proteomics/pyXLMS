@@ -79,5 +79,21 @@ def test3():
         _r = get_scan(pd.Series({"ScanId": 9}))
 
 
-## TODO
-# test with an actual file with upper-case "Scan"
+def test4():
+    from pyXLMS import parser as p
+
+    lower_scan = p.read(
+        "data/_test/parser/xi_versions/reference_1_CSM_xiFDR2.3.10.csv",
+        engine="xiSearch/xiFDR",
+        crosslinker="DSBSO",
+        parse_modifications=False,
+    )
+    upper_scan = p.read(
+        "data/_test/parser/xi_versions/reference_1_CSM_Scan_xiFDR2.3.10.csv",
+        engine="xiSearch/xiFDR",
+        crosslinker="DSBSO",
+        parse_modifications=False,
+    )
+
+    assert len(lower_scan["crosslink-spectrum-matches"]) == 346
+    assert len(upper_scan["crosslink-spectrum-matches"]) == 346
