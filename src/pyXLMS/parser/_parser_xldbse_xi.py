@@ -1163,6 +1163,9 @@ def read_xi(
     ------
     RuntimeError
         If the file(s) contain no crosslinks or crosslink-spectrum-matches.
+    RuntimeError
+        If the PSMIDs do not contain the crosslink sequences which are needed
+        for creating crosslinks.
     TypeError
         If parameter verbose was not set correctly.
 
