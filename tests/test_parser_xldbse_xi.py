@@ -544,3 +544,46 @@ def test8():
     assert not xl["beta_decoy"]
     assert xl["crosslink_type"] == "intra"
     assert xl["score"] == pytest.approx(9.619)
+
+
+def test9():
+    from pyXLMS import parser as p
+
+    pr = p.read(
+        "data/_test/parser/xi_versions/reference_1_Xi1.8.13.csv.xz",
+        engine="xiSearch/xiFDR",
+        crosslinker="DSBSO",
+        parse_non_covalent=False,
+        parse_modifications=False,
+        compression="xz",
+    )
+    assert len(pr["crosslink-spectrum-matches"]) > 0
+    assert pr["crosslinks"] is None
+
+
+def test10():
+    from pyXLMS import parser as p
+
+    pr = p.read(
+        "data/_test/parser/xi_versions/reference_1_Xi1.8.13.csv.xz",
+        engine="xiSearch/xiFDR",
+        crosslinker="DSBSO",
+        parse_modifications=False,
+        compression="xz",
+    )
+    assert len(pr["crosslink-spectrum-matches"]) > 0
+    assert pr["crosslinks"] is None
+
+
+def test11():
+    from pyXLMS import parser as p
+
+    with pytest.raises(ValueError, match="cannot convert float NaN to integer"):
+        _pr = p.read(
+            "data/_test/parser/xi_versions/reference_1_Xi1.8.13.csv.xz",
+            engine="xiSearch/xiFDR",
+            crosslinker="DSBSO",
+            parse_non_covalent=True,
+            parse_modifications=False,
+            compression="xz",
+        )

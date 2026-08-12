@@ -272,6 +272,37 @@ def __parse_float(value: Any) -> float:
     return float(value)
 
 
+def __get_xifdr_scan(row: pd.Series) -> int:
+    r"""Returns the scan identifier from a xiFDR (or xiSearch) CSM row.
+
+    The case of the scan column has varied across xiFDR versions (lowercase
+    ``scan`` in ``2.1.5.2`` and ``2.2.1``). Accept either spelling so the reader is not
+    tied to one version, and so a diagnostic message can never itself raise a
+    ``KeyError`` while reporting a different error.
+
+    Parameters
+    ----------
+    row : pd.Series
+        A pandas DataFrame row.
+
+    Returns
+    -------
+    int
+        The scan identifier.
+
+    Raises
+    ------
+    KeyError
+        If no valid column for the scan identifier was found.
+    """
+    if "scan" in row:
+        return __parse_int(row["scan"])
+    if "Scan" in row:
+        return __parse_int(row["Scan"])
+    raise KeyError("Neither 'scan' nor 'Scan' column found in xiFDR CSM row.")
+    return -1
+
+
 def __parse_xisearch_modifications(
     row: pd.Series,
     alpha: bool,
@@ -644,12 +675,13 @@ def __parse_xisearch_modifications(
                         raise KeyError(err_str) from e
                 if mod_mapped is not None and isinstance(mod_mapped, tuple):
                     parsed_modifications[pos] = mod_mapped
-    return parsed_modifications
+    return parsed_modifications  # ty: ignore[unsound-return-statement]
 
 
 def __read_xisearch(
     data: pd.DataFrame,
     decoy_prefix: str,
+    parse_non_covalent: bool,
     parse_modifications: bool,
     modifications: Dict[str, Tuple[str, float]],
     ignore_errors: bool,
@@ -663,6 +695,8 @@ def __read_xisearch(
         Dataframe of a xiSearch result ``.csv`` file read with pandas.
     decoy_prefix : str
         The prefix that indicates that a protein is from the decoy database.
+    parse_non_covalent : bool
+        If non-covalent interactions should also be parsed.
     parse_modifications : bool
         Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
         Requires correct specification of the 'modifications' parameter.
@@ -688,6 +722,9 @@ def __read_xisearch(
     """
     # remove monolinks
     xl = data.dropna(axis=0, subset=["BasePeptide2"])
+    # optionally, remove non-covalent links
+    if not parse_non_covalent:
+        xl = xl[xl["Crosslinker"] != "NonCovalent"]
     # create csms list
     csms = list()
     # create csms
@@ -810,7 +847,9 @@ def __parse_xifdr_modifications(
         ).items():
             if pos in parsed_modifications:
                 err_str = f"Modification at position {pos} already exists!\n"
-                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                err_str += (
+                    f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
+                )
                 if verbose == 1:
                     warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                 elif verbose == 2:
@@ -826,9 +865,7 @@ def __parse_xifdr_modifications(
                         parsed_modifications[pos] = (t1, t2)
                     else:
                         err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                        err_str += (
-                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                        )
+                        err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                         raise KeyError(err_str) from e
             try:
                 parsed_modifications[pos] = (
@@ -840,7 +877,7 @@ def __parse_xifdr_modifications(
                     parsed_modifications[pos] = (mod, float("nan"))
                 else:
                     err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                     raise KeyError(err_str) from e
     else:
         parsed_modifications[__parse_int(row["LinkPos2"])] = (
@@ -852,7 +889,9 @@ def __parse_xifdr_modifications(
         ).items():
             if pos in parsed_modifications:
                 err_str = f"Modification at position {pos} already exists!\n"
-                err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                err_str += (
+                    f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
+                )
                 if verbose == 1:
                     warnings.warn(RuntimeWarning(err_str), stacklevel=2)
                 elif verbose == 2:
@@ -868,9 +907,7 @@ def __parse_xifdr_modifications(
                         parsed_modifications[pos] = (t1, t2)
                     else:
                         err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                        err_str += (
-                            f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
-                        )
+                        err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                         raise KeyError(err_str) from e
             try:
                 parsed_modifications[pos] = (
@@ -882,9 +919,9 @@ def __parse_xifdr_modifications(
                     parsed_modifications[pos] = (mod, float("nan"))
                 else:
                     err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
-                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
+                    err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                     raise KeyError(err_str) from e
-    return parsed_modifications
+    return parsed_modifications  # ty: ignore[unsound-return-statement]
 
 
 def __read_xifdr_csms(
@@ -979,7 +1016,7 @@ def __read_xifdr_csms(
             spectrum_file=str(row["PeakListFileName"]).strip()
             if "PeakListFileName" in row
             else str(row["run"]).strip(),
-            scan_nr=__parse_int(row["scan"]),
+            scan_nr=__get_xifdr_scan(row),
             charge=__parse_int(row["exp charge"]),
             rt=None,
             im_cv=None,
@@ -1004,6 +1041,12 @@ def __read_xifdr_crosslinks(data: pd.DataFrame, decoy_prefix: str) -> List[Cross
     list of Crosslink
         The read crosslinks.
 
+    Raises
+    ------
+    RuntimeError
+        If the PSMIDs do not contain the crosslink sequences which are needed
+        for creating crosslinks.
+
     Notes
     -----
     This function should not be called directly, it is called from ``read_xi()``.
@@ -1015,6 +1058,16 @@ def __read_xifdr_crosslinks(data: pd.DataFrame, decoy_prefix: str) -> List[Cross
         data.iterrows(), total=data.shape[0], desc="Reading xiFDR crosslinks..."
     ):
         psmid = str(row["PSMIDs"]).split(";")[0]
+        if "P1_" not in psmid or "P2_" not in psmid:
+            raise RuntimeError(
+                "Could not parse peptide sequences from the xiFDR crosslinks "
+                "('_Links_') export: the 'PSMIDs' column is not in the expected "
+                "'P1_<peptide> P2_<peptide> <pos1> <pos2>' format required to "
+                f"recover peptides (got: {psmid}). Some xiFDR versions "
+                "(e.g. 2.1.5.2) emit numeric PSM identifiers here, which are not "
+                "supported for crosslink-level reading; read the corresponding "
+                "CSM export instead."
+            )
         s1 = psmid.split("P1_")[1].split(" ")[0]
         p1 = parse_peptide(s1)
         s2 = psmid.split("P2_")[1].split(" ")[0]
@@ -1056,6 +1109,7 @@ def __read_xifdr_crosslinks(data: pd.DataFrame, decoy_prefix: str) -> List[Cross
 def read_xi(
     files: str | List[str] | BinaryIO,
     decoy_prefix: Optional[str] = "auto",
+    parse_non_covalent: bool = False,
     parse_modifications: bool = True,
     modifications: Dict[str, Tuple[str, float]] = XI_MODIFICATION_MAPPING,
     sep: str = ",",
@@ -1076,6 +1130,9 @@ def read_xi(
     decoy_prefix : str, or None, default = "auto"
         The prefix that indicates that a protein is from the decoy database.
         If "auto" or None it will use the default for each xi file type.
+    parse_non_covalent : bool, default = False,
+        If non-covalent links should also be parsed. This usually fails because of missing
+        link positions.
     parse_modifications : bool, default = True
         Whether or not post-translational-modifications should be parsed for crosslink-spectrum-matches.
         Requires correct specification of the 'modifications' parameter.
@@ -1106,6 +1163,9 @@ def read_xi(
     ------
     RuntimeError
         If the file(s) contain no crosslinks or crosslink-spectrum-matches.
+    RuntimeError
+        If the PSMIDs do not contain the crosslink sequences which are needed
+        for creating crosslinks.
     TypeError
         If parameter verbose was not set correctly.
 
@@ -1157,7 +1217,7 @@ def read_xi(
 
     for input in inputs:  # noqa: A001
         ## reading data
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         ## detect input file type
         xi_file_type = detect_xi_filetype(data)
         ## set decoy prefix
@@ -1179,6 +1239,7 @@ def read_xi(
             csms += __read_xisearch(
                 data,
                 decoy_prefix,
+                parse_non_covalent,
                 parse_modifications,
                 modifications,
                 ignore_errors,

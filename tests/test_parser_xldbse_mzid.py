@@ -158,3 +158,20 @@ def test8():
             for csm in csms:
                 assert not csm["alpha_decoy"]
                 assert not csm["beta_decoy"]
+
+
+def test9():
+    # mzIdentML passThreshold is carried through for every CSM via
+    # additional_information (same frozen-record reason as test_parser_xldbse_scout@test15).
+    from pyXLMS.parser import read_mzid
+
+    # this Scout mzid has spectrum IDs without "scan=", so read_mzid emits the same
+    # RuntimeWarning the other mzid tests expect.
+    with pytest.warns(RuntimeWarning):
+        result = read_mzid(
+            "data/scout2/Cas9_HeLa_Cyt_r2/Cas9_HeLa_Cyt_r2-v1.2.mzid", verbose=0
+        )
+    csms = result["crosslink-spectrum-matches"]
+    assert len(csms) > 0
+    for csm in csms:
+        assert csm.additional_information["pass_threshold"] is True

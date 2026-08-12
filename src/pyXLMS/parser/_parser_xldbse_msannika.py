@@ -323,7 +323,7 @@ def read_msannika(
                 data_objects = [pd.read_excel(input, engine="openpyxl", **kwargs)]
             else:
                 data_objects = [
-                    pd.read_csv(  # ty: ignore[no-matching-overload]
+                    pd.read_csv(
                         input, sep=sep, decimal=decimal, low_memory=False, **kwargs
                     )
                 ]

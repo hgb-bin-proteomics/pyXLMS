@@ -94,7 +94,7 @@ def __serialize_pandas_series(
                 if str_val.lower().strip() not in nan_values:
                     val = str_val
         serialized_pds[key] = val
-    return serialized_pds
+    return serialized_pds  # ty: ignore[unsound-return-statement]
 
 
 def format_sequence(

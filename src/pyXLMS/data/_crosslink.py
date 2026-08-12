@@ -433,7 +433,7 @@ class Crosslink(BaseModel):
         This internally just calls ``self.model_dump(mode="python").keys()``.
         See `model_dump <https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel.model_dump>`_.
         """
-        return self.model_dump(mode="python").keys()
+        return self.model_dump(mode="python").keys()  # ty: ignore[unsound-return-statement]
 
     def values(self) -> List[Any]:
         r"""

@@ -86,7 +86,7 @@ def assert_csms(maybe_csms: Any) -> List[CrosslinkSpectrumMatch]:
     """
     if isinstance(maybe_csms, list):
         if all(isinstance(item, CrosslinkSpectrumMatch) for item in maybe_csms):
-            return maybe_csms
+            return maybe_csms  # ty: ignore[unsound-return-statement]
     raise TypeError(
         "Provided input is not a valid list of type CrosslinkSpectrumMatch!"
     )
@@ -113,7 +113,7 @@ def assert_xls(maybe_xls: Any) -> List[Crosslink]:
     """
     if isinstance(maybe_xls, list):
         if all(isinstance(item, Crosslink) for item in maybe_xls):
-            return maybe_xls
+            return maybe_xls  # ty: ignore[unsound-return-statement]
     raise TypeError("Provided input is not a valid list of type Crosslink!")
     return []
 
@@ -142,9 +142,9 @@ def assert_csms_or_xls(
     """
     if isinstance(maybe_csms_or_xls, list):
         if all(isinstance(item, CrosslinkSpectrumMatch) for item in maybe_csms_or_xls):
-            return maybe_csms_or_xls
+            return maybe_csms_or_xls  # ty: ignore[unsound-return-statement]
         if all(isinstance(item, Crosslink) for item in maybe_csms_or_xls):
-            return maybe_csms_or_xls
+            return maybe_csms_or_xls  # ty: ignore[unsound-return-statement]
     raise TypeError(
         "Provided input is not a valid list of type CrosslinkSpectrumMatch or Crosslink!"
     )
