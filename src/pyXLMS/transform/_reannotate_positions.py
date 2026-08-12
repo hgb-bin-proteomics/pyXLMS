@@ -69,7 +69,7 @@ def __generate_all_sequences(sequence: str) -> List[str]:
                 for seq in all_sequences
                 for replacement in replacements
             ]
-    return all_sequences
+    return all_sequences  # ty: ignore[unsound-return-statement]
 
 
 def __get_proteins_and_positions(

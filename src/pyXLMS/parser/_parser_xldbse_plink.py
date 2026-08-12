@@ -94,12 +94,12 @@ def __parse_modifications_from_plink_modifications_str(
             f"Key {crosslinker} not found in parameter 'modifications'. Are you missing a modification?"
         )
     if mod_str is None:
-        return (modifications_a, modifications_b)
+        return (modifications_a, modifications_b)  # ty: ignore[unsound-return-statement]
     if isinstance(mod_str, float) and pd.isna(mod_str):
-        return (modifications_a, modifications_b)
+        return (modifications_a, modifications_b)  # ty: ignore[unsound-return-statement]
     mod_str = str(mod_str).strip()
     if mod_str == "nan":
-        return (modifications_a, modifications_b)
+        return (modifications_a, modifications_b)  # ty: ignore[unsound-return-statement]
     mods = mod_str.split(";")
     for mod in mods:
         mod_desc = mod.split("[")[0].strip()
@@ -145,7 +145,7 @@ def __parse_modifications_from_plink_modifications_str(
                 modifications_a[mod_pos] = (t1, t2)
             else:
                 modifications_a[mod_pos] = (mod_desc, modifications[mod_desc])
-    return (modifications_a, modifications_b)
+    return (modifications_a, modifications_b)  # ty: ignore[unsound-return-statement]
 
 
 def __parse_proteins_and_position_from_plink(
@@ -290,7 +290,7 @@ def __read_plink_cross_linked_peptides_file(
         raise ValueError(
             "The provided file seems not to be a pLink cross-linked peptides file!"
         )
-    return df
+    return df  # ty: ignore[unsound-return-statement]
 
 
 def parse_spectrum_file_from_plink(title: str) -> str:
@@ -577,11 +577,11 @@ def read_plink(
     ## process data
     for input in inputs:  # noqa: A001
         if (
-            detect_plink_filetype(input, sep=sep, decimal=decimal, **kwargs)  # ty: ignore[invalid-argument-type]
+            detect_plink_filetype(input, sep=sep, decimal=decimal, **kwargs)
             == "crosslinks"
         ):
             data = __read_plink_cross_linked_peptides_file(
-                input,  # ty: ignore[invalid-argument-type]
+                input,
                 sep=sep,
                 decimal=decimal,
                 **kwargs,
@@ -624,7 +624,7 @@ def read_plink(
                 )
                 crosslinks.append(crosslink)
         else:
-            data = pd.read_csv(  # ty: ignore[no-matching-overload]
+            data = pd.read_csv(
                 input, sep=sep, decimal=decimal, low_memory=False, **kwargs
             )
             for _i, row in tqdm(

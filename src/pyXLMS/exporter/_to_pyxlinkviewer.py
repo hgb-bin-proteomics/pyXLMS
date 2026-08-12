@@ -92,10 +92,10 @@ except Exception as _e:
 def __get_pdb(pdb_file: str | BinaryIO) -> PandasPdb:
     if isinstance(pdb_file, str):
         if os.path.isfile(pdb_file):
-            return PandasPdb().read_pdb(pdb_file)
-        return PandasPdb().fetch_pdb(pdb_file.split(".pdb")[0])
+            return PandasPdb().read_pdb(pdb_file)  # ty: ignore[unsound-return-statement]
+        return PandasPdb().fetch_pdb(pdb_file.split(".pdb")[0])  # ty: ignore[unsound-return-statement]
     lines = pdb_file.readlines()
-    return PandasPdb().read_pdb_from_list(lines)
+    return PandasPdb().read_pdb_from_list(lines)  # ty: ignore[unsound-return-statement]
 
 
 def __get_pdb_data(

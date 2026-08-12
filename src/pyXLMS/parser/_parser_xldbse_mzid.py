@@ -288,6 +288,8 @@ def read_mzid(
             pos_a: int | None = None
             peptide_b: str | None = None
             pos_b: int | None = None
+            # whether the search engine passed the identification threshold
+            pass_threshold: bool | None = None
             # optional fields
             proteins_a: List[str] | None = None
             xl_position_proteins_a: List[int] | None = None
@@ -323,6 +325,12 @@ def read_mzid(
                         # if csm_id is not set yet, we parse item as alpha peptide
                         if csm_id is None:
                             csm_id = parsed_csm_id
+                            # passThreshold is a per-identification boolean that
+                            # downstream tools use as n_psms_passing / n_psms_total.
+                            if "passThreshold" in subitem:
+                                pass_threshold = get_bool_from_value(
+                                    subitem["passThreshold"]
+                                )
                             if "PeptideSequence" in subitem:
                                 peptide_a = format_sequence(subitem["PeptideSequence"])
                             # we only parse crosslink position from modifications
@@ -351,6 +359,14 @@ def read_mzid(
                         # if csm_id is already set, we check if csm_ids of items are equal,
                         # if yes we parse the item as the beta peptide
                         elif csm_id == parsed_csm_id:
+                            # passThreshold is a per-identification boolean that
+                            # downstream tools use as n_psms_passing / n_psms_total.
+                            # only set if not set by peptide a
+                            if "passThreshold" in subitem:
+                                if pass_threshold is None:
+                                    pass_threshold = get_bool_from_value(
+                                        subitem["passThreshold"]
+                                    )
                             if "PeptideSequence" in subitem:
                                 peptide_b = format_sequence(subitem["PeptideSequence"])
                             if "Modification" in subitem:
@@ -400,6 +416,13 @@ def read_mzid(
                     charge=None,
                     rt=None,
                     im_cv=None,
+                    additional_information=(
+                        # carry passThreshold through for downstream aggregation
+                        # (only when the file actually reported it)
+                        {"pass_threshold": pass_threshold}
+                        if pass_threshold is not None
+                        else None
+                    ),
                 )
                 csms.append(csm)
     ## check results
