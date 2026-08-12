@@ -187,7 +187,7 @@ def parse_modifications_from_scout_sequence(
                     parsed_modifications[pos] = (t1, t2)
                 else:
                     parsed_modifications[pos] = modifications[mod_key]
-    return parsed_modifications
+    return parsed_modifications  # ty: ignore[unsound-return-statement]
 
 
 def __read_scout_csms_unfiltered(
@@ -394,9 +394,9 @@ def __read_scout_csms_filtered(
             )
         parsed_modifications = {crosslink_position: (crosslinker, crosslinker_mass)}
         if alpha and bool(pd.isna(row["Alpha modification(s)"])):
-            return parsed_modifications
+            return parsed_modifications  # ty: ignore[unsound-return-statement]
         if not alpha and bool(pd.isna(row["Beta modification(s)"])):
-            return parsed_modifications
+            return parsed_modifications  # ty: ignore[unsound-return-statement]
         mods = (
             str(row["Alpha modification(s)"]).split(";")
             if alpha
@@ -451,7 +451,7 @@ def __read_scout_csms_filtered(
                 parsed_modifications[pos] = (t1, t2)
             else:
                 parsed_modifications[pos] = modifications[mod_key]
-        return parsed_modifications
+        return parsed_modifications  # ty: ignore[unsound-return-statement]
 
     ## create csms
     csms = list()
@@ -715,7 +715,7 @@ def read_scout(
 
     for input in inputs:  # noqa: A001
         ## reading data
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         ## detect input file type
         scout_file_type = detect_scout_filetype(data)
         ## process data

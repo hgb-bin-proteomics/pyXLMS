@@ -246,7 +246,7 @@ def __build_modifications(csm: CrosslinkSpectrumMatch) -> Tuple[List[str], List[
         modifications_b.append(r"""</modifications>""")
     if len(modifications_b) <= 2:
         modifications_b.clear()
-    return (modifications_a, modifications_b)
+    return (modifications_a, modifications_b)  # ty: ignore[unsound-return-statement]
 
 
 def __build_reported_peptides(
@@ -306,7 +306,7 @@ def __build_reported_peptides(
         lines.append(r"""</psms>""")
         lines.append(r"""</reported_peptide>""")
     lines.append(r"""</reported_peptides>""")
-    return lines
+    return lines  # ty: ignore[unsound-return-statement]
 
 
 def __build_matched_proteins(
@@ -381,7 +381,7 @@ def __validate_schema(
     schema_doc = etree.fromstring(proxl_schema, parser=parser)
     schema = etree.XMLSchema(schema_doc)
     xml_doc = etree.fromstring(xml_str.encode("utf-8"), parser=parser)
-    return schema.validate(xml_doc)
+    return schema.validate(xml_doc)  # ty: ignore[unsound-return-statement]
 
 
 def to_proxl(

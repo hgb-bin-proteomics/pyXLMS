@@ -292,9 +292,9 @@ def read_custom(
             if format == "xlsx":
                 data = pd.read_excel(input, engine="openpyxl", **kwargs)
             elif format == "parquet":
-                data = pd.read_parquet(input, **kwargs)  # ty: ignore[invalid-argument-type]
+                data = pd.read_parquet(input, **kwargs)
             else:
-                data = pd.read_csv(  # ty: ignore[no-matching-overload]
+                data = pd.read_csv(
                     input, sep=sep, decimal=decimal, low_memory=False, **kwargs
                 )
         else:

@@ -71,7 +71,7 @@ def __annotate_by_mapping(
                 update={"alpha_decoy": alpha_decoy, "beta_decoy": beta_decoy}
             )
         )
-    return reannotated
+    return reannotated  # ty: ignore[unsound-return-statement]
 
 
 def __annotate_by_protein_prefix(
@@ -142,7 +142,7 @@ def __annotate_by_protein_prefix(
                 update={"alpha_decoy": alpha_decoy, "beta_decoy": beta_decoy}
             )
         )
-    return reannotated
+    return reannotated  # ty: ignore[unsound-return-statement]
 
 
 def __annotate_by_protein_substring(
@@ -214,7 +214,7 @@ def __annotate_by_protein_substring(
                 update={"alpha_decoy": alpha_decoy, "beta_decoy": beta_decoy}
             )
         )
-    return reannotated
+    return reannotated  # ty: ignore[unsound-return-statement]
 
 
 def __is_peptide_in_protein_db(peptide: str, protein_db: List[str]) -> bool:
@@ -294,7 +294,7 @@ def __annotate_by_fasta(
                 update={"alpha_decoy": alpha_decoy, "beta_decoy": beta_decoy}
             )
         )
-    return reannotated
+    return reannotated  # ty: ignore[unsound-return-statement]
 
 
 def __annotate_by_function(
@@ -334,7 +334,7 @@ def __annotate_by_function(
                 update={"alpha_decoy": alpha_decoy, "beta_decoy": beta_decoy}
             )
         )
-    return reannotated
+    return reannotated  # ty: ignore[unsound-return-statement]
 
 
 def reannotate_decoy_labels(

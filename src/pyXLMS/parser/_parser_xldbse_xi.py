@@ -675,7 +675,7 @@ def __parse_xisearch_modifications(
                         raise KeyError(err_str) from e
                 if mod_mapped is not None and isinstance(mod_mapped, tuple):
                     parsed_modifications[pos] = mod_mapped
-    return parsed_modifications
+    return parsed_modifications  # ty: ignore[unsound-return-statement]
 
 
 def __read_xisearch(
@@ -921,7 +921,7 @@ def __parse_xifdr_modifications(
                     err_str = f"Key {mod} not found in parameter 'modifications'. Are you missing a modification?\n"
                     err_str += f"CSM ScanId: {row['ScanId']}; CSM Scan: {__get_xifdr_scan(row)}"
                     raise KeyError(err_str) from e
-    return parsed_modifications
+    return parsed_modifications  # ty: ignore[unsound-return-statement]
 
 
 def __read_xifdr_csms(
@@ -1214,7 +1214,7 @@ def read_xi(
 
     for input in inputs:  # noqa: A001
         ## reading data
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         ## detect input file type
         xi_file_type = detect_xi_filetype(data)
         ## set decoy prefix

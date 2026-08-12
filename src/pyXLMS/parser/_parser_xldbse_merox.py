@@ -100,7 +100,7 @@ def __read_merox_file(
     # this shifts file pointer
     if zipfile.is_zipfile(file):
         with zipfile.ZipFile(file, "r") as f:
-            return pd.read_csv(
+            return pd.read_csv(  # ty: ignore[unsound-return-statement]
                 io.BytesIO(f.read("Result.csv")),
                 header=None,
                 names=MEROX_COLNAMES,
@@ -111,7 +111,7 @@ def __read_merox_file(
             )
     if not isinstance(file, str):
         file.seek(0)
-    return pd.read_csv(file, sep=sep, decimal=decimal, low_memory=False, **kwargs)
+    return pd.read_csv(file, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[unsound-return-statement]
 
 
 def __get_merox_sequence(
@@ -165,7 +165,7 @@ def __get_merox_sequence(
                 )
             else:
                 parsed_seq += amino_acid
-    return parsed_seq
+    return parsed_seq  # ty: ignore[unsound-return-statement]
 
 
 def __get_merox_modifications(
@@ -222,7 +222,7 @@ def __get_merox_modifications(
             raise KeyError(
                 f"Key {amino_acid} not found in parameter 'modifications'. Are you missing a modification?"
             )
-    return parsed_modifications
+    return parsed_modifications  # ty: ignore[unsound-return-statement]
 
 
 def __get_merox_position(position_str: str) -> int:
@@ -461,7 +461,7 @@ def read_merox(
 
     for input in inputs:  # noqa: A001
         ## reading data
-        data = __read_merox_file(input, sep=sep, decimal=decimal, **kwargs)  # ty: ignore[invalid-argument-type]
+        data = __read_merox_file(input, sep=sep, decimal=decimal, **kwargs)
         for _i, row in tqdm(
             data.iterrows(),
             total=data.shape[0],

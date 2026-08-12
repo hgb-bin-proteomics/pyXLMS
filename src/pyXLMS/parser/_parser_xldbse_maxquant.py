@@ -237,7 +237,7 @@ def read_maxquant(
 
     ## process data
     for input in inputs:  # noqa: A001
-        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)  # ty: ignore[no-matching-overload]
+        data = pd.read_csv(input, sep=sep, decimal=decimal, low_memory=False, **kwargs)
         xl = data.dropna(axis=0, subset=["Proteins2"])
         for _i, row in tqdm(
             xl.iterrows(), total=xl.shape[0], desc="Reading MaxQuant CSMs..."
