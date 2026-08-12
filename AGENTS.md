@@ -93,7 +93,6 @@ insight.
 - Use `pyXLMS.parser.format_sequence()` for reading amino acid sequences!
 - Use `pXLMS.parser.get_bool_from_value()` for converting any value to a boolean!
 
-
 ### Peptide Order
 
 - Upon creation of crosslink-spectrum-matches and crosslinks pyXLMS will re-order
