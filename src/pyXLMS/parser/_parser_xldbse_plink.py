@@ -593,7 +593,7 @@ def read_plink(
                     seq=str(row["Peptide"]).strip(),
                     proteins=str(row["Proteins"]).strip(),
                 )
-                # create csm
+                # create crosslink
                 crosslink = create_crosslink(
                     peptide_a=format_sequence(
                         str(row["Peptide"]).split("-")[0].split("(")[0].strip()
