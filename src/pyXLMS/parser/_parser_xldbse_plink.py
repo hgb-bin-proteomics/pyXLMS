@@ -35,6 +35,10 @@ if sys.version_info > (3, 8):
     from typing import Literal
 else:
     from typing_extensions import Literal
+if sys.version_info >= (3, 13):
+    from warnings import deprecated
+else:
+    from typing_extensions import deprecated
 
 
 def __parse_modifications_from_plink_modifications_str(
@@ -148,6 +152,9 @@ def __parse_modifications_from_plink_modifications_str(
     return (modifications_a, modifications_b)  # ty: ignore[unsound-return-statement]
 
 
+@deprecated(
+    "Function will be removed in pyXLMS v3.0.0 - please use parse_sites_from_plink instead!"
+)
 def __parse_proteins_and_position_from_plink(
     seq: str,
     proteins: str,
@@ -218,6 +225,76 @@ def __parse_proteins_and_position_from_plink(
         "proteins_b_xl_positions": proteins_b_xl_positions,
         "proteins_b_pep_positions": proteins_b_pep_positions,
     }
+
+
+def parse_sites_from_plink(peptide: str, proteins: str) -> List[Dict[str, Any]]:
+    r"""Parse a pLink cross-linked ``Peptide`` + ``Proteins`` field pair into linked sites.
+
+    Parses a pLink cross-link sequence ``PEPA(pa)-PEPB(pb)`` and protein string
+    ``accA (sa)-accB (sb)/...`` into its two linked sites, in a representation that is
+    independent of the pyXLMS data model so it can be reused to build any downstream
+    object.
+
+    Parameters
+    ----------
+    peptide : str
+        The pLink ``Peptide`` field of a cross-linked identification.
+    proteins : str
+        The pLink ``Proteins`` field of a cross-linked identification.
+
+    Returns
+    -------
+    list of dict of str, Any
+        The two linked sites. Each site is a dictionary with keys ``peptide``,
+        ``peptide_position`` (1-based, in-peptide), ``proteins`` (accessions) and
+        ``protein_positions`` (1-based, absolute; parallel to ``proteins``). Proteins
+        are de-duplicated and sorted per site.
+
+    Raises
+    ------
+    ValueError
+        If ``peptide`` is not a cross-linked pLink sequence (``PEPA(pa)-PEPB(pb)``).
+
+    Examples
+    --------
+    >>> from pyXLMS.parser import parse_sites_from_plink
+    >>> sites = parse_sites_from_plink("PEPK(4)-KELS(1)", "PROT (10)-PROT (20)/")
+    >>> sites[0]["peptide"]
+    'PEPK'
+    """
+    peptide = str(peptide).strip()
+    proteins = str(proteins).strip().rstrip("/")
+    if "-" not in peptide:
+        raise ValueError(
+            "Not a cross-linked pLink sequence (expected 'PEPA(pa)-PEPB(pb)'): "
+            f"{peptide!r}"
+        )
+    pep_tokens = peptide.split("-")
+    peptides = [format_sequence(t.split("(")[0]) for t in pep_tokens]
+    pep_positions = [__parse_int(t.split("(")[1].split(")")[0]) for t in pep_tokens]
+    # collect the per-side "accession (position)" tokens
+    tokens = [set(), set()]
+    for alt in proteins.split("/"):
+        for side, token in enumerate(alt.split("-")):
+            tokens[side].add(token.strip())
+    sites = []
+    for i in range(2):
+        # de-duplicate and sort the "accession (position)" strings per site, exactly as
+        # read_plink's original protein handling did.
+        accs = []
+        positions = []
+        for token in sorted(tokens[i]):
+            accs.append(token.split("(")[0].strip())
+            positions.append(__parse_int(token.split("(")[1].split(")")[0]))
+        sites.append(
+            {
+                "peptide": peptides[i],
+                "peptide_position": pep_positions[i],
+                "proteins": accs,
+                "protein_positions": positions,
+            }
+        )
+    return sites
 
 
 def __read_plink_cross_linked_peptides_file(
@@ -589,36 +666,31 @@ def read_plink(
             for _i, row in tqdm(
                 data.iterrows(), total=data.shape[0], desc="Reading pLink crosslinks..."
             ):
-                parsed_positions = __parse_proteins_and_position_from_plink(
-                    seq=str(row["Peptide"]).strip(),
-                    proteins=str(row["Proteins"]).strip(),
+                site_a, site_b = parse_sites_from_plink(
+                    str(row["Peptide"]).strip(), str(row["Proteins"]).strip()
                 )
                 # create crosslink
                 crosslink = create_crosslink(
-                    peptide_a=format_sequence(
-                        str(row["Peptide"]).split("-")[0].split("(")[0].strip()
-                    ),
-                    xl_position_peptide_a=parsed_positions["xl_pos_a"],
+                    peptide_a=site_a["peptide"],
+                    xl_position_peptide_a=site_a["peptide_position"],
                     proteins_a=[
                         protein_a.strip()
                         if protein_a.strip()[: len(decoy_prefix)] != decoy_prefix
                         else protein_a.strip()[len(decoy_prefix) :]
-                        for protein_a in parsed_positions["proteins_a"]
+                        for protein_a in site_a["proteins"]
                     ],
-                    xl_position_proteins_a=parsed_positions["proteins_a_xl_positions"],
-                    decoy_a=decoy_prefix in " ".join(parsed_positions["proteins_a"]),
-                    peptide_b=format_sequence(
-                        str(row["Peptide"]).split("-")[1].split("(")[0].strip()
-                    ),
-                    xl_position_peptide_b=parsed_positions["xl_pos_b"],
+                    xl_position_proteins_a=site_a["protein_positions"],
+                    decoy_a=decoy_prefix in " ".join(site_a["proteins"]),
+                    peptide_b=site_b["peptide"],
+                    xl_position_peptide_b=site_b["peptide_position"],
                     proteins_b=[
                         protein_b.strip()
                         if protein_b.strip()[: len(decoy_prefix)] != decoy_prefix
                         else protein_b.strip()[len(decoy_prefix) :]
-                        for protein_b in parsed_positions["proteins_b"]
+                        for protein_b in site_b["proteins"]
                     ],
-                    xl_position_proteins_b=parsed_positions["proteins_b_xl_positions"],
-                    decoy_b=decoy_prefix in " ".join(parsed_positions["proteins_b"]),
+                    xl_position_proteins_b=site_b["protein_positions"],
+                    decoy_b=decoy_prefix in " ".join(site_b["proteins"]),
                     score=None,
                     additional_information={"source": __serialize_pandas_series(row)},
                 )
@@ -642,50 +714,47 @@ def read_plink(
                     if parse_modifications
                     else None
                 )
-                parsed_positions = __parse_proteins_and_position_from_plink(
-                    seq=str(row["Peptide"]).strip(),
-                    proteins=str(row["Proteins"]).strip(),
+                site_a, site_b = parse_sites_from_plink(
+                    str(row["Peptide"]).strip(), str(row["Proteins"]).strip()
                 )
                 # create csm
                 csm = create_csm(
-                    peptide_a=format_sequence(
-                        str(row["Peptide"]).split("-")[0].split("(")[0].strip()
-                    ),
+                    peptide_a=site_a["peptide"],
                     modifications_a=parsed_modifications[0]
                     if parsed_modifications is not None
                     else None,
-                    xl_position_peptide_a=parsed_positions["xl_pos_a"],
+                    xl_position_peptide_a=site_a["peptide_position"],
                     proteins_a=[
                         protein_a.strip()
                         if protein_a.strip()[: len(decoy_prefix)] != decoy_prefix
                         else protein_a.strip()[len(decoy_prefix) :]
-                        for protein_a in parsed_positions["proteins_a"]
+                        for protein_a in site_a["proteins"]
                     ],
-                    xl_position_proteins_a=parsed_positions["proteins_a_xl_positions"],
-                    pep_position_proteins_a=parsed_positions[
-                        "proteins_a_pep_positions"
+                    xl_position_proteins_a=site_a["protein_positions"],
+                    pep_position_proteins_a=[
+                        p - site_a["peptide_position"] + 1
+                        for p in site_a["protein_positions"]
                     ],
                     score_a=None,
-                    decoy_a=decoy_prefix in " ".join(parsed_positions["proteins_a"]),
-                    peptide_b=format_sequence(
-                        str(row["Peptide"]).split("-")[1].split("(")[0].strip()
-                    ),
+                    decoy_a=decoy_prefix in " ".join(site_a["proteins"]),
+                    peptide_b=site_b["peptide"],
                     modifications_b=parsed_modifications[1]
                     if parsed_modifications is not None
                     else None,
-                    xl_position_peptide_b=parsed_positions["xl_pos_b"],
+                    xl_position_peptide_b=site_b["peptide_position"],
                     proteins_b=[
                         protein_b.strip()
                         if protein_b.strip()[: len(decoy_prefix)] != decoy_prefix
                         else protein_b.strip()[len(decoy_prefix) :]
-                        for protein_b in parsed_positions["proteins_b"]
+                        for protein_b in site_b["proteins"]
                     ],
-                    xl_position_proteins_b=parsed_positions["proteins_b_xl_positions"],
-                    pep_position_proteins_b=parsed_positions[
-                        "proteins_b_pep_positions"
+                    xl_position_proteins_b=site_b["protein_positions"],
+                    pep_position_proteins_b=[
+                        p - site_b["peptide_position"] + 1
+                        for p in site_b["protein_positions"]
                     ],
                     score_b=None,
-                    decoy_b=decoy_prefix in " ".join(parsed_positions["proteins_b"]),
+                    decoy_b=decoy_prefix in " ".join(site_b["proteins"]),
                     score=__parse_float(row["Score"]),
                     spectrum_file=spectrum_file_parser(str(row["Title"]).strip()),
                     scan_nr=scan_nr_parser(str(row["Title"]).strip()),
