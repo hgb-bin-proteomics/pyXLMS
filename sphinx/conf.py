@@ -15,7 +15,7 @@ project = "pyXLMS"
 copyright = "2026, Bioinformatics Research Group, FH Oberösterreich Campus Hagenberg"
 author = "Micha Johannes Birklbauer"
 version = "2.0"
-release = "2.0.4"
+release = "2.0.5"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

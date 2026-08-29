@@ -35,7 +35,7 @@ if sys.version_info > (3, 8):
     from typing import Literal
 else:
     from typing_extensions import Literal
-if sys.version_info >= (3, 13):
+if sys.version_info > (3, 13):
     from warnings import deprecated
 else:
     from typing_extensions import deprecated
@@ -227,10 +227,12 @@ def __parse_proteins_and_position_from_plink(
     }
 
 
-def parse_sites_from_plink(peptide: str, proteins: str) -> List[Dict[str, Any]]:
+def parse_sites_from_plink(
+    peptide: str, proteins: str
+) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     r"""Parse a pLink cross-linked ``Peptide`` + ``Proteins`` field pair into linked sites.
 
-    Parses a pLink cross-link sequence ``PEPA(pa)-PEPB(pb)`` and protein string
+    Parses a pLink crosslink sequence ``PEPA(pa)-PEPB(pb)`` and protein string
     ``accA (sa)-accB (sb)/...`` into its two linked sites, in a representation that is
     independent of the pyXLMS data model so it can be reused to build any downstream
     object.
@@ -244,56 +246,80 @@ def parse_sites_from_plink(peptide: str, proteins: str) -> List[Dict[str, Any]]:
 
     Returns
     -------
-    list of dict of str, Any
-        The two linked sites. Each site is a dictionary with keys ``peptide``,
-        ``peptide_position`` (1-based, in-peptide), ``proteins`` (accessions) and
-        ``protein_positions`` (1-based, absolute; parallel to ``proteins``). Proteins
+    tuple of dict of str, Any, dict of str, Any
+        The two linked sites. Each site is a dictionary with keys ``peptide`` (str),
+        ``peptide_position`` (int, 1-based, in-peptide), ``proteins`` (list of str, accessions) and
+        ``protein_positions`` (list of int, 1-based, absolute; parallel to ``proteins``). Proteins
         are de-duplicated and sorted per site.
 
     Raises
     ------
     ValueError
         If ``peptide`` is not a cross-linked pLink sequence (``PEPA(pa)-PEPB(pb)``).
+    ValueError
+        If more than two possible sites are found (possibly incorrectly formatted input).
 
     Examples
     --------
     >>> from pyXLMS.parser import parse_sites_from_plink
-    >>> sites = parse_sites_from_plink("PEPK(4)-KELS(1)", "PROT (10)-PROT (20)/")
-    >>> sites[0]["peptide"]
+    >>> site_a, site_b = parse_sites_from_plink(
+    ...     "PEPK(4)-KELS(1)", "PROT (10)-PROT (20)/"
+    ... )
+    >>> site_a["peptide"]
     'PEPK'
     """
+    check_input(peptide, "peptide", str)
+    check_input(proteins, "proteins", str)
     peptide = str(peptide).strip()
     proteins = str(proteins).strip().rstrip("/")
     if "-" not in peptide:
         raise ValueError(
             "Not a cross-linked pLink sequence (expected 'PEPA(pa)-PEPB(pb)'): "
-            f"{peptide!r}"
+            f"{peptide}"
+        )
+    if "-" not in proteins:
+        raise ValueError(
+            "Not a cross-linked pLink sequence (expected 'PROTA (pa)-PROTB (pb)'): "
+            f"{proteins}"
         )
     pep_tokens = peptide.split("-")
     peptides = [format_sequence(t.split("(")[0]) for t in pep_tokens]
     pep_positions = [__parse_int(t.split("(")[1].split(")")[0]) for t in pep_tokens]
+    if len(peptides) != 2 or len(pep_positions) != 2:
+        raise ValueError(
+            "Parsed more than two possible sites, is the input correctly formatted? "
+            f"(expected 'PEPA(pa)-PEPB(pb)' found {peptide})"
+        )
     # collect the per-side "accession (position)" tokens
     tokens = [set(), set()]
     for alt in proteins.split("/"):
         for side, token in enumerate(alt.split("-")):
+            if side > 1:
+                raise ValueError(
+                    "Parsed more than two possible sites, is the input correctly formatted? "
+                    f"(expected 'PROTA (pa)-PROTB (pb)/...' found {proteins} with entry {alt})"
+                )
             tokens[side].add(token.strip())
-    sites = []
-    for i in range(2):
-        # de-duplicate and sort the "accession (position)" strings per site, exactly as
-        # read_plink's original protein handling did.
-        accs = []
-        positions = []
-        for token in sorted(tokens[i]):
-            accs.append(token.split("(")[0].strip())
-            positions.append(__parse_int(token.split("(")[1].split(")")[0]))
-        sites.append(
-            {
-                "peptide": peptides[i],
-                "peptide_position": pep_positions[i],
-                "proteins": accs,
-                "protein_positions": positions,
-            }
-        )
+    sites = (
+        {
+            "peptide": peptides[0],
+            "peptide_position": pep_positions[0],
+            "proteins": [token.split("(")[0].strip() for token in sorted(tokens[0])],
+            "protein_positions": [
+                __parse_int(token.split("(")[1].split(")")[0])
+                for token in sorted(tokens[0])
+            ],
+        },
+        {
+            "peptide": peptides[1],
+            "peptide_position": pep_positions[1],
+            "proteins": [token.split("(")[0].strip() for token in sorted(tokens[1])],
+            "protein_positions": [
+                __parse_int(token.split("(")[1].split(")")[0])
+                for token in sorted(tokens[1])
+            ],
+        },
+    )
     return sites
 
 

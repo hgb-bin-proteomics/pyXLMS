@@ -31,5 +31,33 @@ def test2():
     # a non-cross-linked (mono-/loop-linked) sequence is rejected with a clear error
     from pyXLMS.parser import parse_sites_from_plink
 
-    with pytest.raises(ValueError, match="cross-linked"):
+    with pytest.raises(ValueError, match="Not a cross-linked pLink sequence"):
         _r = parse_sites_from_plink("APK(3)", "FUS (451)/")
+
+
+def test3():
+    from pyXLMS.parser import parse_sites_from_plink
+
+    site_a, site_b = parse_sites_from_plink("PEPK(4)-KELS(1)", "PROT (10)-PROT (20)/")
+    assert site_a["peptide"] == "PEPK"
+
+
+def test4():
+    from pyXLMS.parser import parse_sites_from_plink
+
+    with pytest.raises(ValueError, match="Not a cross-linked pLink sequence"):
+        _r = parse_sites_from_plink("APK(3)-PEPK(4)", "FUS (451)/")
+
+
+def test5():
+    from pyXLMS.parser import parse_sites_from_plink
+
+    with pytest.raises(ValueError, match="Parsed more than two possible sites"):
+        _r = parse_sites_from_plink("APK(3)-PEPK(4)-TIDE(4)", "FUS (451)-BAZ (31)/")
+
+
+def test6():
+    from pyXLMS.parser import parse_sites_from_plink
+
+    with pytest.raises(ValueError, match="Parsed more than two possible sites"):
+        _r = parse_sites_from_plink("APK(3)-PEPK(4)", "FUS (451)-BAZ (31)-BAR (32)/")

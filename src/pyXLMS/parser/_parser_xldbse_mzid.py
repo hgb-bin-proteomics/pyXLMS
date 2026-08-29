@@ -344,14 +344,14 @@ def read_mzid(
                                     proteins_and_positions = get_proteins_and_positions(
                                         subitem["PeptideEvidenceRef"], pos_a
                                     )
-                                    proteins_a = proteins_and_positions["proteins"]
-                                    xl_position_proteins_a = proteins_and_positions[
+                                    proteins_a = proteins_and_positions["proteins"]  # ty: ignore[unsound-assignment]
+                                    xl_position_proteins_a = proteins_and_positions[  # ty: ignore[unsound-assignment]
                                         "xl"
                                     ]
-                                    pep_position_proteins_a = proteins_and_positions[
+                                    pep_position_proteins_a = proteins_and_positions[  # ty: ignore[unsound-assignment]
                                         "pep"
                                     ]
-                                    decoy_a = (
+                                    decoy_a = (  # ty: ignore[unsound-assignment]
                                         proteins_and_positions["decoy"]
                                         if decoy is None
                                         else decoy
@@ -379,14 +379,14 @@ def read_mzid(
                                     proteins_and_positions = get_proteins_and_positions(
                                         subitem["PeptideEvidenceRef"], pos_b
                                     )
-                                    proteins_b = proteins_and_positions["proteins"]
-                                    xl_position_proteins_b = proteins_and_positions[
+                                    proteins_b = proteins_and_positions["proteins"]  # ty: ignore[unsound-assignment]
+                                    xl_position_proteins_b = proteins_and_positions[  # ty: ignore[unsound-assignment]
                                         "xl"
                                     ]
-                                    pep_position_proteins_b = proteins_and_positions[
+                                    pep_position_proteins_b = proteins_and_positions[  # ty: ignore[unsound-assignment]
                                         "pep"
                                     ]
-                                    decoy_b = (
+                                    decoy_b = (  # ty: ignore[unsound-assignment]
                                         proteins_and_positions["decoy"]
                                         if decoy is None
                                         else decoy
