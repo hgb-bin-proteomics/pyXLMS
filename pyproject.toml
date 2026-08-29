@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyXLMS"
-version = "2.0.4"
+version = "2.0.5"
 authors = [
   { name = "Micha Johannes Birklbauer", email = "micha.birklbauer@fh-hagenberg.at" },
 ]
