@@ -4,21 +4,21 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyXLMS"
-version = "2.0.4"
+version = "2.0.5"
 authors = [
-  { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
+  { name = "Micha Johannes Birklbauer", email = "micha.birklbauer@fh-hagenberg.at" },
 ]
 maintainers = [
-  { name="Micha Johannes Birklbauer", email="micha.birklbauer@fh-hagenberg.at" },
+  { name = "Micha Johannes Birklbauer", email = "micha.birklbauer@fh-hagenberg.at" },
 ]
-readme = "PYPI.md"
-license = {file = "LICENSE"}
+readme = "docs/PYPI.md"
+license = "MIT"
+license-files = ["LICENSE"]
 description = "A python package to process protein cross-linking data."
 keywords = ["crosslink", "crosslinker", "crosslinking", "mass spectrometry", "proteomics"]
 requires-python = ">=3.7"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Intended Audience :: Science/Research",
   "Topic :: Scientific/Engineering :: Bio-Informatics",
