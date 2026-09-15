@@ -272,12 +272,12 @@ def pipeline(
     print(":: parser.read() ::")
     print(":: parser.read() :: params :: <params omitted>")
     if unique is not None:
-        if isinstance(unique, dict) or (isinstance(unique, bool) and unique):
+        if isinstance(unique, dict) or (isinstance(unique, bool) and unique):  # ty: ignore[redundant-condition-strict]
             print(":: transform.unique() ::")
             for k, v in unique_params.items():
                 print(f":: transform.unique() :: params :: {k}={v}")
     if validate is not None:
-        if isinstance(validate, dict) or (isinstance(validate, bool) and validate):
+        if isinstance(validate, dict) or (isinstance(validate, bool) and validate):  # ty: ignore[redundant-condition-strict]
             print(":: transform.validate() ::")
             for k, v in validate_params.items():
                 print(f":: transform.validate() :: params :: {k}={v}")

@@ -203,9 +203,9 @@ def read_mzid(
         if "cross-link receiver" in modification:
             return True
         if "search modification id ref" in modification:
-            if "crosslink_donor" in "search modification id ref":
+            if "crosslink_donor" in modification["search modification id ref"]:
                 return True
-            if "crosslink_acceptor" in "search modification id ref":
+            if "crosslink_acceptor" in modification["search modification id ref"]:
                 return True
         return False
 

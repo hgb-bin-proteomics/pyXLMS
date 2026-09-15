@@ -204,7 +204,7 @@ def assert_data_type_same(
         return True
     if isinstance(data_list[0], Crosslink):
         return True
-    if isinstance(data_list[0], ParserResult):
+    if isinstance(data_list[0], ParserResult):  # ty: ignore[redundant-condition-strict]
         return True
     raise TypeError(
         "Input list contains elements that are not of type CrosslinkSpectrumMatch, Crosslink, or ParserResult!"
@@ -326,7 +326,7 @@ def get_available_keys(
             "score": score,
             "additional_information": additional_information,
         }
-    if isinstance(data_list[0], CrosslinkSpectrumMatch):
+    if isinstance(data_list[0], CrosslinkSpectrumMatch):  # ty: ignore[redundant-condition-strict]
         for data in data_list:
             if data["completeness"] != "full" or always_revalidate:
                 if data["alpha_modifications"] is None:
@@ -638,7 +638,7 @@ def display(
         if return_str:
             return display
         return
-    if isinstance(data, ParserResult):
+    if isinstance(data, ParserResult):  # ty: ignore[redundant-condition-strict]
         csms = data["crosslink-spectrum-matches"]
         xls = data["crosslinks"]
         display += f"Data Type:                            {data['data_type']}\n"
