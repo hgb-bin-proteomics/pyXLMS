@@ -290,15 +290,21 @@ def parse_sites_from_plink(
             "Parsed more than two possible sites, is the input correctly formatted? "
             f"(expected 'PEPA(pa)-PEPB(pb)' found {peptide})"
         )
-    # collect the per-side "accession (position)" tokens
+    # collect the per-side "accession (position)" tokens. Split each alternative on
+    # the site delimiter ")-" -- the "-" that follows a position -- rather than any
+    # "-", so a UniProt isoform accession (e.g. "sp|Q14240-2|...") is not split
+    # mid-accession. A well-formed pair splits into exactly two sides; the consumed
+    # ")" is restored on the first.
     tokens = [set(), set()]
     for alt in proteins.split("/"):
-        for side, token in enumerate(alt.split("-")):
-            if side > 1:
-                raise ValueError(
-                    "Parsed more than two possible sites, is the input correctly formatted? "
-                    f"(expected 'PROTA (pa)-PROTB (pb)/...' found {proteins} with entry {alt})"
-                )
+        parts = alt.split(")-")
+        if len(parts) != 2:
+            raise ValueError(
+                "Parsed less or more than two possible sites, is the input correctly formatted? "
+                f"(expected 'PROTA (pa)-PROTB (pb)/...' found {proteins} with entry {alt})"
+            )
+        sides = [parts[0] + ")", parts[1]]
+        for side, token in enumerate(sides):
             tokens[side].add(token.strip())
     sites = (
         {
