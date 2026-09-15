@@ -684,7 +684,7 @@ def input_tab():
         # reset STRING cache
         reset_string_cache()
         # check what is uploaded and set
-        if uploaded_files is None or len(uploaded_files) == 0:
+        if uploaded_files is None or len(uploaded_files) == 0:  # ty: ignore[redundant-condition-strict]
             _ = st.error("You need to upload at least one result file first!")
         if search_engine is None:
             _ = st.error("You need to select a search engine or format first!")
@@ -698,7 +698,7 @@ def input_tab():
                     "You need to specify the crosslinker mass for your custom crosslinker!"
                 )
         if (
-            uploaded_files is not None
+            uploaded_files is not None  # ty: ignore[redundant-condition-strict]
             and len(uploaded_files) > 0
             and search_engine is not None
             and crosslinker is not None
@@ -832,7 +832,7 @@ def input_tab():
                     with st.expander("Show exception"):
                         _ = st.exception(e)
         elif (
-            uploaded_files is not None
+            uploaded_files is not None  # ty: ignore[redundant-condition-strict]
             and len(uploaded_files) > 0
             and search_engine is not None
             and crosslinker is not None
@@ -1293,7 +1293,7 @@ def filter_tab():
 
                 with st.spinner("Filtering results...", show_time=True):
                     try:
-                        if protein_filter is not None and len(protein_filter) > 0:
+                        if protein_filter is not None and len(protein_filter) > 0:  # ty: ignore[redundant-condition-strict]
                             if "pr" in st.session_state:
                                 if (
                                     st.session_state["pr"]["crosslink-spectrum-matches"]
@@ -1330,7 +1330,7 @@ def filter_tab():
                                     st.session_state["aggregated"], protein_filter
                                 )
                         if (
-                            crosslink_type_filter is not None
+                            crosslink_type_filter is not None  # ty: ignore[redundant-condition-strict]
                             and len(crosslink_type_filter) > 0
                         ):
                             if "pr" in st.session_state:
@@ -1379,7 +1379,7 @@ def filter_tab():
                                     keep += intra_inter["Inter"]
                                 st.session_state["aggregated"] = keep
                         if (
-                            target_decoy_filter is not None
+                            target_decoy_filter is not None  # ty: ignore[redundant-condition-strict]
                             and len(target_decoy_filter) > 0
                         ):
                             if "pr" in st.session_state:
@@ -2616,7 +2616,7 @@ def export_tab():
                     if export_crosslinks_alphalink2_button:
                         if (
                             crosslinks_alphalink2_fasta_file is None
-                            or crosslinks_alphalink2_annotated_fdr is None
+                            or crosslinks_alphalink2_annotated_fdr is None  # ty: ignore[redundant-condition-strict]
                         ):
                             _ = st.error(
                                 "Can't export to AlphaLink2 when either FASTA file or annotated FDR are missing!",
@@ -3560,7 +3560,7 @@ def export_tab():
                 if export_aggregated_crosslinks_alphalink2_button:
                     if (
                         aggregated_crosslinks_alphalink2_fasta_file is None
-                        or aggregated_crosslinks_alphalink2_annotated_fdr is None
+                        or aggregated_crosslinks_alphalink2_annotated_fdr is None  # ty: ignore[redundant-condition-strict]
                     ):
                         _ = st.error(
                             "Can't export to AlphaLink2 when either FASTA file or annotated FDR are missing!",

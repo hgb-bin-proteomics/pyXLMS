@@ -610,7 +610,7 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         raise KeyError(err_str) from e
-                if mod_mapped is not None and isinstance(mod_mapped, tuple):
+                if mod_mapped is not None and isinstance(mod_mapped, tuple):  # ty: ignore[redundant-condition-strict]
                     if mod_mapped[0] not in parsed_modifications[pos][0]:
                         parsed_modifications[pos] = (
                             parsed_modifications[pos][0] + "," + mod_mapped[0],
@@ -629,7 +629,7 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         raise KeyError(err_str) from e
-                if mod_mapped is not None and isinstance(mod_mapped, tuple):
+                if mod_mapped is not None and isinstance(mod_mapped, tuple):  # ty: ignore[redundant-condition-strict]
                     parsed_modifications[pos] = mod_mapped
     else:
         modified_sequence = parse_peptide(str(row["Peptide2"]).strip())
@@ -654,7 +654,7 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         raise KeyError(err_str) from e
-                if mod_mapped is not None and isinstance(mod_mapped, tuple):
+                if mod_mapped is not None and isinstance(mod_mapped, tuple):  # ty: ignore[redundant-condition-strict]
                     if mod_mapped[0] not in parsed_modifications[pos][0]:
                         parsed_modifications[pos] = (
                             parsed_modifications[pos][0] + "," + mod_mapped[0],
@@ -673,7 +673,7 @@ def __parse_xisearch_modifications(
                             f"CSM ScanId: {row['ScanId']}; CSM Scan: {row['Scan']}"
                         )
                         raise KeyError(err_str) from e
-                if mod_mapped is not None and isinstance(mod_mapped, tuple):
+                if mod_mapped is not None and isinstance(mod_mapped, tuple):  # ty: ignore[redundant-condition-strict]
                     parsed_modifications[pos] = mod_mapped
     return parsed_modifications  # ty: ignore[unsound-return-statement]
 
