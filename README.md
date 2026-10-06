@@ -111,9 +111,12 @@ Interacting with [STRING](https://string-db.org/) requires an active internet co
 
 If you are using pyXLMS please cite the following publication:
 
-- Manuscript in preparation
+- [Unified down-stream analysis of crosslinking mass spectrometry results with pyXLMS](https://doi.org/10.1038/s41467-026-77407-1):
   ```
-  (wip)
+  Unified down-stream analysis of crosslinking mass spectrometry results with pyXLMS
+  Micha J. Birklbauer, Louise M. Buur, Sabrina Kaser, Fränze Müller, Manuel Matzinger, Karl Mechtler, Stephan Winkler, and Viktoria Dorfer
+  Nature Communications 2026 17 (10508)
+  DOI: 10.1038/s41467-026-77407-1
   ```
 
 ## Acknowledgements
