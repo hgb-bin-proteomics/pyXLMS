@@ -246,7 +246,7 @@ def __build_modifications(csm: CrosslinkSpectrumMatch) -> Tuple[List[str], List[
         modifications_b.append(r"""</modifications>""")
     if len(modifications_b) <= 2:
         modifications_b.clear()
-    return (modifications_a, modifications_b)  # ty: ignore[unsound-return-statement]
+    return (modifications_a, modifications_b)
 
 
 def __build_reported_peptides(
