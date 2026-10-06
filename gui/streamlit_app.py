@@ -4504,9 +4504,12 @@ def about_tab():
     citation_str = """
         If you are using pyXLMS please cite the following publication:
 
-        - Manuscript in preparation
+        - [Unified down-stream analysis of crosslinking mass spectrometry results with pyXLMS](https://doi.org/10.1038/s41467-026-77407-1):
           ```
-          (wip)
+          Unified down-stream analysis of crosslinking mass spectrometry results with pyXLMS
+          Micha J. Birklbauer, Louise M. Buur, Sabrina Kaser, Fränze Müller, Manuel Matzinger, Karl Mechtler, Stephan Winkler, and Viktoria Dorfer
+          Nature Communications 2026 17 (10508)
+          DOI: 10.1038/s41467-026-77407-1
           ```
         """
     citation = st.markdown(citation_str)
@@ -4521,7 +4524,7 @@ def about_tab():
     header_4 = st.subheader("Further Links", divider="grey")
     further_info = st.markdown("Read more about pyXLMS at the links below:")
 
-    l1, center_1, r1 = st.columns(3)
+    l1, l2, r1, r2 = st.columns(4)
 
     with l1:
         link_button_1 = st.link_button(
@@ -4532,7 +4535,7 @@ def about_tab():
             width="stretch",
         )
 
-    with center_1:
+    with l2:
         link_button_2 = st.link_button(
             "User Guide",
             url="https://hgb-bin-proteomics.github.io/pyXLMS-docs",
@@ -4547,6 +4550,15 @@ def about_tab():
             url="https://hgb-bin-proteomics.github.io/pyXLMS",
             type="primary",
             help="Link to the pyXLMS documentation page.",
+            width="stretch",
+        )
+
+    with r2:
+        link_button_4 = st.link_button(
+            "Publication",
+            url="https://doi.org/10.1038/s41467-026-77407-1",
+            type="primary",
+            help="Link to the pyXLMS publication.",
             width="stretch",
         )
 
@@ -4616,7 +4628,8 @@ def main():
     div_2 = st.sidebar.divider()
 
     info_str = ""
-    info_str += "- **Documentation:**  \n [hgb-bin-proteomics.github.io/pyXLMS-docs/](https://hgb-bin-proteomics.github.io/pyXLMS-docs/)\n"
+    info_str += "- **Documentation:**  \n  [hgb-bin-proteomics.github.io/pyXLMS-docs/](https://hgb-bin-proteomics.github.io/pyXLMS-docs/)\n"
+    info_str += "- **Publication:**  \n  [nature.com/articles/s41467-026-77407-1](https://doi.org/10.1038/s41467-026-77407-1)\n"
     info_str += "- **Contact:**  \n  [micha.birklbauer@fh-hagenberg.at](mailto:micha.birklbauer@fh-hagenberg.at)\n"
     info_str += "- **License:**  \n  [MIT License](https://github.com/hgb-bin-proteomics/pyXLMS/blob/master/LICENSE)\n"
     info_str += "- **Project Page:**  \n  [GitHub](https://github.com/hgb-bin-proteomics/pyXLMS/)"
