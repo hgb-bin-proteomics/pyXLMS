@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Birklbauer"
+    given-names: "Micha J."
+    orcid: "https://orcid.org/0009-0005-1051-179X"
+  - family-names: "Buur"
+    given-names: "Louise M."
+    orcid: "https://orcid.org/0000-0002-8653-2096"
+  - family-names: "Kaser"
+    given-names: "Sabrina"
+    orcid: "https://orcid.org/0009-0007-3176-5814"
+  - family-names: "Müller"
+    given-names: "Fränze"
+    orcid: "https://orcid.org/0000-0003-3764-3547"
+  - family-names: "Matzinger"
+    given-names: "Manuel"
+    orcid: "https://orcid.org/0000-0002-9765-7951"
+  - family-names: "Mechtler"
+    given-names: "Karl"
+    orcid: "https://orcid.org/0000-0002-3392-9946"
+  - family-names: "Winkler"
+    given-names: "Stephan"
+    orcid: "https://orcid.org/0000-0002-5196-4294"
+  - family-names: "Dorfer"
+    given-names: "Viktoria"
+    orcid: "https://orcid.org/0000-0002-5332-5701"
+  doi: "10.1038/s41467-026-77407-1"
+  journal: "Nature Communications"
+  month: 9
+  title: "Unified down-stream analysis of crosslinking mass spectrometry results with pyXLMS"
+  issue: 17
+  volume: 10508
+  year: 2026
