@@ -162,10 +162,10 @@ class ParserResult(BaseModel):
 
         Notes
         -----
-        This internally just calls ``self.model_dump(mode="python").items()``.
+        This internally just calls ``list(self.model_dump(mode="python").items())``.
         See `model_dump <https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel.model_dump>`_.
         """
-        return self.model_dump(mode="python").items()
+        return list(self.model_dump(mode="python").items())
 
     def keys(self) -> List[str]:
         r"""
@@ -178,10 +178,10 @@ class ParserResult(BaseModel):
 
         Notes
         -----
-        This internally just calls ``self.model_dump(mode="python").keys()``.
+        This internally just calls ``list(self.model_dump(mode="python").keys())``.
         See `model_dump <https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel.model_dump>`_.
         """
-        return self.model_dump(mode="python").keys()  # ty: ignore[unsound-return-statement]
+        return list(self.model_dump(mode="python").keys())
 
     def values(self) -> List[Any]:
         r"""
@@ -194,10 +194,10 @@ class ParserResult(BaseModel):
 
         Notes
         -----
-        This internally just calls ``self.model_dump(mode="python").values()``.
+        This internally just calls ``list(self.model_dump(mode="python").values())``.
         See `model_dump <https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel.model_dump>`_.
         """
-        return self.model_dump(mode="python").values()
+        return list(self.model_dump(mode="python").values())
 
     def copy_with_update(self, update: Dict[str, Any] = {}) -> ParserResult:
         r"""Creates a deep copy of the parser result with optional attribute updates.
